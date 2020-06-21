@@ -2,7 +2,7 @@
 export class Tag{
     
     private id: number;
-    private name: string;
+    private name: string = null;
 
     public getId(){
         return this.id;

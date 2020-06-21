@@ -5,13 +5,13 @@ import { ProjectType } from './project_type';
 export class Project{
     
     private id: number;
-    private name: string;
-    private description: string;
-    private startDate: Date;
-    private endDate:Date;
-    private status: Status;
+    private name: string = null;
+    private description: string = null;
+    private startDate: Date = null;
+    private endDate:Date = null;
+    private status: Status = null;
     private tasks: Task[] = [];
-    private type: ProjectType;
+    private type: ProjectType = null;
 
 
     public getId(){

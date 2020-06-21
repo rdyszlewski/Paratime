@@ -3,11 +3,11 @@ import { Status } from './status';
 export class Subtask{
     
     private id: number;
-    private name: string;
-    private description: string;
-    private status: Status;
-    private progress: number;
-    private taskID: number;
+    private name: string = null;
+    private description: string = null;
+    private status: Status = null;
+    private progress: number = -1;
+    private taskID: number = null;
 
     public getId(){
         return this.id;

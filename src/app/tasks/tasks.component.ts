@@ -6,6 +6,9 @@ import { ProjectType } from 'app/models/project_type';
 import Dexie, { DBCoreRangeType } from 'dexie';
 import { Task } from 'app/models/task';
 import { LocalDatabase } from 'app/data/local/database';
+import { Tag } from 'app/models/tag';
+import { Local } from 'protractor/built/driverProviders';
+import { TaskTagsModel } from 'app/data/common/models';
 
 
 @Component({
@@ -21,27 +24,107 @@ export class TasksComponent implements OnInit {
 
   ngOnInit(): void {
     this.tasks = [];
-    // this.addMockProject();
     this.configureDexie();
   }
 
   private configureDexie(){
     this.deleteDatabase(); // TODO: po testowaniu sunąć to 
     var database = new LocalDatabase();
-    let task = new Task();
-    task.setName("Zadanie 2");
-    task.setDescription("To jest zadanie 2");
-    task.setStatus(Status.STARTED);
-    // database.tasks.put(task);
-    // TODO: sprawdzić to
-    this.loadData(database);
+    
+    this.insertProject(database);
+    this.loadProject(database);
+
+    this.insertTask(database);
+    this.loadTask(database);
+
+    this.insertSubtask(database);
+    this.loadSubtask(database);
+
+    this.insertTag(database);
+    this.loadTag(database);
+
+    this.insertTaskTags(database);
+    this.loadTaskTags(database);
   }
 
-  private async loadData(database){
-      let tasks = await database.tasks.where('id').above(-1).toArray();
-      let task = tasks[2] as Task;
-      console.log(task);
-      // return Promise.all(database.tasks.where('id').equals(1).toArray(tasks=>this.tasks = tasks)).then(x=>this);
+  private insertProject(database: LocalDatabase){
+    let project = new Project();
+    project.setName("Projekt 1");
+    project.setDescription("To jest przykładowy projekt");
+    project.setStatus(Status.AWAITING);
+    
+    database.getProjectsTable().put(project);
+  }
+
+  private insertTask(database:LocalDatabase){
+    let task = new Task();
+    task.setName("Zadanie 1");
+    task.setDescription("To jest zadanie 1");
+    task.setStatus(Status.STARTED);
+    task.setPlannedTime(100);
+
+    database.getTasksTable().put(task);
+  }
+
+  private insertSubtask(database: LocalDatabase){
+    let subtask = new Subtask();
+    subtask.setName("Podzadanie 1");
+    subtask.setDescription("To jest podzadanie 1");
+    subtask.setTaskID(1);
+    subtask.setStatus(Status.CANCELED);
+    subtask.setProgress(50);
+
+    database.getSubtasksTable().put(subtask);
+  }
+
+  private insertTag(database: LocalDatabase){
+    let tag = new Tag();
+    tag.setName("Tag 1");
+
+    let tag2 = new Tag();
+    tag2.setName("Tag 2");
+
+    database.getTagsTable().put(tag);
+    database.getTagsTable().put(tag2);
+  }
+
+  private insertTaskTags(database:LocalDatabase){
+    let entry1 = new TaskTagsModel(1, 1);
+    let entry2 = new TaskTagsModel(1, 2);
+
+    database.getTaskTagsTable().put(entry1);
+    database.getTaskTagsTable().put(entry2);
+  }
+
+  private async loadTaskTags(database:LocalDatabase){
+    console.log("Tagi zadań");
+    let entries = await database.getTaskTagsTable().toArray();
+    console.log(entries);
+  }
+
+  private async loadTag(database:LocalDatabase){
+    console.log("Tagi");
+    let tags = await database.getTagsTable().toArray();
+    console.log(tags);
+  }
+
+  private async loadSubtask(database:LocalDatabase){
+    console.log("Podzadania");
+    let subtask = await database.getSubtasksTable().toArray();
+    console.log(subtask);
+  }
+
+  private async loadTask(database:LocalDatabase){
+    console.log("Zadania");
+    let task = await database.getTasksTable().toArray();
+    console.log(task);
+  }
+  
+
+  private async loadProject(database:LocalDatabase){
+    console.log("Projekty");
+    let project = await database.getProjectsTable().toArray();
+    console.log(project);
   }
 
   private deleteDatabase(){
@@ -50,36 +133,6 @@ export class TasksComponent implements OnInit {
       console.log("Usunięto bazę danych");
     })
   }
-
- 
-
-  // private addMockProject(){
-  //   let project = new Project();
-  //   project.setId(1);
-  //   project.setName("Projekt 1");
-  //   project.setDescription("To jest zwykły projekt");
-  //   project.setStartDate(new Date(2020, 4, 1));
-  //   project.setType(ProjectType.SMALL);
-
-  //   let task1 = new Task();
-  //   task1.setId(1);
-  //   task1.setName("Zadanie 1");
-  //   task1.setDescription("Opis do zadania 1");
-  //   task1.setProject(project);
-  //   task1.setStatus(Status.CANCELED);
-
-  //   let subtask = new Subtask();
-  //   subtask.setId(1);
-  //   subtask.setName("Podzadanie");
-  //   subtask.setDescription("To jest podzadanie do pierwszego zadania");
-  //   subtask.setStatus(Status.STARTED);
-
-  //   task1.addSubtask(subtask);
-  //   project.addTask(task1);
-
-  //   console.log(JSON.stringify(project, ProjectReplacer.replacer));
-  // }
-
 
   public getTasks(){
     // return this.tasks;

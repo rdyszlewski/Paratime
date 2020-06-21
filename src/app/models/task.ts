@@ -8,15 +8,15 @@ export class Task{
     // TODO: przejrzeć wszystkie zmienne i zobaczyć, czy wszystko jest ok
 
     private id: number;
-    private name: string;
-    private description: string;
+    private name: string = null;
+    private description: string = null;
     private tags: Tag[] = [];
-    private endDate: Date;
-    private plannedTime: number;
+    private endDate: Date = null;
+    private plannedTime: number = null;
     private subtasks: Subtask[] = []
-    private status: Status;
-    private progress: number;
-    private project: Project;
+    private status: Status = null;
+    private progress: number = -1;
+    private project: Project = null;
 
     public getId(){
         return this.id;
@@ -129,5 +129,12 @@ export class Task{
 
     public setProject(project: Project){
         this.project = project;
+    }
+
+    public getProjectID(){
+        if(this.project){
+            return this.project.getId();
+        }
+        return null;
     }
 }

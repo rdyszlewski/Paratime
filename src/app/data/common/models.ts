@@ -24,5 +24,4 @@ export class TaskTagsModel{
     public setTagId(id: number){
         this.tagId = id;
     }
-
 }
