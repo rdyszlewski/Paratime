@@ -32,7 +32,7 @@ export class LocalDatabase extends Dexie{
             subtasks: '++id, name, description, status, progress, taskID',
             projects: '++id, name, description, startDate, endDate, status, type',
             tags: '++id, name',
-            task_tags: '[taskId+tagId]'
+            task_tags: '[taskId+tagId], taskId, tagId'
         });
 
         this.tasksTable = this.table('tasks');

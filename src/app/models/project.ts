@@ -13,6 +13,12 @@ export class Project{
     private tasks: Task[] = [];
     private type: ProjectType = null;
 
+    constructor(name=null, description=null, status=null, type=null){
+        this.name = name;
+        this.description = description;
+        this.status = status;
+        this.type = type;
+    }
 
     public getId(){
         return this.id;

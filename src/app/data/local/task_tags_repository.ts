@@ -1,37 +1,46 @@
 import { ITaskTagsRepository } from '../common/task_tags_repository';
 import { TaskTagsModel } from '../common/models';
-import { LocalDatabase } from './database';
 
 export class LocalTagsTaskRepository implements ITaskTagsRepository{
 
-    private database: LocalDatabase;
+    private table: Dexie.Table<TaskTagsModel, number>;
 
-    constructor(database: LocalDatabase){
-        this.database = database;
+    constructor(table: Dexie.Table<TaskTagsModel, number>){
+        this.table = table;
     }
 
-    public findByTaskId(taskId: number): TaskTagsModel[] {
-        throw new Error("Method not implemented.");
+    public findByTaskId(taskId: number): Promise<TaskTagsModel[]> {
+        return this.table.where('taskId').equals(taskId).toArray();
     }
 
-    public findByTagId(tagId: number): TaskTagsModel[] {
-        throw new Error("Method not implemented.");
+    public findByTagId(tagId: number): Promise<TaskTagsModel[]> {
+        return this.table.where('tagId').equals(tagId).toArray();
     }
 
-    public insert(entry: TaskTagsModel): TaskTagsModel {
-        throw new Error("Method not implemented.");
+    public insert(entry: TaskTagsModel): Promise<TaskTagsModel> {
+        return this.table.add(entry).then(insertedId=>{
+            return this.table.get(insertedId);
+        });
     }
 
-    public remove(entry: TaskTagsModel): void {
-        throw new Error("Method not implemented.");
+    public remove(entry: TaskTagsModel): Promise<void> {
+        return this.table.where({
+            'taskId': entry.getTaskId(),
+            'tagId': entry.getTagId()
+        }).delete().then(()=>{
+            return Promise.resolve();
+        });
     }
 
-    public removeByTaskId(taskId: number): void {
-        throw new Error("Method not implemented.");
+    public removeByTaskId(taskId: number): Promise<void> {
+        return this.table.where('taskId').equals(taskId).delete().then(()=>{
+            return Promise.resolve();
+        });
     }
 
-    public removeByTagId(tagId: number): void {
-        throw new Error("Method not implemented.");
+    public removeByTagId(tagId: number): Promise<void> {
+        return this.table.where('tagId').equals(tagId).delete().then(()=>{
+            return Promise.resolve();
+        });
     }
-
 }

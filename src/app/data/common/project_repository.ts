@@ -1,11 +1,12 @@
 import { Project } from 'app/models/project';
+import { PromiseExtended } from 'dexie';
 
 export interface IProjectRepository{
-    findProjectById(id: number):Project;
-    findProjectsByName(name:string): Project[];
-    findProjectsByDescription(description: string): Project[];
-    findProjectsByDeadlineDate(date:Date):Project[];
-    insertProject(project:Project):Project;
-    updateProject(project:Project):Project;
-    removeProject(id: number):void;
+    findProjectById(id: number):Promise<Project>;
+    findProjectsByName(name:string): Promise<Project[]>;
+    findProjectsByDescription(description: string): Promise<Project[]>;
+    findProjectsByDeadlineDate(date:Date):Promise<Project[]>;
+    insertProject(project:Project): Promise<Project>;
+    updateProject(project:Project):Promise<Project>;
+    removeProject(id: number):Promise<void>;
 }

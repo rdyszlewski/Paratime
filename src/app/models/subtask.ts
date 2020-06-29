@@ -9,6 +9,12 @@ export class Subtask{
     private progress: number = -1;
     private taskID: number = null;
 
+    constructor(name=null, description=null, status=null){
+        this.name = name;
+        this.description = description;
+        this.status = status;
+    }
+
     public getId(){
         return this.id;
     }

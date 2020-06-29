@@ -1,10 +1,10 @@
 import { Tag } from 'app/models/tag';
 
 export interface ITagRepository{
-    findTagById(id: number):Tag;
-    findTagByName(name: string):Tag;
-    insertTag(tag: Tag): Tag;
-    updateTag(tag: Tag): Tag;
-    removeTag(id: number): void;
-    removeTagByName(name:string):void;
+    findTagById(id: number):Promise<Tag>;
+    findTagByName(name: string):Promise<Tag>;
+    insertTag(tag: Tag): Promise<Tag>;
+    updateTag(tag: Tag): Promise<Tag>;
+    removeTag(id: number): Promise<void>;
+    removeTagByName(name:string):Promise<void>;
 }

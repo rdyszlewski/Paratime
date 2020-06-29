@@ -4,6 +4,10 @@ export class Tag{
     private id: number;
     private name: string = null;
 
+    constructor(name=null){
+        this.name = name;
+    }
+
     public getId(){
         return this.id;
     }

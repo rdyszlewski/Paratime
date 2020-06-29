@@ -17,6 +17,13 @@ export class Task{
     private status: Status = null;
     private progress: number = -1;
     private project: Project = null;
+    private projectID = null;
+
+    constructor(name=null, description=null, status=null){
+        this.name = name;
+        this.description = description;
+        this.status = status;
+    }
 
     public getId(){
         return this.id;
@@ -129,12 +136,21 @@ export class Task{
 
     public setProject(project: Project){
         this.project = project;
+        // TODO: usunąć to
+        this.projectID = project.getId();
     }
 
     public getProjectID(){
-        if(this.project){
-            return this.project.getId();
-        }
-        return null;
+        return this.projectID;
+
+        // if(this.project){
+            
+        //     return this.project.getId();
+        // }
+        // return null;
+    }
+
+    public setProjectID(id: number){
+        this.projectID = id;
     }
 }

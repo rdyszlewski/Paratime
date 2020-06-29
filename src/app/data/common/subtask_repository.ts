@@ -1,9 +1,10 @@
 import { Subtask } from 'app/models/subtask';
+import { PromiseExtended } from 'dexie';
 
 export interface ISubtaskRepository{
-    findSubtaskById(id: number):Subtask;
-    findSubtasksByTask(taskId:number):Subtask[];
-    insertSubtask(subtask:Subtask):Subtask;
-    updateSubtask(subtask:Subtask):Subtask;
-    removeSubtask(id: number):void;
+    findSubtaskById(id: number):Promise<Subtask>;
+    findSubtasksByTask(taskId:number):Promise<Subtask[]>;
+    insertSubtask(subtask:Subtask):Promise<Subtask>;
+    updateSubtask(subtask:Subtask):Promise<Subtask>;
+    removeSubtask(id: number):Promise<void>;
 }

@@ -1,32 +1,42 @@
 import { ITagRepository } from '../common/tag_repository';
 import { Tag } from 'app/models/tag';
-import { LocalDatabase } from './database';
 
 export class LocalTagRepository implements ITagRepository{
-    
-    private database: LocalDatabase;
 
-    constructor(database:LocalDatabase){
-        this.database = database;
+    private table: Dexie.Table<Tag, number>;
+
+    constructor(table: Dexie.Table<Tag, number>){
+        this.table = table;
     }
     
-    findTagById(id: number): Tag {
-        throw new Error("Method not implemented.");
+    public findTagById(id: number): Promise<Tag> {
+        return this.table.where('id').equals(id).first();
     }
-    findTagByName(name: string): Tag {
-        throw new Error("Method not implemented.");
+
+    public findTagByName(name: string): Promise<Tag> {
+        return this.table.where('name').equals(name).first();
     }
-    insertTag(tag: Tag): Tag {
-        throw new Error("Method not implemented.");
+
+    public insertTag(tag: Tag): Promise<Tag> {
+        return this.table.add(tag).then(insertedId=>{
+            return this.table.get(insertedId);
+        });
     }
-    updateTag(tag: Tag): Tag {
-        throw new Error("Method not implemented.");
+
+    public updateTag(tag: Tag): Promise<Tag> {
+        return this.table.update(tag.getId(), tag).then(success=>{
+            return this.table.get(tag.getId());
+        });
     }
-    removeTag(id: number): void {
-        throw new Error("Method not implemented.");
+
+    public removeTag(id: number): Promise<void> {
+        return this.table.delete(id);
     }
-    removeTagByName(name: string): void {
-        throw new Error("Method not implemented.");
+
+    public removeTagByName(name: string): Promise<void> {
+        return this.table.where('name').equals(name).delete().then(number=>{
+            return Promise.resolve();
+        });
     }
 
 }

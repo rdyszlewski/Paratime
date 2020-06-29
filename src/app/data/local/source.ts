@@ -21,11 +21,12 @@ export class LocalDataSource implements IDataSource{
 
     constructor(){
         let database = new LocalDatabase();
-        this.taskRepository = new LocalTaskRepository(database);
-        this.projectRepository = new LocalProjectRepository(database);
-        this.subtaskRepository = new LocalSubtaskRepository(database);
-        this.tagRepository = new LocalTagRepository(database);
-        this.taskTagRepository = new LocalTagsTaskRepository(database);
+        // TODO: spróbować zrobić to w jakiś inny sposób
+        this.taskRepository = new LocalTaskRepository(database.getTasksTable());
+        this.projectRepository = new LocalProjectRepository(database.getProjectsTable());
+        this.subtaskRepository = new LocalSubtaskRepository(database.getSubtasksTable());
+        this.tagRepository = new LocalTagRepository(database.getTagsTable());
+        this.taskTagRepository = new LocalTagsTaskRepository(database.getTaskTagsTable());
     }
     
 

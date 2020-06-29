@@ -1,54 +1,81 @@
 import { ITaskRepository } from '../common/task_repository';
 import { Task } from 'app/models/task';
-import { LocalDataSource } from './source';
-import { LocalDatabase } from './database';
 
 export class LocalTaskRepository implements ITaskRepository{
 
-    private database: LocalDatabase;
+    private table: Dexie.Table<Task, number>
 
-    constructor(database:LocalDatabase){
-        this.database = database;
+    constructor(table: Dexie.Table<Task, number>){
+        this.table = table;
     }
 
-    public findTaskById(id: number): Task {
-        throw new Error("Method not implemented.");
+    public findTaskById(id: number): Promise<Task> {
+        return this.table.where('id').equals(id).first();
     }
 
-    public findTasksByProject(projectId: number): Task[] {
-        throw new Error("Method not implemented.");
+    public findTasksByProject(projectId: number): Promise<Task[]> {
+        return this.table.where('projectID').equals(projectId).toArray();
     }
 
-    public findTasksByTag(tag: string): Task[] {
-        throw new Error("Method not implemented.");
+    // TODO: to chyba będzie trzeba jednak przenieść do innej tabeli
+    public findTasksByTag(tag: string): Promise<Task[]> {
+        throw new Error("Method not implemented");
     }
 
-    public findTasksByName(name: string): Task[] {
-        throw new Error("Method not implemented.");
+    public findTasksByName(name: string): Promise<Task[]> {
+        return this.table.where('name').equals(name).toArray();
     }
 
-    public findTasksByDescription(description: string): Task[] {
-        throw new Error("Method not implemented.");
+    public findTasksByDescription(description: string): Promise<Task[]> {
+        // TODO: zrobić to jakoś inaczej. Dexie nie obsługuje LIKE
+        return this.table.where('description').startsWith(description).toArray();
     }
 
-    public findTasksByDeadlineDate(date: Date): Task[] {
-        throw new Error("Method not implemented.");
+    public findTasksByDeadlineDate(date: Date): Promise<Task[]> {
+        return this.table.where('endDate').equals(date).toArray();
     }
     
-    public insertTask(task: Task): Task {
-        throw new Error("Method not implemented.");
+    public insertTask(task: Task): Promise<Task> {
+        let taskToSave = this.getTaskCopyReadyToSave(task);
+        return this.table.add(taskToSave).then(indertedId=>{
+            return this.table.get(indertedId);
+        })
     }
 
-    public updateTask(task: Task): Task {
-        throw new Error("Method not implemented.");
+    public updateTask(task: Task): Promise<Task> {
+        let taskToUpdate = this.getTaskCopyReadyToSave(task);
+        return this.table.update(task.getId(), taskToUpdate).then(result=>{
+            return Promise.resolve(task);
+        });
     }
 
-    public removeTask(id: number): void {
-        throw new Error("Method not implemented.");
+    public removeTask(id: number): Promise<void> {
+        return this.table.delete(id);
     }
 
-    public removeTasksByProject(projectId: number): void {
-        throw new Error("Method not implemented.");
+    public removeTasksByProject(projectId: number): Promise<void> {
+        // TODO: przetestować to
+        // TODO: sprawdzić, jak powinien wyglądać dostęp do zmiennych
+        return this.findTasksByProject(projectId).then(results=>{
+            console.log("Chcę usunąć wszystkie zadania ");
+            console.log(results);
+            return results.forEach(task => {
+                console.log("Usuwanie zadania " + task['id']);
+                this.table.delete(task['id']);
+            });
+        });
     }
 
+    private getTaskCopyReadyToSave(task: Task): Task{
+        let newTask = new Task(task.getName(), task.getDescription(), task.getStatus());
+        if(task.getId()){
+            newTask.setId(task.getId());
+        }
+        newTask.setEndDate(task.getEndDate());
+        newTask.setPlannedTime(task.getPlannedTime());
+        newTask.setProgress(task.getProgress());
+        newTask.setProjectID(task.getProjectID());
+
+        return newTask;
+    }
 }
