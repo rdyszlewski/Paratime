@@ -1,5 +1,4 @@
-import { TaskTagsModel } from './models';
-import { PromiseExtended } from 'dexie';
+import { TaskTagsModel } from '../models';
 
 export interface ITaskTagsRepository{
 

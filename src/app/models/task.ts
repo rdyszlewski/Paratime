@@ -94,6 +94,10 @@ export class Task{
         return this.subtasks;
     }
 
+    public setSubtasks(subtasks: Subtask[]){
+        this.subtasks = subtasks;
+    }
+
     public addSubtask(subtask: Subtask){
         this.subtasks.push(subtask);
     }

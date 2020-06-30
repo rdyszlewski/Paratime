@@ -1,4 +1,4 @@
-import { IProjectRepository } from '../common/project_repository';
+import { IProjectRepository } from '../../common/repositories/project_repository';
 import { Project } from 'app/models/project';
 
 export class LocalProjectRepository implements IProjectRepository{
@@ -9,8 +9,13 @@ export class LocalProjectRepository implements IProjectRepository{
         this.table = table;;
     }
 
+    public findAllProjects(): Promise<Project[]> {
+        return this.table.toArray();
+    }
+
     public findProjectById(id: number): Promise<Project> {
-        return this.table.where('id').equals(id).first();
+        // return this.table.where('id').equals(id).first();
+        return this.table.get(id);
     }
 
     public findProjectsByName(name: string): Promise<Project[]> {
@@ -26,18 +31,14 @@ export class LocalProjectRepository implements IProjectRepository{
         return this.table.where('endDate').equals(date).toArray();
     }
 
-    public insertProject(project: Project): Promise<Project> {
+    public insertProject(project: Project): Promise<number> {
         let projectToSave = this.getProjectCopyReadyToSave(project);
-        return this.table.add(projectToSave).then(insertedId=>{
-            return this.table.get(insertedId);
-        });
+        return this.table.add(projectToSave);
     }
 
-    public updateProject(project: Project): Promise<Project> {
+    public updateProject(project: Project): Promise<number> {
         let projectToUpdate = this.getProjectCopyReadyToSave(project);
-        return this.table.update(project.getId(), projectToUpdate).then(result=>{
-            return Promise.resolve(project);
-        });
+        return this.table.update(project.getId(), projectToUpdate);
     }
 
     public removeProject(id: number): Promise<void> {

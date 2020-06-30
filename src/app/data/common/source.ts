@@ -1,8 +1,8 @@
-import { ITaskRepository } from './task_repository';
-import { IProjectRepository } from './project_repository';
-import { ISubtaskRepository } from './subtask_repository';
-import { ITagRepository } from './tag_repository';
-import { ITaskTagsRepository } from './task_tags_repository';
+import { ITaskRepository } from './repositories/task_repository';
+import { IProjectRepository } from './repositories/project_repository';
+import { ISubtaskRepository } from './repositories/subtask_repository';
+import { ITagRepository } from './repositories/tag_repository';
+import { ITaskTagsRepository } from './repositories/task_tags_repository';
 
 export interface IDataSource{
     getTaskRepository():ITaskRepository;

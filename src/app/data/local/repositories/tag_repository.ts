@@ -1,4 +1,4 @@
-import { ITagRepository } from '../common/tag_repository';
+import { ITagRepository } from '../../common/repositories/tag_repository';
 import { Tag } from 'app/models/tag';
 
 export class LocalTagRepository implements ITagRepository{
@@ -17,16 +17,12 @@ export class LocalTagRepository implements ITagRepository{
         return this.table.where('name').equals(name).first();
     }
 
-    public insertTag(tag: Tag): Promise<Tag> {
-        return this.table.add(tag).then(insertedId=>{
-            return this.table.get(insertedId);
-        });
+    public insertTag(tag: Tag): Promise<number> {
+        return this.table.add(tag);
     }
 
-    public updateTag(tag: Tag): Promise<Tag> {
-        return this.table.update(tag.getId(), tag).then(success=>{
-            return this.table.get(tag.getId());
-        });
+    public updateTag(tag: Tag): Promise<number> {
+        return this.table.update(tag.getId(), tag);
     }
 
     public removeTag(id: number): Promise<void> {

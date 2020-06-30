@@ -29,7 +29,7 @@ export class LocalDatabase extends Dexie{
         // TODO: przejrzeć, czy tutaj są zawarte wszystkie zmienne
         this.version(this.dbVersion).stores({
             tasks: '++id, name, description, endDate, plannedTime, status, progress, projectID',
-            subtasks: '++id, name, description, status, progress, taskID',
+            subtasks: '++id, name, description, status, progress, taskId',
             projects: '++id, name, description, startDate, endDate, status, type',
             tags: '++id, name',
             task_tags: '[taskId+tagId], taskId, tagId'
@@ -40,6 +40,13 @@ export class LocalDatabase extends Dexie{
         this.projectsTable = this.table('projects');
         this.tagsTable = this.table('tags');
         this.taskTagsTable = this.table('task_tags');
+
+        this.projectsTable.mapToClass(Project);
+        this.tasksTable.mapToClass(Task);
+        this.subtasksTable.mapToClass(Subtask);
+        this.tagsTable.mapToClass(Tag);
+        this.taskTagsTable.mapToClass(TaskTagsModel);
+        
     }
 
     public getTasksTable(){

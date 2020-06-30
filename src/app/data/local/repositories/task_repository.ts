@@ -1,4 +1,4 @@
-import { ITaskRepository } from '../common/task_repository';
+import { ITaskRepository } from '../../common/repositories/task_repository';
 import { Task } from 'app/models/task';
 
 export class LocalTaskRepository implements ITaskRepository{
@@ -35,18 +35,14 @@ export class LocalTaskRepository implements ITaskRepository{
         return this.table.where('endDate').equals(date).toArray();
     }
     
-    public insertTask(task: Task): Promise<Task> {
+    public insertTask(task: Task): Promise<number> {
         let taskToSave = this.getTaskCopyReadyToSave(task);
-        return this.table.add(taskToSave).then(indertedId=>{
-            return this.table.get(indertedId);
-        })
+        return this.table.add(taskToSave);
     }
 
-    public updateTask(task: Task): Promise<Task> {
+    public updateTask(task: Task): Promise<number> {
         let taskToUpdate = this.getTaskCopyReadyToSave(task);
-        return this.table.update(task.getId(), taskToUpdate).then(result=>{
-            return Promise.resolve(task);
-        });
+        return this.table.update(task.getId(), taskToUpdate);
     }
 
     public removeTask(id: number): Promise<void> {

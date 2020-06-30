@@ -1,15 +1,15 @@
 import { IDataSource } from '../common/source';
-import { ITaskRepository } from '../common/task_repository';
-import { IProjectRepository } from '../common/project_repository';
-import { ISubtaskRepository } from '../common/subtask_repository';
-import { LocalTaskRepository } from './task_repository';
-import { LocalProjectRepository } from './project_repository';
-import { LocalSubtaskRepository } from './subtask_repository';
+import { ITaskRepository } from '../common/repositories/task_repository';
+import { IProjectRepository } from '../common/repositories/project_repository';
+import { ISubtaskRepository } from '../common/repositories/subtask_repository';
+import { LocalTaskRepository } from './repositories/task_repository';
+import { LocalProjectRepository } from './repositories/project_repository';
+import { LocalSubtaskRepository } from './repositories/subtask_repository';
 import { LocalDatabase as LocalDatabase } from './database';
-import { LocalTagRepository } from './tag_repository';
-import { LocalTagsTaskRepository } from './task_tags_repository';
-import { ITagRepository } from '../common/tag_repository';
-import { ITaskTagsRepository } from '../common/task_tags_repository';
+import { LocalTagRepository } from './repositories/tag_repository';
+import { LocalTagsTaskRepository } from './repositories/task_tags_repository';
+import { ITagRepository } from '../common/repositories/tag_repository';
+import { ITaskTagsRepository } from '../common/repositories/task_tags_repository';
 
 export class LocalDataSource implements IDataSource{
 

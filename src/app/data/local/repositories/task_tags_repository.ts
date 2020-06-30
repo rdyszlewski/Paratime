@@ -1,5 +1,5 @@
-import { ITaskTagsRepository } from '../common/task_tags_repository';
-import { TaskTagsModel } from '../common/models';
+import { ITaskTagsRepository } from '../../common/repositories/task_tags_repository';
+import { TaskTagsModel } from '../../common/models';
 
 export class LocalTagsTaskRepository implements ITaskTagsRepository{
 
