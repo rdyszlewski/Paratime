@@ -1,0 +1,21 @@
+#main{
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+}
+
+#projects{
+    width: 100%;
+}
+
+#project-details{
+    width: 100%;
+}
+
+#tasks{
+    width: 100%;
+}
+
+#task-details{
+    width: 100%;
+}

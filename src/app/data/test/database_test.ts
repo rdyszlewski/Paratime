@@ -18,7 +18,7 @@ export class DatabaseTest{
         return this.insertProject(project);
     }
 
-    private insertProject(project: Project): Promise<Project> {
+    public insertProject(project: Project): Promise<Project> {
         console.log("Inserting project");
         return this.storeManager.getProjectStore().createProject(project).then(inserted_project => {
             console.log(inserted_project);
@@ -30,7 +30,7 @@ export class DatabaseTest{
         return this.createProjectWithName("Projekt 1");
     }
 
-    private createProjectWithName(name:string){
+    public createProjectWithName(name:string){
         let project = new Project();
         project.setName(name);
         project.setDescription("To jest projekt " + name);
