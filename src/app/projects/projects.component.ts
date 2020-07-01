@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { ProjectsModel } from './model';
 import { Project } from 'app/models/project';
 import { DataService } from 'app/data.service';
+
 
 @Component({
   selector: 'app-projects',
@@ -11,6 +12,8 @@ import { DataService } from 'app/data.service';
 export class ProjectsComponent implements OnInit {
 
   model: ProjectsModel;
+  
+  @Output() projectEmitter: EventEmitter<Project> = new EventEmitter();
 
   constructor() { }
 
@@ -30,15 +33,27 @@ export class ProjectsComponent implements OnInit {
   }
 
   projectClick(project:Project){
-    console.log("Kliknięto projekt " + project.getName());
+    this.projectEmitter.emit(project);
+    this.model.setSelectedProject(project);
   }
 
   createProjectClick(){
-    console.log("Kliknięto tworznie nowego projektu");
+    this.projectEmitter.emit(null);
   }
 
   projectMenuClick(project:Project){
-    console.log("Kliknięto menu projektu " + project.getName());
+   
+  }
+
+  filterProjects(filterValue: string):void{
+    this.model.filterProject(filterValue);
+  }
+
+  isSelectedProject(project:Project):boolean{
+    if(this.model.getSelectedProject()==null){
+      return false;
+    }
+    return project.getId() == this.model.getSelectedProject().getId();
   }
 
 }

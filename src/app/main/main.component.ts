@@ -1,6 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { DatabaseTest } from 'app/data/test/database_test';
 import { LocalDatabase } from 'app/data/local/database';
+import { ProjectDetailsComponent } from 'app/project-details/project-details.component';
+import { TaskDetailsComponent } from 'app/task-details/task-details.component';
 
 @Component({
   selector: 'app-main',
@@ -8,6 +10,17 @@ import { LocalDatabase } from 'app/data/local/database';
   styleUrls: ['./main.component.css']
 })
 export class MainComponent implements OnInit {
+
+  @ViewChild(ProjectDetailsComponent) 
+  private projectDetailsComponent: ProjectDetailsComponent;
+  @ViewChild(TaskDetailsComponent) 
+  private taskDetailsComponent: TaskDetailsComponent;
+
+  // TODO: zastanowić się, jak to ładnie uporządkować
+  projectsOpen = true;
+  projectsDetailsOpen = false;
+  tasksOpen = true;
+  tasksDetailsOpen = false;
 
   constructor() { }
 
@@ -23,12 +36,6 @@ export class MainComponent implements OnInit {
     let project2 = databaseTest.createProjectWithName("Project 2");
     databaseTest.insertProject(project1);
     databaseTest.insertProject(project2);
-    // databaseTest.updateProject();
-    // databaseTest.removeProject();
-    // databaseTest.addTasksToProject();
-    // databaseTest.removeTask();
-    // databaseTest.removeAllProject();
-    // databaseTest.getAllProjects();
   }
 
   private deleteDatabase(){
@@ -38,4 +45,9 @@ export class MainComponent implements OnInit {
     })
   }
 
+  openProjectDetails(project){
+    this.projectsDetailsOpen = true;
+    this.projectDetailsComponent.setProject(project);
+    // TODO: w jakiś sposób przekazać dane do komonentu
+  }
 }

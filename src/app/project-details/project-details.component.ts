@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Project } from 'app/models/project';
 
 @Component({
   selector: 'app-project-details',
@@ -10,6 +11,11 @@ export class ProjectDetailsComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
+  }
+
+  public setProject(project:Project){
+    console.log("Weszło tutaj");
+    console.log(project);
   }
 
 }

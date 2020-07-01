@@ -1,12 +1,15 @@
 <div class="projects-container">
     <h3>Projekty</h3>
-    <input id="project-filter">
+    <input id="project-filter" (input)='filterProjects($event.target.value)'>
     <div id="projects-list">
-        <div *ngFor='let project of model.getProjects()'>
-            <div class="project" (click)='projectClick(project)'>
+        <div *ngFor='let project of model.getProjects()'
+        [ngClass]="{'selected': isSelectedProject(project),
+                    'project': true}" 
+                    (click)='projectClick(project)'>
+            
                 <div class="project-name">{{project.getName()}}</div>
                 <button class="project-menu-button" (click)='projectMenuClick(project)'>...</button>
-            </div>    
+           
         </div>
     </div>
     <button class="button project-add-button" (click)='createProjectClick()'>Dodaj projekt</button>

@@ -6,6 +6,7 @@
 
 #projects{
     width: 100%;
+    max-width: 30%;
 }
 
 #project-details{

@@ -1,7 +1,7 @@
 <div id="main">
-    <app-projects id="projects"></app-projects>
-    <app-project-details id='project-details'></app-project-details>
-    <app-tasks id='tasks'></app-tasks>
-    <app-task-details id="task-details"></app-task-details>
+    <app-projects id="projects" [hidden]="!projectsOpen" (projectEmitter)='openProjectDetails($event)'></app-projects>
+    <app-project-details id='project-details' [hidden]='!projectsDetailsOpen'></app-project-details>
+    <app-tasks id='tasks' [hidden]='!tasksOpen'></app-tasks>
+    <app-task-details id="task-details" [hidden]='!tasksDetailsOpen'></app-task-details>
 </div>
 
