@@ -5,13 +5,29 @@
         <div *ngFor='let project of model.getProjects()'
         [ngClass]="{'selected': isSelectedProject(project),
                     'project': true}" 
-                    (click)='projectClick(project)'>
+                    (click)='projectClick(project)'
+                    >
             
                 <div class="project-name">{{project.getName()}}</div>
-                <button class="project-menu-button" (click)='projectMenuClick(project)'>...</button>
+                <button class="project-menu-button" 
+                (click)='projectMenuClick($event, project)'
+                [matMenuTriggerFor]="menu"
+                >...</button>
            
         </div>
     </div>
     <button class="button project-add-button" (click)='createProjectClick()'>Dodaj projekt</button>
 </div>
 
+<mat-menu #menu="matMenu">
+    <button mat-menu-item (click)="editProject()">
+      <!-- <mat-icon>dialpad</mat-icon> -->
+      <!-- <span >Edytuj</span> -->
+      Edytuj
+    </button>
+    <button mat-menu-item (click)="removeProject()">
+      <!-- <mat-icon>notifications_off</mat-icon> -->
+      <!-- <span>Disable alerts</span> -->
+      Usuń
+    </button>
+  </mat-menu>

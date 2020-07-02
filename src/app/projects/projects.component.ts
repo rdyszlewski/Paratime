@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, ViewChild, TemplateRef } from '@angular/core';
 import { ProjectsModel } from './model';
 import { Project } from 'app/models/project';
 import { DataService } from 'app/data.service';
@@ -12,8 +12,11 @@ import { DataService } from 'app/data.service';
 export class ProjectsComponent implements OnInit {
 
   model: ProjectsModel;
+  private lastContextOpen: Project = null;
   
   @Output() projectEmitter: EventEmitter<Project> = new EventEmitter();
+
+  contextMenuPosition = { x: '0px', y: '0px' };
 
   constructor() { }
 
@@ -41,8 +44,18 @@ export class ProjectsComponent implements OnInit {
     this.projectEmitter.emit(null);
   }
 
-  projectMenuClick(project:Project){
+  // projectMenuClick(project:Project){
    
+  // }
+
+  projectMenuClick(event:MouseEvent, project:Project){
+    // TODO; okazuje się, że focus nie działa
+    let target = event.target as HTMLElement;
+    target.parentElement.focus();
+    event.stopPropagation();
+    this.lastContextOpen = project;
+    
+    console.log(target.parentElement);
   }
 
   filterProjects(filterValue: string):void{
@@ -54,6 +67,16 @@ export class ProjectsComponent implements OnInit {
       return false;
     }
     return project.getId() == this.model.getSelectedProject().getId();
+  }
+
+  editProject(){
+    console.log("Edytujemy projekt");
+    console.log(this.lastContextOpen);
+  }
+
+  removeProject(){
+    console.log("Usuwamy projekt");
+    console.log(this.lastContextOpen)
   }
 
 }

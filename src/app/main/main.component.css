@@ -5,18 +5,19 @@
 }
 
 #projects{
-    width: 100%;
+    width: 30%;
     max-width: 30%;
+    min-width: 10%;
 }
 
 #project-details{
-    width: 100%;
+    width: 50%;
 }
 
 #tasks{
-    width: 100%;
+    width: 30%;
 }
 
 #task-details{
-    width: 100%;
+    width: 50%;
 }

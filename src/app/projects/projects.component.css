@@ -17,12 +17,21 @@
     visibility: visible;
 }
 
+.project:focus .project-menu-button{
+    visibility: visible;
+}
+
 .project-name{
     width: 100%;
     display: inline;
 }
 
 .project:hover{
+    cursor: pointer;
+    background-color: aquamarine;
+}
+
+.project:focus{
     cursor: pointer;
     background-color: aquamarine;
 }
@@ -35,6 +44,9 @@
 
 .project-menu-button:hover{
     cursor: pointer;
+}
+.project-menu-button:focus{
+    visibility: visible;
 }
 
 .projects-container{
@@ -62,4 +74,14 @@
 .selected{
     border: 1px solid black;
     background-color: dodgerblue;
+}
+
+.mat-menu-item{
+    font-size: small;
+    height: 30px;
+    line-height: 30px;
+}
+
+mat-icon{
+    height: 5px;;
 }

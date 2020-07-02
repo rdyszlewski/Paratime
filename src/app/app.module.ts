@@ -8,7 +8,10 @@ import { MainComponent } from './main/main.component';
 import { ProjectsComponent } from './projects/projects.component';
 import { TaskDetailsComponent } from './task-details/task-details.component';
 import { ProjectDetailsComponent } from './project-details/project-details.component';
-
+import { ContextmenuComponent } from './contextmenu/contextmenu.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import {MatMenuModule} from '@angular/material/menu';
+import {MatIconModule} from '@angular/material/icon';
 
 @NgModule({
   declarations: [
@@ -17,11 +20,15 @@ import { ProjectDetailsComponent } from './project-details/project-details.compo
     MainComponent,
     ProjectsComponent,
     TaskDetailsComponent,
-    ProjectDetailsComponent
+    ProjectDetailsComponent,
+    ContextmenuComponent
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    BrowserAnimationsModule,
+    MatMenuModule,
+    MatIconModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
