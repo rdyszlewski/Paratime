@@ -8,6 +8,8 @@ import { Project } from 'app/models/project';
 })
 export class ProjectDetailsComponent implements OnInit {
 
+  private project:Project;
+
   constructor() { }
 
   ngOnInit(): void {
@@ -16,6 +18,18 @@ export class ProjectDetailsComponent implements OnInit {
   public setProject(project:Project){
     console.log("Weszło tutaj");
     console.log(project);
+    
+    this.project = project;
   }
+
+  close(){
+
+  }
+
+  save(){
+    
+  }
+
+  
 
 }

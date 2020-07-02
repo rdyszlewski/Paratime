@@ -1,6 +1,5 @@
 #projects-list{
     border: 1px solid black;
-    background-color: aqua;
     height: 100%;
     padding: 5px;
 }
@@ -10,7 +9,6 @@
     border-radius: 8px;
     display: flex;
     padding: 10px;
-    background-color: aqua;
 }
 
 .project:hover .project-menu-button{
@@ -28,12 +26,10 @@
 
 .project:hover{
     cursor: pointer;
-    background-color: aquamarine;
 }
 
 .project:focus{
     cursor: pointer;
-    background-color: aquamarine;
 }
 
 .project-menu-button{
@@ -52,7 +48,6 @@
 .projects-container{
     display: flex;
     /* display: inline-flex; */
-    background-color: brown;
     flex-direction: column;
     /* TODO: przerobić to w jakiś sposób, aby  */
     height: 100%;

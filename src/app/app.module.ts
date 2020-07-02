@@ -8,10 +8,13 @@ import { MainComponent } from './main/main.component';
 import { ProjectsComponent } from './projects/projects.component';
 import { TaskDetailsComponent } from './task-details/task-details.component';
 import { ProjectDetailsComponent } from './project-details/project-details.component';
-import { ContextmenuComponent } from './contextmenu/contextmenu.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {MatMenuModule} from '@angular/material/menu';
 import {MatIconModule} from '@angular/material/icon';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import { MatNativeDateModule } from '@angular/material/core';
+import {MatInputModule} from '@angular/material/input';
 
 @NgModule({
   declarations: [
@@ -21,7 +24,6 @@ import {MatIconModule} from '@angular/material/icon';
     ProjectsComponent,
     TaskDetailsComponent,
     ProjectDetailsComponent,
-    ContextmenuComponent
   ],
   imports: [
     BrowserModule,
@@ -29,6 +31,10 @@ import {MatIconModule} from '@angular/material/icon';
     BrowserAnimationsModule,
     MatMenuModule,
     MatIconModule,
+    MatDatepickerModule,
+    MatFormFieldModule,
+    MatNativeDateModule,
+    MatInputModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
