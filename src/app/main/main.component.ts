@@ -3,6 +3,8 @@ import { DatabaseTest } from 'app/data/test/database_test';
 import { LocalDatabase } from 'app/data/local/database';
 import { ProjectDetailsComponent } from 'app/project-details/project-details.component';
 import { TaskDetailsComponent } from 'app/task-details/task-details.component';
+import { Project } from 'app/models/project';
+import { ProjectsComponent } from 'app/projects/projects.component';
 
 @Component({
   selector: 'app-main',
@@ -13,8 +15,12 @@ export class MainComponent implements OnInit {
 
   @ViewChild(ProjectDetailsComponent) 
   private projectDetailsComponent: ProjectDetailsComponent;
+
   @ViewChild(TaskDetailsComponent) 
   private taskDetailsComponent: TaskDetailsComponent;
+  
+  @ViewChild(ProjectsComponent)
+  private projectsComponent: ProjectsComponent;
 
   // TODO: zastanowić się, jak to ładnie uporządkować
   projectsOpen = true;
@@ -49,5 +55,15 @@ export class MainComponent implements OnInit {
     this.projectsDetailsOpen = true;
     this.projectDetailsComponent.setProject(project);
     // TODO: w jakiś sposób przekazać dane do komonentu
+  }
+
+  closeProjectDetails(){
+    this.projectsDetailsOpen = false;
+  }
+
+  afterSaveProject(project:Project){
+    // TODO: alternatywą będzie ponowne wyszukanie wszystkim projektów
+    // TODO: nie można tego robić w ten sposób, ponieważ przy aktualizacji dodaje do listy
+    this.projectsComponent.addProject(project);
   }
 }

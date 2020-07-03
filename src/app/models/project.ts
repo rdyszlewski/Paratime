@@ -44,8 +44,8 @@ export class Project{
         this.description = description;
     }
 
-    public getStartDate(){
-        return this.getStartDate;
+    public getStartDate():Date{
+        return this.startDate;
     }
 
     public setStartDate(date: Date){

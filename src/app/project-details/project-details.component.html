@@ -1,55 +1,62 @@
-<form class="project-details">
-    <div class="form-group">
-        <label class="form-label" for="name">Nazwa</label>
-        <input type="text" class="form-control" id="name" name='name'>
-    </div>
-
-    <div class="form-group">
-        <label class="form-label" for="description">Opis</label>
-        <textarea class="form-control" id="description" name="description"></textarea>
-    </div>
-
-    <div class="form-group">
-        <label class="form-label" for="start-date">Data początkowa</label>
-        <div class="datepicker-container">
-            <input class='form-control' id="start-date" name="start-date" [matDatepicker]="startDatePicker">
-            <mat-datepicker-toggle [for]="startDatePicker"></mat-datepicker-toggle>
-            <mat-datepicker #startDatePicker></mat-datepicker>
-        </div>  
-    </div>
-
-    <div class="form-group">
-        <label class="form-label" for="end-date">Data początkowa</label>
-        <div class="datepicker-container">
-            <input class='form-control' id="end-date" name="end-date" [matDatepicker]="endDatePicker">
-            <mat-datepicker-toggle [for]="endDatePicker" class="datepicker"></mat-datepicker-toggle>
-            <mat-datepicker #endDatePicker></mat-datepicker>
-        </div>  
-    </div>
-
-    <div class="form-group">
-        <label class="form-label" for="type">Typ</label>
-        <select class="form-control" id="type" name="type">
-            <option value="default">Nieokreślony</option>
-            <option value="small">Mały</option>
-            <option value="medium">Średni</option>
-            <option value="big">Duży</option>
-        </select>
-    </div>
-
-    <div class='form-group'>
-        <label class="form-label" for='status'>Stan</label>
-        <select class="form-control" id="status" name="status">
-            <option value="started">Aktywny</option>
-            <option value="ended">Zakończony</option>
-            <option value="canceled">Anulowany</option>
-            <option value="awaiting">Oczekujący</option>
-        </select>
-    </div>
-
-    <div class="buttons-section">
-        <button class="button form-button" id="close-button">Zamknij</button>
-        <button class="button form-button" id="save-button">Zapisz</button>
-    </div>
+<!-- <h3>{{getProject().getName()}}</h3> -->
+<div class="project-details">
+    <form class="project-form">
+        <div class="form-group">
+            <label class="form-label" for="name">Nazwa</label>
+            <input type="text" class="form-control" id="name" name='name'
+            [ngModel]='project.getName()' (ngModelChange)="project.setName($event)">
+        </div>
     
-</form>
+        <div class="form-group">
+            <label class="form-label" for="description">Opis</label>
+            <textarea class="form-control" id="description" name="description"
+            [ngModel]='project.getDescription()' (ngModelChange)="project.setDescription($event)"></textarea>
+        </div>
+    
+        <div class="form-group">
+            <label class="form-label" for="type">Typ</label>
+            <select class="form-control" id="type" name="type"
+            [ngModel]='(getType())'>
+                <option value="default">Nieokreślony</option>
+                <option value="small">Mały</option>
+                <option value="medium">Średni</option>
+                <option value="big">Duży</option>
+            </select>
+        </div>
+    
+        <div class='form-group'>
+            <label class="form-label" for='status'>Stan</label>
+            <select class="form-control" id="status" name="status"
+            [ngModel]='getStatus()'>
+                <option value="started">Aktywny</option>
+                <option value="ended">Zakończony</option>
+                <option value="canceled">Anulowany</option>
+                <option value="awaiting">Oczekujący</option>
+            </select>
+        </div>
+    
+        <div class="form-group">
+            <label class="form-label" for="start-date">Data początkowa</label>
+            <div class="datepicker-container">
+                <input class='form-control' id="start-date" name="start-date" [matDatepicker]="startDatePicker"  
+                [ngModel]='project.getStartDate()' (ngModelChange)="project.setStartDate($event)">
+                <mat-datepicker-toggle [for]="startDatePicker" class='datepicker'></mat-datepicker-toggle>
+                <mat-datepicker #startDatePicker></mat-datepicker>
+            </div>  
+        </div>
+    
+        <div class="form-group">
+            <label class="form-label" for="end-date">Data końcowa</label>
+            <div class="datepicker-container">
+                <input matInput class='form-control' id="end-date" name="end-date" [matDatepicker]="endDatePicker"
+                [ngModel]='project.getEndDate()' (ngModelChange)="project.setEndDate($event)">
+                <mat-datepicker-toggle [for]="endDatePicker" class="datepicker"></mat-datepicker-toggle>
+                <mat-datepicker #endDatePicker></mat-datepicker>
+            </div>  
+        </div>
+    </form>
+    <div class="buttons-section">
+        <button class="button form-button" id="close-button" (click)='close()'>Zamknij</button>
+        <button class="button form-button" id="save-button" (click)='save()'>Zapisz</button>
+    </div>
+</div>

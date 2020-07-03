@@ -14,7 +14,8 @@ export class ProjectsComponent implements OnInit {
   model: ProjectsModel;
   private lastContextOpen: Project = null;
   
-  @Output() projectEmitter: EventEmitter<Project> = new EventEmitter();
+  @Output() editProjectClick: EventEmitter<Project> = new EventEmitter();
+  @Output() openProjectClick: EventEmitter<Project> = new EventEmitter();
 
   contextMenuPosition = { x: '0px', y: '0px' };
 
@@ -36,12 +37,11 @@ export class ProjectsComponent implements OnInit {
   }
 
   projectClick(project:Project){
-    this.projectEmitter.emit(project);
-    this.model.setSelectedProject(project);
+    
   }
 
   createProjectClick(){
-    this.projectEmitter.emit(null);
+    this.editProjectClick.emit(null);
   }
 
   // projectMenuClick(project:Project){
@@ -70,13 +70,22 @@ export class ProjectsComponent implements OnInit {
   }
 
   editProject(){
-    console.log("Edytujemy projekt");
+    DataService.getStoreManager().getProjectStore().getProjectById(this.lastContextOpen.getId()).then(loadedProject=>{
+      this.editProjectClick.emit(loadedProject);
+      // TODO: sprawdzić to, bo trochę mi nie pasuje
+      this.model.setSelectedProject(this.lastContextOpen);
+    });
     console.log(this.lastContextOpen);
   }
 
   removeProject(){
     console.log("Usuwamy projekt");
     console.log(this.lastContextOpen)
+  }
+
+  addProject(project:Project):void{
+    this.model.addProject(project);
+    // TODO: sprawdzić, jak to będzie reagować, jeżeli będzie wpisany jakiś filtr
   }
 
 }

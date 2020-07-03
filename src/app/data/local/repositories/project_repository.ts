@@ -50,6 +50,7 @@ export class LocalProjectRepository implements IProjectRepository{
         if(project.getId()){
             newProject.setId(project.getId());
         }
+        newProject.setStartDate(project.getStartDate());
         newProject.setEndDate(project.getEndDate());
 
         return newProject;
