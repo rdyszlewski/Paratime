@@ -14,15 +14,19 @@
         </div>
         <div class="task-info">
           <div *ngIf="task.getDescription()!=null" class="task-description-icon info-icon"
-          (mouseenter)="onMouseEnterDescription(task)" (mouseleave)="onMouseLeaveDescription(task)" ></div>
-          <div *ngIf="task.getEndDate()!=null" class="task-enddate-icon info-icon"></div>
-          <div *ngIf="task.getSubtasks().length != 0" class="task-subtask info-icon">
-            <!-- TODO: tutaj wstawić odpowiednią wartość  -->
+          (mouseenter)="onMouseEnterDescription(task)" (mouseleave)="onMouseLeaveDescription(task)" 
+          matTooltip="{{task.getDescription()}}"></div>
+          <div *ngIf="task.getEndDate()!=null" class="task-enddate-icon info-icon"
+          (mouseenter)='onMouseEnterEndDate(task)' (mouseleave)='onMouseLeaveEndDate(task)'
+          matTooltip="{{getEndDateText(task)}}"></div>
+          <div *ngIf="task.getSubtasks().length != 0" class="info-icon task-subtask"
+          matTooltip="{{getSubtasksList(task)}}">
+            {{getFinishedSubtasks(task)}} / {{task.getSubtasks().length}}
           </div>
         </div>
       </div>
   </div>
-  <button class="button task-add-button" (click)='createTaskClick()'>Dodaj projekt</button>
+  <button class="button task-add-button" (click)='createTaskClick()'>Dodaj zadanie</button>
 </div>
 
 <mat-menu #menu="matMenu">

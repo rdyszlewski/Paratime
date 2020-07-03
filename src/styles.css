@@ -6,3 +6,45 @@ html, body{
 
 /* html, body { height: 100%; } */
 /* body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; } */
+
+.form-group{
+    display: block;
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.form-label{
+    display: block;
+}
+
+.form-control{
+    width: 100%;
+    box-sizing: border-box;
+    padding: 5px;
+    margin-top: 10px;
+    border-radius: 8px;
+    background-color: white;
+    border: 1px solid black;
+}
+
+.datepicker-container{
+    display: flex;
+}
+
+#description{
+    height: 5em;
+}
+
+.form{
+    margin-bottom: 0px;
+    margin-top:auto;
+}
+
+.form-button{
+    margin: 10px;
+    height: 3em;
+    width: 10em;
+    border-radius: 8px;
+    border: 1px solid black;
+}

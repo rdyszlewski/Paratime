@@ -21,7 +21,11 @@ export class TasksComponent implements OnInit {
     let task1 = new Task("Jeden", "Coś tam", Status.CANCELED);
     task1.setEndDate(new Date());
     let subtask1 = new Subtask("Podzadanie 1","Opisik",Status.STARTED);
+    let subtask2 = new Subtask("Podzadanie 2", "Coś", Status.ENDED);
+    let subtask3 = new Subtask("Podzadanie 3", "Coś 2", Status.AWAITING);
     task1.addSubtask(subtask1);
+    task1.addSubtask(subtask2);
+    task1.addSubtask(subtask3);
     let task2 = new Task("Dwa", "Dłuższy opis", Status.STARTED);
     this.project.addTask(task1);
     this.project.addTask(task2);
@@ -79,5 +83,26 @@ export class TasksComponent implements OnInit {
   onMouseLeaveSubtasks(task:Task):void{
     // TODO: zamknać dymek z podzadaniami
     console.log("Zamknięto podzadania")
+  }
+
+  getFinishedSubtasks(task:Task){
+    let finishedSubtask = task.getSubtasks().filter(x=>x.getStatus()==Status.ENDED);
+    return finishedSubtask.length;
+  }
+
+  getEndDateText(task:Task){
+    // TODO: zrobić odpowiedni format
+    return task.getEndDate().toDateString();
+  }
+
+  getSubtasksList(task:Task){
+    // TODO: spróbować zrobić tooltipa z html
+    let text = "";
+    task.getSubtasks().forEach(subtask=>{
+      text += subtask.getName();
+      text += "\n";
+      text += "\n";
+    });
+    return text;
   }
 }

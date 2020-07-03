@@ -1,1 +1,89 @@
-<p>task-details works!</p>
+<div class="task-details">
+    <form class="form">
+        <div class="form-group">
+            <label class="form-label" for="name">Nazwa</label>
+            <input type="text" class="form-control" id="name" name='name'
+            (ngModel)='model.getTask().getName()' (ngModelChange)="model.getTask().setName($event)">
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" for="description">Opis</label>
+            <textarea class="form-control" id="description" name="description"
+            (ngModel)='model.getTask().getDescription()' (ngModelChange)="model.getTask().setDescription($event)"></textarea>
+        </div>
+
+        <div class='form-group'>
+            <label class="form-label" for='status'>Stan</label>
+            <select class="form-control" id="status" name="status"
+            (ngModel)='getStatus()'>
+                <option value="started">Aktywny</option>
+                <option value="ended">Zakończony</option>
+                <option value="canceled">Anulowany</option>
+                <option value="awaiting">Oczekujący</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" for="end-date">Data końcowa</label>
+            <div class="datepicker-container">
+                <input matInput class='form-control' id="end-date" name="end-date" [matDatepicker]="endDatePicker"
+                (ngModel)='model.getTask().getEndDate()' (ngModelChange)="model.getTask().setEndDate($event)">
+                <mat-datepicker-toggle [for]="endDatePicker" class="datepicker"></mat-datepicker-toggle>
+                <mat-datepicker #endDatePicker></mat-datepicker>
+            </div>  
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" for="planned_time">Planowany czas</label>
+            <input type='number' class="form-control" id="planned_time" name="planned_time"
+            (ngModel)="model.getTask().getPlannedTime()" (ngModelChange)="model.getTask().setPlannedTime($event)">
+        </div>
+
+        <div class="form-group" [hidden]="model.getTask().getId() == null">
+            <label class="form-label" for="process">Postęp</label>
+            <input type='number' max='100' min="0" class="form-control" id="process" name="process"
+            (ngModel)="model.getTask().getPlannedTime()" (ngModelChange)="model.getTask().setProgress($event)">
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" for="project">Projekt</label>
+            <select class="form-control" id="project" name="project">
+                <option *ngFor="let project of model.getProjects()" value="{{project.getId()}}">{{project.getName()}}</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" for="labels">Etykiety</label>
+            <div class="labels-list">
+                <!-- TODO: przerobić to jakoś lepiej -->
+                <div *ngFor="let label of model.getTask().getTags()">
+                    {{label.getName()}}
+                </div>
+            </div>
+            <button class="form-control" id="labels" name="labels" [matMenuTriggerFor]="appMenu">Dodaj</button>
+        </div>
+
+        <div class="form-group">
+            <label class="form-label" for="subtasks">Podzadania</label>
+            <div class="subtasks-list">
+                <!-- TODO: dostosować wygląd  -->
+                <div *ngFor="let substask of model.getTask().getSubtasks()">
+                    {{substask.getName()}}
+                </div>
+            </div>
+            <input type="text" class="form-control" id="subtask" [hidden]="!model.isSubtaskEditing()">
+            <div class="buttons-container">
+                <button class="button" id="add-subtask-button" [hidden]="model.isSubtaskEditing()"
+                (click)="addNewSubtask()">
+                    Dodaj
+                </button>
+                <button class="button" id="cancel-subtask-button" [hidden]="!model.isSubtaskEditing()">Anuluj</button>
+                <button class="button" id="save-subtask-button" [hidden]="!model.isSubtaskEditing()">Zapisz</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<mat-menu #appMenu="matMenu" class="my-menu">
+    <button mat-menu-item *ngFor="let label of model.getTags()" class="form-control">{{label.getName()}}</button>
+</mat-menu>
