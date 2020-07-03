@@ -100,5 +100,7 @@ export class Project{
         this.type = type;
     }
 
-
+    public getTasks():Task[]{
+        return this.tasks;
+    }
 }

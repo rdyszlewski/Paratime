@@ -1,6 +1,8 @@
 <div id="main">
     <app-projects id="projects" [hidden]="!projectsOpen" 
-    (editProjectClick)='openProjectDetails($event)'></app-projects>
+    (editEmitter)='openProjectDetails($event)'
+    (loadEmitter)="loadTasks($event)"></app-projects>
+    
     <app-project-details id='project-details' [hidden]='!projectsDetailsOpen'
     (closeEmitter)='closeProjectDetails()'
     (saveEmitter)='afterSaveProject($event)'></app-project-details>

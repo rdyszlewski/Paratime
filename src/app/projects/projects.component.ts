@@ -14,8 +14,8 @@ export class ProjectsComponent implements OnInit {
   model: ProjectsModel;
   private lastContextOpen: Project = null;
   
-  @Output() editProjectClick: EventEmitter<Project> = new EventEmitter();
-  @Output() openProjectClick: EventEmitter<Project> = new EventEmitter();
+  @Output() editEmitter: EventEmitter<Project> = new EventEmitter();
+  @Output() loadEmitter: EventEmitter<Project> = new EventEmitter();
 
   contextMenuPosition = { x: '0px', y: '0px' };
 
@@ -37,11 +37,22 @@ export class ProjectsComponent implements OnInit {
   }
 
   projectClick(project:Project){
-    
+    DataService.getStoreManager().getProjectStore().getProjectById(project.getId()).then(loadedProject=>{
+      console.log("Projekt");
+      console.log(loadedProject);
+      this.loadEmitter.emit(loadedProject);
+    });
+    this.model.setSelectedProject(project);
+
+    // DataService.getStoreManager().getTaskStore().getTasksByProject(project.getId()).then(tasks=>{
+    //   console.log("Zadania w projektcie");
+    //   console.log(tasks);
+    // });
+   
   }
 
   createProjectClick(){
-    this.editProjectClick.emit(null);
+    this.editEmitter.emit(null);
   }
 
   // projectMenuClick(project:Project){
@@ -54,9 +65,7 @@ export class ProjectsComponent implements OnInit {
     target.parentElement.focus();
     event.stopPropagation();
     this.lastContextOpen = project;
-    
-    console.log(target.parentElement);
-  }
+      }
 
   filterProjects(filterValue: string):void{
     this.model.filterProject(filterValue);
@@ -71,16 +80,18 @@ export class ProjectsComponent implements OnInit {
 
   editProject(){
     DataService.getStoreManager().getProjectStore().getProjectById(this.lastContextOpen.getId()).then(loadedProject=>{
-      this.editProjectClick.emit(loadedProject);
+      this.editEmitter.emit(loadedProject);
       // TODO: sprawdzić to, bo trochę mi nie pasuje
       this.model.setSelectedProject(this.lastContextOpen);
     });
-    console.log(this.lastContextOpen);
   }
 
   removeProject(){
-    console.log("Usuwamy projekt");
-    console.log(this.lastContextOpen)
+    DataService.getStoreManager().getProjectStore().removeProject(this.lastContextOpen.getId()).then(()=>{
+      // TODO: usunąć projekt z listy
+      
+    });
+
   }
 
   addProject(project:Project):void{

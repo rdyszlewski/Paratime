@@ -73,30 +73,25 @@ export class DatabaseTest{
         });
     }
 
-    private insertTasks(task1: Task, task2: Task, project: Project): Promise<Project> {
+    public insertTasks(task1: Task, task2: Task, project: Project): Promise<Project> {
         task1.setProject(project);
         task2.setProject(project);
-        console.log("Dodawanie zadań");
-        console.log(task1.getProjectID());
-        console.log(task2.getProjectID());
+
         return this.storeManager.getTaskStore().createTask(task1).then(result => {
-            console.log("Wstawiono zadanie");
-            console.log(result);
+
         }).then(task1Result => {
             return this.storeManager.getTaskStore().createTask(task2).then(result => {
-                console.log("Wstawiono zadanie");
-                console.log(result);
+
             }).then(() => {
                 return this.storeManager.getTaskStore().getTaskById(1).then(result => {
-                    console.log("Zadanie nr 1");
-                    console.log(result);
+
                     return Promise.resolve(project);
                 });
             });
         });
     }
 
-    private createTask(name:string){
+    public createTask(name:string){
         let task = new Task();
         task.setName(name);
         task.setDescription("To jest zadanie " + name);

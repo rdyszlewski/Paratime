@@ -45,11 +45,17 @@ export class ProjectStore{
     }
 
     public getProjectById(id: number): Promise<Project>{
-        return this.projectRepository.findProjectById(id);
+        return this.projectRepository.findProjectById(id).then(project=>{
+            return this.taskStore.getTasksByProject(project.getId()).then(tasks=>{
+                project.setTasks(tasks);
+                return Promise.resolve(project);
+            });
+        });
     }
 
     public getProjectsByName(name:string): Promise<Project[]>{
         return this.projectRepository.findProjectsByName(name);
+        // TODO: dodać 
     }
 
     public getAllProjects():Promise<Project[]>{

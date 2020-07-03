@@ -1,4 +1,35 @@
-<p>tasks works!</p>
-<div *ngFor="let task of tasks">
-    {{task.getName()}}
+<div class='tasks-view'>
+  <h3>{{project.getName()}}</h3>
+  <div class="filter-container">
+    <input id="task-filter" class="filter" (input)='filterTasks($event.target.value)'>
+  </div>
+  <div id="tasks-list">
+      <div *ngFor='let task of project.getTasks()' class="task">
+        <div class="task-main">
+          <div class="task-name">{{task.getName()}}</div>
+          <button class="task-menu-button" 
+          (click)='taskMenuClick($event, project)'
+          [matMenuTriggerFor]="menu"
+          >...</button>
+        </div>
+        <div class="task-info">
+          <div *ngIf="task.getDescription()!=null" class="task-description-icon info-icon"
+          (mouseenter)="onMouseEnterDescription(task)" (mouseleave)="onMouseLeaveDescription(task)" ></div>
+          <div *ngIf="task.getEndDate()!=null" class="task-enddate-icon info-icon"></div>
+          <div *ngIf="task.getSubtasks().length != 0" class="task-subtask info-icon">
+            <!-- TODO: tutaj wstawić odpowiednią wartość  -->
+          </div>
+        </div>
+      </div>
+  </div>
+  <button class="button task-add-button" (click)='createTaskClick()'>Dodaj projekt</button>
 </div>
+
+<mat-menu #menu="matMenu">
+    <button mat-menu-item (click)="editTask()">
+      Edytuj
+    </button>
+    <button mat-menu-item (click)="removeTask()">
+      Usuń
+    </button>
+  </mat-menu>

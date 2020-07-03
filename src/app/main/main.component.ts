@@ -5,6 +5,7 @@ import { ProjectDetailsComponent } from 'app/project-details/project-details.com
 import { TaskDetailsComponent } from 'app/task-details/task-details.component';
 import { Project } from 'app/models/project';
 import { ProjectsComponent } from 'app/projects/projects.component';
+import { TasksComponent } from 'app/tasks/tasks.component';
 
 @Component({
   selector: 'app-main',
@@ -21,6 +22,9 @@ export class MainComponent implements OnInit {
   
   @ViewChild(ProjectsComponent)
   private projectsComponent: ProjectsComponent;
+
+  @ViewChild(TasksComponent)
+  private tasksComponent: TasksComponent;
 
   // TODO: zastanowić się, jak to ładnie uporządkować
   projectsOpen = true;
@@ -40,7 +44,11 @@ export class MainComponent implements OnInit {
     let databaseTest = new DatabaseTest();
     let project1 =databaseTest.createProjectWithName("Projekt 1");
     let project2 = databaseTest.createProjectWithName("Project 2");
-    databaseTest.insertProject(project1);
+    databaseTest.insertProject(project1).then(insertedProject=>{
+      let task1 = databaseTest.createTask("Zadanie 1");
+      let task2 = databaseTest.createTask("Zadanie 2");
+      databaseTest.insertTasks(task1, task2, insertedProject);
+    });
     databaseTest.insertProject(project2);
   }
 
@@ -57,6 +65,11 @@ export class MainComponent implements OnInit {
     // TODO: w jakiś sposób przekazać dane do komonentu
   }
 
+  loadTasks(project:Project){
+    this.tasksComponent.setProject(project);
+    // console.log(project);
+  }
+
   closeProjectDetails(){
     this.projectsDetailsOpen = false;
   }
@@ -66,4 +79,5 @@ export class MainComponent implements OnInit {
     // TODO: nie można tego robić w ten sposób, ponieważ przy aktualizacji dodaje do listy
     this.projectsComponent.addProject(project);
   }
+  
 }
