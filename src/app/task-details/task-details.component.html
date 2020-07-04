@@ -1,61 +1,73 @@
 <div class="task-details">
     <form class="form">
-        <div class="form-group">
-            <label class="form-label" for="name">Nazwa</label>
+
+        <mat-expansion-panel class="form-group" [expanded]="true">
+            <mat-expansion-panel-header>
+                Nazwa
+            </mat-expansion-panel-header>
+            <!-- TODO: można dodać opis -->
             <input type="text" class="form-control" id="name" name='name'
-            (ngModel)='model.getTask().getName()' (ngModelChange)="model.getTask().setName($event)">
-        </div>
+            [ngModel]='model.getTask().getName()' (ngModelChange)="model.getTask().setName($event)">
+        </mat-expansion-panel>
 
-        <div class="form-group">
-            <label class="form-label" for="description">Opis</label>
+        <mat-expansion-panel class="form-group" [expanded]="model.getTask().getDescription()">
+            <mat-expansion-panel-header>
+                Opis
+            </mat-expansion-panel-header>
             <textarea class="form-control" id="description" name="description"
-            (ngModel)='model.getTask().getDescription()' (ngModelChange)="model.getTask().setDescription($event)"></textarea>
-        </div>
-
-        <div class='form-group'>
-            <label class="form-label" for='status'>Stan</label>
+            [ngModel]='model.getTask().getDescription()' (ngModelChange)="model.getTask().setDescription($event)"></textarea>
+        </mat-expansion-panel>
+        
+        <mat-expansion-panel class="form-group" [expanded]="model.getTask().getStatus()!=null">
+            <mat-expansion-panel-header>
+                Stan
+            </mat-expansion-panel-header>
             <select class="form-control" id="status" name="status"
-            (ngModel)='getStatus()'>
+            [ngModel]='getStatus()'>
                 <option value="started">Aktywny</option>
                 <option value="ended">Zakończony</option>
                 <option value="canceled">Anulowany</option>
                 <option value="awaiting">Oczekujący</option>
             </select>
-        </div>
+        </mat-expansion-panel>
 
-        <div class="form-group">
-            <label class="form-label" for="end-date">Data końcowa</label>
+        <mat-expansion-panel class="form-group" [expanded]="model.getTask().getEndDate()!=null">
+            <mat-expansion-panel-header>
+                Data końcowa
+            </mat-expansion-panel-header>
             <div class="datepicker-container">
                 <input matInput class='form-control' id="end-date" name="end-date" [matDatepicker]="endDatePicker"
-                (ngModel)='model.getTask().getEndDate()' (ngModelChange)="model.getTask().setEndDate($event)">
+                [ngModel]='model.getTask().getEndDate()' (ngModelChange)="model.getTask().setEndDate($event)">
                 <mat-datepicker-toggle [for]="endDatePicker" class="datepicker"></mat-datepicker-toggle>
                 <mat-datepicker #endDatePicker></mat-datepicker>
             </div>  
-        </div>
-
-        <div class="form-group">
-            <label class="form-label" for="planned_time">Planowany czas</label>
+        </mat-expansion-panel>
+      
+        <mat-expansion-panel class="form-group" [expanded]="model.getTask().getPlannedTime()!=null">
+            <mat-expansion-panel-header>
+                Planowany czas
+            </mat-expansion-panel-header>
             <input type='number' class="form-control" id="planned_time" name="planned_time"
-            (ngModel)="model.getTask().getPlannedTime()" (ngModelChange)="model.getTask().setPlannedTime($event)">
-        </div>
+            [ngModel]="model.getTask().getPlannedTime()" (ngModelChange)="model.getTask().setPlannedTime($event)">
+        </mat-expansion-panel>
 
-        <div class="form-group" [hidden]="model.getTask().getId() == null">
-            <label class="form-label" for="process">Postęp</label>
-            <input type='number' max='100' min="0" class="form-control" id="process" name="process"
-            (ngModel)="model.getTask().getPlannedTime()" (ngModelChange)="model.getTask().setProgress($event)">
-        </div>
-
-        <div class="form-group">
-            <label class="form-label" for="project">Projekt</label>
-            <select class="form-control" id="project" name="project">
-                <option *ngFor="let project of model.getProjects()" value="{{project.getId()}}">{{project.getName()}}</option>
+        <mat-expansion-panel class="form-group" [expanded]="model.getTask().getProject()!=null">
+            <mat-expansion-panel-header>
+                Projekt
+            </mat-expansion-panel-header>
+            <!-- TODO: prawdopodobnie przydałoby się, żeby tutaj było dodatkowe ograniczenie, dzięki któremu nie będzie zwijał po wybraniu null -->
+            <select class="form-control" id="project" name="project" 
+            [ngModel]="model.getTask().getProject()" (ngModelChange)="model.getTask().setProject($event)">
+                <option [ngValue]="null">Brak</option>
+                <option *ngFor="let project of model.getProjects()" [ngValue]="project">{{project.getName()}}</option>
             </select>
-        </div>
+        </mat-expansion-panel>
 
-        <div class="form-group">
-            <label class="form-label" for="labels">Etykiety</label>
+        <mat-expansion-panel class="form-group" [expanded]="model.getTask().getTags().length >0">
+            <mat-expansion-panel-header>
+                Etykiety
+            </mat-expansion-panel-header>
             <div class="labels-list">
-                <!-- TODO: przerobić to jakoś lepiej -->
                 <div *ngFor="let label of model.getTask().getTags()" class="label-item">
                     <span class="label-name">
                         {{label.getName()}}
@@ -64,12 +76,13 @@
                 </div>
             </div>
             <button class="form-control" id="labels" name="labels" [matMenuTriggerFor]="appMenu">Dodaj</button>
-        </div>
+        </mat-expansion-panel>
 
-        <div class="form-group">
-            <label class="form-label" for="subtasks">Podzadania</label>
+        <mat-expansion-panel class="form-group" [expanded]="model.getTask().getSubtasks().length >0">
+            <mat-expansion-panel-header>
+                Kroki
+            </mat-expansion-panel-header>
             <div class="subtasks-list">
-                <!-- TODO: dostosować wygląd  -->
                 <div *ngFor="let subtask of model.getTask().getSubtasks()" class="subtask-item">
                     <div 
                     [ngClass]="{'subtask-checkbox-icon': subtask.getStatus()==status.STARTED,
@@ -100,8 +113,12 @@
                 <button class="button" id="save-subtask-button" [hidden]="!model.isSubtaskEditing()"
                 (click)="saveNewSubtask()">Zapisz</button>
             </div>
-        </div>
+        </mat-expansion-panel>
     </form>
+    <div class="button-section">
+        <button class="button form-button" id="close-button" (click)='close()'>Zamknij</button>
+        <button class="button form-button" id="save-button" (click)='saveTask()'>Zapisz</button>
+    </div>
 </div>
 
 <mat-menu #appMenu="matMenu" class="my-menu">

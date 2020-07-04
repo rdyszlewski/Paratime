@@ -15,6 +15,7 @@
     
         <div class="form-group">
             <label class="form-label" for="type">Typ</label>
+            <!-- TODO: dorobić zapisywanie -->
             <select class="form-control" id="type" name="type"
             [ngModel]='(getType())'>
                 <option value="default">Nieokreślony</option>
@@ -26,6 +27,7 @@
     
         <div class='form-group'>
             <label class="form-label" for='status'>Stan</label>
+            <!-- TODO: dorobić zapisywanie -->
             <select class="form-control" id="status" name="status"
             [ngModel]='getStatus()'>
                 <option value="started">Aktywny</option>
@@ -55,6 +57,7 @@
             </div>  
         </div>
     </form>
+    
     <div class="buttons-section">
         <button class="button form-button" id="close-button" (click)='close()'>Zamknij</button>
         <button class="button form-button" id="save-button" (click)='save()'>Zapisz</button>

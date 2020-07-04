@@ -15,7 +15,7 @@ export class Task{
     private plannedTime: number = null;
     private subtasks: Subtask[] = []
     private status: Status = null;
-    private progress: number = -1;
+    private progress: number = null;
     private project: Project = null;
     private projectID = null;
 

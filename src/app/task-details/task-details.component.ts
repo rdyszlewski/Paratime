@@ -51,6 +51,10 @@ export class TaskDetailsComponent implements OnInit {
     let subtask2 = new Subtask("Podzadanie 2", "Jakiś opis", Status.STARTED);
     this.model.getTask().addSubtask(subtask1);
     this.model.getTask().addSubtask(subtask2);
+
+    // this.model.getTask().setProject(project2);
+    this.model.getTask().setName("Oejeju");
+    this.model.getTask().setStatus(Status.STARTED);
   }
 
   public getStatus(){
@@ -99,7 +103,8 @@ export class TaskDetailsComponent implements OnInit {
     this.model.setEditedSubtask(subtask);
     setTimeout(()=>{ // this will make the execution after the above boolean has changed
       $('#subtask-name-input_' + subtask.getId()).focus();
-    },0); 
+    },0);
+    this.model.toggleSubtaskEditing();
   }
 
   public removeSubtask(subtask:Subtask){
@@ -137,5 +142,15 @@ export class TaskDetailsComponent implements OnInit {
     textField.val('');
     this.model.toggleSubtaskEditing();
   }
+
+  public saveTask(){
+    
+  }
+
+  public close(){
+    // TODO: można zrobić jakiś komunikat
+  }
+
+  
 
 }

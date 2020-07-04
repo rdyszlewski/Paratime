@@ -29,11 +29,12 @@ export class TaskDetails{
         this.projects = projects;
     }
 
-    public getSelectedProjectId(){
-        if(this.selectedProject){
-            return this.selectedProject.getId();
-        }
-        return -1;
+    public getSelectedProject(){
+        return this.selectedProject;
+        // if(this.selectedProject){
+        //     return this.selectedProject.getId();
+        // }
+        // return -1;
     }
 
     public setSelectedProject(project:Project){
