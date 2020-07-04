@@ -6,7 +6,7 @@
             <mat-expansion-panel-header>
                 Nazwa
             </mat-expansion-panel-header>
-            <input type="text" class="form-control" id="name" name='name'
+            <input type="text" class="form-control" id="project-name" name='name'
             [ngModel]='project.getName()' (ngModelChange)="project.setName($event)">
         </mat-expansion-panel>
 
@@ -14,7 +14,7 @@
             <mat-expansion-panel-header>
                 Opis
             </mat-expansion-panel-header>
-            <textarea class="form-control" id="description" name="description"
+            <textarea class="form-control" id="project-description" name="description"
             [ngModel]='project.getDescription()' (ngModelChange)="project.setDescription($event)"></textarea>
         </mat-expansion-panel>
 
@@ -23,7 +23,7 @@
                 Typ
             </mat-expansion-panel-header>
             <!-- TODO: dorobić zapisywanie -->
-            <select class="form-control" id="type" name="type"
+            <select class="form-control" id="project-type" name="type"
             [ngModel]='(getType())'>
                 <option value="default">Nieokreślony</option>
                 <option value="small">Mały</option>
@@ -37,7 +37,7 @@
                 Stan
             </mat-expansion-panel-header>
             <!-- TODO: dorobić zapisywanie -->
-            <select class="form-control" id="status" name="status"
+            <select class="form-control" id="project-status" name="status"
             [ngModel]='getStatus()'>
                 <option value="started">Aktywny</option>
                 <option value="ended">Zakończony</option>
@@ -51,7 +51,7 @@
                 Data początkowa
             </mat-expansion-panel-header>
             <div class="datepicker-container">
-                <input class='form-control' id="start-date" name="start-date" [matDatepicker]="startDatePicker"  
+                <input class='form-control' id="project-start-date" name="start-date" [matDatepicker]="startDatePicker"  
                 [ngModel]='project.getStartDate()' (ngModelChange)="project.setStartDate($event)">
                 <mat-datepicker-toggle [for]="startDatePicker" class='datepicker'></mat-datepicker-toggle>
                 <mat-datepicker #startDatePicker></mat-datepicker>
@@ -63,7 +63,7 @@
                 Data końcowa
             </mat-expansion-panel-header>
             <div class="datepicker-container">
-                <input matInput class='form-control' id="end-date" name="end-date" [matDatepicker]="endDatePicker"
+                <input matInput class='form-control' id="pproject-end-date" name="end-date" [matDatepicker]="endDatePicker"
                 [ngModel]='project.getEndDate()' (ngModelChange)="project.setEndDate($event)">
                 <mat-datepicker-toggle [for]="endDatePicker" class="datepicker"></mat-datepicker-toggle>
                 <mat-datepicker #endDatePicker></mat-datepicker>

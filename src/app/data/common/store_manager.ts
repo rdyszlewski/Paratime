@@ -14,7 +14,7 @@ export class StoreManager{
     constructor(dataSource: IDataSource){
         this.tagStore = new TagStore(dataSource.getTagRepository(), dataSource.getTaskTagRepository());
         this.subtaskStore = new SubtaskStore(dataSource.getSubtaskRepository());
-        this.taskStore = new TaskStore(dataSource.getTaskRepository(), this.subtaskStore, this.tagStore);
+        this.taskStore = new TaskStore(dataSource.getTaskRepository(), this.subtaskStore, this.tagStore, dataSource.getProjectRepository());
         this.projectStore = new ProjectStore(dataSource.getProjectRepository(), this.taskStore);
     }
 

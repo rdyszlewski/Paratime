@@ -2,6 +2,7 @@ import { ITaskRepository } from '../repositories/task_repository';
 import { Task } from 'app/models/task';
 import { SubtaskStore } from './subtask_store';
 import { TagStore } from './tag_store';
+import { IProjectRepository } from '../repositories/project_repository';
 
 // TODO: przydałyby się do tego wszystkiego transakcje. 
 export class TaskStore{
@@ -9,11 +10,14 @@ export class TaskStore{
     private taskRepository: ITaskRepository;
     private subtaskStore: SubtaskStore;
     private tagStore: TagStore;
+    private projectRepository: IProjectRepository;
 
-    constructor(taskRepository: ITaskRepository, subtaskStore: SubtaskStore, tagStore:TagStore){
+    constructor(taskRepository: ITaskRepository, subtaskStore: SubtaskStore, tagStore:TagStore, projectRepository:IProjectRepository){
         this.taskRepository = taskRepository;
         this.subtaskStore = subtaskStore;
         this.tagStore = tagStore;
+        // TODO: przemyśleć, czy na pewno tak to powinno wyglądać
+        this.projectRepository = projectRepository;
     }
  
     public getTaskById(id:number):Promise<Task>{
@@ -26,6 +30,7 @@ export class TaskStore{
     }
 
     private setTaskData(task: Task): Task | PromiseLike<Task> {
+        // TODO: przydałaby się refaktoryzacja
         return this.subtaskStore.getSubtaskByTask(task.getId()).then(subtasks => {
             task.setSubtasks(subtasks);
         }).then(() => {
@@ -34,6 +39,14 @@ export class TaskStore{
                     task.addTag(tag);
                 });
             }).then(() => {
+                // TODO: zrobić pobieranie projektu. Chyba nie przyniosło to oczekiwanego rezultatu
+                if(task.getProjectID()!=null){
+                    return this.projectRepository.findProjectById(task.getProjectID()).then(project=>{
+                        task.setProject(project);
+                        return Promise.resolve(task);
+                    })
+                }
+                
                 return Promise.resolve(task);
             });
         });

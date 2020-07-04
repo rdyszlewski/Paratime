@@ -6,6 +6,8 @@ import { TaskDetailsComponent } from 'app/task-details/task-details.component';
 import { Project } from 'app/models/project';
 import { ProjectsComponent } from 'app/projects/projects.component';
 import { TasksComponent } from 'app/tasks/tasks.component';
+import { Task } from 'app/models/task';
+import * as $ from 'jquery';
 
 @Component({
   selector: 'app-main',
@@ -32,10 +34,22 @@ export class MainComponent implements OnInit {
   tasksOpen = true;
   tasksDetailsOpen = false;
 
+  private projectsView;
+  private projectDetailsView;
+  private tasksView;
+  private taskDetailsView;
+
+
   constructor() { }
 
   ngOnInit(): void {
     this.configureDexie();
+    this.projectsView = $("#projects");
+    this.projectDetailsView = $("#projects-details");
+    this.tasksView = $("#tasks");
+    this.taskDetailsView = $('#task-details');
+
+    this.setOriginalWidth();
   }
 
   private configureDexie(){
@@ -59,10 +73,52 @@ export class MainComponent implements OnInit {
     })
   }
 
-  openProjectDetails(project){
-    this.projectsDetailsOpen = true;
+  public openProjectDetails(project){
     this.projectDetailsComponent.setProject(project);
-    // TODO: w jakiś sposób przekazać dane do komonentu
+    this.projectsDetailsOpen = true;
+    this.tasksDetailsOpen = false;
+
+    this.setWidthOnProjectViewOpen();
+  }
+
+  // TODO: wymyślić jakiś sprytniejszy plan wstawiania szerokości
+  // TODO: może nazwać jakoś poszczególne stany, i przygotować odgórnie ustawienia
+  private setWidthOnProjectViewOpen(){
+    this.tasksView.width('20%');
+    this.projectsView.width('20%');
+    this.projectDetailsView.width('60%');
+  }
+
+  closeProjectDetails(){
+    this.projectsDetailsOpen = false;
+    this.setOriginalWidth();
+  }
+
+  public openTaskDetails(task:Task){
+    this.taskDetailsComponent.setTask(task);
+    this.tasksDetailsOpen = true;
+    this.projectsDetailsOpen = false;
+
+    this.setWidthOnTaskViewOpen();
+  }
+
+  private setWidthOnTaskViewOpen(){
+    this.tasksView.width('30%');
+    this.projectsView.width('15%');
+    this.taskDetailsView.width('55%');
+  }
+
+  public closeTaskDetails(){
+    console.log("Main");
+    this.tasksDetailsOpen = false;
+    this.taskDetailsComponent.setTask(new Task()); //clearing fields
+    
+    this.setOriginalWidth();
+  }
+
+  private setOriginalWidth(){
+    this.projectsView.width("30%");
+    this.tasksView.width("70%");
   }
 
   loadTasks(project:Project){
@@ -70,9 +126,7 @@ export class MainComponent implements OnInit {
     // console.log(project);
   }
 
-  closeProjectDetails(){
-    this.projectsDetailsOpen = false;
-  }
+ 
 
   afterSaveProject(project:Project){
     // TODO: alternatywą będzie ponowne wyszukanie wszystkim projektów

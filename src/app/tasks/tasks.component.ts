@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output } from '@angular/core';
 
 import { Task } from 'app/models/task';
 import { Project } from 'app/models/project';
@@ -14,8 +14,13 @@ import { Subtask } from 'app/models/subtask';
 export class TasksComponent implements OnInit {
 
   constructor() { }
+
+  @Output() details: EventEmitter<Task> = new EventEmitter();
   
+  // TODO: przenieść do modelu
   public project: Project = new Project(); 
+  // TODO: zmienić nazwę
+  private menuForLabel: Task;
 
   ngOnInit(): void {
     let task1 = new Task("Jeden", "Coś tam", Status.CANCELED);
@@ -43,46 +48,24 @@ export class TasksComponent implements OnInit {
     // TODO: otworzyć tworzenie nowego zadania
   }
 
-  taskMenuClick(mouseEvent: MouseEvent, project:Project){
+  taskMenuClick(mouseEvent: MouseEvent, task:Task){
     // TOOD: coś tutaj zrobić. Popatrzeć na projekty
+    this.menuForLabel = task;
+    mouseEvent.preventDefault();
   }
+
 
   editTask(){
     // TOOD: edycja zadania
+    console.log("Kliknięto tutaj");
+    this.details.emit(this.menuForLabel);
+    this.menuForLabel = null;
   }
 
   removeTask(){
     // TOOD: usuwanie zadania
-  }
 
-  onMouseEnterDescription(task:Task){
-    // TODO: pokazać dymek z opisem
-    console.log(task.getDescription());
-  }
-
-  onMouseLeaveDescription(task:Task){
-    // TODO: zamknąć dymek z opisem
-    console.log("Zamknięto opis zadania");
-  }
-
-  onMouseEnterEndDate(task:Task){
-    // TODO: pokazać dymek z datą końcową
-    console.log(task.getEndDate());
-  }
-
-  onMouseLeaveEndDate(task:Task){
-    // TODO: zamknąć dymek z datą końcową
-    console.log("Zamknięto datę końcową");
-  }
-
-  onMouseEnterSubtasks(task:Task):void{
-    // TODO: otworzyć dymek z podzadaniami
-    console.log(task.getSubtasks());
-  }
-
-  onMouseLeaveSubtasks(task:Task):void{
-    // TODO: zamknać dymek z podzadaniami
-    console.log("Zamknięto podzadania")
+    this.menuForLabel = null;
   }
 
   getFinishedSubtasks(task:Task){

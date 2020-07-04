@@ -6,7 +6,7 @@
                 Nazwa
             </mat-expansion-panel-header>
             <!-- TODO: można dodać opis -->
-            <input type="text" class="form-control" id="name" name='name'
+            <input type="text" class="form-control" id="task-id" name='name'
             [ngModel]='model.getTask().getName()' (ngModelChange)="model.getTask().setName($event)">
         </mat-expansion-panel>
 
@@ -14,7 +14,7 @@
             <mat-expansion-panel-header class="form-group-header">
                 Opis
             </mat-expansion-panel-header>
-            <textarea class="form-control" id="description" name="description"
+            <textarea class="form-control" id="task-description" name="description"
             [ngModel]='model.getTask().getDescription()' (ngModelChange)="model.getTask().setDescription($event)"></textarea>
         </mat-expansion-panel>
         
@@ -22,7 +22,7 @@
             <mat-expansion-panel-header class="form-group-header">
                 Stan
             </mat-expansion-panel-header>
-            <select class="form-control" id="status" name="status"
+            <select class="form-control" id="task-status" name="status"
             [ngModel]='getStatus()'>
                 <option value="started">Aktywny</option>
                 <option value="ended">Zakończony</option>
@@ -36,7 +36,7 @@
                 Data końcowa
             </mat-expansion-panel-header>
             <div class="datepicker-container">
-                <input matInput class='form-control' id="end-date" name="end-date" [matDatepicker]="endDatePicker"
+                <input matInput class='form-control' id="task-end-date" name="end-date" [matDatepicker]="endDatePicker"
                 [ngModel]='model.getTask().getEndDate()' (ngModelChange)="model.getTask().setEndDate($event)">
                 <mat-datepicker-toggle [for]="endDatePicker" class="datepicker"></mat-datepicker-toggle>
                 <mat-datepicker #endDatePicker></mat-datepicker>
@@ -47,7 +47,7 @@
             <mat-expansion-panel-header class="form-group-header">
                 Planowany czas
             </mat-expansion-panel-header>
-            <input type='number' class="form-control" id="planned_time" name="planned_time"
+            <input type='number' class="form-control" id="task-planned_time" name="planned_time"
             [ngModel]="model.getTask().getPlannedTime()" (ngModelChange)="model.getTask().setPlannedTime($event)">
         </mat-expansion-panel>
 
@@ -56,10 +56,10 @@
                 Projekt
             </mat-expansion-panel-header>
             <!-- TODO: prawdopodobnie przydałoby się, żeby tutaj było dodatkowe ograniczenie, dzięki któremu nie będzie zwijał po wybraniu null -->
-            <select class="form-control" id="project" name="project" 
-            [ngModel]="model.getTask().getProject()" (ngModelChange)="model.getTask().setProject($event)">
+            <select class="form-control" id="task-project" name="project" 
+            [ngModel]="model.getTask().getProjectID()" (ngModelChange)="model.setProject($event)">
                 <option [ngValue]="null">Brak</option>
-                <option *ngFor="let project of model.getProjects()" [ngValue]="project">{{project.getName()}}</option>
+                <option *ngFor="let project of model.getProjects()" [ngValue]="project.getId()">{{project.getName()}}</option>
             </select>
         </mat-expansion-panel>
 
@@ -75,7 +75,7 @@
                     <span class="remove-label" (click)="removeLabel(label)"></span>
                 </div>
             </div>
-            <button class="form-control" id="labels" name="labels" [matMenuTriggerFor]="appMenu">Dodaj</button>
+            <button class="form-control" id="task-labels" name="labels" [matMenuTriggerFor]="appMenu">Dodaj</button>
         </mat-expansion-panel>
 
         <mat-expansion-panel class="form-group" [expanded]="model.isSubtasksExtended()">
@@ -116,8 +116,8 @@
         </mat-expansion-panel>
     </form>
     <div class="button-section">
-        <button class="button form-button" id="close-button" (click)='close()'>Zamknij</button>
-        <button class="button form-button" id="save-button" (click)='saveTask()'>Zapisz</button>
+        <button class="button form-button" id="task-close-button" (click)='close()'>Zamknij</button>
+        <button class="button form-button" id="task-save-button" (click)='saveTask()'>Zapisz</button>
     </div>
 </div>
 

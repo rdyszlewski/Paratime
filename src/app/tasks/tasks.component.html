@@ -4,20 +4,18 @@
     <input id="task-filter" class="filter" (input)='filterTasks($event.target.value)'>
   </div>
   <div id="tasks-list">
-      <div *ngFor='let task of project.getTasks()' class="task">
+      <div *ngFor='let task of project.getTasks()' class="task" >
         <div class="task-main">
           <div class="task-name">{{task.getName()}}</div>
           <button class="task-menu-button" 
-          (click)='taskMenuClick($event, project)'
+          (click)='taskMenuClick($event, task)'
           [matMenuTriggerFor]="menu"
           >...</button>
         </div>
         <div class="task-info">
           <div *ngIf="task.getDescription()!=null" class="task-description-icon info-icon"
-          (mouseenter)="onMouseEnterDescription(task)" (mouseleave)="onMouseLeaveDescription(task)" 
           matTooltip="{{task.getDescription()}}"></div>
           <div *ngIf="task.getEndDate()!=null" class="task-enddate-icon info-icon"
-          (mouseenter)='onMouseEnterEndDate(task)' (mouseleave)='onMouseLeaveEndDate(task)'
           matTooltip="{{getEndDateText(task)}}"></div>
           <div *ngIf="task.getSubtasks().length != 0" class="info-icon task-subtask"
           matTooltip="{{getSubtasksList(task)}}">

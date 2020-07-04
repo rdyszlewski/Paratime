@@ -93,4 +93,14 @@ export class TaskDetails{
    public isSubtasksExtended(){
        return this.task.getSubtasks().length > 0;
    }
+
+   public setProject(id:number){
+        for(let i =0; i<this.projects.length; i++){
+            const project = this.projects[i];
+            if(project.getId()==id){
+                return project;
+            }
+        }
+        return null;
+   } 
 }

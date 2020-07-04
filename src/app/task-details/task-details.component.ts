@@ -1,10 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output } from '@angular/core';
 import { Status } from 'app/models/status';
 import { Project } from 'app/models/project';
 import { Tag } from 'app/models/tag';
 import { Subtask } from 'app/models/subtask';
 import { TaskDetails } from './model';
 import * as $ from 'jquery';
+import { Task } from 'app/models/task';
+import { DataService } from 'app/data.service';
 
 @Component({
   selector: 'app-task-details',
@@ -15,7 +17,10 @@ export class TaskDetailsComponent implements OnInit {
 
   public status = Status;
 
+  @Output() closeEmitter: EventEmitter<null> = new EventEmitter();
+  @Output() saveEmitter: EventEmitter<Task> = new EventEmitter();
   public model: TaskDetails = new TaskDetails();
+  
 
   // public task:Task = new Task();
   // public projects:Project[] = [];
@@ -25,6 +30,22 @@ export class TaskDetailsComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
+    this.init();
+  }
+
+  private init(){
+    DataService.getStoreManager().getProjectStore().getAllProjects().then(projects=>{
+      console.log("Pobrano projekty");
+      console.log(projects);
+      this.model.setProjects(projects);
+    });
+
+    DataService.getStoreManager().getTagStore().getAllTags().then(labels=>{
+      this.model.setTags(labels);
+    });
+  }
+
+  private mockData(){
     let project1 = new Project("Projekt 1");
     project1.setId(1);
     let project2 = new Project("Projekt 2");
@@ -46,14 +67,24 @@ export class TaskDetailsComponent implements OnInit {
 
     this.model.getTask().addTag(tag1);
 
-    let subtask1 = new Subtask("Podzadanie 1", "Jakiś opis", Status.ENDED);
-    let subtask2 = new Subtask("Podzadanie 2", "Jakiś opis", Status.STARTED);
-    this.model.getTask().addSubtask(subtask1);
-    this.model.getTask().addSubtask(subtask2);
+     // let subtask1 = new Subtask("Podzadanie 1", "Jakiś opis", Status.ENDED);
+    // let subtask2 = new Subtask("Podzadanie 2", "Jakiś opis", Status.STARTED);
+    // this.model.getTask().addSubtask(subtask1);
+    // this.model.getTask().addSubtask(subtask2);
 
     // this.model.getTask().setProject(project2);
-    this.model.getTask().setName("Oejeju");
-    this.model.getTask().setStatus(Status.STARTED);
+    // this.model.getTask().setName("Oejeju");
+    // this.model.getTask().setStatus(Status.STARTED);
+  }
+
+  public setTask(task:Task){
+    if(task){
+      DataService.getStoreManager().getTaskStore().getTaskById(task.getId()).then(loadedTask=>{
+        console.log(loadedTask);
+        this.model.setTask(task);
+      });
+    }
+
   }
 
   public getStatus(){
@@ -144,13 +175,13 @@ export class TaskDetailsComponent implements OnInit {
   }
 
   public saveTask(){
-    
+    // TODO: zrobić zapisywanie - dobrze się będzie trzeba zastanowić jak powinno przebiegać
   }
 
   public close(){
     // TODO: można zrobić jakiś komunikat
+    console.log("task details");
+    this.closeEmitter.emit();
   }
-
-  
 
 }

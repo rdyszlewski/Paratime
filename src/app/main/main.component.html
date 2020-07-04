@@ -3,12 +3,14 @@
     (editEmitter)='openProjectDetails($event)'
     (loadEmitter)="loadTasks($event)"></app-projects>
     
-    <app-project-details id='project-details' [hidden]='!projectsDetailsOpen'
+    <app-project-details id='projects-details' [hidden]='!projectsDetailsOpen'
     (closeEmitter)='closeProjectDetails()'
     (saveEmitter)='afterSaveProject($event)'></app-project-details>
-    <app-tasks id='tasks' [hidden]='!tasksOpen'>
-        <div>Dawaj moje ciastka</div>
-    </app-tasks>
-    <app-task-details id="task-details" [hidden]='!tasksDetailsOpen'></app-task-details>
+    
+    <app-tasks id='tasks' [hidden]='!tasksOpen'
+    (details)="openTaskDetails($event)"></app-tasks>
+
+    <app-task-details id="task-details" [hidden]='!tasksDetailsOpen'
+    (closeEmitter)="closeTaskDetails()"></app-task-details>
 </div>
 
