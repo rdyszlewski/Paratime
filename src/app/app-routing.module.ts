@@ -6,6 +6,7 @@ import { ProjectsComponent } from './projects/projects.component';
 import { MainComponent } from './main/main.component';
 import { ProjectDetailsComponent } from './project-details/project-details.component';
 import { TaskDetailsComponent } from './task-details/task-details.component';
+import { LabelsComponent } from './labels/labels.component';
 
 
 const routes: Routes = [
@@ -13,7 +14,8 @@ const routes: Routes = [
   {path: "tasks", component: TasksComponent},
   {path: 'projects', component: ProjectsComponent},
   {path: 'project_details', component: ProjectDetailsComponent},
-  {path: 'task_details', component: TaskDetailsComponent}
+  {path: 'task_details', component: TaskDetailsComponent},
+  {path: 'labels', component:LabelsComponent}
 ];
 
 @NgModule({

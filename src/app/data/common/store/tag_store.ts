@@ -20,6 +20,10 @@ export class TagStore{
         return this.tagRepository.findTagByName(name);
     }
 
+    public getAllTags():Promise<Tag[]>{
+        return this.tagRepository.findAllTags();
+    }
+
     public createTag(tag:Tag):Promise<Tag>{
         return this.tagRepository.insertTag(tag).then(insertedId=>{
             return this.getTagById(insertedId);

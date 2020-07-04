@@ -97,7 +97,8 @@ export class Task{
 
     public removeSubtask(subtask: Subtask){
         const index = this.subtasks.indexOf(subtask);
-        if (index > 0){
+        console.log("index " + index);
+        if (index >= 0){
             this.subtasks.splice(index, 1);
         }
     }

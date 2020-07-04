@@ -1,20 +1,27 @@
 <!-- <h3>{{getProject().getName()}}</h3> -->
 <div class="project-details">
     <form class="project-form">
-        <div class="form-group">
-            <label class="form-label" for="name">Nazwa</label>
+
+        <mat-expansion-panel [expanded]='true'>
+            <mat-expansion-panel-header>
+                Nazwa
+            </mat-expansion-panel-header>
             <input type="text" class="form-control" id="name" name='name'
             [ngModel]='project.getName()' (ngModelChange)="project.setName($event)">
-        </div>
-    
-        <div class="form-group">
-            <label class="form-label" for="description">Opis</label>
+        </mat-expansion-panel>
+
+        <mat-expansion-panel [expanded]="project.getDescription()!=null">
+            <mat-expansion-panel-header>
+                Opis
+            </mat-expansion-panel-header>
             <textarea class="form-control" id="description" name="description"
             [ngModel]='project.getDescription()' (ngModelChange)="project.setDescription($event)"></textarea>
-        </div>
-    
-        <div class="form-group">
-            <label class="form-label" for="type">Typ</label>
+        </mat-expansion-panel>
+
+        <mat-expansion-panel [expanded]="true">
+            <mat-expansion-panel-header>
+                Typ
+            </mat-expansion-panel-header>
             <!-- TODO: dorobić zapisywanie -->
             <select class="form-control" id="type" name="type"
             [ngModel]='(getType())'>
@@ -23,10 +30,12 @@
                 <option value="medium">Średni</option>
                 <option value="big">Duży</option>
             </select>
-        </div>
+        </mat-expansion-panel>
     
-        <div class='form-group'>
-            <label class="form-label" for='status'>Stan</label>
+        <mat-expansion-panel [expanded]="true">
+            <mat-expansion-panel-header>
+                Stan
+            </mat-expansion-panel-header>
             <!-- TODO: dorobić zapisywanie -->
             <select class="form-control" id="status" name="status"
             [ngModel]='getStatus()'>
@@ -35,29 +44,33 @@
                 <option value="canceled">Anulowany</option>
                 <option value="awaiting">Oczekujący</option>
             </select>
-        </div>
-    
-        <div class="form-group">
-            <label class="form-label" for="start-date">Data początkowa</label>
+        </mat-expansion-panel>
+
+        <mat-expansion-panel [expanded]="project.getStartDate()!=null">
+            <mat-expansion-panel-header>
+                Data początkowa
+            </mat-expansion-panel-header>
             <div class="datepicker-container">
                 <input class='form-control' id="start-date" name="start-date" [matDatepicker]="startDatePicker"  
                 [ngModel]='project.getStartDate()' (ngModelChange)="project.setStartDate($event)">
                 <mat-datepicker-toggle [for]="startDatePicker" class='datepicker'></mat-datepicker-toggle>
                 <mat-datepicker #startDatePicker></mat-datepicker>
             </div>  
-        </div>
+        </mat-expansion-panel>
     
-        <div class="form-group">
-            <label class="form-label" for="end-date">Data końcowa</label>
+        <mat-expansion-panel [expanded]="project.getEndDate()!=null">
+            <mat-expansion-panel-header>
+                Data końcowa
+            </mat-expansion-panel-header>
             <div class="datepicker-container">
                 <input matInput class='form-control' id="end-date" name="end-date" [matDatepicker]="endDatePicker"
                 [ngModel]='project.getEndDate()' (ngModelChange)="project.setEndDate($event)">
                 <mat-datepicker-toggle [for]="endDatePicker" class="datepicker"></mat-datepicker-toggle>
                 <mat-datepicker #endDatePicker></mat-datepicker>
             </div>  
-        </div>
+        </mat-expansion-panel>
+
     </form>
-    
     <div class="buttons-section">
         <button class="button form-button" id="close-button" (click)='close()'>Zamknij</button>
         <button class="button form-button" id="save-button" (click)='save()'>Zapisz</button>

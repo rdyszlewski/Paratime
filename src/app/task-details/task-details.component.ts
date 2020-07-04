@@ -5,7 +5,6 @@ import { Tag } from 'app/models/tag';
 import { Subtask } from 'app/models/subtask';
 import { TaskDetails } from './model';
 import * as $ from 'jquery';
-import { strict } from 'assert';
 
 @Component({
   selector: 'app-task-details',
@@ -78,12 +77,12 @@ export class TaskDetailsComponent implements OnInit {
   }
 
   public addNewSubtask(){
-    this.model.toggleSubtaskEditing();
+    this.model.setSubtaskEditing(true);
+    this.model.setEditedSubtask(null);
     // TODO: opisać to w dokumencie
     setTimeout(()=>{ // this will make the execution after the above boolean has changed
       $('#subtask').focus();
     },0); 
-    
     
     // TODO: ustawić focus na polu tekstowym
   }
@@ -104,12 +103,13 @@ export class TaskDetailsComponent implements OnInit {
     setTimeout(()=>{ // this will make the execution after the above boolean has changed
       $('#subtask-name-input_' + subtask.getId()).focus();
     },0);
-    this.model.toggleSubtaskEditing();
+    this.model.setSubtaskEditing(false);
   }
 
   public removeSubtask(subtask:Subtask){
     // TODO: uzupełnić
     console.log("Usuwanie podzadania");
+    console.log(subtask);
     this.model.getTask().removeSubtask(subtask);
   }
 
@@ -129,7 +129,7 @@ export class TaskDetailsComponent implements OnInit {
   }
 
   public cancelAddingSubtask(){
-    this.model.toggleSubtaskEditing();
+    this.model.setSubtaskEditing(false);
   }
 
   public saveNewSubtask(){
@@ -140,7 +140,7 @@ export class TaskDetailsComponent implements OnInit {
     // TODO: zapis do bazy danych
     this.model.getTask().addSubtask(subtask);
     textField.val('');
-    this.model.toggleSubtaskEditing();
+    this.model.setSubtaskEditing(false); // TODO: chyba
   }
 
   public saveTask(){

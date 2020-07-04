@@ -13,6 +13,10 @@ export class LocalTagRepository implements ITagRepository{
         return this.table.where('id').equals(id).first();
     }
 
+    public findAllTags():Promise<Tag[]>{
+        return this.table.toArray();
+    }
+
     public findTagByName(name: string): Promise<Tag> {
         return this.table.where('name').equals(name).first();
     }

@@ -53,8 +53,8 @@ export class TaskDetails{
         return this.subtaskEditing;
     }
 
-    public toggleSubtaskEditing(){
-        this.subtaskEditing = !this.subtaskEditing;
+    public setSubtaskEditing(editing: boolean){
+        this.subtaskEditing = editing;
     }
 
     public getEditedSubtask(){
@@ -65,5 +65,32 @@ export class TaskDetails{
         this.editedSubtask = subtask;
     }
 
-   
+   // form group extending
+   public isDescriptionExtended(){
+       return this.task.getDescription() != null;
+   }
+
+   public isStatusExtended(){
+       return this.task.getStatus()!=null;
+   }
+
+   public isEndDateExtended(){
+       return this.task.getEndDate() != null;
+   }
+
+   public isPlannedTimeExtended(){
+       return this.task.getPlannedTime() != null;
+   }
+
+   public isProjectExtended(){
+       return this.task.getProject() != null;
+   }
+
+   public isTagsExtended(){
+       return this.task.getTags().length > 0;
+   }
+
+   public isSubtasksExtended(){
+       return this.task.getSubtasks().length > 0;
+   }
 }
