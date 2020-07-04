@@ -55,23 +55,16 @@ export class Task{
     }
 
     public addTag(tag:Tag){
-        this.tags.push(tag);
-    }
-
-    private removeTag(tag: Tag){
-        let index = this.getTagIndex(tag);
-        if(index > 0){
-            delete this.tags[index];
+        if(!this.tags.includes(tag)){
+            this.tags.push(tag);
         }
     }
 
-    private getTagIndex(tag:Tag){
-        for(let i = 0; i< this.tags.length; i++){
-            if(this.tags[i] === tag){
-                return i;
-            }
+    public removeTag(tag: Tag){
+        const index = this.tags.indexOf(tag);
+        if(index >= 0){
+            this.tags.splice(index, 1);
         }
-        return -1;
     }
 
     public getEndDate(){
@@ -103,19 +96,10 @@ export class Task{
     }
 
     public removeSubtask(subtask: Subtask){
-        let index = this.getSubtaskIndex(subtask.getId());
+        const index = this.subtasks.indexOf(subtask);
         if (index > 0){
-            delete this.subtasks;
+            this.subtasks.splice(index, 1);
         }
-    }
-
-    private getSubtaskIndex(id: number){
-        for(let i = 0; i < this.subtasks.length; i++){
-            if(this.subtasks[i].getId() == id){
-                return id;
-            }
-        }
-        return -1;
     }
 
     public getStatus(){

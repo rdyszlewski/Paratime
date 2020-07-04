@@ -1,0 +1,61 @@
+.label-item{
+    padding: 3px;
+    border: 1px solid black;
+    display: flex;
+    margin: 2px;
+}
+
+.labels-list{
+    display:flex;
+}
+
+.remove-label{
+    width: 15px;
+    height: 15px;
+    margin-left: 5px;
+    margin-top: auto;
+    margin-bottom: auto;
+    background-color: blue;
+}
+
+.remove-label:hover{
+    cursor:pointer;
+}
+
+.subtask-checkbox-icon{
+    background-color: aqua;
+}
+
+.subtask-done-icon{
+    background-color: brown;
+}
+
+.subtask-icon{
+    width: 15px;
+    height: 15px;
+    border: 1px solid black;
+    margin-top: auto;
+    margin-bottom: auto;
+    margin-left: 2px;
+    margin-right: 2px;
+
+}
+
+.subtask-item{
+    display: flex;
+}
+
+.subtask-name{
+    width: 100%;
+}
+
+.edit-subtask{
+    /* TODO: ustawić ikonę */
+    background-color: yellowgreen;
+}
+
+.remove-subtask{
+    /* TODO: ustawić ikonę */
+    background-color: yellow;
+}
+

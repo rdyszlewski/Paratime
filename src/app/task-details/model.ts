@@ -1,6 +1,8 @@
 import { Task } from 'app/models/task';
 import { Project } from 'app/models/project';
 import { Tag } from 'app/models/tag';
+import { Subtask } from 'app/models/subtask';
+import { Status } from 'app/models/status';
 
 export class TaskDetails{
     private task: Task = new Task();
@@ -9,6 +11,7 @@ export class TaskDetails{
     private tags: Tag[] = [];
     
     private subtaskEditing:boolean = false;
+    private editedSubtask:Subtask;
 
     public getTask():Task{
         return this.task;
@@ -52,4 +55,14 @@ export class TaskDetails{
     public toggleSubtaskEditing(){
         this.subtaskEditing = !this.subtaskEditing;
     }
+
+    public getEditedSubtask(){
+        return this.editedSubtask;
+    }
+
+    public setEditedSubtask(subtask:Subtask){
+        this.editedSubtask = subtask;
+    }
+
+   
 }

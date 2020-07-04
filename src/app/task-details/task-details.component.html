@@ -56,8 +56,11 @@
             <label class="form-label" for="labels">Etykiety</label>
             <div class="labels-list">
                 <!-- TODO: przerobić to jakoś lepiej -->
-                <div *ngFor="let label of model.getTask().getTags()">
-                    {{label.getName()}}
+                <div *ngFor="let label of model.getTask().getTags()" class="label-item">
+                    <span class="label-name">
+                        {{label.getName()}}
+                    </span>
+                    <span class="remove-label" (click)="removeLabel(label)"></span>
                 </div>
             </div>
             <button class="form-control" id="labels" name="labels" [matMenuTriggerFor]="appMenu">Dodaj</button>
@@ -67,8 +70,23 @@
             <label class="form-label" for="subtasks">Podzadania</label>
             <div class="subtasks-list">
                 <!-- TODO: dostosować wygląd  -->
-                <div *ngFor="let substask of model.getTask().getSubtasks()">
-                    {{substask.getName()}}
+                <div *ngFor="let subtask of model.getTask().getSubtasks()" class="subtask-item">
+                    <div 
+                    [ngClass]="{'subtask-checkbox-icon': subtask.getStatus()==status.STARTED,
+                                'subtask-done-icon': subtask.getStatus()==status.ENDED,
+                                'subtask-icon':true}"
+                                (click)="toggleSubtaskStatus(subtask)">
+                    </div>
+                    <div class="subtask-name" (click)="toggleSubtaskStatus(subtask)"
+                    *ngIf="model.getEditedSubtask()!=subtask">{{subtask.getName()}}</div>
+                    <input class="subtask-name" value="{{subtask.getName()}}" [id]="'subtask-name-input_' + subtask.getId()"
+                    *ngIf="model.getEditedSubtask()==subtask">
+                    <div class="edit-subtask subtask-icon" (click)='editSubtask(subtask)'
+                    *ngIf="model.getEditedSubtask()!=subtask"></div>
+                    <div class="remove-subtask subtask-icon" (click)='removeSubtask(subtask)'
+                    *ngIf="model.getEditedSubtask()!=subtask"></div>
+                    <div class='edit-accept subtask-icon' (click)="acceptEditing(subtask)"
+                    *ngIf="model.getEditedSubtask()==subtask"></div>  
                 </div>
             </div>
             <input type="text" class="form-control" id="subtask" [hidden]="!model.isSubtaskEditing()">
@@ -77,13 +95,16 @@
                 (click)="addNewSubtask()">
                     Dodaj
                 </button>
-                <button class="button" id="cancel-subtask-button" [hidden]="!model.isSubtaskEditing()">Anuluj</button>
-                <button class="button" id="save-subtask-button" [hidden]="!model.isSubtaskEditing()">Zapisz</button>
+                <button class="button" id="cancel-subtask-button" [hidden]="!model.isSubtaskEditing()"
+                (click)="cancelAddingSubtask()">Anuluj</button>
+                <button class="button" id="save-subtask-button" [hidden]="!model.isSubtaskEditing()"
+                (click)="saveNewSubtask()">Zapisz</button>
             </div>
         </div>
     </form>
 </div>
 
 <mat-menu #appMenu="matMenu" class="my-menu">
-    <button mat-menu-item *ngFor="let label of model.getTags()" class="form-control">{{label.getName()}}</button>
+    <button mat-menu-item *ngFor="let label of model.getTags()" class="form-control"
+    (click)="chooseTag(label)">{{label.getName()}}</button>
 </mat-menu>

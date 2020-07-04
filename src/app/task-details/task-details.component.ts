@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { Task } from 'app/models/task';
 import { Status } from 'app/models/status';
 import { Project } from 'app/models/project';
 import { Tag } from 'app/models/tag';
 import { Subtask } from 'app/models/subtask';
 import { TaskDetails } from './model';
+import * as $ from 'jquery';
+import { strict } from 'assert';
 
 @Component({
   selector: 'app-task-details',
@@ -12,6 +13,8 @@ import { TaskDetails } from './model';
   styleUrls: ['./task-details.component.css']
 })
 export class TaskDetailsComponent implements OnInit {
+
+  public status = Status;
 
   public model: TaskDetails = new TaskDetails();
 
@@ -72,7 +75,67 @@ export class TaskDetailsComponent implements OnInit {
 
   public addNewSubtask(){
     this.model.toggleSubtaskEditing();
+    // TODO: opisać to w dokumencie
+    setTimeout(()=>{ // this will make the execution after the above boolean has changed
+      $('#subtask').focus();
+    },0); 
+    
+    
     // TODO: ustawić focus na polu tekstowym
+  }
+
+  public chooseTag(tag:Tag){
+    this.model.getTask().addTag(tag);
+  }
+
+  public removeLabel(tag:Tag){
+    // TODO: zrobić usuwanie z bazy danych i z listy
+    console.log("Usuwam etykietę");
+    this.model.getTask().removeTag(tag);
+  }
+
+  public editSubtask(subtask:Subtask){
+    // TODO: uzupełnić
+    this.model.setEditedSubtask(subtask);
+    setTimeout(()=>{ // this will make the execution after the above boolean has changed
+      $('#subtask-name-input_' + subtask.getId()).focus();
+    },0); 
+  }
+
+  public removeSubtask(subtask:Subtask){
+    // TODO: uzupełnić
+    console.log("Usuwanie podzadania");
+    this.model.getTask().removeSubtask(subtask);
+  }
+
+  public toggleSubtaskStatus(subtask:Subtask){
+    if(subtask.getStatus()== Status.STARTED){
+        subtask.setStatus(Status.ENDED);
+    } else if(subtask.getStatus()==Status.ENDED){
+        subtask.setStatus(Status.STARTED);
+    }
+  }
+
+  public acceptEditing(subtask:Subtask){
+    const textField = $('#subtask-name-input_' + subtask.getId());
+    subtask.setName(textField.val());
+    // TODO: zrobić zapisywanie do bazy danych
+    this.model.setEditedSubtask(null);
+  }
+
+  public cancelAddingSubtask(){
+    this.model.toggleSubtaskEditing();
+  }
+
+  public saveNewSubtask(){
+    // TODO: pobrać wartość z pola, utworzyć zadanie, zapisać do bazy danych (chyba), wspisać na listę
+    const textField = $('#subtask');
+    const subtaskName = textField.val();    
+    const subtask = new Subtask(subtaskName,null, Status.STARTED);
+    // TODO: zapis do bazy danych
+    this.model.getTask().addSubtask(subtask);
+    textField.val('');
+    this.model.toggleSubtaskEditing();
   }
 
 }
