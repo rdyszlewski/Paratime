@@ -3,6 +3,7 @@ import { StoreManager } from '../common/store_manager';
 import { LocalDataSource } from '../local/source';
 import { Status } from 'app/models/status';
 import { Task } from 'app/models/task';
+import { Tag } from 'app/models/tag';
 
 export class DatabaseTest{
 
@@ -24,6 +25,22 @@ export class DatabaseTest{
             console.log(inserted_project);
             return Promise.resolve(inserted_project);
         });
+    }
+
+    public insertLabels(){
+        let label1 = new Tag("Jeden");
+        let label2 = new Tag("Dwa");
+        let label3 = new Tag("Trzy");
+        let label4 = new Tag("Cztery");
+
+        this.insertLabelToDb(label1);
+        this.insertLabelToDb(label2);
+        this.insertLabelToDb(label3);
+        this.insertLabelToDb(label4);
+    }
+
+    private insertLabelToDb(label:Tag){
+        this.storeManager.getTagStore().createTag(label);
     }
 
     private createProject() {
@@ -89,6 +106,11 @@ export class DatabaseTest{
                 });
             });
         });
+    }
+
+    public insertTask(task:Task, project:Project){
+        task.setProject(project);
+        this.storeManager.getTaskStore().createTask(task);
     }
 
     public createTask(name:string){

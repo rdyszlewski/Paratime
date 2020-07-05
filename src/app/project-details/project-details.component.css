@@ -20,3 +20,18 @@
     margin-bottom: 0px;
     margin-top:auto;
 }
+
+/* TODO: te same style są w tesk-details.component.css. Spróbować przenieść to do styles.css */
+.form-group-header{
+    padding: 5px!important;
+    height: auto!important;
+}
+
+.mat-content{
+    font-size: medium;
+}
+
+.mat-expanded, .mat-content{
+    /* TODO: dopracować to jakoś */
+    font-size: small;
+}

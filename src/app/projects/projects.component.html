@@ -1,7 +1,7 @@
 <div class="projects-container">
     <h3>Projekty</h3>
     <!-- TODO: ustawić odpowiednio styl do filtra -->
-    <input id="project-filter filter" (input)='filterProjects($event.target.value)'>
+    <input class="project-filter filter" (input)='filterProjects($event.target.value)'>
     <!-- TODO: zrobić globalny styl do listy oraz do jej elementów-->
     <div id="projects-list" class="list">
         <div *ngFor='let project of model.getProjects()'

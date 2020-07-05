@@ -89,18 +89,22 @@
                     <div 
                     [ngClass]="{'subtask-checkbox-icon': subtask.getStatus()==status.STARTED,
                                 'subtask-done-icon': subtask.getStatus()==status.ENDED,
-                                'subtask-icon':true}"
+                                'subtask-icon':true,
+                                'checkbox': true}"
                                 (click)="toggleSubtaskStatus(subtask)">
                     </div>
                     <div class="subtask-name" (click)="toggleSubtaskStatus(subtask)"
                     *ngIf="model.getEditedSubtask()!=subtask">{{subtask.getName()}}</div>
                     <input class="subtask-name" value="{{subtask.getName()}}" [id]="'subtask-name-input-' + subtask.getId()"
                     *ngIf="model.getEditedSubtask()==subtask">
-                    <div class="edit-subtask subtask-icon" (click)='editSubtask(subtask)'
-                    *ngIf="model.getEditedSubtask()!=subtask"></div>
-                    <div class="remove-subtask subtask-icon" (click)='removeSubtask(subtask)'
-                    *ngIf="model.getEditedSubtask()!=subtask"></div>
-                    <div class='edit-accept subtask-icon' (click)="acceptEditing(subtask)"
+                    <div class="subtask-item-buttons">
+                        <div class="edit-subtask subtask-icon button" (click)='editSubtask(subtask)'
+                        *ngIf="model.getEditedSubtask()!=subtask"></div>
+                        <div class="remove-subtask subtask-icon button" (click)='removeSubtask(subtask)'
+                        *ngIf="model.getEditedSubtask()!=subtask"></div>
+                    </div>
+                    
+                    <div class='edit-accept subtask-icon button' (click)="acceptEditing(subtask)"
                     *ngIf="model.getEditedSubtask()==subtask"></div>  
                 </div>
             </div>

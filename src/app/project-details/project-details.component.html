@@ -2,24 +2,24 @@
 <div class="project-details">
     <form class="project-form">
 
-        <mat-expansion-panel [expanded]='true'>
-            <mat-expansion-panel-header>
+        <mat-expansion-panel class="form-group" [expanded]='true'>
+            <mat-expansion-panel-header class="form-group-header">
                 Nazwa
             </mat-expansion-panel-header>
             <input type="text" class="form-control" id="project-name" name='name'
             [ngModel]='project.getName()' (ngModelChange)="project.setName($event)">
         </mat-expansion-panel>
 
-        <mat-expansion-panel [expanded]="project.getDescription()!=null">
-            <mat-expansion-panel-header>
+        <mat-expansion-panel class="form-group" [expanded]="project.getDescription()!=null">
+            <mat-expansion-panel-header class="form-group-header">
                 Opis
             </mat-expansion-panel-header>
             <textarea class="form-control" id="project-description" name="description"
             [ngModel]='project.getDescription()' (ngModelChange)="project.setDescription($event)"></textarea>
         </mat-expansion-panel>
 
-        <mat-expansion-panel [expanded]="true">
-            <mat-expansion-panel-header>
+        <mat-expansion-panel class="form-group" [expanded]="true">
+            <mat-expansion-panel-header class="form-group-header">
                 Typ
             </mat-expansion-panel-header>
             <!-- TODO: dorobić zapisywanie -->
@@ -32,8 +32,8 @@
             </select>
         </mat-expansion-panel>
     
-        <mat-expansion-panel [expanded]="true">
-            <mat-expansion-panel-header>
+        <mat-expansion-panel class="form-group" [expanded]="true">
+            <mat-expansion-panel-header class="form-group-header">
                 Stan
             </mat-expansion-panel-header>
             <!-- TODO: dorobić zapisywanie -->
@@ -46,8 +46,8 @@
             </select>
         </mat-expansion-panel>
 
-        <mat-expansion-panel [expanded]="project.getStartDate()!=null">
-            <mat-expansion-panel-header>
+        <mat-expansion-panel class="form-group" [expanded]="project.getStartDate()!=null">
+            <mat-expansion-panel-header class="form-group-header">
                 Data początkowa
             </mat-expansion-panel-header>
             <div class="datepicker-container">
@@ -58,8 +58,8 @@
             </div>  
         </mat-expansion-panel>
     
-        <mat-expansion-panel [expanded]="project.getEndDate()!=null">
-            <mat-expansion-panel-header>
+        <mat-expansion-panel class="form-group" [expanded]="project.getEndDate()!=null">
+            <mat-expansion-panel-header class="form-group-header">
                 Data końcowa
             </mat-expansion-panel-header>
             <div class="datepicker-container">

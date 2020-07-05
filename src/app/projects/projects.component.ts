@@ -43,21 +43,12 @@ export class ProjectsComponent implements OnInit {
       this.loadEmitter.emit(loadedProject);
     });
     this.model.setSelectedProject(project);
-
-    // DataService.getStoreManager().getTaskStore().getTasksByProject(project.getId()).then(tasks=>{
-    //   console.log("Zadania w projektcie");
-    //   console.log(tasks);
-    // });
-   
   }
 
   createProjectClick(){
     this.editEmitter.emit(null);
   }
 
-  // projectMenuClick(project:Project){
-   
-  // }
 
   projectMenuClick(event:MouseEvent, project:Project){
     // TODO; okazuje się, że focus nie działa
@@ -81,22 +72,21 @@ export class ProjectsComponent implements OnInit {
   editProject(){
     DataService.getStoreManager().getProjectStore().getProjectById(this.lastContextOpen.getId()).then(loadedProject=>{
       this.editEmitter.emit(loadedProject);
-      // TODO: sprawdzić to, bo trochę mi nie pasuje
+      // TODO: przyjrzeć się temu
       this.model.setSelectedProject(this.lastContextOpen);
     });
   }
 
   removeProject(){
     DataService.getStoreManager().getProjectStore().removeProject(this.lastContextOpen.getId()).then(()=>{
-      // TODO: usunąć projekt z listy
-      
+      this.model.removeProject(this.lastContextOpen);
+      this.lastContextOpen = null;
     });
 
   }
 
   addProject(project:Project):void{
     this.model.addProject(project);
-    // TODO: sprawdzić, jak to będzie reagować, jeżeli będzie wpisany jakiś filtr
   }
 
 }

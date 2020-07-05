@@ -1,6 +1,18 @@
 
 @import '../../styles.css';
 
+.task-details{
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.form{
+    box-sizing: border-box;
+    height: 100%;
+    overflow: auto;
+}
+
 .label-item{
     padding: 3px;
     border: 1px solid black;
@@ -41,7 +53,6 @@
     margin-bottom: auto;
     margin-left: 2px;
     margin-right: 2px;
-
 }
 
 .subtask-item{
@@ -50,6 +61,9 @@
 
 .subtask-name{
     width: 100%;
+    font-size: 1.2em;
+    padding: 3px;
+    cursor: default;
 }
 
 .edit-subtask{
@@ -61,4 +75,39 @@
     /* TODO: ustawić ikonę */
     background-color: yellow;
 }
+
+.subtask-item-buttons{
+    visibility: collapse;
+    display: flex;
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.subtask-item:hover .subtask-item-buttons{
+    visibility: visible;
+}
+
+.button{
+    cursor: pointer;
+}
+
+.checkbox{
+    cursor: pointer;
+}
+
+/* TODO: spróbować zrozumieć, dlaczego to nie chce działać po umieszczeniu w styles.css */
+.form-group-header{
+    padding: 5px!important;
+    height: auto!important;
+}
+
+.mat-content{
+    font-size: medium;
+}
+
+.mat-expanded, .mat-content{
+    /* TODO: dopracować to jakoś */
+    font-size: small;
+}
+
 

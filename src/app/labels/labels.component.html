@@ -7,13 +7,15 @@
             *ngIf="model.getEditedLabel()!=label">{{label.getName()}}</div>
             <input class="label-name" [value]="label.getName()" [id]="'label-name-input-' + label.getId()"
             *ngIf="model.getEditedLabel()==label">
-            <div class="edit-label label-icon" (click)="editLabel(label)"
-            *ngIf="model.getEditedLabel()!=label"></div>
-            <div class="remove-label label-icon" (click)="removeLabel(label)"
-            *ngIf="model.getEditedLabel()!=label"></div> 
+            <div class="label-item-buttons">
+                <div class="edit-label label-icon" (click)="editLabel(label)"
+                *ngIf="model.getEditedLabel()!=label"></div>
+                <div class="remove-label label-icon" (click)="removeLabel(label)"
+                *ngIf="model.getEditedLabel()!=label"></div> 
+            </div>
+            
             <div class="accept-edit label-icon" (click)="acceptEditing(label)"
             *ngIf="model.getEditedLabel()==label"></div>
-
         </div>
     </div>
     <input type="text" class="form-control" id="label" [hidden]="!model.isLabelEditing()">
@@ -28,5 +30,4 @@
         (click)="saveNewLabel()">Zapisz</button>
     </div>
     <button class="button form-button" id="labels-close-button" (click)='closePanel()'>Zamknij</button>
-
 </div>

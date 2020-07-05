@@ -64,9 +64,13 @@ export class MainComponent implements OnInit {
     databaseTest.insertProject(project1).then(insertedProject=>{
       let task1 = databaseTest.createTask("Zadanie 1");
       let task2 = databaseTest.createTask("Zadanie 2");
+      
       databaseTest.insertTasks(task1, task2, insertedProject);
     });
     databaseTest.insertProject(project2);
+
+
+    databaseTest.insertLabels();
   }
 
   private deleteDatabase(){

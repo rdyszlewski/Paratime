@@ -1,11 +1,14 @@
 
 .labels-view{
     width: 100%;
+    height: 100vh;
     box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
 }
 
 .labels-list{
-    
+    overflow: auto;
 }
 
 .label-item{
@@ -43,4 +46,13 @@
 
 .buttons-container{
     float: right;
+}
+
+.label-item-buttons{
+    display: flex;
+    visibility: collapse;
+}
+
+.label-item:hover .label-item-buttons{
+    visibility: visible;
 }

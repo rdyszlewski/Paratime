@@ -9,6 +9,15 @@
 
 #tasks-list{
     height: 100%;
+    overflow: auto;
+}
+
+.task-menu-button{
+    visibility: collapse;
+}
+
+.task:hover .task-menu-button{
+    visibility: visible;
 }
 
 .task{
