@@ -25,7 +25,6 @@ export class LabelsModel{
 
     public removeLabel(label:Tag){
         const index = this.labels.indexOf(label);
-        console.log(index);
         if(index >= 0){
             this.labels.splice(index, 1);
         }

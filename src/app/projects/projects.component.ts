@@ -89,7 +89,6 @@ export class ProjectsComponent implements OnInit {
       if(this.model.getSelectedProject()!= null && id==this.model.getSelectedProject().getId()){
         this.removeEvent.emit();
       }
-      console.log(5);
       this.lastContextOpen = null;
     });
   }

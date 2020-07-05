@@ -46,7 +46,7 @@ export class MainComponent implements OnInit {
   constructor(public snakBar: MatSnackBar) { }
 
   ngOnInit(): void {
-    this.configureDexie();
+    // this.configureDexie();
     this.projectsView = $("#projects");
     this.projectDetailsView = $("#projects-details");
     this.tasksView = $("#tasks");
@@ -56,6 +56,7 @@ export class MainComponent implements OnInit {
     this.setOriginalWidth();
   }
 
+  // metoda do testów TEST
   private configureDexie(){
     this.deleteDatabase(); // TODO: po testowaniu sunąć to 
 
@@ -117,7 +118,6 @@ export class MainComponent implements OnInit {
   }
 
   public closeTaskDetails(){
-    console.log("Main");
     this.tasksDetailsOpen = false;
     this.taskDetailsComponent.setTask(new Task()); //clearing fields
     
@@ -131,7 +131,6 @@ export class MainComponent implements OnInit {
 
   loadTasks(project:Project){
     this.tasksComponent.setProject(project);
-    // console.log(project);
   }
 
   public onCreateProject(project:Project){
@@ -159,6 +158,23 @@ export class MainComponent implements OnInit {
 
   public onUpdateProject(project:Project){
     this.projectsComponent.updateProject(project);
+  }
+
+  public onCreateTask(task:Task){
+    this.tasksDetailsOpen = false;
+    this.setOriginalWidth();
+    
+    this.tasksComponent.addTask(task);
+  }
+
+  public onRemoveTask(taskId: number){
+    if(this.tasksDetailsOpen){
+      if(this.taskDetailsComponent.model.getTask().getId()==taskId){
+        // TODO: może lepiej zrobić jakąś metodę close i open
+        this.tasksDetailsOpen = false;
+        this.setOriginalWidth();
+      }
+    }
   }
 
   public onRemoveSelectedProject(project:Project){

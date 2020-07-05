@@ -20,9 +20,7 @@ export class DatabaseTest{
     }
 
     public insertProject(project: Project): Promise<Project> {
-        console.log("Inserting project");
         return this.storeManager.getProjectStore().createProject(project).then(inserted_project => {
-            console.log(inserted_project);
             return Promise.resolve(inserted_project);
         });
     }
@@ -60,8 +58,6 @@ export class DatabaseTest{
         return this.insertProject(project).then(result=>{
             result.setName("Zaktualizowany projekt");
             return this.storeManager.getProjectStore().updateProject(project).then(updatedProject=>{
-                console.log("Zaktualizowany projekt");
-                console.log(updatedProject);
                 return Promise.resolve(updatedProject);
             });
         });

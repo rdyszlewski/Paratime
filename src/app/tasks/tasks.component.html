@@ -25,7 +25,8 @@
         </div>
       </div>
   </div>
-  <button class="button border" (click)='createTaskClick()'>Dodaj zadanie</button>
+  <button class="button border" (click)='createTaskClick()'
+  *ngIf="model.getProject().getId()!=null">Dodaj zadanie</button>
 </div>
 
 <mat-menu #menu="matMenu">

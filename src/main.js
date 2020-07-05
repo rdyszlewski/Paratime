@@ -6,8 +6,8 @@ const {app, BrowserWindow} = require('electron')
 
     function createWindow () {
       mainWindow = new BrowserWindow({
-        width: 800,
-        height: 600,
+        width: 1200,
+        height: 800,
         webPreferences: {
           nodeIntegration: true
         }
@@ -15,13 +15,15 @@ const {app, BrowserWindow} = require('electron')
 
       mainWindow.loadURL(
         url.format({
-          pathname: path.join(__dirname, `/dist/index.html`),
+          pathname: path.join(__dirname, `../dist/index.html`),
           protocol: "file:",
           slashes: true
         })
       );
+
+      mainWindow.setMenu(null);
       // Open the DevTools.
-      mainWindow.webContents.openDevTools()
+      // mainWindow.webContents.openDevTools()
 
       mainWindow.on('closed', function () {
         mainWindow = null

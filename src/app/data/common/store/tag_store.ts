@@ -53,8 +53,6 @@ export class TagStore{
     public getTagsByTask(taskId):Promise<Tag[]>{
         return this.taskTagRepository.findByTaskId(taskId).then(entries=>{
             let promises = [];
-            console.log("Tagi");
-            console.log(entries);
             entries.forEach(entry=>{
                 let promise = this.tagRepository.findTagById(entry.getTagId());
                 promises.push(promise);

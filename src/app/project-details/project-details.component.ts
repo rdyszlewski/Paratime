@@ -87,7 +87,6 @@ export class ProjectDetailsComponent implements OnInit {
   }
 
   public updateProject(){
-    console.log("Aktualizowanie projektu");
     if(this.model.isUpdateMode()){
       DataService.getStoreManager().getProjectStore().updateProject(this.model.getProject()).then(()=>{
         this.updateEvent.emit(this.model.getProject());

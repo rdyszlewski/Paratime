@@ -231,14 +231,14 @@ export class TaskDetailsComponent implements OnInit {
         // this.model.getSelectedProject().addTask(insertedTask);
         // TODO: byc może tutaj powinno być informacja o zamknięcu i być może wstawieniu nowego zadania
         // TODO: wyświetlniee komunikatu o powodzeniu zapisu
-        this.closeEmitter.emit();
+        // this.closeEmitter.emit();
+        this.saveEmitter.emit(insertedTask);
       });
     }
   }
 
   public updateTask(){
     // TODO: powinniśmy sprawdzać, czy są jakiekolwiek zmiany
-    console.log("Aktualizacja zadania");
     if(this.model.isUpdateMode()) {
       DataService.getStoreManager().getTaskStore().updateTask(this.model.getTask()).then(()=>{
         // TODO: może tutaj można coś wstawić
@@ -248,7 +248,6 @@ export class TaskDetailsComponent implements OnInit {
 
   public close(){
     // TODO: można zrobić jakiś komunikat
-    console.log("task details");
     this.closeEmitter.emit();
   }
 
@@ -258,7 +257,6 @@ export class TaskDetailsComponent implements OnInit {
 
   public handleKeysOnNewSubtaskInput(event:KeyboardEvent){
     if(event.keyCode == 13){  // enter
-      console.log("Wykonywanie tego");
       this.saveNewSubtask();
     } 
     if(event.keyCode == 27){ // esc
@@ -279,4 +277,5 @@ export class TaskDetailsComponent implements OnInit {
     let finishedSubtask = task.getSubtasks().filter(x=>x.getStatus()==Status.ENDED);
     return finishedSubtask.length;
   }
+
 }

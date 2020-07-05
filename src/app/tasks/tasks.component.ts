@@ -20,10 +20,15 @@ export class TasksComponent implements OnInit {
   constructor(public dialog:MatDialog) { }
 
   @Output() details: EventEmitter<Task> = new EventEmitter();
+  @Output() removeEvent: EventEmitter<number> = new EventEmitter();
   
   public model: TasksModel = new TasksModel();
 
   ngOnInit(): void {
+    
+  }
+
+  private mockDate(){
     let task1 = new Task("Jeden", "Coś tam", Status.CANCELED);
     task1.setEndDate(new Date());
     let subtask1 = new Subtask("Podzadanie 1","Opisik",Status.STARTED);
@@ -64,11 +69,12 @@ export class TasksComponent implements OnInit {
   }
 
   private removeTask():void{
-    let taskId = this.model.getTaskWithOpenMenu().getId();
+    const taskId = this.model.getTaskWithOpenMenu().getId();
     DataService.getStoreManager().getTaskStore().removeTask(taskId).then(()=>{
       this.model.removeTask(this.model.getTaskWithOpenMenu());
       // TODO: pomyśleć jak to można rozwiązać inaczej. Terz może być problem, przy szybkim otwieraniu menu
       this.model.setTaskWithOpenMenu(null);
+      this.removeEvent.emit(taskId);
     });
   }
 
@@ -104,5 +110,12 @@ export class TasksComponent implements OnInit {
         this.removeTask();
       }
     });
+  }
+
+  // TODO: pomysleć, jak to zrobić poprawnie
+  public addTask(task:Task){
+    if(task.getProjectID()==this.model.getProject().getId()){
+      this.model.addTask(task);
+    }
   }
 }

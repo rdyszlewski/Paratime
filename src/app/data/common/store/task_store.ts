@@ -34,8 +34,6 @@ export class TaskStore{
     private setTaskData(task: Task): Task | PromiseLike<Task> {
         // TODO: przydałaby się refaktoryzacja
         return this.subtaskStore.getSubtaskByTask(task.getId()).then(subtasks => {
-            console.log("Pobieranie zadania");
-            console.log(subtasks);
             task.setSubtasks(subtasks);
         }).then(() => {
             return this.tagStore.getTagsByTask(task.getId()).then(tags => {
@@ -83,17 +81,13 @@ export class TaskStore{
             // TODO; wstawienie etykiet
             const promises = [];
             task.getSubtasks().forEach(subtask=>{
-                console.log("Wstawiam zadanie");
                 subtask.setTaskId(insertedId);
                 let subtaskPromise = this.subtaskStore.createSubtask(subtask).then(subtask=>{
-                    console.log("Wstawione podzadanie");
-                    console.log(subtask);
                     return Promise.resolve(subtask);
                 });
                 promises.push(subtaskPromise);
             });
             task.getTags().forEach(label=>{
-                console.log("Wstawiam etykietę");
                 const entry = new TaskTagsModel(insertedId, label.getId());
                 let labelPromise = this.tagStore.connectTaskAndTag(entry);
                 promises.push(labelPromise);

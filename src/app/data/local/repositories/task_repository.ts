@@ -53,10 +53,7 @@ export class LocalTaskRepository implements ITaskRepository{
         // TODO: przetestować to
         // TODO: sprawdzić, jak powinien wyglądać dostęp do zmiennych
         return this.findTasksByProject(projectId).then(results=>{
-            console.log("Chcę usunąć wszystkie zadania ");
-            console.log(results);
             return results.forEach(task => {
-                console.log("Usuwanie zadania " + task['id']);
                 this.table.delete(task['id']);
             });
         });

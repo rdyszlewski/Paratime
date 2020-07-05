@@ -18,9 +18,7 @@ export class ProjectsModel{
     }
 
     public removeProject(project:Project){
-        console.log(project);
         const index = this.projects.indexOf(project);
-        console.log(index);
         if(index >=0){
             this.projects.splice(index, 1);
             this.filterProject(this.lastFilter);

@@ -5,6 +5,8 @@
   "scripts": {
     "ng": "ng",
     "electron": "ng build --base-href ./ && electron .",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder", 
     "start": "ng serve",
     "build": "ng build",
     "test": "ng test",
@@ -23,6 +25,7 @@
     "@angular/platform-browser": "~9.1.0",
     "@angular/platform-browser-dynamic": "~9.1.0",
     "@angular/router": "~9.1.0",
+    "g": "^2.0.1",
     "rxjs": "~6.5.4",
     "tslib": "^1.10.0",
     "zone.js": "~0.10.2"
@@ -40,6 +43,7 @@
     "dexie": "^3.0.1",
     "dexie-export-import": "^1.0.0-rc.2",
     "electron": "^9.0.4",
+    "electron-packager": "^15.0.0",
     "jasmine-core": "~3.5.0",
     "jasmine-spec-reporter": "~4.2.1",
     "jquery": "^3.5.1",

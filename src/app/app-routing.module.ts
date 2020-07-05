@@ -10,6 +10,7 @@ import { LabelsComponent } from './labels/labels.component';
 
 
 const routes: Routes = [
+  {path: '', redirectTo: 'main', pathMatch: "full"},
   {path: 'main', component: MainComponent},
   {path: "tasks", component: TasksComponent},
   {path: 'projects', component: ProjectsComponent},

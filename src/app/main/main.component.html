@@ -11,10 +11,12 @@
     ></app-project-details>
     
     <app-tasks id='tasks' [hidden]='!tasksOpen'
-    (details)="openTaskDetails($event)"></app-tasks>
+    (details)="openTaskDetails($event)"
+    (removeEvent)="onRemoveTask($event)"></app-tasks>
 
     <app-task-details id="task-details" [hidden]='!tasksDetailsOpen'
     (closeEmitter)="closeTaskDetails()"
+    (saveEmitter)="onCreateTask($event)"
     (labelsManager)="openLabelsManager()"></app-task-details>
 
     <app-labels id="labels" [hidden]="!labelsOpen"
