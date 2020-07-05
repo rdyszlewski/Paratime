@@ -1,9 +1,10 @@
 import { Project } from 'app/models/project';
+import { runInThisContext } from 'vm';
 
 export class ProjectDetails{
 
-    private project:Project;
-    public startDate:Date;
+    private project:Project = new Project();
+    public updateMode: boolean;
 
     public getProject(){
         // TODO: odpowiednie ustawianie dat
@@ -11,8 +12,11 @@ export class ProjectDetails{
     }
 
     public setProject(project:Project){
-        this.project = project;
-        this.startDate = project.getStartDate();
+        if(project){
+            this.project = project;
+            this.updateMode = project.getId()!=null;
+        }
+        
     }
 
     public getName():Project{
@@ -29,6 +33,13 @@ export class ProjectDetails{
         return null;
     }
 
+    public isUpdateMode():boolean{
+        return this.updateMode;
+    }
+
+    public setUpdateMode(updateMode:boolean){
+        this.updateMode = updateMode;
+    }
    
 
 }

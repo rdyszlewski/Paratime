@@ -1,25 +1,26 @@
-<div class="projects-container">
-    <h3>Projekty</h3>
+<div class="projects-view shadow app-panel">
+    <h3 class="panel-header">Projekty</h3>
     <!-- TODO: ustawić odpowiednio styl do filtra -->
-    <input class="project-filter filter" (input)='filterProjects($event.target.value)'>
+    <input class="project-filter filter border" (input)='filterProjects($event.target.value)'>
     <!-- TODO: zrobić globalny styl do listy oraz do jej elementów-->
-    <div id="projects-list" class="list">
+    <div id="projects-list" class="list border">
         <div *ngFor='let project of model.getProjects()'
-        [ngClass]="{'selected': isSelectedProject(project),
+        [ngClass]="{'selected-list-item': isSelectedProject(project),
                     'project': true,
-                    'list-item':true}" 
+                    'list-item':true,
+                    'transparent-border':true}" 
                     (click)='projectClick(project)'
                     >
             
-                <div class="project-name">{{project.getName()}}</div>
-                <button class="project-menu-button" 
+                <div class="list-item-value">{{project.getName()}}</div>
+                <div class="list-item-options" 
                 (click)='projectMenuClick($event, project)'
                 [matMenuTriggerFor]="menu"
-                >...</button>
+                >...</div>
            
         </div>
     </div>
-    <button class="button project-add-button" (click)='createProjectClick()'>Dodaj projekt</button>
+    <button class="button border" (click)='createProjectClick()'>Dodaj projekt</button>
 </div>
 
 <mat-menu #menu="matMenu">

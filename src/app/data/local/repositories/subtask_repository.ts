@@ -32,5 +32,4 @@ export class LocalSubtaskRepository implements ISubtaskRepository{
     public bulkRemoveSubtasks(ids:number[]):Promise<void>{
         return this.table.bulkDelete(ids);
     }
-    
 }

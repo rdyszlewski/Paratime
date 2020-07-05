@@ -21,7 +21,6 @@ export class TasksComponent implements OnInit {
   
   public model: TasksModel = new TasksModel();
 
-
   ngOnInit(): void {
     let task1 = new Task("Jeden", "Coś tam", Status.CANCELED);
     task1.setEndDate(new Date());
@@ -45,7 +44,9 @@ export class TasksComponent implements OnInit {
   }
 
   createTaskClick(){
-    // TODO: otworzyć tworzenie nowego zadania
+    const task = new Task();
+    task.setProject(this.model.getProject());
+    this.details.emit(task);
   }
 
   taskMenuClick(mouseEvent: MouseEvent, task:Task){

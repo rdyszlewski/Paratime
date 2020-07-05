@@ -1,6 +1,7 @@
 import { ITaskTagsRepository } from '../repositories/task_tags_repository';
 import { ITagRepository } from '../repositories/tag_repository';
 import { Tag } from 'app/models/tag';
+import { TaskTagsModel } from '../models';
 
 export class TagStore{
 
@@ -30,6 +31,11 @@ export class TagStore{
         });
     }
 
+    // TODO: pomyśleć jeszcze nad tą metodą
+    public connectTaskAndTag(model: TaskTagsModel): Promise<TaskTagsModel>{
+        return this.taskTagRepository.insert(model);
+    }
+
     public updateTag(tag:Tag):Promise<Tag>{
         // TODO: sprawdzić, czy nie będzie trzeba zmienić wyniku po then
         return this.tagRepository.updateTag(tag).then(()=>{
@@ -47,6 +53,8 @@ export class TagStore{
     public getTagsByTask(taskId):Promise<Tag[]>{
         return this.taskTagRepository.findByTaskId(taskId).then(entries=>{
             let promises = [];
+            console.log("Tagi");
+            console.log(entries);
             entries.forEach(entry=>{
                 let promise = this.tagRepository.findTagById(entry.getTagId());
                 promises.push(promise);
@@ -57,6 +65,10 @@ export class TagStore{
 
     public removeTaskTags(taskId:number):Promise<void>{
         return this.taskTagRepository.removeByTaskId(taskId);
+    }
+
+    public removeTagFromTask(taskId: number, tagId: number):Promise<void>{
+        return this.taskTagRepository.remove(new TaskTagsModel(taskId, tagId));
     }
 
 }

@@ -2,6 +2,7 @@ import { Component, OnInit, Output, EventEmitter, ViewChild, TemplateRef } from 
 import { ProjectsModel } from './model';
 import { Project } from 'app/models/project';
 import { DataService } from 'app/data.service';
+import * as $ from 'jquery';
 
 
 @Component({
@@ -16,6 +17,7 @@ export class ProjectsComponent implements OnInit {
   
   @Output() editEmitter: EventEmitter<Project> = new EventEmitter();
   @Output() loadEmitter: EventEmitter<Project> = new EventEmitter();
+  @Output() removeEvent: EventEmitter<Project> = new EventEmitter();
 
   contextMenuPosition = { x: '0px', y: '0px' };
 
@@ -36,17 +38,19 @@ export class ProjectsComponent implements OnInit {
     });
   }
 
+  public updateProject(project:Project){
+    this.model.updateProject(project);
+  }
+
   projectClick(project:Project){
     DataService.getStoreManager().getProjectStore().getProjectById(project.getId()).then(loadedProject=>{
-      console.log("Projekt");
-      console.log(loadedProject);
       this.loadEmitter.emit(loadedProject);
     });
     this.model.setSelectedProject(project);
   }
 
   createProjectClick(){
-    this.editEmitter.emit(null);
+    this.editEmitter.emit(new Project);
   }
 
 
@@ -80,6 +84,10 @@ export class ProjectsComponent implements OnInit {
   removeProject(){
     DataService.getStoreManager().getProjectStore().removeProject(this.lastContextOpen.getId()).then(()=>{
       this.model.removeProject(this.lastContextOpen);
+      if(this.lastContextOpen.getId()==this.model.getSelectedProject().getId()){
+        // TODO: przemyśleć jak to powinno poprawnie wyglądać
+        this.removeEvent.emit();
+      }
       this.lastContextOpen = null;
     });
 
@@ -87,6 +95,11 @@ export class ProjectsComponent implements OnInit {
 
   addProject(project:Project):void{
     this.model.addProject(project);
+  }
+
+  public selectProject(project:Project){
+    this.model.setSelectedProject(project);
+    this.projectClick(project);
   }
 
 }

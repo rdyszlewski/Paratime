@@ -8,6 +8,10 @@ export class TasksModel{
     private lastFilter:string = "";
     private taskWithOpenMenu: Task;
 
+    public getProject(){
+        return this.project;
+    }
+
     public getProjectName(){
         if(this.project){
             return this.project.getName();

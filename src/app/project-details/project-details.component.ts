@@ -4,6 +4,7 @@ import { ProjectType } from 'app/models/project_type';
 import { Status } from 'app/models/status';
 
 import { DataService } from 'app/data.service';
+import { ProjectDetails } from './model';
 
 @Component({
   selector: 'app-project-details',
@@ -15,22 +16,23 @@ export class ProjectDetailsComponent implements OnInit {
   // TODO: dodać emitter zapisywania i zamykania okna
   @Output() closeEmitter: EventEmitter<null> = new EventEmitter();
   @Output() saveEmitter: EventEmitter<Project> = new EventEmitter();
-  public project: Project;
+  @Output() updateEvent: EventEmitter<Project> = new EventEmitter();
+
+  public model: ProjectDetails = new ProjectDetails();
+  // public project: Project = new Project();
 
   constructor() { }
 
   ngOnInit(): void {
-    this.project = new Project();
+    
   }
 
   public setProject(project:Project){
-    if(project){
-      this.project = project;
-    }
+    this.model.setProject(project);
   }
 
   public getType(){
-    return this.getTypeValue(this.project.getType());
+    return this.getTypeValue(this.model.getProject().getType());
   }
 
   private getTypeValue(type:ProjectType):string{
@@ -51,7 +53,7 @@ export class ProjectDetailsComponent implements OnInit {
   }
 
   public getStatus(){
-    return this.getStatusValue(this.project.getStatus());
+    return this.getStatusValue(this.model.getProject().getStatus());
   }
 
   private getStatusValue(status:Status): string{
@@ -75,18 +77,20 @@ export class ProjectDetailsComponent implements OnInit {
 
   save(){
     // TODO: napisać kod odpowiedzialny za zapisywanie projektu
-    if (this.project.getId()){
-      DataService.getStoreManager().getProjectStore().updateProject(this.project).then(updatedProject=>{
-        this.project=updatedProject;
-        // TODO: zastanowić się, jak to powinno działać
-        // this.saveEmitter.emit(updatedProject);
-      })
-    } else {
-      DataService.getStoreManager().getProjectStore().createProject(this.project).then(createdProject=>{
-        this.project=createdProject;
-        console.log("Zapisany projekt");
-        console.log(createdProject);
+    
+    if(!this.model.isUpdateMode()){
+      DataService.getStoreManager().getProjectStore().createProject(this.model.getProject()).then(createdProject=>{
+        this.model.setProject(createdProject);
         this.saveEmitter.emit(createdProject);
+      });
+    }
+  }
+
+  public updateProject(){
+    console.log("Aktualizowanie projektu");
+    if(this.model.isUpdateMode()){
+      DataService.getStoreManager().getProjectStore().updateProject(this.model.getProject()).then(()=>{
+        this.updateEvent.emit(this.model.getProject());
       });
     }
   }

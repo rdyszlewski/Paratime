@@ -43,7 +43,10 @@ export class ProjectsModel{
         this.selectedProject = project;
     }
 
-    
-    
-    // TODO: dodać usuwanie projektu
+    public updateProject(project:Project){
+        const projectToUpdate = this.projects.find(x=>x.getId()==project.getId());
+        if(projectToUpdate){
+            projectToUpdate.setName(project.getName());
+        }
+    }
 }

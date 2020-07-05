@@ -7,15 +7,18 @@
                 Nazwa
             </mat-expansion-panel-header>
             <input type="text" class="form-control" id="project-name" name='name'
-            [ngModel]='project.getName()' (ngModelChange)="project.setName($event)">
+            [ngModel]='model.getProject().getName()' (ngModelChange)="model.getProject().setName($event)"
+            (keyup.enter)="updateProject()" (focusout)="updateProject()">
         </mat-expansion-panel>
 
-        <mat-expansion-panel class="form-group" [expanded]="project.getDescription()!=null">
+        <mat-expansion-panel class="form-group" [expanded]="model.getProject().getDescription()!=null">
             <mat-expansion-panel-header class="form-group-header">
                 Opis
             </mat-expansion-panel-header>
             <textarea class="form-control" id="project-description" name="description"
-            [ngModel]='project.getDescription()' (ngModelChange)="project.setDescription($event)"></textarea>
+            [ngModel]='model.getProject().getDescription()' (ngModelChange)="model.getProject().setDescription($event)"></textarea>
+            <!-- TODO: poprawić ten przycisk. Zrobić jakieś ukrywanie, jeżeli nie było żadnych zmian -->
+            <button class="button" (click)="updateProject()">Wstaw</button>
         </mat-expansion-panel>
 
         <mat-expansion-panel class="form-group" [expanded]="true">
@@ -24,7 +27,8 @@
             </mat-expansion-panel-header>
             <!-- TODO: dorobić zapisywanie -->
             <select class="form-control" id="project-type" name="type"
-            [ngModel]='(getType())'>
+            [ngModel]='(getType())'
+            (change)="updateProject()">
                 <option value="default">Nieokreślony</option>
                 <option value="small">Mały</option>
                 <option value="medium">Średni</option>
@@ -38,7 +42,8 @@
             </mat-expansion-panel-header>
             <!-- TODO: dorobić zapisywanie -->
             <select class="form-control" id="project-status" name="status"
-            [ngModel]='getStatus()'>
+            [ngModel]='getStatus()'
+            (change)="updateProject()">
                 <option value="started">Aktywny</option>
                 <option value="ended">Zakończony</option>
                 <option value="canceled">Anulowany</option>
@@ -46,25 +51,27 @@
             </select>
         </mat-expansion-panel>
 
-        <mat-expansion-panel class="form-group" [expanded]="project.getStartDate()!=null">
+        <mat-expansion-panel class="form-group" [expanded]="model.getProject().getStartDate()!=null">
             <mat-expansion-panel-header class="form-group-header">
                 Data początkowa
             </mat-expansion-panel-header>
             <div class="datepicker-container">
                 <input class='form-control' id="project-start-date" name="start-date" [matDatepicker]="startDatePicker"  
-                [ngModel]='project.getStartDate()' (ngModelChange)="project.setStartDate($event)">
+                [ngModel]='model.getProject().getStartDate()' (ngModelChange)="model.getProject().setStartDate($event)" 
+                (dateChange)="updateProject()">
                 <mat-datepicker-toggle [for]="startDatePicker" class='datepicker'></mat-datepicker-toggle>
                 <mat-datepicker #startDatePicker></mat-datepicker>
             </div>  
         </mat-expansion-panel>
     
-        <mat-expansion-panel class="form-group" [expanded]="project.getEndDate()!=null">
+        <mat-expansion-panel class="form-group" [expanded]="model.getProject().getEndDate()!=null">
             <mat-expansion-panel-header class="form-group-header">
                 Data końcowa
             </mat-expansion-panel-header>
             <div class="datepicker-container">
                 <input matInput class='form-control' id="pproject-end-date" name="end-date" [matDatepicker]="endDatePicker"
-                [ngModel]='project.getEndDate()' (ngModelChange)="project.setEndDate($event)">
+                [ngModel]='model.getProject().getEndDate()' (ngModelChange)="model.getProject().setEndDate($event)"
+                (dateChange)="updateProject()">
                 <mat-datepicker-toggle [for]="endDatePicker" class="datepicker"></mat-datepicker-toggle>
                 <mat-datepicker #endDatePicker></mat-datepicker>
             </div>  
@@ -73,6 +80,7 @@
     </form>
     <div class="buttons-section">
         <button class="button form-button" id="close-button" (click)='close()'>Zamknij</button>
-        <button class="button form-button" id="save-button" (click)='save()'>Zapisz</button>
+        <button class="button form-button" id="save-button" (click)='save()'
+        *ngIf="!model.isUpdateMode()">Zapisz</button>
     </div>
 </div>

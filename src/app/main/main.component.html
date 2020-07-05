@@ -1,11 +1,14 @@
 <div id="main">
     <app-projects id="projects" [hidden]="!projectsOpen" 
     (editEmitter)='openProjectDetails($event)'
-    (loadEmitter)="loadTasks($event)"></app-projects>
+    (loadEmitter)="loadTasks($event)"
+    (removeEvent)="onRemoveSelectedProject($event)"></app-projects>
     
     <app-project-details id='projects-details' [hidden]='!projectsDetailsOpen'
     (closeEmitter)='closeProjectDetails()'
-    (saveEmitter)='afterSaveProject($event)'></app-project-details>
+    (saveEmitter)='onCreateProject($event)'
+    (updateEvent)="onUpdateProject($event)"
+    ></app-project-details>
     
     <app-tasks id='tasks' [hidden]='!tasksOpen'
     (details)="openTaskDetails($event)"></app-tasks>

@@ -7,6 +7,7 @@ import { TaskDetails } from './model';
 import * as $ from 'jquery';
 import { Task } from 'app/models/task';
 import { DataService } from 'app/data.service';
+import { TaskTagsModel } from 'app/data/common/models';
 
 @Component({
   selector: 'app-task-details',
@@ -14,19 +15,13 @@ import { DataService } from 'app/data.service';
   styleUrls: ['./task-details.component.css']
 })
 export class TaskDetailsComponent implements OnInit {
-
+  // TODO: refaktoryzacja
   public status = Status;
 
   @Output() closeEmitter: EventEmitter<null> = new EventEmitter();
   @Output() saveEmitter: EventEmitter<Task> = new EventEmitter();
   @Output() labelsManager: EventEmitter<null> = new EventEmitter();
   public model: TaskDetails = new TaskDetails();
-  
-
-  // public task:Task = new Task();
-  // public projects:Project[] = [];
-  // public tags: Tag[] = [];
-  // TODO: utworzyć model, zaznaczyć wybrany model
 
   constructor() { }
 
@@ -46,9 +41,6 @@ export class TaskDetailsComponent implements OnInit {
     DataService.getStoreManager().getTagStore().getAllTags().then(labels=>{
       this.model.setTags(labels);
       this.repairTaskLabels(labels);
-      
-      
-      // TOOD: sprawdzenie i wyrzucenie tych etykiet, których nie ma 
     });
   }
 
@@ -102,8 +94,10 @@ export class TaskDetailsComponent implements OnInit {
 
   public setTask(task:Task){
     if(task){
+      this.model.setUpdateMode(task.getId()!=null);
       DataService.getStoreManager().getTaskStore().getTaskById(task.getId()).then(loadedTask=>{
         this.model.setTask(task);
+        $('#task-id').focus();
       });
     }
 
@@ -129,6 +123,7 @@ export class TaskDetailsComponent implements OnInit {
     }
   }
 
+  // TODO: zmienić nazwę na otwarcie czy coś
   public addNewSubtask(){
     this.model.setSubtaskEditing(true);
     this.model.setEditedSubtask(null);
@@ -140,18 +135,31 @@ export class TaskDetailsComponent implements OnInit {
   }
 
   public chooseTag(tag:Tag){
-    this.model.getTask().addTag(tag);
+    if(this.model.isUpdateMode()){
+      let model = new TaskTagsModel(this.model.getTask().getId(), tag.getId());
+      // TODO: przerobić tę metodę, aby nie wykorzystywała modelu tylko id
+      DataService.getStoreManager().getTagStore().connectTaskAndTag(model).then(()=>{
+        this.model.getTask().addTag(tag);
+      });
+    } else {
+      this.model.getTask().addTag(tag);
+    }
   }
 
   public removeLabel(tag:Tag){
-    // TODO: zrobić usuwanie z bazy danych
-    this.model.getTask().removeTag(tag);
+    if(this.model.isUpdateMode()){
+      // TODO: przetestować to
+      DataService.getStoreManager().getTagStore().removeTagFromTask(this.model.getTask().getId(), tag.getId()).then(()=>{
+        this.model.getTask().removeTag(tag);
+      });
+    } else {
+      this.model.setEditedSubtask(null);
+    }
   }
 
   public editSubtask(subtask:Subtask){
-    // TODO: uzupełnić
     this.model.setEditedSubtask(subtask);
-    setTimeout(()=>{ // this will make the execution after the above boolean has changed
+    setTimeout(()=>{
       $('#subtask-name-input_' + subtask.getId()).focus();
     },0);
     this.model.setSubtaskEditing(false);
@@ -159,7 +167,13 @@ export class TaskDetailsComponent implements OnInit {
 
   public removeSubtask(subtask:Subtask){
     // TODO: chyba usunąć to z bazy danych
-    this.model.getTask().removeSubtask(subtask);
+    if(this.model.isUpdateMode()){
+      DataService.getStoreManager().getSubtaskStore().removeSubtask(subtask.getId()).then(()=>{
+        this.model.getTask().removeSubtask(subtask);
+      });
+    } else {
+      this.model.setEditedSubtask(null);
+    }
   }
 
   public toggleSubtaskStatus(subtask:Subtask){
@@ -171,29 +185,62 @@ export class TaskDetailsComponent implements OnInit {
   }
 
   public acceptEditing(subtask:Subtask){
-    const textField = $('#subtask-name-input-' + subtask.getId());
+    const textField = $('#subtask-name-input_' + subtask.getId());
     subtask.setName(textField.val());
     // TODO: zrobić zapisywanie do bazy danych
-    this.model.setEditedSubtask(null);
+    if(this.model.isUpdateMode()){
+      DataService.getStoreManager().getSubtaskStore().updateSubtask(subtask).then(updatedSubtask=>{
+        this.model.setEditedSubtask(null);
+      })
+    } else{
+      this.model.setEditedSubtask(null);
+    }
   }
 
   public cancelAddingSubtask(){
     this.model.setSubtaskEditing(false);
   }
 
+  // TODO: refaktoryzacja
   public saveNewSubtask(){
-    // TODO: pobrać wartość z pola, utworzyć zadanie, zapisać do bazy danych (chyba), wspisać na listę
     const textField = $('#subtask');
     const subtaskName = textField.val();    
     const subtask = new Subtask(subtaskName,null, Status.STARTED);
     // TODO: zapis do bazy danych
-    this.model.getTask().addSubtask(subtask);
+    if(this.model.isUpdateMode()){
+      // w przypadku dodawania nowego zadania podzadania zostaną zapisane wraz z zadaniem
+      DataService.getStoreManager().getSubtaskStore().createSubtask(subtask).then(insertedSubtask=>{
+        this.model.getTask().addSubtask(insertedSubtask);
+      });
+    } else {
+      this.model.getTask().addSubtask(subtask);
+    }
     textField.val('');
     this.model.setSubtaskEditing(false); // TODO: chyba
   }
 
   public saveTask(){
     // TODO: zrobić zapisywanie - dobrze się będzie trzeba zastanowić jak powinno przebiegać
+    if(this.model.isUpdateMode()){
+      // TODO: prawdopodobnie taka sytuacja nie wystapi
+    } else { 
+      DataService.getStoreManager().getTaskStore().createTask(this.model.getTask()).then(insertedTask=>{
+        // this.model.getSelectedProject().addTask(insertedTask);
+        // TODO: byc może tutaj powinno być informacja o zamknięcu i być może wstawieniu nowego zadania
+        // TODO: wyświetlniee komunikatu o powodzeniu zapisu
+        this.closeEmitter.emit();
+      });
+    }
+  }
+
+  public updateTask(){
+    // TODO: powinniśmy sprawdzać, czy są jakiekolwiek zmiany
+    console.log("Aktualizacja zadania");
+    if(this.model.isUpdateMode()) {
+      DataService.getStoreManager().getTaskStore().updateTask(this.model.getTask()).then(()=>{
+        // TODO: może tutaj można coś wstawić
+      });
+    }
   }
 
   public close(){
@@ -204,5 +251,24 @@ export class TaskDetailsComponent implements OnInit {
 
   public openLabelsManager(){
     this.labelsManager.emit();
+  }
+
+  public handleKeysOnNewSubtaskInput(event:KeyboardEvent){
+    if(event.keyCode == 13){  // enter
+      console.log("Wykonywanie tego");
+      this.saveNewSubtask();
+    } 
+    if(event.keyCode == 27){ // esc
+      this.cancelAddingSubtask();
+    }
+  }
+
+  public handleKeysOnEditSubtask(event:KeyboardEvent, subtask:Subtask){
+    if(event.keyCode == 13){  // enter
+      this.acceptEditing(subtask);
+    } 
+    if(event.keyCode == 27){ // esc
+      this.model.setEditedSubtask(null);
+    }
   }
 }

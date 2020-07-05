@@ -1,5 +1,5 @@
 <div class="task-details">
-    <form class="form">
+    <form class="form" (keydown.enter)="$event.preventDefault()">
 
         <mat-expansion-panel class="form-group" [expanded]="true">
             <mat-expansion-panel-header class="form-group-header">
@@ -7,7 +7,8 @@
             </mat-expansion-panel-header>
             <!-- TODO: można dodać opis -->
             <input type="text" class="form-control" id="task-id" name='name'
-            [ngModel]='model.getTask().getName()' (ngModelChange)="model.getTask().setName($event)">
+            [ngModel]='model.getTask().getName()' (ngModelChange)="model.getTask().setName($event)"
+            (keyup.enter)="updateTask()" (focusout)="updateTask()">
         </mat-expansion-panel>
 
         <mat-expansion-panel class="form-group" [expanded]="model.isDescriptionExtended()">
@@ -16,6 +17,8 @@
             </mat-expansion-panel-header>
             <textarea class="form-control" id="task-description" name="description"
             [ngModel]='model.getTask().getDescription()' (ngModelChange)="model.getTask().setDescription($event)"></textarea>
+            <!-- TODO: dopracować  -->
+            <button class="button" (click)="updateTask()">Wstaw</button>
         </mat-expansion-panel>
         
         <mat-expansion-panel class="form-group" [expanded]="model.isStatusExtended()">
@@ -23,7 +26,8 @@
                 Stan
             </mat-expansion-panel-header>
             <select class="form-control" id="task-status" name="status"
-            [ngModel]='getStatus()'>
+            [ngModel]='getStatus()'
+            (change)="updateTask()">
                 <option value="started">Aktywny</option>
                 <option value="ended">Zakończony</option>
                 <option value="canceled">Anulowany</option>
@@ -37,7 +41,9 @@
             </mat-expansion-panel-header>
             <div class="datepicker-container">
                 <input matInput class='form-control' id="task-end-date" name="end-date" [matDatepicker]="endDatePicker"
-                [ngModel]='model.getTask().getEndDate()' (ngModelChange)="model.getTask().setEndDate($event)">
+                [ngModel]='model.getTask().getEndDate()' (ngModelChange)="model.getTask().setEndDate($event)"
+                (dateChange)="updateTask()">
+                <!-- TODO: być może będzie trzeba to przypisać do zmiany daty -->
                 <mat-datepicker-toggle [for]="endDatePicker" class="datepicker"></mat-datepicker-toggle>
                 <mat-datepicker #endDatePicker></mat-datepicker>
             </div>  
@@ -48,7 +54,8 @@
                 Planowany czas
             </mat-expansion-panel-header>
             <input type='number' class="form-control" id="task-planned_time" name="planned_time"
-            [ngModel]="model.getTask().getPlannedTime()" (ngModelChange)="model.getTask().setPlannedTime($event)">
+            [ngModel]="model.getTask().getPlannedTime()" (ngModelChange)="model.getTask().setPlannedTime($event)"
+            (keyup.enter)="updateTask()" (focusout)="updateTask()">
         </mat-expansion-panel>
 
         <mat-expansion-panel class="form-group" [expanded]="model.isProjectExtended()">
@@ -57,7 +64,8 @@
             </mat-expansion-panel-header>
             <!-- TODO: prawdopodobnie przydałoby się, żeby tutaj było dodatkowe ograniczenie, dzięki któremu nie będzie zwijał po wybraniu null -->
             <select class="form-control" id="task-project" name="project" 
-            [ngModel]="model.getTask().getProjectID()" (ngModelChange)="model.setProject($event)">
+            [ngModel]="model.getTask().getProjectID()" (ngModelChange)="model.setProject($event)"
+            (change)="updateTask()">
                 <option [ngValue]="null">Brak</option>
                 <option *ngFor="let project of model.getProjects()" [ngValue]="project.getId()">{{project.getName()}}</option>
             </select>
@@ -95,8 +103,9 @@
                     </div>
                     <div class="subtask-name" (click)="toggleSubtaskStatus(subtask)"
                     *ngIf="model.getEditedSubtask()!=subtask">{{subtask.getName()}}</div>
-                    <input class="subtask-name" value="{{subtask.getName()}}" [id]="'subtask-name-input-' + subtask.getId()"
-                    *ngIf="model.getEditedSubtask()==subtask">
+                    <input class="subtask-name" value="{{subtask.getName()}}" [id]="'subtask-name-input_' + subtask.getId()"
+                    *ngIf="model.getEditedSubtask()==subtask"
+                    (keyup)="handleKeysOnEditSubtask($event, subtask)">
                     <div class="subtask-item-buttons">
                         <div class="edit-subtask subtask-icon button" (click)='editSubtask(subtask)'
                         *ngIf="model.getEditedSubtask()!=subtask"></div>
@@ -108,7 +117,8 @@
                     *ngIf="model.getEditedSubtask()==subtask"></div>  
                 </div>
             </div>
-            <input type="text" class="form-control" id="subtask" [hidden]="!model.isSubtaskEditing()">
+            <input type="text" class="form-control" id="subtask" [hidden]="!model.isSubtaskEditing()"
+            (keyup)="handleKeysOnNewSubtaskInput($event)">
             <div class="buttons-container">
                 <button class="button" id="add-subtask-button" [hidden]="model.isSubtaskEditing()"
                 (click)="addNewSubtask()">
@@ -123,7 +133,8 @@
     </form>
     <div class="button-section">
         <button class="button form-button" id="task-close-button" (click)='close()'>Zamknij</button>
-        <button class="button form-button" id="task-save-button" (click)='saveTask()'>Zapisz</button>
+        <button class="button form-button" id="task-save-button" (click)='saveTask()'
+        *ngIf="!model.isUpdateMode()">Zapisz</button>
     </div>
 </div>
 

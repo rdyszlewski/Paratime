@@ -3,6 +3,7 @@ import { LabelsModel } from './model';
 import { Tag } from 'app/models/tag';
 import * as $ from 'jquery';
 import { DataService } from 'app/data.service';
+import { KeyCode } from 'app/common/key_codes';
 
 @Component({
   selector: 'app-labels',
@@ -83,7 +84,7 @@ export class LabelsComponent implements OnInit {
     this.setFocusOnInput(this.LABEL_INPUT_ID);
   }
 
-  public cancelEditingLabel(){
+  public cancelAddingLabel(){
     this.insertLabelInput.val("");
     this.model.setLabelEditing(false);
   }
@@ -93,13 +94,31 @@ export class LabelsComponent implements OnInit {
     const labelToInsert = new Tag(labelName);
     DataService.getStoreManager().getTagStore().createTag(labelToInsert).then(insertedLabel=>{
       this.model.addLabel(insertedLabel);
-      this.insertLabelInput.val("");
-      this.model.setLabelEditing(false);
+      this.cancelAddingLabel();
       this.updateEvent.emit();
     });
   }
 
   public closePanel(){
     this.closeEvent.emit();
+  }
+
+  public handleKeysOnNewLabelInput(event:KeyboardEvent){
+    if(event.keyCode== KeyCode.ENTER){
+      this.saveNewLabel();
+    }
+    if(event.keyCode == KeyCode.ESC){
+      this.cancelAddingLabel();
+    }
+  }
+
+  public handleKeysOnEditLabel(event:KeyboardEvent, label:Tag){
+    if(event.keyCode == KeyCode.ENTER) {
+      this.acceptEditing(label);
+    } 
+    if(event.keyCode == KeyCode.ESC){
+      this.cancelAddingLabel();
+    }
+    // TODO: prawdopodobnie będzie zapobiec dalczemu przesyłaniu zdarzenia
   }
 }

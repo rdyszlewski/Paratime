@@ -133,10 +133,13 @@ export class MainComponent implements OnInit {
     // console.log(project);
   }
 
-  afterSaveProject(project:Project){
+  onCreateProject(project:Project){
     // TODO: alternatywą będzie ponowne wyszukanie wszystkim projektów
     // TODO: nie można tego robić w ten sposób, ponieważ przy aktualizacji dodaje do listy
     this.projectsComponent.addProject(project);
+    this.projectsDetailsOpen = false;
+    this.setOriginalWidth();
+    this.projectsComponent.selectProject(project);
   }
   
   public openLabelsManager(){
@@ -149,5 +152,17 @@ export class MainComponent implements OnInit {
 
   public onLabelsUpdate(){
     this.taskDetailsComponent.loadLabels();
+  }
+
+  public onUpdateProject(project:Project){
+    this.projectsComponent.updateProject(project);
+  }
+
+  public onRemoveSelectedProject(project:Project){
+    this.projectsDetailsOpen = false;
+    this.tasksDetailsOpen = false;
+    this.setOriginalWidth();
+    this.tasksComponent.setProject(new Project);
+    
   }
 }

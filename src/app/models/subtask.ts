@@ -7,7 +7,7 @@ export class Subtask{
     private description: string = null;
     private status: Status = null;
     private progress: number = -1;
-    private taskID: number = null;
+    private taskId: number = null;
 
     constructor(name=null, description=null, status=null){
         this.name = name;
@@ -55,13 +55,12 @@ export class Subtask{
         this.progress = progress;
     }
     
-    public getTaksID(){
-        return this.taskID;
+    public getTaksId(){
+        return this.taskId;
     }
 
-    public setTaskID(id: number){
-        this.taskID = id;
+    public setTaskId(id: number){
+        this.taskId = id;
     }
-    
-    
+       
 }

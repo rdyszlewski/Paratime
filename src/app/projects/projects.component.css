@@ -1,23 +1,19 @@
-#projects-list{
-    border: 1px solid black;
-    height: 100%;
-    padding: 5px;
-    overflow: auto;
-}
+@import '../../styles.css';
 
-.project{
-    border: 1px solid trainsparent;
-    border-radius: 8px;
+/* TODO: poprzenosić to jakoś  */
+.projects-view{
     display: flex;
-    padding: 10px;
+    /* display: inline-flex; */
+    flex-direction: column;
+    /* TODO: przerobić to w jakiś sposób, aby  */
+    /* height: 100%;
+    margin-left: 3px;
+    margin-right: 3px;
+    padding: 5px; */
 }
 
-.project:hover .project-menu-button{
-    visibility: visible;
-}
-
-.project:focus .project-menu-button{
-    visibility: visible;
+#projects-list{
+    height: 100%;
 }
 
 .project-name{
@@ -46,31 +42,14 @@
     visibility: visible;
 }
 
-.projects-container{
-    display: flex;
-    /* display: inline-flex; */
-    flex-direction: column;
-    /* TODO: przerobić to w jakiś sposób, aby  */
-    height: 100%;
-    margin-top: auto;
-    margin-bottom: auto;
-}
+
 
 #project-filter{
     margin: 10px;
     height: 2em;
 }
 
-.project-add-button{
-    margin: 10px;
-    height: 3em;
-    border-radius: 8px;
-}
 
-.selected{
-    border: 1px solid black;
-    background-color: dodgerblue;
-}
 
 .mat-menu-item{
     font-size: small;
@@ -81,3 +60,4 @@
 mat-icon{
     height: 5px;;
 }
+

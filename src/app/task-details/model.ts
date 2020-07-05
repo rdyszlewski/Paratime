@@ -9,6 +9,7 @@ export class TaskDetails{
     private projects: Project[] = [];
     private selectedProject: Project;
     private tags: Tag[] = [];
+    private updateMode:boolean;
     
     private subtaskEditing:boolean = false;
     private editedSubtask:Subtask;
@@ -103,4 +104,12 @@ export class TaskDetails{
         }
         return null;
    } 
+
+   public isUpdateMode():boolean{
+       return this.updateMode;
+   }
+
+   public setUpdateMode(updateMode:boolean){
+       this.updateMode = updateMode;
+   }
 }

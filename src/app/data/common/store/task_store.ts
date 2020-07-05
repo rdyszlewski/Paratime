@@ -3,6 +3,8 @@ import { Task } from 'app/models/task';
 import { SubtaskStore } from './subtask_store';
 import { TagStore } from './tag_store';
 import { IProjectRepository } from '../repositories/project_repository';
+import { TaskTagsModel } from '../models';
+import { promise } from 'protractor';
 
 // TODO: przydałyby się do tego wszystkiego transakcje. 
 export class TaskStore{
@@ -32,6 +34,8 @@ export class TaskStore{
     private setTaskData(task: Task): Task | PromiseLike<Task> {
         // TODO: przydałaby się refaktoryzacja
         return this.subtaskStore.getSubtaskByTask(task.getId()).then(subtasks => {
+            console.log("Pobieranie zadania");
+            console.log(subtasks);
             task.setSubtasks(subtasks);
         }).then(() => {
             return this.tagStore.getTagsByTask(task.getId()).then(tags => {
@@ -75,11 +79,33 @@ export class TaskStore{
 
     public createTask(task:Task):Promise<Task>{
         return this.taskRepository.insertTask(task).then(insertedId=>{
-            return this.getTaskById(insertedId);
+            // TODO: wstawienie podzadań
+            // TODO; wstawienie etykiet
+            const promises = [];
+            task.getSubtasks().forEach(subtask=>{
+                console.log("Wstawiam zadanie");
+                subtask.setTaskId(insertedId);
+                let subtaskPromise = this.subtaskStore.createSubtask(subtask).then(subtask=>{
+                    console.log("Wstawione podzadanie");
+                    console.log(subtask);
+                    return Promise.resolve(subtask);
+                });
+                promises.push(subtaskPromise);
+            });
+            task.getTags().forEach(label=>{
+                console.log("Wstawiam etykietę");
+                const entry = new TaskTagsModel(insertedId, label.getId());
+                let labelPromise = this.tagStore.connectTaskAndTag(entry);
+                promises.push(labelPromise);
+            });
+            return Promise.all(promises).then(()=>{
+                return this.getTaskById(insertedId);
+            });
         });
     }
 
     public updateTask(task:Task):Promise<Task>{
+        // TODO: tutaj chyba nie trzeba aktualizować tego oddzielnie
         return this.taskRepository.updateTask(task).then(result=>{
             return Promise.resolve(task);
         });

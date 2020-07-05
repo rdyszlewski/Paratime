@@ -1,5 +1,12 @@
 @import '../../styles.css';
 
+.projects-view{
+    display: flex;
+    /* display: inline-flex; */
+    flex-direction: column;
+   
+}
+
 .project-details{
     display: flex;
     flex-direction: column;
