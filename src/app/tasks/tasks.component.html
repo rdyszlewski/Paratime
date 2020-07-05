@@ -14,11 +14,12 @@
         </div>
         <div class="task-info">
           <div *ngIf="task.getDescription()!=null" class="task-description-icon info-icon"
-          matTooltip="{{task.getDescription()}}"></div>
+          tooltip="{{task.getDescription()}}" autoplacement="true" placement="bottom"></div>
           <div *ngIf="task.getEndDate()!=null" class="task-enddate-icon info-icon"
-          matTooltip="{{getEndDateText(task)}}"></div>
+          tooltip="{{getEndDateText(task)}}" autoplacement="true" placement="bottom"></div>
           <div *ngIf="task.getSubtasks().length != 0" class="info-icon task-subtask"
-          matTooltip="{{getSubtasksList(task)}}">
+          tooltip="{{getSubtasksList(task)}}" autoplacement="true" placement="bottom"
+          >
             {{getFinishedSubtasks(task)}} / {{task.getSubtasks().length}}
           </div>
         </div>

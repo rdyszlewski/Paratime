@@ -81,13 +81,12 @@ export class TasksComponent implements OnInit {
   }
 
   getSubtasksList(task:Task){
-    // TODO: spróbować zrobić tooltipa z html
-    let text = "";
+    let text = "<ul class='tooltip-list'>";
     task.getSubtasks().forEach(subtask=>{
-      text += subtask.getName();
-      text += "\n";
-      text += "\n";
+      text += "<li>"+ subtask.getName()+"</li>"
     });
+    text+= "</ul>";
     return text;
+
   }
 }
