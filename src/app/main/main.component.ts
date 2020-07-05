@@ -29,15 +29,17 @@ export class MainComponent implements OnInit {
   private tasksComponent: TasksComponent;
 
   // TODO: zastanowić się, jak to ładnie uporządkować
-  projectsOpen = true;
-  projectsDetailsOpen = false;
-  tasksOpen = true;
-  tasksDetailsOpen = false;
+  public projectsOpen = true;
+  public projectsDetailsOpen = false;
+  public tasksOpen = true;
+  public tasksDetailsOpen = false;
+  public labelsOpen = false;
 
   private projectsView;
   private projectDetailsView;
   private tasksView;
   private taskDetailsView;
+  private labelsView;
 
 
   constructor() { }
@@ -48,6 +50,7 @@ export class MainComponent implements OnInit {
     this.projectDetailsView = $("#projects-details");
     this.tasksView = $("#tasks");
     this.taskDetailsView = $('#task-details');
+    this.labelsView = $('#labels');
 
     this.setOriginalWidth();
   }
@@ -126,12 +129,21 @@ export class MainComponent implements OnInit {
     // console.log(project);
   }
 
- 
-
   afterSaveProject(project:Project){
     // TODO: alternatywą będzie ponowne wyszukanie wszystkim projektów
     // TODO: nie można tego robić w ten sposób, ponieważ przy aktualizacji dodaje do listy
     this.projectsComponent.addProject(project);
   }
   
+  public openLabelsManager(){
+    this.labelsOpen = true;
+  }
+
+  public closeLabelsManager(){
+    this.labelsOpen = false;
+  }
+
+  public onLabelsUpdate(){
+    this.taskDetailsComponent.loadLabels();
+  }
 }

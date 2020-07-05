@@ -19,6 +19,7 @@ export class TaskDetailsComponent implements OnInit {
 
   @Output() closeEmitter: EventEmitter<null> = new EventEmitter();
   @Output() saveEmitter: EventEmitter<Task> = new EventEmitter();
+  @Output() labelsManager: EventEmitter<null> = new EventEmitter();
   public model: TaskDetails = new TaskDetails();
   
 
@@ -35,13 +36,35 @@ export class TaskDetailsComponent implements OnInit {
 
   private init(){
     DataService.getStoreManager().getProjectStore().getAllProjects().then(projects=>{
-      console.log("Pobrano projekty");
-      console.log(projects);
       this.model.setProjects(projects);
     });
 
+    this.loadLabels();
+  }
+
+  public loadLabels(){
     DataService.getStoreManager().getTagStore().getAllTags().then(labels=>{
       this.model.setTags(labels);
+      this.repairTaskLabels(labels);
+      
+      
+      // TOOD: sprawdzenie i wyrzucenie tych etykiet, których nie ma 
+    });
+  }
+
+  // TODO; poprawić to, aby nie traciło kolejności
+  private repairTaskLabels(labels:Tag[]){
+    let toRemove = [];
+    this.model.getTask().getTags().forEach(label=>{
+      const matchingLabels = labels.filter(x=>x.getId()==label.getId());
+      if(matchingLabels.length==1){
+        label.setName(matchingLabels[0].getName());
+      } else if(matchingLabels.length == 0){
+        toRemove.push(label);
+      }
+    });
+    toRemove.forEach(label=>{
+      this.model.getTask().removeTag(label);
     });
   }
 
@@ -80,7 +103,6 @@ export class TaskDetailsComponent implements OnInit {
   public setTask(task:Task){
     if(task){
       DataService.getStoreManager().getTaskStore().getTaskById(task.getId()).then(loadedTask=>{
-        console.log(loadedTask);
         this.model.setTask(task);
       });
     }
@@ -115,7 +137,6 @@ export class TaskDetailsComponent implements OnInit {
       $('#subtask').focus();
     },0); 
     
-    // TODO: ustawić focus na polu tekstowym
   }
 
   public chooseTag(tag:Tag){
@@ -123,8 +144,7 @@ export class TaskDetailsComponent implements OnInit {
   }
 
   public removeLabel(tag:Tag){
-    // TODO: zrobić usuwanie z bazy danych i z listy
-    console.log("Usuwam etykietę");
+    // TODO: zrobić usuwanie z bazy danych
     this.model.getTask().removeTag(tag);
   }
 
@@ -138,9 +158,7 @@ export class TaskDetailsComponent implements OnInit {
   }
 
   public removeSubtask(subtask:Subtask){
-    // TODO: uzupełnić
-    console.log("Usuwanie podzadania");
-    console.log(subtask);
+    // TODO: chyba usunąć to z bazy danych
     this.model.getTask().removeSubtask(subtask);
   }
 
@@ -153,7 +171,7 @@ export class TaskDetailsComponent implements OnInit {
   }
 
   public acceptEditing(subtask:Subtask){
-    const textField = $('#subtask-name-input_' + subtask.getId());
+    const textField = $('#subtask-name-input-' + subtask.getId());
     subtask.setName(textField.val());
     // TODO: zrobić zapisywanie do bazy danych
     this.model.setEditedSubtask(null);
@@ -184,4 +202,7 @@ export class TaskDetailsComponent implements OnInit {
     this.closeEmitter.emit();
   }
 
+  public openLabelsManager(){
+    this.labelsManager.emit();
+  }
 }

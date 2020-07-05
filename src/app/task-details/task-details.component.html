@@ -76,6 +76,8 @@
                 </div>
             </div>
             <button class="form-control" id="task-labels" name="labels" [matMenuTriggerFor]="appMenu">Dodaj</button>
+            <!-- TODO: można to zrobić w ten sposób, że ostatnią pozycją będzie dodaj inną -->
+            <button class="form-control" id="manage-label-button" (click)="openLabelsManager()">Zarzadzaj etykietami</button>
         </mat-expansion-panel>
 
         <mat-expansion-panel class="form-group" [expanded]="model.isSubtasksExtended()">
@@ -92,7 +94,7 @@
                     </div>
                     <div class="subtask-name" (click)="toggleSubtaskStatus(subtask)"
                     *ngIf="model.getEditedSubtask()!=subtask">{{subtask.getName()}}</div>
-                    <input class="subtask-name" value="{{subtask.getName()}}" [id]="'subtask-name-input_' + subtask.getId()"
+                    <input class="subtask-name" value="{{subtask.getName()}}" [id]="'subtask-name-input-' + subtask.getId()"
                     *ngIf="model.getEditedSubtask()==subtask">
                     <div class="edit-subtask subtask-icon" (click)='editSubtask(subtask)'
                     *ngIf="model.getEditedSubtask()!=subtask"></div>

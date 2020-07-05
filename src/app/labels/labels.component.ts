@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { LabelsModel } from './model';
 import { Tag } from 'app/models/tag';
 import * as $ from 'jquery';
@@ -16,6 +16,9 @@ export class LabelsComponent implements OnInit {
 
   private insertLabelInput;
   public model: LabelsModel = new LabelsModel();
+
+  @Output() closeEvent: EventEmitter<null> = new EventEmitter();
+  @Output() updateEvent: EventEmitter<null> = new EventEmitter();
 
   constructor() { }
 
@@ -50,7 +53,6 @@ export class LabelsComponent implements OnInit {
     this.model.setEditedLabel(label);
     this.model.setLabelEditing(false);
     this.setFocusOnInput(this.LABEL_ITEM_ID+label.getId());
-    
   }
 
   private setFocusOnInput(id:string){
@@ -62,6 +64,7 @@ export class LabelsComponent implements OnInit {
   public removeLabel(label:Tag){
     DataService.getStoreManager().getTagStore().removeTag(label.getId()).then(()=>{
       this.model.removeLabel(label);
+      this.updateEvent.emit();
     });
   }
 
@@ -70,6 +73,7 @@ export class LabelsComponent implements OnInit {
     label.setName(newLabelName);
     DataService.getStoreManager().getTagStore().updateTag(label).then(updatedLabel=>{
       this.model.setEditedLabel(null);
+      this.updateEvent.emit();
     });
   }
 
@@ -91,6 +95,11 @@ export class LabelsComponent implements OnInit {
       this.model.addLabel(insertedLabel);
       this.insertLabelInput.val("");
       this.model.setLabelEditing(false);
+      this.updateEvent.emit();
     });
+  }
+
+  public closePanel(){
+    this.closeEvent.emit();
   }
 }

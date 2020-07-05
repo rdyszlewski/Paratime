@@ -17,14 +17,16 @@
         </div>
     </div>
     <input type="text" class="form-control" id="label" [hidden]="!model.isLabelEditing()">
-            <div class="buttons-container">
-                <button class="button" id="add-label-button" [hidden]="model.isLabelEditing()"
-                (click)="startAddingNewLabel()">
-                    Dodaj
-                </button>
-                <button class="button" id="cancel-label-button" [hidden]="!model.isLabelEditing()"
-                (click)="cancelEditingLabel()">Anuluj</button>
-                <button class="button" id="save-label-button" [hidden]="!model.isLabelEditing()"
-                (click)="saveNewLabel()">Zapisz</button>
-            </div>
+    <div class="buttons-container">
+        <button class="button" id="add-label-button" [hidden]="model.isLabelEditing()"
+        (click)="startAddingNewLabel()">
+            Dodaj
+        </button>
+        <button class="button" id="cancel-label-button" [hidden]="!model.isLabelEditing()"
+        (click)="cancelEditingLabel()">Anuluj</button>
+        <button class="button" id="save-label-button" [hidden]="!model.isLabelEditing()"
+        (click)="saveNewLabel()">Zapisz</button>
+    </div>
+    <button class="button form-button" id="labels-close-button" (click)='closePanel()'>Zamknij</button>
+
 </div>

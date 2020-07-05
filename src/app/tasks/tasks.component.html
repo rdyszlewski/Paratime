@@ -1,10 +1,10 @@
 <div class='tasks-view'>
-  <h3>{{project.getName()}}</h3>
+  <h3>{{model.getProjectName()}}</h3>
   <div class="filter-container">
     <input id="task-filter" class="filter" (input)='filterTasks($event.target.value)'>
   </div>
   <div id="tasks-list">
-      <div *ngFor='let task of project.getTasks()' class="task" >
+      <div *ngFor='let task of model.getTasks()' class="task" >
         <div class="task-main">
           <div class="task-name">{{task.getName()}}</div>
           <button class="task-menu-button" 

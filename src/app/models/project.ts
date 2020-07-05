@@ -73,9 +73,9 @@ export class Project{
     }
 
     public removeTask(task: Task){
-        let index = this.getTaskIndex(task);
-        if(index > 0){
-            delete this.tasks[index];
+        let index = this.tasks.indexOf(task);
+        if(index >= 0){
+            this.tasks.splice(index, 1);
         }
     }
 

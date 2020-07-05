@@ -4,6 +4,8 @@ import { Task } from 'app/models/task';
 import { Project } from 'app/models/project';
 import { Status } from 'app/models/status';
 import { Subtask } from 'app/models/subtask';
+import { TasksModel } from './model';
+import { DataService } from 'app/data.service';
 
 
 @Component({
@@ -17,10 +19,8 @@ export class TasksComponent implements OnInit {
 
   @Output() details: EventEmitter<Task> = new EventEmitter();
   
-  // TODO: przenieść do modelu
-  public project: Project = new Project(); 
-  // TODO: zmienić nazwę
-  private menuForLabel: Task;
+  public model: TasksModel = new TasksModel();
+
 
   ngOnInit(): void {
     let task1 = new Task("Jeden", "Coś tam", Status.CANCELED);
@@ -32,16 +32,16 @@ export class TasksComponent implements OnInit {
     task1.addSubtask(subtask2);
     task1.addSubtask(subtask3);
     let task2 = new Task("Dwa", "Dłuższy opis", Status.STARTED);
-    this.project.addTask(task1);
-    this.project.addTask(task2);
+    this.model.addTask(task1);
+    this.model.addTask(task2);
   }
 
   public setProject(project:Project):void{
-    this.project = project;
+    this.model.setProject(project);
   }
 
   filterTasks(filterValue:string){
-    // TODO: zrobić filtrowanie zadań
+    this.model.filterTasks(filterValue);
   }
 
   createTaskClick(){
@@ -50,25 +50,26 @@ export class TasksComponent implements OnInit {
 
   taskMenuClick(mouseEvent: MouseEvent, task:Task){
     // TOOD: coś tutaj zrobić. Popatrzeć na projekty
-    this.menuForLabel = task;
+    this.model.setTaskWithOpenMenu(task);
     mouseEvent.preventDefault();
   }
 
 
   editTask(){
-    // TOOD: edycja zadania
-    console.log("Kliknięto tutaj");
-    this.details.emit(this.menuForLabel);
-    this.menuForLabel = null;
+    this.details.emit(this.model.getTaskWithOpenMenu());
+    this.model.setTaskWithOpenMenu(null);
   }
 
-  removeTask(){
-    // TOOD: usuwanie zadania
-
-    this.menuForLabel = null;
+  public removeTask():void{
+    let taskId = this.model.getTaskWithOpenMenu().getId();
+    DataService.getStoreManager().getTaskStore().removeTask(taskId).then(()=>{
+      this.model.removeTask(this.model.getTaskWithOpenMenu());
+      // TODO: pomyśleć jak to można rozwiązać inaczej. Terz może być problem, przy szybkim otwieraniu menu
+      this.model.setTaskWithOpenMenu(null);
+    });
   }
 
-  getFinishedSubtasks(task:Task){
+  public getFinishedSubtasks(task:Task){
     let finishedSubtask = task.getSubtasks().filter(x=>x.getStatus()==Status.ENDED);
     return finishedSubtask.length;
   }

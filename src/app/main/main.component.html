@@ -11,6 +11,11 @@
     (details)="openTaskDetails($event)"></app-tasks>
 
     <app-task-details id="task-details" [hidden]='!tasksDetailsOpen'
-    (closeEmitter)="closeTaskDetails()"></app-task-details>
+    (closeEmitter)="closeTaskDetails()"
+    (labelsManager)="openLabelsManager()"></app-task-details>
+
+    <app-labels id="labels" [hidden]="!labelsOpen"
+    (closeEvent)="closeLabelsManager()"
+    (updateEvent)="onLabelsUpdate()"></app-labels>
 </div>
 
