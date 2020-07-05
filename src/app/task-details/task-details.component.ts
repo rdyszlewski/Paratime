@@ -274,4 +274,9 @@ export class TaskDetailsComponent implements OnInit {
       this.model.setEditedSubtask(null);
     }
   }
+
+  public getFinishedSubtasks(task:Task){
+    let finishedSubtask = task.getSubtasks().filter(x=>x.getStatus()==Status.ENDED);
+    return finishedSubtask.length;
+  }
 }

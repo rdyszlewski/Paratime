@@ -8,6 +8,7 @@ import { ProjectsComponent } from 'app/projects/projects.component';
 import { TasksComponent } from 'app/tasks/tasks.component';
 import { Task } from 'app/models/task';
 import * as $ from 'jquery';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-main',
@@ -42,7 +43,7 @@ export class MainComponent implements OnInit {
   private labelsView;
 
 
-  constructor() { }
+  constructor(public snakBar: MatSnackBar) { }
 
   ngOnInit(): void {
     this.configureDexie();
@@ -133,13 +134,15 @@ export class MainComponent implements OnInit {
     // console.log(project);
   }
 
-  onCreateProject(project:Project){
+  public onCreateProject(project:Project){
     // TODO: alternatywą będzie ponowne wyszukanie wszystkim projektów
     // TODO: nie można tego robić w ten sposób, ponieważ przy aktualizacji dodaje do listy
     this.projectsComponent.addProject(project);
     this.projectsDetailsOpen = false;
     this.setOriginalWidth();
     this.projectsComponent.selectProject(project);
+    
+    this.openSnackBar("Pomyślnie utworzono nowy projekt");
   }
   
   public openLabelsManager(){
@@ -163,6 +166,11 @@ export class MainComponent implements OnInit {
     this.tasksDetailsOpen = false;
     this.setOriginalWidth();
     this.tasksComponent.setProject(new Project);
-    
+  }
+
+  public openSnackBar(message:string){
+    this.snakBar.open(message, null, {
+      duration: 2000,
+    });
   }
 }

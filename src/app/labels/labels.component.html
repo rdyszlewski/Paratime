@@ -12,7 +12,7 @@
                 <div class="label-item-buttons">
                     <div class="list-item-options small-list-item-icon" (click)="editLabel(label)"
                     *ngIf="model.getEditedLabel()!=label">E</div>
-                    <div class="list-item-options small-list-item-icon" (click)="removeLabel(label)"
+                    <div class="list-item-options small-list-item-icon" (click)="onRemoveLabel(label)"
                     *ngIf="model.getEditedLabel()!=label">U</div> 
                 </div>
                 

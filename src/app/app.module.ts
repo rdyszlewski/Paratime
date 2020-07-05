@@ -20,6 +20,9 @@ import { FormsModule } from '@angular/forms';
 import {MatExpansionModule} from '@angular/material/expansion';
 import { LabelsComponent } from './labels/labels.component';
 import { TooltipModule } from 'ng2-tooltip-directive';
+import { MatDialogModule } from '@angular/material/dialog';
+import { DialogComponent } from './dialog/dialog.component';
+import {MatSnackBarModule} from '@angular/material/snack-bar'
 
 @NgModule({
   declarations: [
@@ -30,6 +33,7 @@ import { TooltipModule } from 'ng2-tooltip-directive';
     TaskDetailsComponent,
     ProjectDetailsComponent,
     LabelsComponent,
+    DialogComponent,
   ],
   imports: [
     BrowserModule,
@@ -44,7 +48,12 @@ import { TooltipModule } from 'ng2-tooltip-directive';
     FormsModule,
     MatTooltipModule,
     MatExpansionModule,
-    TooltipModule
+    TooltipModule,
+    MatDialogModule,
+    MatSnackBarModule
+  ],
+  entryComponents:[
+    DialogComponent
   ],
   providers: [{provide: MAT_DATE_LOCALE, useValue: 'pl-PL'},],
   bootstrap: [AppComponent]

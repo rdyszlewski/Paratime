@@ -4,6 +4,9 @@ import { Tag } from 'app/models/tag';
 import * as $ from 'jquery';
 import { DataService } from 'app/data.service';
 import { KeyCode } from 'app/common/key_codes';
+import { MatDialog } from '@angular/material/dialog';
+import { DialogComponent } from 'app/dialog/dialog.component';
+import { resourceUsage } from 'process';
 
 @Component({
   selector: 'app-labels',
@@ -21,7 +24,7 @@ export class LabelsComponent implements OnInit {
   @Output() closeEvent: EventEmitter<null> = new EventEmitter();
   @Output() updateEvent: EventEmitter<null> = new EventEmitter();
 
-  constructor() { }
+  constructor(public dialog:MatDialog) { }
 
   ngOnInit(): void {
     this.insertLabelInput = $(this.LABEL_INPUT_ID);
@@ -62,7 +65,7 @@ export class LabelsComponent implements OnInit {
     },0);
   }
 
-  public removeLabel(label:Tag){
+  private removeLabel(label:Tag){
     DataService.getStoreManager().getTagStore().removeTag(label.getId()).then(()=>{
       this.model.removeLabel(label);
       this.updateEvent.emit();
@@ -120,5 +123,20 @@ export class LabelsComponent implements OnInit {
       this.cancelAddingLabel();
     }
     // TODO: prawdopodobnie będzie zapobiec dalczemu przesyłaniu zdarzenia
+  }
+
+  // TODO: znaleźć jakiś sposób, żeby nie musieć powtarzać tego kodu
+  public openDialog(){
+    const dialogRef = this.dialog.open(DialogComponent, 
+      {width:"350px", data: "Czy na pewno usunąć etykietę?"});
+    return dialogRef.afterClosed();
+  }
+
+  public onRemoveLabel(label:Tag){
+    this.openDialog().subscribe(result=>{
+      if(result){
+        this.removeLabel(label);
+      }
+    });
   }
 }

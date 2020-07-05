@@ -6,6 +6,8 @@ import { Status } from 'app/models/status';
 import { Subtask } from 'app/models/subtask';
 import { TasksModel } from './model';
 import { DataService } from 'app/data.service';
+import { MatDialog } from '@angular/material/dialog';
+import { DialogComponent } from 'app/dialog/dialog.component';
 
 
 @Component({
@@ -15,7 +17,7 @@ import { DataService } from 'app/data.service';
 })
 export class TasksComponent implements OnInit {
 
-  constructor() { }
+  constructor(public dialog:MatDialog) { }
 
   @Output() details: EventEmitter<Task> = new EventEmitter();
   
@@ -61,7 +63,7 @@ export class TasksComponent implements OnInit {
     this.model.setTaskWithOpenMenu(null);
   }
 
-  public removeTask():void{
+  private removeTask():void{
     let taskId = this.model.getTaskWithOpenMenu().getId();
     DataService.getStoreManager().getTaskStore().removeTask(taskId).then(()=>{
       this.model.removeTask(this.model.getTaskWithOpenMenu());
@@ -88,5 +90,19 @@ export class TasksComponent implements OnInit {
     text+= "</ul>";
     return text;
 
+  }
+
+  private openDialog(){
+    const dialogRef = this.dialog.open(DialogComponent, 
+      {width:"350px", data: "Czy na pewno usunąć zadanie?"});
+    return dialogRef.afterClosed();
+  }
+
+  public onRemoveTask(){
+    this.openDialog().subscribe(result=>{
+      if(result){
+        this.removeTask();
+      }
+    });
   }
 }

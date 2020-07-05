@@ -74,7 +74,7 @@
 
         <mat-expansion-panel class="form-group" [expanded]="model.isTagsExtended()">
             <mat-expansion-panel-header class="form-group-header">
-                Etykiety
+                Etykiety ({{model.getTask().getTags().length}})
             </mat-expansion-panel-header>
             <div class="labels-list">
                 <div *ngFor="let label of model.getTask().getTags()" class="label-item transparent-border">
@@ -91,7 +91,7 @@
 
         <mat-expansion-panel class="form-group" [expanded]="model.isSubtasksExtended()">
             <mat-expansion-panel-header class="form-group-header">
-                Kroki
+                Kroki ({{getFinishedSubtasks(model.getTask())}} / {{model.getTask().getSubtasks().length}})
             </mat-expansion-panel-header>
             <div class="list border">
                 <div *ngFor="let subtask of model.getTask().getSubtasks()" class="list-item small-list-item transparent-border">
@@ -140,6 +140,6 @@
 </div>
 
 <mat-menu #appMenu="matMenu" class="my-menu">
-    <button mat-menu-item *ngFor="let label of model.getTags()" class="form-control"
+    <button mat-menu-item *ngFor="let label of model.getTags()" class="list-item small-list-item"
     (click)="chooseTag(label)">{{label.getName()}}</button>
 </mat-menu>

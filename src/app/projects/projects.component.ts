@@ -3,6 +3,8 @@ import { ProjectsModel } from './model';
 import { Project } from 'app/models/project';
 import { DataService } from 'app/data.service';
 import * as $ from 'jquery';
+import { MatDialog } from '@angular/material/dialog';
+import { DialogComponent } from 'app/dialog/dialog.component';
 
 
 @Component({
@@ -21,13 +23,12 @@ export class ProjectsComponent implements OnInit {
 
   contextMenuPosition = { x: '0px', y: '0px' };
 
-  constructor() { }
+  constructor(public dialog:MatDialog) { }
 
   ngOnInit(): void {
     this.model = new ProjectsModel();
 
     this.loadProjects();
-    
   }
 
   private loadProjects(){
@@ -81,16 +82,16 @@ export class ProjectsComponent implements OnInit {
     });
   }
 
-  removeProject(){
-    DataService.getStoreManager().getProjectStore().removeProject(this.lastContextOpen.getId()).then(()=>{
+  private removeProject(){
+    const id = this.lastContextOpen.getId();
+    DataService.getStoreManager().getProjectStore().removeProject(id).then(()=>{
       this.model.removeProject(this.lastContextOpen);
-      if(this.lastContextOpen.getId()==this.model.getSelectedProject().getId()){
-        // TODO: przemyśleć jak to powinno poprawnie wyglądać
+      if(this.model.getSelectedProject()!= null && id==this.model.getSelectedProject().getId()){
         this.removeEvent.emit();
       }
+      console.log(5);
       this.lastContextOpen = null;
     });
-
   }
 
   addProject(project:Project):void{
@@ -100,6 +101,20 @@ export class ProjectsComponent implements OnInit {
   public selectProject(project:Project){
     this.model.setSelectedProject(project);
     this.projectClick(project);
+  }
+
+  public onRemoveProject(){
+    return this.openDialog().subscribe(result=>{
+      if(result){
+        this.removeProject();
+      }
+    });
+  }
+
+  private openDialog(){
+    const dialogRef = this.dialog.open(DialogComponent, 
+      {width:"350px", data: "Czy na pewno usunąć projekt?"});
+    return dialogRef.afterClosed();
   }
 
 }
