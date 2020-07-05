@@ -1,5 +1,5 @@
 <!-- <h3>{{getProject().getName()}}</h3> -->
-<div class="project-details">
+<div class="app-panel shadow">
     <form class="project-form">
 
         <mat-expansion-panel class="form-group" [expanded]='true'>
@@ -15,10 +15,10 @@
             <mat-expansion-panel-header class="form-group-header">
                 Opis
             </mat-expansion-panel-header>
-            <textarea class="form-control" id="project-description" name="description"
+            <textarea class="form-control" id="project-description" name="description" rows="4"
             [ngModel]='model.getProject().getDescription()' (ngModelChange)="model.getProject().setDescription($event)"></textarea>
             <!-- TODO: poprawić ten przycisk. Zrobić jakieś ukrywanie, jeżeli nie było żadnych zmian -->
-            <button class="button" (click)="updateProject()">Wstaw</button>
+            <button class="button small-button border insert-button" (click)="updateProject()">Wstaw</button>
         </mat-expansion-panel>
 
         <mat-expansion-panel class="form-group" [expanded]="true">
@@ -78,7 +78,7 @@
         </mat-expansion-panel>
 
     </form>
-    <div class="buttons-section">
+    <div class="form-buttons-section">
         <button class="button form-button" id="close-button" (click)='close()'>Zamknij</button>
         <button class="button form-button" id="save-button" (click)='save()'
         *ngIf="!model.isUpdateMode()">Zapisz</button>

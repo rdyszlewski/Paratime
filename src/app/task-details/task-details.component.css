@@ -1,12 +1,6 @@
 
 @import '../../styles.css';
 
-.task-details{
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-}
-
 .form{
     box-sizing: border-box;
     height: 100%;
@@ -68,24 +62,20 @@
 
 .edit-subtask{
     /* TODO: ustawić ikonę */
-    background-color: yellowgreen;
+    /* background-color: yellowgreen; */
 }
 
 .remove-subtask{
     /* TODO: ustawić ikonę */
-    background-color: yellow;
+    /* background-color: yellow; */
 }
 
 .subtask-item-buttons{
-    visibility: collapse;
     display: flex;
     margin-top: auto;
     margin-bottom: auto;
 }
 
-.subtask-item:hover .subtask-item-buttons{
-    visibility: visible;
-}
 
 .button{
     cursor: pointer;

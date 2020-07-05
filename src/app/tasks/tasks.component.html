@@ -1,16 +1,16 @@
-<div class='tasks-view'>
-  <h3>{{model.getProjectName()}}</h3>
+<div class='tasks-view shadow app-panel'>
+  <h3 class="panel-header">{{model.getProjectName()}}</h3>
   <div class="filter-container">
-    <input id="task-filter" class="filter" (input)='filterTasks($event.target.value)'>
+    <input id="task-filter" class="filter border" (input)='filterTasks($event.target.value)'>
   </div>
-  <div id="tasks-list">
-      <div *ngFor='let task of model.getTasks()' class="task" >
+  <div id="tasks-list" class="list border">
+      <div *ngFor='let task of model.getTasks()' class="list-item block transparent-border" >
         <div class="task-main">
-          <div class="task-name">{{task.getName()}}</div>
-          <button class="task-menu-button" 
+          <div class="list-item-value">{{task.getName()}}</div>
+          <div class="list-item-options" 
           (click)='taskMenuClick($event, task)'
           [matMenuTriggerFor]="menu"
-          >...</button>
+          >...</div>
         </div>
         <div class="task-info">
           <div *ngIf="task.getDescription()!=null" class="task-description-icon info-icon"
@@ -24,7 +24,7 @@
         </div>
       </div>
   </div>
-  <button class="button task-add-button" (click)='createTaskClick()'>Dodaj zadanie</button>
+  <button class="button border" (click)='createTaskClick()'>Dodaj zadanie</button>
 </div>
 
 <mat-menu #menu="matMenu">

@@ -1,31 +1,19 @@
 @import '../../styles.css';
 
-.projects-view{
-    display: flex;
-    /* display: inline-flex; */
-    flex-direction: column;
-   
-}
 
 .project-details{
     display: flex;
     flex-direction: column;
     width: 100%;
     height: 100%;
-    margin-top: auto;
-    margin-bottom: 0px;
+   
     box-sizing: border-box;
 }
 
-.buttons-section{
-    float: right;
-    margin-right: auto;
-    margin-left: auto;
-}
+
 
 .project-form{
-    margin-bottom: 0px;
-    margin-top:auto;
+    height: 100%;
 }
 
 /* TODO: te same style są w tesk-details.component.css. Spróbować przenieść to do styles.css */
@@ -36,9 +24,12 @@
 
 .mat-content{
     font-size: medium;
+    padding:10px;
 }
 
 .mat-expanded, .mat-content{
     /* TODO: dopracować to jakoś */
     font-size: small;
+    padding: 5px;
 }
+

@@ -1,4 +1,5 @@
-<div class="task-details">
+<div class="app-panel shadow">
+    <h3 class="panel-header">{{model.getTask().getName()}}</h3>
     <form class="form" (keydown.enter)="$event.preventDefault()">
 
         <mat-expansion-panel class="form-group" [expanded]="true">
@@ -15,10 +16,10 @@
             <mat-expansion-panel-header class="form-group-header">
                 Opis
             </mat-expansion-panel-header>
-            <textarea class="form-control" id="task-description" name="description"
+            <textarea class="form-control" id="task-description" name="description" rows="4"
             [ngModel]='model.getTask().getDescription()' (ngModelChange)="model.getTask().setDescription($event)"></textarea>
             <!-- TODO: dopracować  -->
-            <button class="button" (click)="updateTask()">Wstaw</button>
+            <button class="button small-button insert-button" (click)="updateTask()">Wstaw</button>
         </mat-expansion-panel>
         
         <mat-expansion-panel class="form-group" [expanded]="model.isStatusExtended()">
@@ -76,24 +77,24 @@
                 Etykiety
             </mat-expansion-panel-header>
             <div class="labels-list">
-                <div *ngFor="let label of model.getTask().getTags()" class="label-item">
+                <div *ngFor="let label of model.getTask().getTags()" class="label-item transparent-border">
                     <span class="label-name">
                         {{label.getName()}}
                     </span>
                     <span class="remove-label" (click)="removeLabel(label)"></span>
                 </div>
             </div>
-            <button class="form-control" id="task-labels" name="labels" [matMenuTriggerFor]="appMenu">Dodaj</button>
+            <button class="form-control button small-button" id="task-labels" name="labels" [matMenuTriggerFor]="appMenu">Dodaj</button>
             <!-- TODO: można to zrobić w ten sposób, że ostatnią pozycją będzie dodaj inną -->
-            <button class="form-control" id="manage-label-button" (click)="openLabelsManager()">Zarzadzaj etykietami</button>
+            <button class="form-control button small-button" id="manage-label-button" (click)="openLabelsManager()">Zarzadzaj etykietami</button>
         </mat-expansion-panel>
 
         <mat-expansion-panel class="form-group" [expanded]="model.isSubtasksExtended()">
             <mat-expansion-panel-header class="form-group-header">
                 Kroki
             </mat-expansion-panel-header>
-            <div class="subtasks-list">
-                <div *ngFor="let subtask of model.getTask().getSubtasks()" class="subtask-item">
+            <div class="list border">
+                <div *ngFor="let subtask of model.getTask().getSubtasks()" class="list-item small-list-item transparent-border">
                     <div 
                     [ngClass]="{'subtask-checkbox-icon': subtask.getStatus()==status.STARTED,
                                 'subtask-done-icon': subtask.getStatus()==status.ENDED,
@@ -101,37 +102,37 @@
                                 'checkbox': true}"
                                 (click)="toggleSubtaskStatus(subtask)">
                     </div>
-                    <div class="subtask-name" (click)="toggleSubtaskStatus(subtask)"
+                    <div class="list-item-value" (click)="toggleSubtaskStatus(subtask)"
                     *ngIf="model.getEditedSubtask()!=subtask">{{subtask.getName()}}</div>
                     <input class="subtask-name" value="{{subtask.getName()}}" [id]="'subtask-name-input_' + subtask.getId()"
                     *ngIf="model.getEditedSubtask()==subtask"
                     (keyup)="handleKeysOnEditSubtask($event, subtask)">
                     <div class="subtask-item-buttons">
-                        <div class="edit-subtask subtask-icon button" (click)='editSubtask(subtask)'
-                        *ngIf="model.getEditedSubtask()!=subtask"></div>
-                        <div class="remove-subtask subtask-icon button" (click)='removeSubtask(subtask)'
-                        *ngIf="model.getEditedSubtask()!=subtask"></div>
+                        <div class="edit-subtask list-item-options small-list-item-icon" (click)='editSubtask(subtask)'
+                        *ngIf="model.getEditedSubtask()!=subtask">E</div>
+                        <div class="remove-subtask list-item-options small-list-item-icon" (click)='removeSubtask(subtask)'
+                        *ngIf="model.getEditedSubtask()!=subtask">U</div>
                     </div>
                     
-                    <div class='edit-accept subtask-icon button' (click)="acceptEditing(subtask)"
-                    *ngIf="model.getEditedSubtask()==subtask"></div>  
+                    <div class='edit-accept list-item-options small-list-item-icon' (click)="acceptEditing(subtask)"
+                    *ngIf="model.getEditedSubtask()==subtask">V</div>  
                 </div>
             </div>
             <input type="text" class="form-control" id="subtask" [hidden]="!model.isSubtaskEditing()"
             (keyup)="handleKeysOnNewSubtaskInput($event)">
             <div class="buttons-container">
-                <button class="button" id="add-subtask-button" [hidden]="model.isSubtaskEditing()"
+                <button class="button small-button insert-button" id="add-subtask-button" [hidden]="model.isSubtaskEditing()"
                 (click)="addNewSubtask()">
                     Dodaj
                 </button>
-                <button class="button" id="cancel-subtask-button" [hidden]="!model.isSubtaskEditing()"
-                (click)="cancelAddingSubtask()">Anuluj</button>
-                <button class="button" id="save-subtask-button" [hidden]="!model.isSubtaskEditing()"
+                <button class="button small-button insert-button" id="save-subtask-button" [hidden]="!model.isSubtaskEditing()"
                 (click)="saveNewSubtask()">Zapisz</button>
+                <button class="button small-button insert-button" id="cancel-subtask-button" [hidden]="!model.isSubtaskEditing()"
+                (click)="cancelAddingSubtask()">Anuluj</button>
             </div>
         </mat-expansion-panel>
     </form>
-    <div class="button-section">
+    <div class="form-buttons-section">
         <button class="button form-button" id="task-close-button" (click)='close()'>Zamknij</button>
         <button class="button form-button" id="task-save-button" (click)='saveTask()'
         *ngIf="!model.isUpdateMode()">Zapisz</button>

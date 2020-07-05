@@ -53,10 +53,16 @@ html, body{
 }
 
 .app-panel{
-    height: 100vh;
-    margin-left: 3px;
-    margin-right: 3px;
-    padding: 3px;
+    /* height: 100vh; */
+    /* margin-left: 3px;
+    margin-right: 3px; */
+    /* padding: 3px; */
+    height: 100%;
+    padding-left: 3px;
+    padding-right: 3px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
 }
 
 .list{
@@ -82,15 +88,49 @@ html, body{
     margin: 0;
 }
 
+/* TODO: spradzić jak to rozdzielić z tym co jest wyżej */
+.task-list-item{
+    border: 1px solid trainsparent;
+    padding: 10px;
+    margin: 0;
+}
+
 .list-item-options{
     visibility: hidden;
     padding: 5px;
 }
 
+.small-list-item{
+    font-size: small;
+    padding: 4px;
+}
+
+.small-list-item .list-item-value{
+    font-size: small;
+}
+
+.small-list-item-icon{
+    display: flex;
+    padding: 2px;
+    font-size: small;
+    /* border-radius: 4px; */
+    width: 15px;
+    height: 15px;
+    margin: 2px;
+    margin-top: auto;
+    margin-bottom: auto;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+.block{
+    display: block;
+}
+
 .list-item-options:hover{
-    
     box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
-    border-radius: 8px;
+    border-radius: 4px;
+    cursor: pointer;
 }
 
 .list-item:hover{
@@ -129,6 +169,13 @@ html, body{
     border-radius: 8px;
 }
 
+.small-button{
+    margin-top: 5px;
+    margin-bottom: 5px;
+    height: 1.8em;
+    border-radius: 8px;
+}
+
 .button:hover{
     cursor: pointer;
     background-color: aliceblue;
@@ -136,4 +183,44 @@ html, body{
 .panel-header{
     margin-left: auto;
     margin-right: auto;;
+}
+
+.info-icon{
+    display: flex;
+    padding: 2px;
+    font-size: small;
+    border-radius: 4px;
+    box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+    width: 15px;
+    height: 15px;
+    background-color: aqua;
+    margin: 2px;
+
+}
+
+.info-icon{
+    cursor: default;
+}
+
+.mat-expansion-panel-body{
+    padding: 5px!important;
+}
+
+.insert-button{
+    float:right;
+}
+
+.form-buttons-section{
+    float: right;
+    margin-right: auto;
+    margin-left: auto;
+    margin-top: auto;
+    margin-bottom: 0px;
+}
+
+.label-item{
+    padding: 3px;
+    border: 1px solid black;
+    display: flex;
+    margin: 2px;
 }

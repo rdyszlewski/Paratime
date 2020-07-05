@@ -151,8 +151,11 @@ export class TaskDetailsComponent implements OnInit {
       // TODO: przetestować to
       DataService.getStoreManager().getTagStore().removeTagFromTask(this.model.getTask().getId(), tag.getId()).then(()=>{
         this.model.getTask().removeTag(tag);
+        this.model.setEditedSubtask(null);
+
       });
     } else {
+      this.model.getTask().removeTag(tag);
       this.model.setEditedSubtask(null);
     }
   }

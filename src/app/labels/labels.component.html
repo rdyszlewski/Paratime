@@ -1,35 +1,38 @@
-<div class="labels-view">
-    <h3>Etykiety</h3>
-    <input id="project-filter filter" (input)='filterLabels($event.target.value)'>
-    <div class="labels-list list">
-        <div *ngFor="let label of model.getLabels()" class="label-item">
-            <div class="label-name"
-            *ngIf="model.getEditedLabel()!=label">{{label.getName()}}</div>
-            <input class="label-name" [value]="label.getName()" [id]="'label-name-input-' + label.getId()"
-            *ngIf="model.getEditedLabel()==label"
-            (keyup)="handleKeysOnEditLabel($event, label)">
-            <div class="label-item-buttons">
-                <div class="edit-label label-icon" (click)="editLabel(label)"
-                *ngIf="model.getEditedLabel()!=label"></div>
-                <div class="remove-label label-icon" (click)="removeLabel(label)"
-                *ngIf="model.getEditedLabel()!=label"></div> 
+<div class="app-panel shadow">
+    <h3 class="panel-header">Etykiety</h3>
+    <input id="project-filter" class="filter border" (input)='filterLabels($event.target.value)'>
+    <div id="labels-container">
+        <div class="list border" id="labels-list">
+            <div *ngFor="let label of model.getLabels()" class="list-item small-list-item transparent-border">
+                <div class="label-name"
+                *ngIf="model.getEditedLabel()!=label">{{label.getName()}}</div>
+                <input class="label-name" [value]="label.getName()" [id]="'label-name-input-' + label.getId()"
+                *ngIf="model.getEditedLabel()==label"
+                (keyup)="handleKeysOnEditLabel($event, label)">
+                <div class="label-item-buttons">
+                    <div class="list-item-options small-list-item-icon" (click)="editLabel(label)"
+                    *ngIf="model.getEditedLabel()!=label">E</div>
+                    <div class="list-item-options small-list-item-icon" (click)="removeLabel(label)"
+                    *ngIf="model.getEditedLabel()!=label">U</div> 
+                </div>
+                
+                <div class="list-item-options small-list-item-icon" (click)="acceptEditing(label)"
+                *ngIf="model.getEditedLabel()==label">v</div>
             </div>
-            
-            <div class="accept-edit label-icon" (click)="acceptEditing(label)"
-            *ngIf="model.getEditedLabel()==label"></div>
+        </div>
+        <input type="text" class="form-control" id="label" [hidden]="!model.isLabelEditing()"
+        (keyup)="handleKeysOnNewLabelInput($event)">
+        <div class="buttons-container">
+            <button class="button small-button insert-button" id="add-label-button" [hidden]="model.isLabelEditing()"
+            (click)="startAddingNewLabel()">
+                Dodaj
+            </button>
+            <button class="button small-button insert-button" id="save-label-button" [hidden]="!model.isLabelEditing()"
+            (click)="saveNewLabel()">Zapisz</button>
+            <button class="button small-button insert-button" id="cancel-label-button" [hidden]="!model.isLabelEditing()"
+            (click)="cancelAddingLabel()">Anuluj</button>
         </div>
     </div>
-    <input type="text" class="form-control" id="label" [hidden]="!model.isLabelEditing()"
-    (keyup)="handleKeysOnNewLabelInput($event)">
-    <div class="buttons-container">
-        <button class="button" id="add-label-button" [hidden]="model.isLabelEditing()"
-        (click)="startAddingNewLabel()">
-            Dodaj
-        </button>
-        <button class="button" id="cancel-label-button" [hidden]="!model.isLabelEditing()"
-        (click)="cancelAddingLabel()">Anuluj</button>
-        <button class="button" id="save-label-button" [hidden]="!model.isLabelEditing()"
-        (click)="saveNewLabel()">Zapisz</button>
-    </div>
+    
     <button class="button form-button" id="labels-close-button" (click)='closePanel()'>Zamknij</button>
 </div>

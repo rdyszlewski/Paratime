@@ -1,14 +1,10 @@
 
-.labels-view{
-    width: 100%;
-    height: 100vh;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-}
+@import '../../styles.css';
 
-.labels-list{
-    overflow: auto;
+
+
+#labels-container{
+    height: 100%;
 }
 
 .label-item{
