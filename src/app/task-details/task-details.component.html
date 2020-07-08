@@ -7,7 +7,7 @@
                 Nazwa
             </mat-expansion-panel-header>
             <!-- TODO: można dodać opis -->
-            <input type="text" class="form-control" id="task-id" name='name'
+            <input type="text" class="form-control" id="task-name" name='name'
             [ngModel]='model.getTask().getName()' (ngModelChange)="model.getTask().setName($event)"
             (keyup.enter)="updateTask()" (focusout)="updateTask()">
         </mat-expansion-panel>
@@ -27,12 +27,12 @@
                 Stan
             </mat-expansion-panel-header>
             <select class="form-control" id="task-status" name="status"
-            [ngModel]='getStatus()'
+            [ngModel]='model.getTask().getStatus()' (ngModelChange)="model.getTask().setStatus($event)"
             (change)="updateTask()">
-                <option value="started">Aktywny</option>
-                <option value="ended">Zakończony</option>
-                <option value="canceled">Anulowany</option>
-                <option value="awaiting">Oczekujący</option>
+                <option [value]="status.STARTED">Aktywny</option>
+                <option [value]="status.ENDED">Zakończony</option>
+                <option value="status.CANCELED">Anulowany</option>
+                <option value="status.AWAITING">Oczekujący</option>
             </select>
         </mat-expansion-panel>
 
@@ -108,13 +108,13 @@
                     *ngIf="model.getEditedSubtask()==subtask"
                     (keyup)="handleKeysOnEditSubtask($event, subtask)">
                     <div class="subtask-item-buttons">
-                        <div class="edit-subtask list-item-options small-list-item-icon" (click)='editSubtask(subtask)'
+                        <div class="edit-subtask list-item-options small-list-item-icon" (click)='openEditingSubtask(subtask)'
                         *ngIf="model.getEditedSubtask()!=subtask">E</div>
                         <div class="remove-subtask list-item-options small-list-item-icon" (click)='removeSubtask(subtask)'
                         *ngIf="model.getEditedSubtask()!=subtask">U</div>
                     </div>
                     
-                    <div class='edit-accept list-item-options small-list-item-icon' (click)="acceptEditing(subtask)"
+                    <div class='edit-accept list-item-options small-list-item-icon' (click)="acceptEditingSubtask(subtask)"
                     *ngIf="model.getEditedSubtask()==subtask">V</div>  
                 </div>
             </div>
@@ -122,18 +122,18 @@
             (keyup)="handleKeysOnNewSubtaskInput($event)">
             <div class="buttons-container">
                 <button class="button small-button insert-button" id="add-subtask-button" [hidden]="model.isSubtaskEditing()"
-                (click)="addNewSubtask()">
+                (click)="openAddingSubtask()">
                     Dodaj
                 </button>
                 <button class="button small-button insert-button" id="save-subtask-button" [hidden]="!model.isSubtaskEditing()"
-                (click)="saveNewSubtask()">Zapisz</button>
+                (click)="addNewSubtask()">Zapisz</button>
                 <button class="button small-button insert-button" id="cancel-subtask-button" [hidden]="!model.isSubtaskEditing()"
-                (click)="cancelAddingSubtask()">Anuluj</button>
+                (click)="closeAddingSubtask()">Anuluj</button>
             </div>
         </mat-expansion-panel>
     </form>
     <div class="form-buttons-section">
-        <button class="button form-button" id="task-close-button" (click)='close()'>Zamknij</button>
+        <button class="button form-button" id="task-close-button" (click)='closeView()'>Zamknij</button>
         <button class="button form-button" id="task-save-button" (click)='saveTask()'
         *ngIf="!model.isUpdateMode()">Zapisz</button>
     </div>

@@ -1,5 +1,6 @@
+import { IFilterable } from 'app/common/filter/i_filterable';
 
-export class Tag{
+export class Tag implements IFilterable{
     
     private id: number;
     private name: string = null;

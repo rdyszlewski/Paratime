@@ -5,3 +5,4 @@ npm install dexie --save-dev
 
 ng add @angular/material
 npm install --save-dev jquery
+npm i –save-dev ng2-tooltip-directive

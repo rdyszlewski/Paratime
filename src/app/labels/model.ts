@@ -1,26 +1,30 @@
 import { Tag } from 'app/models/tag';
+import { FilteredList } from 'app/common/filter/filtered_list';
 
 export class LabelsModel{
 
     private labels:Tag[] = [];
-    private filteredLabels: Tag[] = [];
+    private filteredList: FilteredList<Tag> = new FilteredList();
     private editedLabel: Tag;
     private labelEditing: boolean;
-    private lastFilter: string = "";
+
 
     public getLabels():Tag[]{
-        // return this.labels;
-        return this.filteredLabels;
+        return this.filteredList.getElements();
     }
 
     public setLabels(labels:Tag[]){
         this.labels = labels;
-        this.filteredLabels = labels;
+        this.updateFilterdList();
+    }
+
+    private updateFilterdList(){
+        this.filteredList.setSource(this.labels);
     }
 
     public addLabel(label:Tag){
         this.labels.push(label);
-        this.filterLabels(this.lastFilter);
+        this.updateFilterdList();
     }
 
     public removeLabel(label:Tag){
@@ -28,7 +32,7 @@ export class LabelsModel{
         if(index >= 0){
             this.labels.splice(index, 1);
         }
-        this.filterLabels(this.lastFilter);
+        this.updateFilterdList();
     }
 
     public getEditedLabel():Tag{
@@ -48,7 +52,6 @@ export class LabelsModel{
     }
 
     public filterLabels(filter:string){
-        this.filteredLabels = this.labels.filter(x=>x.getName().includes(filter));
-        this.lastFilter = filter;
+        this.filteredList.filter(filter);
     }
 }

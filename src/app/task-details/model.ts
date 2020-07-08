@@ -2,7 +2,6 @@ import { Task } from 'app/models/task';
 import { Project } from 'app/models/project';
 import { Tag } from 'app/models/tag';
 import { Subtask } from 'app/models/subtask';
-import { Status } from 'app/models/status';
 
 export class TaskDetails{
     private task: Task = new Task();
@@ -48,7 +47,24 @@ export class TaskDetails{
 
     public setTags(tags: Tag[]){
         this.tags = tags;
+        this.repairTaskLabels(tags);
     }
+
+    private repairTaskLabels(labels:Tag[]){
+        let toRemove = [];
+        this.getTask().getTags().forEach(label=>{
+          const foundLabel = labels.find(x=>x.getId()==label.getId());
+          if(foundLabel){
+            label.setName(foundLabel.getName());
+          } else {
+            toRemove.push(label);
+          }
+        });
+    
+        toRemove.forEach(label=>{
+          this.getTask().removeTag(label);
+        });
+      }
 
     public isSubtaskEditing(){
         return this.subtaskEditing;

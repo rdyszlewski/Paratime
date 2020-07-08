@@ -1,6 +1,6 @@
 <div class="app-panel shadow">
     <h3 class="panel-header">Etykiety</h3>
-    <input id="project-filter" class="filter border" (input)='filterLabels($event.target.value)'>
+    <input id="project-filter" class="filter border" (input)='model.filterLabels($event.target.value)'>
     <div id="labels-container">
         <div class="list border" id="labels-list">
             <div *ngFor="let label of model.getLabels()" class="list-item small-list-item transparent-border">
@@ -10,13 +10,13 @@
                 *ngIf="model.getEditedLabel()==label"
                 (keyup)="handleKeysOnEditLabel($event, label)">
                 <div class="label-item-buttons">
-                    <div class="list-item-options small-list-item-icon" (click)="editLabel(label)"
+                    <div class="list-item-options small-list-item-icon" (click)="openEditingLabel(label)"
                     *ngIf="model.getEditedLabel()!=label">E</div>
                     <div class="list-item-options small-list-item-icon" (click)="onRemoveLabel(label)"
                     *ngIf="model.getEditedLabel()!=label">U</div> 
                 </div>
                 
-                <div class="list-item-options small-list-item-icon" (click)="acceptEditing(label)"
+                <div class="list-item-options small-list-item-icon" (click)="acceptEditingLabel(label)"
                 *ngIf="model.getEditedLabel()==label">v</div>
             </div>
         </div>
@@ -24,15 +24,15 @@
         (keyup)="handleKeysOnNewLabelInput($event)">
         <div class="buttons-container">
             <button class="button small-button insert-button" id="add-label-button" [hidden]="model.isLabelEditing()"
-            (click)="startAddingNewLabel()">
+            (click)="openAddingNewLabel()">
                 Dodaj
             </button>
             <button class="button small-button insert-button" id="save-label-button" [hidden]="!model.isLabelEditing()"
-            (click)="saveNewLabel()">Zapisz</button>
+            (click)="addNewLabel()">Zapisz</button>
             <button class="button small-button insert-button" id="cancel-label-button" [hidden]="!model.isLabelEditing()"
             (click)="cancelAddingLabel()">Anuluj</button>
         </div>
     </div>
     
-    <button class="button form-button" id="labels-close-button" (click)='closePanel()'>Zamknij</button>
+    <button class="button form-button" id="labels-close-button" (click)='closeView()'>Zamknij</button>
 </div>

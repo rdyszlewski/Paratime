@@ -29,7 +29,6 @@ export class MainComponent implements OnInit {
   @ViewChild(TasksComponent)
   private tasksComponent: TasksComponent;
 
-  // TODO: zastanowić się, jak to ładnie uporządkować
   public projectsOpen = true;
   public projectsDetailsOpen = false;
   public tasksOpen = true;
@@ -40,7 +39,6 @@ export class MainComponent implements OnInit {
   private projectDetailsView;
   private tasksView;
   private taskDetailsView;
-  private labelsView;
 
 
   constructor(public snakBar: MatSnackBar) { }
@@ -51,7 +49,6 @@ export class MainComponent implements OnInit {
     this.projectDetailsView = $("#projects-details");
     this.tasksView = $("#tasks");
     this.taskDetailsView = $('#task-details');
-    this.labelsView = $('#labels');
 
     this.setOriginalWidth();
   }

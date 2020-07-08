@@ -2,7 +2,6 @@ import { Component, OnInit, Output, EventEmitter, ViewChild, TemplateRef } from 
 import { ProjectsModel } from './model';
 import { Project } from 'app/models/project';
 import { DataService } from 'app/data.service';
-import * as $ from 'jquery';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogComponent } from 'app/dialog/dialog.component';
 
@@ -14,23 +13,19 @@ import { DialogComponent } from 'app/dialog/dialog.component';
 })
 export class ProjectsComponent implements OnInit {
 
-  model: ProjectsModel;
-  private lastContextOpen: Project = null;
+  public model: ProjectsModel = new ProjectsModel();
   
-  @Output() editEmitter: EventEmitter<Project> = new EventEmitter();
-  @Output() loadEmitter: EventEmitter<Project> = new EventEmitter();
+  @Output() editEvent: EventEmitter<Project> = new EventEmitter();
+  @Output() loadEvent: EventEmitter<Project> = new EventEmitter();
   @Output() removeEvent: EventEmitter<Project> = new EventEmitter();
-
-  contextMenuPosition = { x: '0px', y: '0px' };
 
   constructor(public dialog:MatDialog) { }
 
   ngOnInit(): void {
-    this.model = new ProjectsModel();
-
     this.loadProjects();
   }
 
+  // loading projects from database
   private loadProjects(){
     DataService.getStoreManager().getProjectStore().getAllProjects().then(projects=>{
       projects.forEach(project=>{
@@ -39,81 +34,74 @@ export class ProjectsComponent implements OnInit {
     });
   }
 
+  // update project on the list
   public updateProject(project:Project){
     this.model.updateProject(project);
   }
 
-  projectClick(project:Project){
-    DataService.getStoreManager().getProjectStore().getProjectById(project.getId()).then(loadedProject=>{
-      this.loadEmitter.emit(loadedProject);
-    });
-    this.model.setSelectedProject(project);
-  }
-
-  createProjectClick(){
-    this.editEmitter.emit(new Project);
-  }
-
-
-  projectMenuClick(event:MouseEvent, project:Project){
-    // TODO; okazuje się, że focus nie działa
-    let target = event.target as HTMLElement;
-    target.parentElement.focus();
-    event.stopPropagation();
-    this.lastContextOpen = project;
-      }
-
-  filterProjects(filterValue: string):void{
-    this.model.filterProject(filterValue);
-  }
-
-  isSelectedProject(project:Project):boolean{
-    if(this.model.getSelectedProject()==null){
-      return false;
-    }
-    return project.getId() == this.model.getSelectedProject().getId();
-  }
-
-  editProject(){
-    DataService.getStoreManager().getProjectStore().getProjectById(this.lastContextOpen.getId()).then(loadedProject=>{
-      this.editEmitter.emit(loadedProject);
-      // TODO: przyjrzeć się temu
-      this.model.setSelectedProject(this.lastContextOpen);
-    });
-  }
-
-  private removeProject(){
-    const id = this.lastContextOpen.getId();
-    DataService.getStoreManager().getProjectStore().removeProject(id).then(()=>{
-      this.model.removeProject(this.lastContextOpen);
-      if(this.model.getSelectedProject()!= null && id==this.model.getSelectedProject().getId()){
-        this.removeEvent.emit();
-      }
-      this.lastContextOpen = null;
-    });
-  }
-
-  addProject(project:Project):void{
+  /// add project to projects list
+  public addProject(project:Project):void{
     this.model.addProject(project);
   }
 
+  /// select project on the list and open it
   public selectProject(project:Project){
     this.model.setSelectedProject(project);
-    this.projectClick(project);
+    this.onProjectClick(project);
   }
 
+// click events
+
+  public onProjectClick(project:Project){
+    DataService.getStoreManager().getProjectStore().getProjectById(project.getId()).then(loadedProject=>{
+      this.loadEvent.emit(loadedProject);
+    });
+    this.model.setSelectedProject(project);
+  }
+
+  public onCreateProjectClick(){
+    this.editEvent.emit(new Project);
+  }
+
+  public onProjectMenuClick(event:MouseEvent, project:Project){
+    let target = event.target as HTMLElement;
+    target.parentElement.focus();
+    event.stopPropagation();
+    this.model.setProjectWithOpenMenu(project);
+  }
+
+  public onEditProject(){
+    DataService.getStoreManager().getProjectStore().getProjectById(this.model.getProjectWithOpenMenu().getId()).then(loadedProject=>{
+      this.editEvent.emit(loadedProject);
+      this.model.setSelectedProject(this.model.getProjectWithOpenMenu());
+    });
+  }
+
+  /// handle click on remove project options in menu
   public onRemoveProject(){
-    return this.openDialog().subscribe(result=>{
+    return this.openRemoveConfirmationDialog().subscribe(result=>{
       if(result){
         this.removeProject();
       }
     });
   }
 
-  private openDialog(){
+  private removeProject(){
+    let project = this.model.getProjectWithOpenMenu();
+    const id = project.getId();
+    DataService.getStoreManager().getProjectStore().removeProject(id).then(()=>{
+      this.model.removeProject(project);
+      if(this.model.isSelectedProjectId(id)){
+        // send event to main component, that close tasks view for removed project
+        this.removeEvent.emit();
+      }
+      this.model.setProjectWithOpenMenu(null);
+    });
+  }
+
+  private openRemoveConfirmationDialog(){
     const dialogRef = this.dialog.open(DialogComponent, 
       {width:"350px", data: "Czy na pewno usunąć projekt?"});
     return dialogRef.afterClosed();
   }
-
 }

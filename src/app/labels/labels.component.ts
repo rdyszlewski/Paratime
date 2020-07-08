@@ -5,8 +5,8 @@ import * as $ from 'jquery';
 import { DataService } from 'app/data.service';
 import { KeyCode } from 'app/common/key_codes';
 import { MatDialog } from '@angular/material/dialog';
-import { DialogComponent } from 'app/dialog/dialog.component';
-import { resourceUsage } from 'process';
+import { FocusHelper } from 'app/common/view_helper';
+import { DialogHelper } from 'app/common/dialog';
 
 @Component({
   selector: 'app-labels',
@@ -18,51 +18,61 @@ export class LabelsComponent implements OnInit {
   private LABEL_INPUT_ID = "#label";
   private LABEL_ITEM_ID = "#label-name-input-";
 
-  private insertLabelInput;
-  public model: LabelsModel = new LabelsModel();
-
   @Output() closeEvent: EventEmitter<null> = new EventEmitter();
   @Output() updateEvent: EventEmitter<null> = new EventEmitter();
+
+  public model: LabelsModel = new LabelsModel();
+
+  private insertLabelInput;
 
   constructor(public dialog:MatDialog) { }
 
   ngOnInit(): void {
     this.insertLabelInput = $(this.LABEL_INPUT_ID);
-    this.init();
-    // this.insertMockTags();
+    this.loadLabels();
   }
 
-  private init(){
+  private loadLabels(){
     DataService.getStoreManager().getTagStore().getAllTags().then(labels=>{
       this.model.setLabels(labels);
     });
   }
 
-  private insertMockTags(){
-    let tag1 = new Tag("Jeden");
-    tag1.setId(1);
-    let tag2 = new Tag("Dwa");
-    tag2.setId(2);
-    let tag3 = new Tag("Trzy");
-    tag3.setId(3);
-
-    this.model.setLabels([tag1, tag2, tag3]);
-  }
-
-  public filterLabels(tagValue: string):void{
-    this.model.filterLabels(tagValue);
-  }
-
-  public editLabel(label:Tag){
+  public openEditingLabel(label:Tag){
+    // TODO: pozmieniać nazwy. Te są mylące
     this.model.setEditedLabel(label);
     this.model.setLabelEditing(false);
-    this.setFocusOnInput(this.LABEL_ITEM_ID+label.getId());
+    FocusHelper.focus(this.getLabelItemId(label));
   }
 
-  private setFocusOnInput(id:string){
-    setTimeout(()=>{ 
-      $(id).focus();
-    },0);
+  private getLabelItemId(label:Tag):string{
+    return this.LABEL_ITEM_ID+label.getId();
+  }
+
+  private closeEditingLabel(){
+    this.model.setEditedLabel(null);
+  }
+
+  public acceptEditingLabel(label:Tag){
+    const newLabelName =$(this.getLabelItemId(label)).val();
+    label.setName(newLabelName);
+    this.updateLabel(label);
+  }
+
+  private updateLabel(label: Tag) {
+    DataService.getStoreManager().getTagStore().updateTag(label).then(updatedLabel => {
+      this.model.setEditedLabel(null);
+      this.updateEvent.emit();
+    });
+  }
+
+  public onRemoveLabel(label:Tag){
+    const message = "Czy na pewno usunąć etykietę?";
+    DialogHelper.openDialog(message, this.dialog).subscribe(result=>{
+      if(result){
+        this.removeLabel(label);
+      }
+    });
   }
 
   private removeLabel(label:Tag){
@@ -72,19 +82,10 @@ export class LabelsComponent implements OnInit {
     });
   }
 
-  public acceptEditing(label:Tag){
-    const newLabelName =$(this.LABEL_ITEM_ID+label.getId()).val();
-    label.setName(newLabelName);
-    DataService.getStoreManager().getTagStore().updateTag(label).then(updatedLabel=>{
-      this.model.setEditedLabel(null);
-      this.updateEvent.emit();
-    });
-  }
-
-  public startAddingNewLabel(){
+  public openAddingNewLabel(){
     this.model.setLabelEditing(true);
     this.model.setEditedLabel(null);
-    this.setFocusOnInput(this.LABEL_INPUT_ID);
+    FocusHelper.focus(this.LABEL_INPUT_ID);
   }
 
   public cancelAddingLabel(){
@@ -92,23 +93,27 @@ export class LabelsComponent implements OnInit {
     this.model.setLabelEditing(false);
   }
 
-  public saveNewLabel(){
+  public addNewLabel(){
     const labelName = this.insertLabelInput.val();
     const labelToInsert = new Tag(labelName);
-    DataService.getStoreManager().getTagStore().createTag(labelToInsert).then(insertedLabel=>{
+    this.saveNewLabel(labelToInsert);
+  }
+
+  private saveNewLabel(labelToInsert: Tag) {
+    DataService.getStoreManager().getTagStore().createTag(labelToInsert).then(insertedLabel => {
       this.model.addLabel(insertedLabel);
       this.cancelAddingLabel();
       this.updateEvent.emit();
     });
   }
 
-  public closePanel(){
+  public closeView(){
     this.closeEvent.emit();
   }
 
   public handleKeysOnNewLabelInput(event:KeyboardEvent){
     if(event.keyCode== KeyCode.ENTER){
-      this.saveNewLabel();
+      this.addNewLabel();
     }
     if(event.keyCode == KeyCode.ESC){
       this.cancelAddingLabel();
@@ -117,26 +122,10 @@ export class LabelsComponent implements OnInit {
 
   public handleKeysOnEditLabel(event:KeyboardEvent, label:Tag){
     if(event.keyCode == KeyCode.ENTER) {
-      this.acceptEditing(label);
+      this.acceptEditingLabel(label);
     } 
     if(event.keyCode == KeyCode.ESC){
-      this.cancelAddingLabel();
+      this.closeEditingLabel();
     }
-    // TODO: prawdopodobnie będzie zapobiec dalczemu przesyłaniu zdarzenia
-  }
-
-  // TODO: znaleźć jakiś sposób, żeby nie musieć powtarzać tego kodu
-  public openDialog(){
-    const dialogRef = this.dialog.open(DialogComponent, 
-      {width:"350px", data: "Czy na pewno usunąć etykietę?"});
-    return dialogRef.afterClosed();
-  }
-
-  public onRemoveLabel(label:Tag){
-    this.openDialog().subscribe(result=>{
-      if(result){
-        this.removeLabel(label);
-      }
-    });
   }
 }

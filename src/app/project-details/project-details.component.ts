@@ -13,13 +13,13 @@ import { ProjectDetails } from './model';
 })
 export class ProjectDetailsComponent implements OnInit {
 
-  // TODO: dodać emitter zapisywania i zamykania okna
-  @Output() closeEmitter: EventEmitter<null> = new EventEmitter();
-  @Output() saveEmitter: EventEmitter<Project> = new EventEmitter();
+  @Output() closeEvent: EventEmitter<null> = new EventEmitter();
+  @Output() saveEvent: EventEmitter<Project> = new EventEmitter();
   @Output() updateEvent: EventEmitter<Project> = new EventEmitter();
 
   public model: ProjectDetails = new ProjectDetails();
-  // public project: Project = new Project();
+  public projectType = ProjectType;
+  public status = Status;
 
   constructor() { }
 
@@ -31,57 +31,16 @@ export class ProjectDetailsComponent implements OnInit {
     this.model.setProject(project);
   }
 
-  public getType(){
-    return this.getTypeValue(this.model.getProject().getType());
+  public closeView(){
+    this.closeEvent.emit();
   }
 
-  private getTypeValue(type:ProjectType):string{
-    // TODO: sprawdzić, czy jest jakaś możliwość, aby wziąć nazwę stałej i zmniejszyć jej litetry
-    // TODO: przenieść to gdzieś. Zrobić jakieś kreatory
-    switch(type){
-      case ProjectType.DEFAULT:
-        return 'default';
-      case ProjectType.SMALL:
-        return 'small';
-      case ProjectType.MEDIUM:
-        return 'medium';
-      case ProjectType.BIG:
-        return 'big';
-      default:
-        return 'default';
-    }
-  }
-
-  public getStatus(){
-    return this.getStatusValue(this.model.getProject().getStatus());
-  }
-
-  private getStatusValue(status:Status): string{
-    switch(status){
-      case Status.STARTED:
-        return 'started';
-      case Status.ENDED:
-        return 'ended';
-      case Status.CANCELED:
-        return 'canceled';
-      case Status.AWAITING:
-        return 'awaiting';
-      default:
-        return 'awaiting';
-    }
-  }
-
-  close(){
-    this.closeEmitter.emit();
-  }
-
-  save(){
-    // TODO: napisać kod odpowiedzialny za zapisywanie projektu
-    
+  // TODO: po zmianie dodawania projektu zmienić zapisywanie i aktualizację porjektu
+  public saveProject(){
     if(!this.model.isUpdateMode()){
       DataService.getStoreManager().getProjectStore().createProject(this.model.getProject()).then(createdProject=>{
         this.model.setProject(createdProject);
-        this.saveEmitter.emit(createdProject);
+        this.saveEvent.emit(createdProject);
       });
     }
   }
@@ -93,5 +52,4 @@ export class ProjectDetailsComponent implements OnInit {
       });
     }
   }
-
 }

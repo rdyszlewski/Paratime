@@ -1,14 +1,14 @@
 <div class='tasks-view shadow app-panel'>
   <h3 class="panel-header">{{model.getProjectName()}}</h3>
   <div class="filter-container">
-    <input id="task-filter" class="filter border" (input)='filterTasks($event.target.value)'>
+    <input id="task-filter" class="filter border" (input)='model.filterTasks($event.target.value)'>
   </div>
   <div id="tasks-list" class="list border">
       <div *ngFor='let task of model.getTasks()' class="list-item block transparent-border" >
         <div class="task-main">
           <div class="list-item-value">{{task.getName()}}</div>
           <div class="list-item-options" 
-          (click)='taskMenuClick($event, task)'
+          (click)='onTaskMenuClick($event, task)'
           [matMenuTriggerFor]="menu"
           >...</div>
         </div>
@@ -20,17 +20,17 @@
           <div *ngIf="task.getSubtasks().length != 0" class="info-icon task-subtask"
           tooltip="{{getSubtasksList(task)}}" autoplacement="true" placement="bottom"
           >
-            {{getFinishedSubtasks(task)}} / {{task.getSubtasks().length}}
+            {{task.getNumberOfSubtaskWithStatus(status.ENDED)}} / {{task.getSubtasks().length}}
           </div>
         </div>
       </div>
   </div>
-  <button class="button border" (click)='createTaskClick()'
+  <button class="button border" (click)='onCreateTaskClick()'
   *ngIf="model.getProject().getId()!=null">Dodaj zadanie</button>
 </div>
 
 <mat-menu #menu="matMenu">
-    <button mat-menu-item (click)="editTask()">
+    <button mat-menu-item (click)="onEditTask()">
       Edytuj
     </button>
     <button mat-menu-item (click)="onRemoveTask()">

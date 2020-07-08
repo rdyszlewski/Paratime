@@ -1,37 +1,33 @@
 <div class="app-panel shadow">
     <h3 class="panel-header">Projekty</h3>
     <!-- TODO: ustawić odpowiednio styl do filtra -->
-    <input class="project-filter filter border" (input)='filterProjects($event.target.value)'>
+    <input class="project-filter filter border" (input)='model.filterProject($event.target.value)'>
     <!-- TODO: zrobić globalny styl do listy oraz do jej elementów-->
     <div id="projects-list" class="list border">
         <div *ngFor='let project of model.getProjects()'
-        [ngClass]="{'selected-list-item': isSelectedProject(project),
+        [ngClass]="{'selected-list-item': model.isSelectedProject(project),
                     'project': true,
                     'list-item':true,
                     'transparent-border':true}" 
-                    (click)='projectClick(project)'
+                    (click)='onProjectClick(project)'
                     >
             
                 <div class="list-item-value">{{project.getName()}}</div>
                 <div class="list-item-options" 
-                (click)='projectMenuClick($event, project)'
+                (click)='onProjectMenuClick($event, project)'
                 [matMenuTriggerFor]="menu"
                 >...</div>
            
         </div>
     </div>
-    <button class="button border" (click)='createProjectClick()'>Dodaj projekt</button>
+    <button class="button border" (click)='onCreateProjectClick()'>Dodaj projekt</button>
 </div>
 
 <mat-menu #menu="matMenu">
-    <button mat-menu-item (click)="editProject()">
-      <!-- <mat-icon>dialpad</mat-icon> -->
-      <!-- <span >Edytuj</span> -->
+    <button mat-menu-item (click)="onEditProject()">
       Edytuj
     </button>
     <button mat-menu-item (click)="onRemoveProject()">
-      <!-- <mat-icon>notifications_off</mat-icon> -->
-      <!-- <span>Disable alerts</span> -->
       Usuń
     </button>
   </mat-menu>

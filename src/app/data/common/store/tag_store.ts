@@ -31,9 +31,8 @@ export class TagStore{
         });
     }
 
-    // TODO: pomyśleć jeszcze nad tą metodą
-    public connectTaskAndTag(model: TaskTagsModel): Promise<TaskTagsModel>{
-        return this.taskTagRepository.insert(model);
+    public connectTaskAndTag(taskId: number, tagId:number):Promise<TaskTagsModel>{
+        return this.taskTagRepository.insert(new TaskTagsModel(taskId, tagId));
     }
 
     public updateTag(tag:Tag):Promise<Tag>{

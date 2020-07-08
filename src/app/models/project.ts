@@ -1,8 +1,9 @@
 import { Status } from './status';
 import { Task } from './task';
 import { ProjectType } from './project_type';
+import { IFilterable } from 'app/common/filter/i_filterable';
 
-export class Project{
+export class Project implements IFilterable{
     
     private id: number;
     private name: string = null;

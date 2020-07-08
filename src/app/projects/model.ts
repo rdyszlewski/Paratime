@@ -1,41 +1,53 @@
 import { Project } from 'app/models/project';
+import { FilteredList } from 'app/common/filter/filtered_list';
 
 export class ProjectsModel{
 
     private projects: Project[] = [];
-    private filteredProjects: Project[] = [];
+    private filteredList: FilteredList<Project> = new FilteredList();
     private selectedProject: Project = null;
-    private lastFilter:string = "";
+    private projectWithOpenMenu: Project = null;
 
     public getProjects(){
-        // return this.projects;
-        return this.filteredProjects;
+        return this.filteredList.getElements();
     }
 
     public addProject(project:Project){
         this.projects.push(project);
-        this.filterProject(this.lastFilter);
+        this.updateFilteredList();
     }
 
     public removeProject(project:Project){
         const index = this.projects.indexOf(project);
         if(index >=0){
             this.projects.splice(index, 1);
-            this.filterProject(this.lastFilter);
+            this.updateFilteredList();
         }
     }
 
+    private updateFilteredList(){
+        this.filteredList.setSource(this.projects);
+    }
+
     public filterProject(filter:string){
-        this.filteredProjects = [];
-        this.projects.filter(x=>x.getName().includes(filter)).forEach(project=>{
-            this.filteredProjects.push(project);
-        });
-        this.lastFilter = filter;
+        this.filteredList.filter(filter);
     }
 
     public getSelectedProject():Project{
         return this.selectedProject;
     }
+
+    public isSelectedProject(project:Project):boolean{
+        if(this.getSelectedProject()==null){
+          return false;
+        }
+        return project.getId() == this.getSelectedProject().getId();
+    }
+
+    public isSelectedProjectId(id: number) {
+        return this.getSelectedProject() != null && id == this.getSelectedProject().getId();
+    }
+    
 
     public setSelectedProject(project:Project) {
         this.selectedProject = project;
@@ -46,5 +58,13 @@ export class ProjectsModel{
         if(projectToUpdate){
             projectToUpdate.setName(project.getName());
         }
+    }
+
+    public getProjectWithOpenMenu():Project{
+        return this.projectWithOpenMenu;
+    }
+
+    public setProjectWithOpenMenu(project:Project){
+        this.projectWithOpenMenu = project;
     }
 }

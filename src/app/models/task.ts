@@ -2,8 +2,9 @@ import { Subtask } from './subtask';
 import { Status } from './status';
 import { Project } from './project';
 import { Tag } from './tag';
+import { IFilterable } from 'app/common/filter/i_filterable';
 
-export class Task{
+export class Task implements IFilterable{
 
     // TODO: przejrzeć wszystkie zmienne i zobaczyć, czy wszystko jest ok
 
@@ -142,5 +143,8 @@ export class Task{
         this.projectID = id;
     }
 
-
+    public getNumberOfSubtaskWithStatus(status:Status){
+        let finishedSubtask = this.getSubtasks().filter(x=>x.getStatus()==status);
+        return finishedSubtask.length;
+    }
 }

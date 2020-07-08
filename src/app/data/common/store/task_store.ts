@@ -88,8 +88,7 @@ export class TaskStore{
                 promises.push(subtaskPromise);
             });
             task.getTags().forEach(label=>{
-                const entry = new TaskTagsModel(insertedId, label.getId());
-                let labelPromise = this.tagStore.connectTaskAndTag(entry);
+                let labelPromise = this.tagStore.connectTaskAndTag(insertedId, label.getId());
                 promises.push(labelPromise);
             });
             return Promise.all(promises).then(()=>{

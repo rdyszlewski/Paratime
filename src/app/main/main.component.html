@@ -1,12 +1,12 @@
 <div id="main">
     <app-projects id="projects" [hidden]="!projectsOpen" 
-    (editEmitter)='openProjectDetails($event)'
-    (loadEmitter)="loadTasks($event)"
+    (editEvent)='openProjectDetails($event)'
+    (loadEvent)="loadTasks($event)"
     (removeEvent)="onRemoveSelectedProject($event)"></app-projects>
     
     <app-project-details id='projects-details' [hidden]='!projectsDetailsOpen'
-    (closeEmitter)='closeProjectDetails()'
-    (saveEmitter)='onCreateProject($event)'
+    (closeEvent)='closeProjectDetails()'
+    (saveEvent)='onCreateProject($event)'
     (updateEvent)="onUpdateProject($event)"
     ></app-project-details>
     
@@ -15,9 +15,9 @@
     (removeEvent)="onRemoveTask($event)"></app-tasks>
 
     <app-task-details id="task-details" [hidden]='!tasksDetailsOpen'
-    (closeEmitter)="closeTaskDetails()"
-    (saveEmitter)="onCreateTask($event)"
-    (labelsManager)="openLabelsManager()"></app-task-details>
+    (closeEvent)="closeTaskDetails()"
+    (saveEvent)="onCreateTask($event)"
+    (openLabelsEvent)="openLabelsManager()"></app-task-details>
 
     <app-labels id="labels" [hidden]="!labelsOpen"
     (closeEvent)="closeLabelsManager()"
