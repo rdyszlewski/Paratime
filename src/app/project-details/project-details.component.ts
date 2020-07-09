@@ -35,21 +35,9 @@ export class ProjectDetailsComponent implements OnInit {
     this.closeEvent.emit();
   }
 
-  // TODO: po zmianie dodawania projektu zmienić zapisywanie i aktualizację porjektu
-  public saveProject(){
-    if(!this.model.isUpdateMode()){
-      DataService.getStoreManager().getProjectStore().createProject(this.model.getProject()).then(createdProject=>{
-        this.model.setProject(createdProject);
-        this.saveEvent.emit(createdProject);
-      });
-    }
-  }
-
   public updateProject(){
-    if(this.model.isUpdateMode()){
-      DataService.getStoreManager().getProjectStore().updateProject(this.model.getProject()).then(()=>{
-        this.updateEvent.emit(this.model.getProject());
-      });
-    }
+    DataService.getStoreManager().getProjectStore().updateProject(this.model.getProject()).then(()=>{
+      this.updateEvent.emit(this.model.getProject());
+    });
   }
 }

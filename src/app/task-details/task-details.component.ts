@@ -53,7 +53,6 @@ export class TaskDetailsComponent implements OnInit {
 
   public setTask(task:Task){
     if(task){
-      this.model.setUpdateMode(task.getId()!=null);
       this.model.setTask(task);
       FocusHelper.focus(this.TASK_NAME_ID);
     }
@@ -62,31 +61,20 @@ export class TaskDetailsComponent implements OnInit {
   // LABELS 
 
   public chooseLabel(label:Label){
-    if(this.model.isUpdateMode()){
-      DataService.getStoreManager().getLabelStore().connectTaskAndLabel(this.model.getTask().getId(), label.getId()).then(()=>{
-        this.model.getTask().addLabel(label);
-      });
-    } else {
+    DataService.getStoreManager().getLabelStore().connectTaskAndLabel(this.model.getTask().getId(), label.getId()).then(()=>{
       this.model.getTask().addLabel(label);
-    }
+    });
   }
 
   public removeLabel(label:Label){
-    if(this.model.isUpdateMode()){
-      // TODO: przetestować to
-      DataService.getStoreManager().getLabelStore().removeLabelFromTask(this.model.getTask().getId(), label.getId()).then(()=>{
-        this.model.getTask().removeLabel(label);
-        this.model.setEditedSubtask(null);
-
-      });
-    } else {
+    DataService.getStoreManager().getLabelStore().removeLabelFromTask(this.model.getTask().getId(), label.getId()).then(()=>{
       this.model.getTask().removeLabel(label);
       this.model.setEditedSubtask(null);
-    }
+    });
   }
 
   // SUBTASKS
-
+  
   public openAddingSubtask(){
     this.model.setSubtaskEditing(true);
     this.model.setEditedSubtask(null);
@@ -106,15 +94,9 @@ export class TaskDetailsComponent implements OnInit {
   }
 
   private saveNewSubtask(subtask: Subtask) {
-    // while updating task, subtasks are creating immediately. 
-    if (this.model.isUpdateMode()) {
-      DataService.getStoreManager().getSubtaskStore().createSubtask(subtask).then(insertedSubtask => {
-        this.model.getTask().addSubtask(insertedSubtask);
-      });
-    }
-    else { // if a new task is created, subtask was inserted to database in the process of inserting task
-      this.model.getTask().addSubtask(subtask);
-    }
+    DataService.getStoreManager().getSubtaskStore().createSubtask(subtask).then(insertedSubtask => {
+      this.model.getTask().addSubtask(insertedSubtask);
+    });
   }
 
   public openEditingSubtask(subtask:Subtask){
@@ -138,24 +120,15 @@ export class TaskDetailsComponent implements OnInit {
   }
 
   private updateSubtask(subtask: Subtask) {
-    if (this.model.isUpdateMode()) {
-      DataService.getStoreManager().getSubtaskStore().updateSubtask(subtask).then(updatedSubtask => {
-        this.closeEditingSubtask();
-      });
-    }
-    else {
+    DataService.getStoreManager().getSubtaskStore().updateSubtask(subtask).then(updatedSubtask => {
       this.closeEditingSubtask();
-    }
+    });
   }
 
   public removeSubtask(subtask:Subtask){
-    if(this.model.isUpdateMode()){
-      DataService.getStoreManager().getSubtaskStore().removeSubtask(subtask.getId()).then(()=>{
-        this.model.getTask().removeSubtask(subtask);
-      });
-    } else {
+    DataService.getStoreManager().getSubtaskStore().removeSubtask(subtask.getId()).then(()=>{
       this.model.getTask().removeSubtask(subtask);
-    }
+    });
   }
 
   public toggleSubtaskStatus(subtask:Subtask){
@@ -169,24 +142,8 @@ export class TaskDetailsComponent implements OnInit {
     }
   }  
 
-  public saveTask(){
-    console.log("Tutaje jestem");
-    if(!this.model.isUpdateMode()){
-      console.log("Teraz jestem tutaj");
-      console.log(this.model.getTask());
-      DataService.getStoreManager().getTaskStore().createTask(this.model.getTask()).then(insertedTask=>{
-        console.log("A na końcu jestem tutaj");
-        console.log(insertedTask);
-        this.saveEvent.emit(insertedTask);
-      });
-    }
-  }
-
   public updateTask(){
-    // TODO: po zmianie wstawiania zadania odpowiednio pousuwać metody zapisywania i wstawiania
-    if(this.model.isUpdateMode()) {
-      DataService.getStoreManager().getTaskStore().updateTask(this.model.getTask()).then(()=>{});
-    }
+    DataService.getStoreManager().getTaskStore().updateTask(this.model.getTask()).then(()=>{});
   }
 
   public closeView(){

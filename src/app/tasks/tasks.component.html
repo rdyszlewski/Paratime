@@ -24,9 +24,21 @@
           </div>
         </div>
       </div>
+
+      <div *ngIf="model.isAddingTaskMode()" >
+        <input type="text" class="form-control" id="new-task-name" (keyup)="handleAddingNewTaskKeyUp($event)"
+        [ngModel]="model.getNewTaskName()" (ngModelChange)="model.setNewTaskName($event)">
+        <div class="buttons-container">
+            <button class="button small-button insert-button" id="save-subtask-button" 
+            (click)="addNewTask()">Zapisz</button>
+            <button class="button small-button insert-button" id="cancel-subtask-button"
+            (click)="closeAddingNewTask()">Anuluj</button>
+        </div>
+      </div>
+
   </div>
   <button class="button border" (click)='onCreateTaskClick()'
-  *ngIf="model.getProject().getId()!=null">Dodaj zadanie</button>
+  *ngIf="model.getProject().getId()!=null && !model.isAddingTaskMode()">Dodaj zadanie</button>
 </div>
 
 <mat-menu #menu="matMenu">

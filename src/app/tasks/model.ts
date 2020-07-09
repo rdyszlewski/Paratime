@@ -7,6 +7,8 @@ export class TasksModel{
     private project: Project = new Project();
     private filteredList: FilteredList<Task> = new FilteredList();
     private taskWithOpenMenu: Task;
+    private addingTaskMode: boolean = false;
+    private newTaskName: string = "";
 
     public getProject(){
         return this.project;
@@ -51,5 +53,21 @@ export class TasksModel{
 
     public setTaskWithOpenMenu(task:Task){
         this.taskWithOpenMenu = task;
+    }
+
+    public isAddingTaskMode():boolean{
+        return this.addingTaskMode;
+    }
+
+    public setAddingTaskMode(addingTask:boolean){
+        this.addingTaskMode = addingTask;
+    }
+
+    public getNewTaskName():string{
+        return this.newTaskName;
+    }
+
+    public setNewTaskName(name:string){
+        this.newTaskName = name;
     }
 }

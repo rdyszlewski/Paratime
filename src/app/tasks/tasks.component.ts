@@ -7,6 +7,9 @@ import { TasksModel } from './model';
 import { DataService } from 'app/data.service';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogHelper } from 'app/common/dialog';
+import { FocusHelper } from 'app/common/view_helper';
+import * as $ from 'jquery';
+import { KeyCode } from 'app/common/key_codes';
 
 
 @Component({
@@ -16,14 +19,17 @@ import { DialogHelper } from 'app/common/dialog';
 })
 export class TasksComponent implements OnInit {
 
-  constructor(public dialog:MatDialog) { }
-
+  private TASK_NAME_INPUT = "#new-task-name";
+  private TASK_LIST = "#tasks-list";
+  
   @Output() detailsEvent: EventEmitter<Task> = new EventEmitter();
   @Output() removeEvent: EventEmitter<number> = new EventEmitter();
   
   public model: TasksModel = new TasksModel();
   public status = Status;
 
+  constructor(public dialog:MatDialog) { }
+  
   ngOnInit(): void {}
 
   public setProject(project:Project):void{
@@ -37,10 +43,9 @@ export class TasksComponent implements OnInit {
   }
 
   public onCreateTaskClick(){
-    const task = new Task();
-    // TODO: usunąć projekt edycji
-    task.setProject(this.model.getProject());
-    this.detailsEvent.emit(task);
+    this.model.setAddingTaskMode(true);
+    FocusHelper.focus(this.TASK_NAME_INPUT);
+    this.scrollTaskListToBottom();
   }
 
   public onTaskMenuClick(mouseEvent: MouseEvent, task:Task){
@@ -87,5 +92,41 @@ export class TasksComponent implements OnInit {
     });
     text+= "</ul>";
     return text;
+  }
+
+  public addNewTask(){
+    this.saveTask();
+  }
+
+  private saveTask(){
+    const task = new Task();
+    task.setName(this.model.getNewTaskName());
+    task.setProject(this.model.getProject());
+    DataService.getStoreManager().getTaskStore().createTask(task).then(insertedTask=>{
+      this.model.addTask(insertedTask);
+      this.closeAddingNewTask();
+      this.scrollTaskListToBottom();
+    });
+  }
+
+  private scrollTaskListToBottom(){
+    let scrollContainer = $(this.TASK_LIST);
+    setTimeout(()=>{
+      scrollContainer.animate({ scrollTop: $(document).height() }, 1000);;
+    },0); 
+  }
+
+  public closeAddingNewTask(){
+    this.model.setNewTaskName("");
+    this.model.setAddingTaskMode(false);
+  }
+
+  public handleAddingNewTaskKeyUp(event:KeyboardEvent){
+    if(event.keyCode == KeyCode.ENTER){
+      this.addNewTask();
+    } 
+    if(event.keyCode == KeyCode.ESC){
+      this.closeAddingNewTask();
+    }
   }
 }

@@ -4,23 +4,33 @@
     <input class="project-filter filter border" (input)='model.filterProject($event.target.value)'>
     <!-- TODO: zrobić globalny styl do listy oraz do jej elementów-->
     <div id="projects-list" class="list border">
-        <div *ngFor='let project of model.getProjects()'
-        [ngClass]="{'selected-list-item': model.isSelectedProject(project),
+      <div *ngFor='let project of model.getProjects()'>
+        <div [ngClass]="{'selected-list-item': model.isSelectedProject(project),
                     'project': true,
                     'list-item':true,
                     'transparent-border':true}" 
-                    (click)='onProjectClick(project)'
-                    >
-            
-                <div class="list-item-value">{{project.getName()}}</div>
-                <div class="list-item-options" 
-                (click)='onProjectMenuClick($event, project)'
-                [matMenuTriggerFor]="menu"
-                >...</div>
-           
+                    (click)='onProjectClick(project)'>
+          <div class="list-item-value">{{project.getName()}}</div>
+          <div class="list-item-options" 
+            (click)='onProjectMenuClick($event, project)'
+            [matMenuTriggerFor]="menu">
+            ...
+          </div>
+        </div>     
+      </div>
+      <div *ngIf="model.isAddingNewProject()" >
+        <input type="text" class="form-control" id="new-project-name" (keyup)="handleAddingNewProjectKeyUp($event)"
+        [ngModel]="model.getNewProjectName()" (ngModelChange)="model.setNewProjectName($event)">
+        <div class="buttons-container">
+            <button class="button small-button insert-button" id="save-subtask-button" 
+            (click)="addNewProject()">Zapisz</button>
+            <button class="button small-button insert-button" id="cancel-subtask-button"
+            (click)="closeAddingNewProject()">Anuluj</button>
         </div>
+      </div>
     </div>
-    <button class="button border" (click)='onCreateProjectClick()'>Dodaj projekt</button>
+    
+    <button class="button border" (click)='onCreateProjectClick()' *ngIf="!model.isAddingNewProject()">Dodaj projekt</button>
 </div>
 
 <mat-menu #menu="matMenu">

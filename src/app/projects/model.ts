@@ -7,6 +7,8 @@ export class ProjectsModel{
     private filteredList: FilteredList<Project> = new FilteredList();
     private selectedProject: Project = null;
     private projectWithOpenMenu: Project = null;
+    private addingNewProject;
+    private newProjectName:string = "";
 
     public getProjects(){
         return this.filteredList.getElements();
@@ -66,5 +68,21 @@ export class ProjectsModel{
 
     public setProjectWithOpenMenu(project:Project){
         this.projectWithOpenMenu = project;
+    }
+
+    public isAddingNewProject():boolean{
+        return this.addingNewProject;
+    }
+
+    public setAddingNewProject(addingNewProject:boolean){
+        this.addingNewProject = addingNewProject;
+    }
+
+    public getNewProjectName(){
+        return this.newProjectName;
+    }
+
+    public setNewProjectName(projectName: string){
+        this.newProjectName = projectName;
     }
 }
