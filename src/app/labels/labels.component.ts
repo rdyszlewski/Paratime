@@ -1,6 +1,6 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { LabelsModel } from './model';
-import { Tag } from 'app/models/tag';
+import { Label } from 'app/models/label';
 import * as $ from 'jquery';
 import { DataService } from 'app/data.service';
 import { KeyCode } from 'app/common/key_codes';
@@ -33,19 +33,19 @@ export class LabelsComponent implements OnInit {
   }
 
   private loadLabels(){
-    DataService.getStoreManager().getTagStore().getAllTags().then(labels=>{
+    DataService.getStoreManager().getLabelStore().getAllLabel().then(labels=>{
       this.model.setLabels(labels);
     });
   }
 
-  public openEditingLabel(label:Tag){
+  public openEditingLabel(label:Label){
     // TODO: pozmieniać nazwy. Te są mylące
     this.model.setEditedLabel(label);
     this.model.setLabelEditing(false);
     FocusHelper.focus(this.getLabelItemId(label));
   }
 
-  private getLabelItemId(label:Tag):string{
+  private getLabelItemId(label:Label):string{
     return this.LABEL_ITEM_ID+label.getId();
   }
 
@@ -53,20 +53,20 @@ export class LabelsComponent implements OnInit {
     this.model.setEditedLabel(null);
   }
 
-  public acceptEditingLabel(label:Tag){
+  public acceptEditingLabel(label:Label){
     const newLabelName =$(this.getLabelItemId(label)).val();
     label.setName(newLabelName);
     this.updateLabel(label);
   }
 
-  private updateLabel(label: Tag) {
-    DataService.getStoreManager().getTagStore().updateTag(label).then(updatedLabel => {
+  private updateLabel(label: Label) {
+    DataService.getStoreManager().getLabelStore().updateLabel(label).then(updatedLabel => {
       this.model.setEditedLabel(null);
       this.updateEvent.emit();
     });
   }
 
-  public onRemoveLabel(label:Tag){
+  public onRemoveLabel(label:Label){
     const message = "Czy na pewno usunąć etykietę?";
     DialogHelper.openDialog(message, this.dialog).subscribe(result=>{
       if(result){
@@ -75,8 +75,8 @@ export class LabelsComponent implements OnInit {
     });
   }
 
-  private removeLabel(label:Tag){
-    DataService.getStoreManager().getTagStore().removeTag(label.getId()).then(()=>{
+  private removeLabel(label:Label){
+    DataService.getStoreManager().getLabelStore().removeLabel(label.getId()).then(()=>{
       this.model.removeLabel(label);
       this.updateEvent.emit();
     });
@@ -95,12 +95,12 @@ export class LabelsComponent implements OnInit {
 
   public addNewLabel(){
     const labelName = this.insertLabelInput.val();
-    const labelToInsert = new Tag(labelName);
+    const labelToInsert = new Label(labelName);
     this.saveNewLabel(labelToInsert);
   }
 
-  private saveNewLabel(labelToInsert: Tag) {
-    DataService.getStoreManager().getTagStore().createTag(labelToInsert).then(insertedLabel => {
+  private saveNewLabel(labelToInsert: Label) {
+    DataService.getStoreManager().getLabelStore().createLabel(labelToInsert).then(insertedLabel => {
       this.model.addLabel(insertedLabel);
       this.cancelAddingLabel();
       this.updateEvent.emit();
@@ -120,7 +120,7 @@ export class LabelsComponent implements OnInit {
     }
   }
 
-  public handleKeysOnEditLabel(event:KeyboardEvent, label:Tag){
+  public handleKeysOnEditLabel(event:KeyboardEvent, label:Label){
     if(event.keyCode == KeyCode.ENTER) {
       this.acceptEditingLabel(label);
     } 

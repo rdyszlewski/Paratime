@@ -11,7 +11,7 @@
     ></app-project-details>
     
     <app-tasks id='tasks' [hidden]='!tasksOpen'
-    (details)="openTaskDetails($event)"
+    (detailsEvent)="openTaskDetails($event)"
     (removeEvent)="onRemoveTask($event)"></app-tasks>
 
     <app-task-details id="task-details" [hidden]='!tasksDetailsOpen'

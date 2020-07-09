@@ -1,19 +1,19 @@
-import { Tag } from 'app/models/tag';
+import { Label } from 'app/models/label';
 import { FilteredList } from 'app/common/filter/filtered_list';
 
 export class LabelsModel{
 
-    private labels:Tag[] = [];
-    private filteredList: FilteredList<Tag> = new FilteredList();
-    private editedLabel: Tag;
+    private labels:Label[] = [];
+    private filteredList: FilteredList<Label> = new FilteredList();
+    private editedLabel: Label;
     private labelEditing: boolean;
 
 
-    public getLabels():Tag[]{
+    public getLabels():Label[]{
         return this.filteredList.getElements();
     }
 
-    public setLabels(labels:Tag[]){
+    public setLabels(labels:Label[]){
         this.labels = labels;
         this.updateFilterdList();
     }
@@ -22,12 +22,12 @@ export class LabelsModel{
         this.filteredList.setSource(this.labels);
     }
 
-    public addLabel(label:Tag){
+    public addLabel(label:Label){
         this.labels.push(label);
         this.updateFilterdList();
     }
 
-    public removeLabel(label:Tag){
+    public removeLabel(label:Label){
         const index = this.labels.indexOf(label);
         if(index >= 0){
             this.labels.splice(index, 1);
@@ -35,11 +35,11 @@ export class LabelsModel{
         this.updateFilterdList();
     }
 
-    public getEditedLabel():Tag{
+    public getEditedLabel():Label{
         return this.editedLabel;
     }
 
-    public setEditedLabel(label:Tag){
+    public setEditedLabel(label:Label){
         this.editedLabel = label;
     }
 

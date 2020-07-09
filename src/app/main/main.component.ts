@@ -51,6 +51,7 @@ export class MainComponent implements OnInit {
     this.taskDetailsView = $('#task-details');
 
     this.setOriginalWidth();
+    // this.deleteDatabase();
   }
 
   // metoda do testów TEST

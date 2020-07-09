@@ -1,6 +1,6 @@
 import { Component, OnInit, EventEmitter, Output } from '@angular/core';
 import { Status } from 'app/models/status';
-import { Tag } from 'app/models/tag';
+import { Label } from 'app/models/label';
 import { Subtask } from 'app/models/subtask';
 import { TaskDetails } from './model';
 import * as $ from 'jquery';
@@ -45,43 +45,42 @@ export class TaskDetailsComponent implements OnInit {
   }
 
   public loadLabels(){
-    DataService.getStoreManager().getTagStore().getAllTags().then(labels=>{
-      this.model.setTags(labels);
+    DataService.getStoreManager().getLabelStore().getAllLabel().then(labels=>{
+      console.log(labels);
+      this.model.setLabels(labels);
     });
   }  
 
   public setTask(task:Task){
     if(task){
       this.model.setUpdateMode(task.getId()!=null);
-      DataService.getStoreManager().getTaskStore().getTaskById(task.getId()).then(loadedTask=>{
-        this.model.setTask(loadedTask);
-        FocusHelper.focus(this.TASK_NAME_ID);
-      });
+      this.model.setTask(task);
+      FocusHelper.focus(this.TASK_NAME_ID);
     }
   }
 
   // LABELS 
 
-  public chooseTag(tag:Tag){
+  public chooseLabel(label:Label){
     if(this.model.isUpdateMode()){
-      DataService.getStoreManager().getTagStore().connectTaskAndTag(this.model.getTask().getId(), tag.getId()).then(()=>{
-        this.model.getTask().addTag(tag);
+      DataService.getStoreManager().getLabelStore().connectTaskAndLabel(this.model.getTask().getId(), label.getId()).then(()=>{
+        this.model.getTask().addLabel(label);
       });
     } else {
-      this.model.getTask().addTag(tag);
+      this.model.getTask().addLabel(label);
     }
   }
 
-  public removeLabel(tag:Tag){
+  public removeLabel(label:Label){
     if(this.model.isUpdateMode()){
       // TODO: przetestować to
-      DataService.getStoreManager().getTagStore().removeTagFromTask(this.model.getTask().getId(), tag.getId()).then(()=>{
-        this.model.getTask().removeTag(tag);
+      DataService.getStoreManager().getLabelStore().removeLabelFromTask(this.model.getTask().getId(), label.getId()).then(()=>{
+        this.model.getTask().removeLabel(label);
         this.model.setEditedSubtask(null);
 
       });
     } else {
-      this.model.getTask().removeTag(tag);
+      this.model.getTask().removeLabel(label);
       this.model.setEditedSubtask(null);
     }
   }
@@ -171,8 +170,13 @@ export class TaskDetailsComponent implements OnInit {
   }  
 
   public saveTask(){
+    console.log("Tutaje jestem");
     if(!this.model.isUpdateMode()){
+      console.log("Teraz jestem tutaj");
+      console.log(this.model.getTask());
       DataService.getStoreManager().getTaskStore().createTask(this.model.getTask()).then(insertedTask=>{
+        console.log("A na końcu jestem tutaj");
+        console.log(insertedTask);
         this.saveEvent.emit(insertedTask);
       });
     }

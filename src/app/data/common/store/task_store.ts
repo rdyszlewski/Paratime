@@ -1,23 +1,22 @@
 import { ITaskRepository } from '../repositories/task_repository';
 import { Task } from 'app/models/task';
 import { SubtaskStore } from './subtask_store';
-import { TagStore } from './tag_store';
+import { LabelStore } from './label_store';
 import { IProjectRepository } from '../repositories/project_repository';
-import { TaskTagsModel } from '../models';
-import { promise } from 'protractor';
+
 
 // TODO: przydałyby się do tego wszystkiego transakcje. 
 export class TaskStore{
 
     private taskRepository: ITaskRepository;
     private subtaskStore: SubtaskStore;
-    private tagStore: TagStore;
+    private labelStore: LabelStore;
     private projectRepository: IProjectRepository;
 
-    constructor(taskRepository: ITaskRepository, subtaskStore: SubtaskStore, tagStore:TagStore, projectRepository:IProjectRepository){
+    constructor(taskRepository: ITaskRepository, subtaskStore: SubtaskStore, labelStore:LabelStore, projectRepository:IProjectRepository){
         this.taskRepository = taskRepository;
         this.subtaskStore = subtaskStore;
-        this.tagStore = tagStore;
+        this.labelStore = labelStore;
         // TODO: przemyśleć, czy na pewno tak to powinno wyglądać
         this.projectRepository = projectRepository;
     }
@@ -36,9 +35,9 @@ export class TaskStore{
         return this.subtaskStore.getSubtaskByTask(task.getId()).then(subtasks => {
             task.setSubtasks(subtasks);
         }).then(() => {
-            return this.tagStore.getTagsByTask(task.getId()).then(tags => {
-                tags.forEach(tag => {
-                    task.addTag(tag);
+            return this.labelStore.getLabelsByTask(task.getId()).then(labels => {
+                labels.forEach(label => {
+                    task.addLabel(label);
                 });
             }).then(() => {
                 // TODO: zrobić pobieranie projektu. Chyba nie przyniosło to oczekiwanego rezultatu
@@ -87,8 +86,8 @@ export class TaskStore{
                 });
                 promises.push(subtaskPromise);
             });
-            task.getTags().forEach(label=>{
-                let labelPromise = this.tagStore.connectTaskAndTag(insertedId, label.getId());
+            task.getLabels().forEach(label=>{
+                let labelPromise = this.labelStore.connectTaskAndLabel(insertedId, label.getId());
                 promises.push(labelPromise);
             });
             return Promise.all(promises).then(()=>{
@@ -106,7 +105,7 @@ export class TaskStore{
 
     public removeTask(taskId:number):Promise<void>{
         return this.subtaskStore.removeSubtaskFromTask(taskId).then(()=>{
-            return this.tagStore.removeTaskTags(taskId).then(()=>{
+            return this.labelStore.removeTaskLabels(taskId).then(()=>{
                 return this.taskRepository.removeTask(taskId);
             });
         });

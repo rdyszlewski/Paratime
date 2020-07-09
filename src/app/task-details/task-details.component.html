@@ -59,25 +59,12 @@
             (keyup.enter)="updateTask()" (focusout)="updateTask()">
         </mat-expansion-panel>
 
-        <mat-expansion-panel class="form-group" [expanded]="model.isProjectExtended()">
+        <mat-expansion-panel class="form-group" [expanded]="model.isLabelsExtended()">
             <mat-expansion-panel-header class="form-group-header">
-                Projekt
-            </mat-expansion-panel-header>
-            <!-- TODO: prawdopodobnie przydałoby się, żeby tutaj było dodatkowe ograniczenie, dzięki któremu nie będzie zwijał po wybraniu null -->
-            <select class="form-control" id="task-project" name="project" 
-            [ngModel]="model.getTask().getProjectID()" (ngModelChange)="model.setProject($event)"
-            (change)="updateTask()">
-                <option [ngValue]="null">Brak</option>
-                <option *ngFor="let project of model.getProjects()" [ngValue]="project.getId()">{{project.getName()}}</option>
-            </select>
-        </mat-expansion-panel>
-
-        <mat-expansion-panel class="form-group" [expanded]="model.isTagsExtended()">
-            <mat-expansion-panel-header class="form-group-header">
-                Etykiety ({{model.getTask().getTags().length}})
+                Etykiety ({{model.getTask().getLabels().length}})
             </mat-expansion-panel-header>
             <div class="labels-list">
-                <div *ngFor="let label of model.getTask().getTags()" class="label-item transparent-border">
+                <div *ngFor="let label of model.getTask().getLabels()" class="label-item transparent-border">
                     <span class="label-name">
                         {{label.getName()}}
                     </span>
@@ -140,6 +127,6 @@
 </div>
 
 <mat-menu #appMenu="matMenu" class="my-menu">
-    <button mat-menu-item *ngFor="let label of model.getTags()" class="list-item small-list-item"
-    (click)="chooseTag(label)">{{label.getName()}}</button>
+    <button mat-menu-item *ngFor="let label of model.getLabels()" class="list-item small-list-item"
+    (click)="chooseLabel(label)">{{label.getName()}}</button>
 </mat-menu>

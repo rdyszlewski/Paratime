@@ -1,12 +1,12 @@
 
-export class TaskTagsModel{
+export class TaskLabelsModel{
 
     private taskId: number;
-    private tagId: number;
+    private labelId: number;
 
-    constructor(taskId: number, tagId:number){
+    constructor(taskId: number, labelId:number){
         this.taskId = taskId;
-        this.tagId = tagId;
+        this.labelId = labelId;
     }
 
     public getTaskId(){
@@ -17,11 +17,11 @@ export class TaskTagsModel{
         this.taskId = id;
     }
 
-    public getTagId(){
-        return this.tagId;
+    public getLabelId(){
+        return this.labelId;
     }
 
-    public setTagId(id: number){
-        this.tagId = id;
+    public setLabelId(id: number){
+        this.labelId = id;
     }
 }

@@ -1,7 +1,7 @@
 import { ProjectStore } from './store/project_store';
 import { TaskStore } from './store/task_store';
 import { SubtaskStore } from './store/subtask_store';
-import { TagStore } from './store/tag_store';
+import { LabelStore } from './store/label_store';
 import { IDataSource } from './source';
 
 export class StoreManager{
@@ -9,12 +9,12 @@ export class StoreManager{
     private projectStore: ProjectStore;
     private taskStore: TaskStore;
     private subtaskStore: SubtaskStore;
-    private tagStore: TagStore;
+    private labelStore: LabelStore;
 
     constructor(dataSource: IDataSource){
-        this.tagStore = new TagStore(dataSource.getTagRepository(), dataSource.getTaskTagRepository());
+        this.labelStore = new LabelStore(dataSource.getLabelRepository(), dataSource.getTaskLabelsRepository());
         this.subtaskStore = new SubtaskStore(dataSource.getSubtaskRepository());
-        this.taskStore = new TaskStore(dataSource.getTaskRepository(), this.subtaskStore, this.tagStore, dataSource.getProjectRepository());
+        this.taskStore = new TaskStore(dataSource.getTaskRepository(), this.subtaskStore, this.labelStore, dataSource.getProjectRepository());
         this.projectStore = new ProjectStore(dataSource.getProjectRepository(), this.taskStore);
     }
 
@@ -30,7 +30,7 @@ export class StoreManager{
         return this.subtaskStore;
     }
 
-    public getTagStore():TagStore{
-        return this.tagStore;
+    public getLabelStore():LabelStore{
+        return this.labelStore;
     }
 }

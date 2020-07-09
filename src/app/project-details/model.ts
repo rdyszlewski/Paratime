@@ -1,5 +1,4 @@
 import { Project } from 'app/models/project';
-import { runInThisContext } from 'vm';
 
 export class ProjectDetails{
 

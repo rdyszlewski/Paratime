@@ -1,7 +1,7 @@
 import { Subtask } from './subtask';
 import { Status } from './status';
 import { Project } from './project';
-import { Tag } from './tag';
+import { Label } from './label';
 import { IFilterable } from 'app/common/filter/i_filterable';
 
 export class Task implements IFilterable{
@@ -11,7 +11,7 @@ export class Task implements IFilterable{
     private id: number;
     private name: string = null;
     private description: string = null;
-    private tags: Tag[] = [];
+    private labels: Label[] = [];
     private endDate: Date = null;
     private plannedTime: number = null;
     private subtasks: Subtask[] = []
@@ -51,20 +51,20 @@ export class Task implements IFilterable{
         this.description = description;
     }
 
-    public getTags(){
-        return this.tags;
+    public getLabels(){
+        return this.labels;
     }
 
-    public addTag(tag:Tag){
-        if(!this.tags.includes(tag)){
-            this.tags.push(tag);
+    public addLabel(label:Label){
+        if(!this.labels.includes(label)){
+            this.labels.push(label);
         }
     }
 
-    public removeTag(tag: Tag){
-        const index = this.tags.indexOf(tag);
+    public removeLabel(label: Label){
+        const index = this.labels.indexOf(label);
         if(index >= 0){
-            this.tags.splice(index, 1);
+            this.labels.splice(index, 1);
         }
     }
 
@@ -124,6 +124,8 @@ export class Task implements IFilterable{
     }
 
     public setProject(project: Project){
+        console.log("Ustawianie projektu");
+        console.log(project);
         this.project = project;
         // TODO: usunąć to
         this.projectID = project.getId();
@@ -131,12 +133,6 @@ export class Task implements IFilterable{
 
     public getProjectID(){
         return this.projectID;
-
-        // if(this.project){
-            
-        //     return this.project.getId();
-        // }
-        // return null;
     }
 
     public setProjectID(id: number){

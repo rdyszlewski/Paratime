@@ -3,8 +3,8 @@ import Dexie from 'dexie'
 import { Task } from 'app/models/task';
 import { Subtask } from 'app/models/subtask';
 import { Project } from 'app/models/project';
-import { Tag } from 'app/models/tag';
-import { TaskTagsModel } from '../common/models';
+import { Label } from 'app/models/label';
+import { TaskLabelsModel } from '../common/models';
 
 
 export class LocalDatabase extends Dexie{
@@ -16,8 +16,8 @@ export class LocalDatabase extends Dexie{
     private tasksTable: Dexie.Table<Task, number>;
     private subtasksTable: Dexie.Table<Subtask, number>;
     private projectsTable: Dexie.Table<Project, number>;
-    private tagsTable: Dexie.Table<Tag, number>;
-    private taskTagsTable: Dexie.Table<TaskTagsModel, number>;
+    private labelsTable: Dexie.Table<Label, number>;
+    private taskTagsTable: Dexie.Table<TaskLabelsModel, number>;
 
     constructor(){
         super("Database");
@@ -31,21 +31,21 @@ export class LocalDatabase extends Dexie{
             tasks: '++id, name, description, endDate, plannedTime, status, progress, projectID',
             subtasks: '++id, name, description, status, progress, taskId',
             projects: '++id, name, description, startDate, endDate, status, type',
-            tags: '++id, name',
-            task_tags: '[taskId+tagId], taskId, tagId'
+            labels: '++id, name',
+            task_tags: '[taskId+labelId], taskId, labelId'
         });
 
         this.tasksTable = this.table('tasks');
         this.subtasksTable = this.table('subtasks');
         this.projectsTable = this.table('projects');
-        this.tagsTable = this.table('tags');
+        this.labelsTable = this.table('labels');
         this.taskTagsTable = this.table('task_tags');
 
         this.projectsTable.mapToClass(Project);
         this.tasksTable.mapToClass(Task);
         this.subtasksTable.mapToClass(Subtask);
-        this.tagsTable.mapToClass(Tag);
-        this.taskTagsTable.mapToClass(TaskTagsModel);
+        this.labelsTable.mapToClass(Label);
+        this.taskTagsTable.mapToClass(TaskLabelsModel);
         
     }
 
@@ -61,11 +61,11 @@ export class LocalDatabase extends Dexie{
         return this.projectsTable;
     }
 
-    public getTagsTable(){
-        return this.tagsTable;
+    public getLabelsTable(){
+        return this.labelsTable;
     }
 
-    public getTaskTagsTable(){
+    public getTaskLabelsTable(){
         return this.taskTagsTable;
     }
 

@@ -18,7 +18,7 @@ export class LocalTaskRepository implements ITaskRepository{
     }
 
     // TODO: to chyba będzie trzeba jednak przenieść do innej tabeli
-    public findTasksByTag(tag: string): Promise<Task[]> {
+    public findTasksByLabel(label: string): Promise<Task[]> {
         throw new Error("Method not implemented");
     }
 

@@ -6,18 +6,18 @@ import { LocalTaskRepository } from './repositories/task_repository';
 import { LocalProjectRepository } from './repositories/project_repository';
 import { LocalSubtaskRepository } from './repositories/subtask_repository';
 import { LocalDatabase as LocalDatabase } from './database';
-import { LocalTagRepository } from './repositories/tag_repository';
-import { LocalTagsTaskRepository } from './repositories/task_tags_repository';
-import { ITagRepository } from '../common/repositories/tag_repository';
-import { ITaskTagsRepository } from '../common/repositories/task_tags_repository';
+import { LocalLabelRepository as LocalLabelRepository } from './repositories/label_repository';
+import { LocalTaskLabelsRepository as LocalTaskLabelsRepository } from './repositories/task_labels_repository';
+import { ILabelRepository } from '../common/repositories/label_repository';
+import { ITaskLabelsRepository } from '../common/repositories/task_labels_repository';
 
 export class LocalDataSource implements IDataSource{
 
     private taskRepository: LocalTaskRepository;
     private projectRepository: LocalProjectRepository;
     private subtaskRepository: LocalSubtaskRepository;
-    private tagRepository: LocalTagRepository;
-    private taskTagRepository: LocalTagsTaskRepository;
+    private labelRepository: LocalLabelRepository;
+    private taskLabelsRepository: LocalTaskLabelsRepository;
 
     constructor(){
         let database = new LocalDatabase();
@@ -25,8 +25,8 @@ export class LocalDataSource implements IDataSource{
         this.taskRepository = new LocalTaskRepository(database.getTasksTable());
         this.projectRepository = new LocalProjectRepository(database.getProjectsTable());
         this.subtaskRepository = new LocalSubtaskRepository(database.getSubtasksTable());
-        this.tagRepository = new LocalTagRepository(database.getTagsTable());
-        this.taskTagRepository = new LocalTagsTaskRepository(database.getTaskTagsTable());
+        this.labelRepository = new LocalLabelRepository(database.getLabelsTable());
+        this.taskLabelsRepository = new LocalTaskLabelsRepository(database.getTaskLabelsTable());
     }
     
 
@@ -42,12 +42,12 @@ export class LocalDataSource implements IDataSource{
         return this.subtaskRepository;
     }
 
-    public getTagRepository(): ITagRepository {
-        return this.tagRepository;
+    public getLabelRepository(): ILabelRepository {
+        return this.labelRepository;
     }
 
-    public getTaskTagRepository(): ITaskTagsRepository {
-        return this.taskTagRepository;
+    public getTaskLabelsRepository(): ITaskLabelsRepository {
+        return this.taskLabelsRepository;
     }
     
 

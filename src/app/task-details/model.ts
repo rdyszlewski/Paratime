@@ -1,13 +1,13 @@
 import { Task } from 'app/models/task';
 import { Project } from 'app/models/project';
-import { Tag } from 'app/models/tag';
+import { Label } from 'app/models/label';
 import { Subtask } from 'app/models/subtask';
 
 export class TaskDetails{
     private task: Task = new Task();
     private projects: Project[] = [];
     private selectedProject: Project;
-    private tags: Tag[] = [];
+    private labels: Label[] = [];
     private updateMode:boolean;
     
     private subtaskEditing:boolean = false;
@@ -18,6 +18,8 @@ export class TaskDetails{
     }
 
     public setTask(task:Task){
+        console.log("Ustawianie zadania");
+        console.log(task);
         this.task = task;
     }
 
@@ -41,18 +43,18 @@ export class TaskDetails{
         this.selectedProject = project;
     }
 
-    public getTags():Tag[]{
-        return this.tags;
+    public getLabels():Label[]{
+        return this.labels;
     }
 
-    public setTags(tags: Tag[]){
-        this.tags = tags;
-        this.repairTaskLabels(tags);
+    public setLabels(labels: Label[]){
+        this.labels = labels;
+        this.repairTaskLabels(labels);
     }
 
-    private repairTaskLabels(labels:Tag[]){
+    private repairTaskLabels(labels:Label[]){
         let toRemove = [];
-        this.getTask().getTags().forEach(label=>{
+        this.getTask().getLabels().forEach(label=>{
           const foundLabel = labels.find(x=>x.getId()==label.getId());
           if(foundLabel){
             label.setName(foundLabel.getName());
@@ -62,7 +64,7 @@ export class TaskDetails{
         });
     
         toRemove.forEach(label=>{
-          this.getTask().removeTag(label);
+          this.getTask().removeLabel(label);
         });
       }
 
@@ -103,8 +105,8 @@ export class TaskDetails{
        return this.task.getProject() != null;
    }
 
-   public isTagsExtended(){
-       return this.task.getTags().length > 0;
+   public isLabelsExtended(){
+       return this.task.getLabels().length > 0;
    }
 
    public isSubtasksExtended(){

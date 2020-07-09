@@ -3,7 +3,7 @@ export class FocusHelper{
 
     public static focus(elementName:string){
         setTimeout(()=>{
-            $('#subtask').focus();
+            $(elementName).focus();
           },0); 
     }
 }

@@ -3,7 +3,7 @@ import { StoreManager } from '../common/store_manager';
 import { LocalDataSource } from '../local/source';
 import { Status } from 'app/models/status';
 import { Task } from 'app/models/task';
-import { Tag } from 'app/models/tag';
+import { Label } from 'app/models/label';
 
 export class DatabaseTest{
 
@@ -26,10 +26,10 @@ export class DatabaseTest{
     }
 
     public insertLabels(){
-        let label1 = new Tag("Jeden");
-        let label2 = new Tag("Dwa");
-        let label3 = new Tag("Trzy");
-        let label4 = new Tag("Cztery");
+        let label1 = new Label("Jeden");
+        let label2 = new Label("Dwa");
+        let label3 = new Label("Trzy");
+        let label4 = new Label("Cztery");
 
         this.insertLabelToDb(label1);
         this.insertLabelToDb(label2);
@@ -37,8 +37,8 @@ export class DatabaseTest{
         this.insertLabelToDb(label4);
     }
 
-    private insertLabelToDb(label:Tag){
-        this.storeManager.getTagStore().createTag(label);
+    private insertLabelToDb(label:Label){
+        this.storeManager.getLabelStore().createLabel(label);
     }
 
     private createProject() {

@@ -18,7 +18,7 @@ export class TasksComponent implements OnInit {
 
   constructor(public dialog:MatDialog) { }
 
-  @Output() details: EventEmitter<Task> = new EventEmitter();
+  @Output() detailsEvent: EventEmitter<Task> = new EventEmitter();
   @Output() removeEvent: EventEmitter<number> = new EventEmitter();
   
   public model: TasksModel = new TasksModel();
@@ -40,7 +40,7 @@ export class TasksComponent implements OnInit {
     const task = new Task();
     // TODO: usunąć projekt edycji
     task.setProject(this.model.getProject());
-    this.details.emit(task);
+    this.detailsEvent.emit(task);
   }
 
   public onTaskMenuClick(mouseEvent: MouseEvent, task:Task){
@@ -52,7 +52,7 @@ export class TasksComponent implements OnInit {
 
   public onEditTask(){
     // TODO: można spróbować pobrać z bazy i przekazać dalej. Może rozwiązać problem pracy na jednym obiekcie
-    this.details.emit(this.model.getTaskWithOpenMenu());
+    this.detailsEvent.emit(this.model.getTaskWithOpenMenu());
     this.model.setTaskWithOpenMenu(null);
   }
 
