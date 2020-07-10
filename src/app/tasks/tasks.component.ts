@@ -136,19 +136,14 @@ export class TasksComponent implements OnInit {
     // TODO: pomyśleć nad oznaczeniem ważnośći zadania
     switch(task.getPriority()){
       case Priority.LEVEL_1:
-        console.log("Zwrócono 1");
         return '1';
       case Priority.LEVEL_2:
-        console.log("Zwrócono 2");
         return "2";
       case Priority.LEVEL_3:
-        console.log("Zwrócono 3");
         return "3";
       case Priority.LEVEL_4:
-        console.log("Zwrócono 4");
         return "4";
       case Priority.LEVEL_5:
-        console.log("Zwrócono 5");
         return "5";
       default:
         return "0";

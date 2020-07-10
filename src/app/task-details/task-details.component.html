@@ -1,12 +1,15 @@
 <div class="app-panel shadow">
-    <h3 class="panel-header">{{model.getTask().getName()}}</h3>
+    <div class="tool-panel">
+        <h3 class="panel-header">{{model.getTask().getName()}}</h3>
+        <button class="button border" (click)="closeView()">X</button>
+    </div>
+    
     <form class="form" (keydown.enter)="$event.preventDefault()">
 
         <mat-expansion-panel class="form-group" [expanded]="true">
             <mat-expansion-panel-header class="form-group-header">
                 Nazwa
             </mat-expansion-panel-header>
-            <!-- TODO: można dodać opis -->
             <input type="text" class="form-control" id="task-name" name='name'
             [ngModel]='model.getTask().getName()' (ngModelChange)="model.getTask().setName($event)"
             (keyup.enter)="updateTask()" (focusout)="updateTask()">
@@ -17,9 +20,8 @@
                 Opis
             </mat-expansion-panel-header>
             <textarea class="form-control" id="task-description" name="description" rows="4"
-            [ngModel]='model.getTask().getDescription()' (ngModelChange)="model.getTask().setDescription($event)"></textarea>
-            <!-- TODO: dopracować  -->
-            <button class="button small-button insert-button" (click)="updateTask()">Wstaw</button>
+            [ngModel]='model.getTask().getDescription()' (ngModelChange)="model.getTask().setDescription($event)"
+            (keyup.enter)="updateTask()" (focusout)="updateTask()"></textarea>
         </mat-expansion-panel>
         
         <mat-expansion-panel class="form-group" [expanded]="model.isStatusExtended()">
@@ -135,9 +137,6 @@
             </div>
         </mat-expansion-panel>
     </form>
-    <div class="form-buttons-section">
-        <button class="button form-button" id="task-close-button" (click)='closeView()'>Zamknij</button>
-    </div>
 </div>
 
 <mat-menu #appMenu="matMenu" class="my-menu">

@@ -53,10 +53,6 @@ html, body{
 }
 
 .app-panel{
-    /* height: 100vh; */
-    /* margin-left: 3px;
-    margin-right: 3px; */
-    /* padding: 3px; */
     height: 100%;
     padding-left: 3px;
     padding-right: 3px;
@@ -227,5 +223,10 @@ html, body{
 
 .tooltip-list{
     list-style: none;
-    
+}
+
+.tool-panel{
+    display: flex;
+    justify-content: flex-end;
+    padding-right: 5px;
 }

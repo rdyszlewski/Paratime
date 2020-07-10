@@ -90,7 +90,7 @@ export class TaskDetailsComponent implements OnInit {
   
   public addNewSubtask(){
     const subtaskName = $(this.SUBTASK_NAME_ID).val();    
-    const subtask = new Subtask(subtaskName,null, Status.STARTED);
+    const subtask = new Subtask(subtaskName, Status.STARTED);
     this.saveNewSubtask(subtask);
     this.closeAddingSubtask();
   }

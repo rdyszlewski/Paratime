@@ -36,6 +36,8 @@ export class ProjectDetailsComponent implements OnInit {
   }
 
   public updateProject(){
+    // TODO: można też zrobić aktualizację dopiero przy zamykaniu okna. W ten sposób będzie sporo przesyłania danych na serwer
+    console.log("updateProject");
     DataService.getStoreManager().getProjectStore().updateProject(this.model.getProject()).then(()=>{
       this.updateEvent.emit(this.model.getProject());
     });

@@ -29,7 +29,7 @@ export class LocalDatabase extends Dexie{
         // TODO: przejrzeć, czy tutaj są zawarte wszystkie zmienne
         this.version(this.dbVersion).stores({
             tasks: '++id, name, description, endDate, plannedTime, status, progress, projectID, priority',
-            subtasks: '++id, name, description, status, progress, taskId',
+            subtasks: '++id, name, status, taskId',
             projects: '++id, name, description, startDate, endDate, status, type',
             labels: '++id, name',
             task_labels: '[taskId+labelId], taskId, labelId'
