@@ -8,10 +8,14 @@
         (click)="onEditTask(task)">
         <input type="checkbox"  class="task-checkbox"/>
         <div class="task-main">
-          <div class="list-item-value">{{task.getName()}}</div>
-          
+          <div class="list-item-top">
+            <div class="list-item-value">{{task.getName()}}</div>
+            <mat-icon [ngClass]="({
+              'important-star': task.isImportant(),
+              'not-important-star': !task.isImportant(),
+              'star':true})" (click)="toggleTaskImportance(task, $event)">star</mat-icon>
+          </div>
           <div class="task-info">
-
             <div class="labels-container">
               <div *ngFor="let label of task.getLabels()" class="label-item border">
                 {{label.getName()}}

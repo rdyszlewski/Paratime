@@ -13,7 +13,9 @@ export class Task implements IFilterable{
     private id: number;
     private name: string = null;
     private description: string = null;
+    private important: boolean = false;
     private labels: Label[] = [];
+    private date:Date = null;
     private endDate: Date = null;
     private plannedTime: number = null;
     private subtasks: Subtask[] = []
@@ -56,6 +58,14 @@ export class Task implements IFilterable{
         this.description = description;
     }
 
+    public isImportant():boolean{
+        return this.important;
+    }
+
+    public setImportant(important:boolean){
+        this.important = important;
+    }
+
     public getLabels(){
         return this.labels;
     }
@@ -73,7 +83,15 @@ export class Task implements IFilterable{
         }
     }
 
-    public getEndDate(){
+    public getDate():Date{
+        return this.date;
+    }
+
+    public setDate(date:Date):void{
+        this.date = date;
+    }
+
+    public getEndDate():Date{
         return this.endDate;
     }
 

@@ -119,6 +119,10 @@ export class TaskDetails{
        return this.task.getStatus()!=null;
    }
 
+   public isDateExtended(){
+       return this.task.getDate() != null;
+   }
+
    public isEndDateExtended(){
        return this.task.getEndDate() != null;
    }
@@ -169,4 +173,7 @@ export class TaskDetails{
        return this.isNameValid();
    }
 
+   public toggleTaskImportance(){
+       this.task.setImportant(!this.task.isImportant());
+   }
 }

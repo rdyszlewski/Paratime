@@ -24,6 +24,7 @@ import { MatDialogModule } from '@angular/material/dialog';
 import { DialogComponent } from './dialog/dialog.component';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import { StageDetailsComponent } from './stage-details/stage-details.component';
+import { PomodoroComponent } from './pomodoro/pomodoro.component';
 
 @NgModule({
   declarations: [
@@ -36,6 +37,7 @@ import { StageDetailsComponent } from './stage-details/stage-details.component';
     LabelsComponent,
     DialogComponent,
     StageDetailsComponent,
+    PomodoroComponent,
   ],
   imports: [
     BrowserModule,

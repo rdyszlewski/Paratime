@@ -1,5 +1,9 @@
 <div class="app-panel shadow">
     <div class="tool-panel">
+        <mat-icon [ngClass]="({
+            'important-star': model.getTask().isImportant(),
+            'not-important-star': !model.getTask().isImportant(),
+            'star':true})" (click)="toggleTaskImportance()">star</mat-icon>
         <h3 class="panel-header">{{model.getTask().getName()}}</h3>
         <button class="button border" (click)="closeView()">X</button>
     </div>
@@ -56,6 +60,20 @@
             <option [ngValue]="priority.LEVEL_4">4</option>
             <option [ngValue]="priority.LEVEL_5">5</option>
         </select>
+        </mat-expansion-panel>
+
+        <mat-expansion-panel class="form-group" [expanded]="model.isDateExtended()">
+            <mat-expansion-panel-header class="form-group-header">
+                Data
+            </mat-expansion-panel-header>
+            <div class="datepicker-container">
+                <input matInput class='form-control' id="task-date" name="date" [matDatepicker]="datePicker"
+                [ngModel]='model.getTask().getDate()' (ngModelChange)="model.getTask().setDate($event)"
+                (dateChange)="updateTask()">
+                <!-- TODO: być może będzie trzeba to przypisać do zmiany daty -->
+                <mat-datepicker-toggle [for]="datePicker" class="datepicker"></mat-datepicker-toggle>
+                <mat-datepicker #datePicker></mat-datepicker>
+            </div>  
         </mat-expansion-panel>
 
         <mat-expansion-panel class="form-group" [expanded]="model.isEndDateExtended()">

@@ -100,5 +100,26 @@
     font-size: small;
 }
 
+.star{
+    width: fit-content;
+    height: fit-content;
+    font-size: 2.7em;
+    margin-top: auto;
+    margin-bottom: auto;
+    margin-left: 10px;
+    /* TODO: zrobić kształt gwiazdki */
+}
+
+.star:hover{
+    cursor: pointer;
+}
+
+.important-star{
+    color: gold;
+}
+
+.not-important-star{
+    color:slategray;
+}
 
 

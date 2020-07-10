@@ -109,4 +109,28 @@
     box-sizing: border-box;
 }
 
+/* TODO: przenieśc style gwiazdek */
+.star{
+    width: fit-content;
+    height: fit-content;
+    margin-top: auto;
+    margin-bottom: auto;
+    font-size: 1.7em;
+    /* TODO: zrobić kształt gwiazdki */
+}
 
+.star:hover{
+    cursor: pointer;
+}
+
+.important-star{
+    color: gold;
+}
+
+.not-important-star{
+    color:slategray;
+}
+
+.list-item-top{
+    display: flex;
+}

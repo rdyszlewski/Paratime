@@ -191,4 +191,9 @@ export class TaskDetailsComponent implements OnInit {
     let finishedSubtask = task.getSubtasks().filter(x=>x.getStatus()==Status.ENDED);
     return finishedSubtask.length;
   }
+
+  public toggleTaskImportance(){
+    this.model.toggleTaskImportance();
+    this.updateTask();
+  }
 }

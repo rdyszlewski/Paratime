@@ -149,4 +149,10 @@ export class TasksComponent implements OnInit {
         return "0";
     }
   }
+
+  public toggleTaskImportance(task:Task, event:MouseEvent){
+    task.setImportant(!task.isImportant());
+    event.stopPropagation();
+  }
+
 }
