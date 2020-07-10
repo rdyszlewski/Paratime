@@ -138,6 +138,8 @@ export class ProjectsComponent implements OnInit {
       this.model.addProject(insertedProject);
       this.closeAddingNewProject();
       this.scrollToBottom();
+      this.model.setSelectedProject(insertedProject);
+      this.loadEvent.emit(insertedProject);
     });
   }
 

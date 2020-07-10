@@ -10,6 +10,7 @@ import { DialogHelper } from 'app/common/dialog';
 import { FocusHelper } from 'app/common/view_helper';
 import * as $ from 'jquery';
 import { KeyCode } from 'app/common/key_codes';
+import { Priority } from 'app/models/priority';
 
 
 @Component({
@@ -55,9 +56,10 @@ export class TasksComponent implements OnInit {
   }
 
 
-  public onEditTask(){
+  public onEditTask(task:Task){
     // TODO: można spróbować pobrać z bazy i przekazać dalej. Może rozwiązać problem pracy na jednym obiekcie
-    this.detailsEvent.emit(this.model.getTaskWithOpenMenu());
+    // this.detailsEvent.emit(this.model.getTaskWithOpenMenu());
+    this.detailsEvent.emit(task);
     this.model.setTaskWithOpenMenu(null);
   }
 
@@ -127,6 +129,29 @@ export class TasksComponent implements OnInit {
     } 
     if(event.keyCode == KeyCode.ESC){
       this.closeAddingNewTask();
+    }
+  }
+
+  public getPriorityText(task:Task):string{
+    // TODO: pomyśleć nad oznaczeniem ważnośći zadania
+    switch(task.getPriority()){
+      case Priority.LEVEL_1:
+        console.log("Zwrócono 1");
+        return '1';
+      case Priority.LEVEL_2:
+        console.log("Zwrócono 2");
+        return "2";
+      case Priority.LEVEL_3:
+        console.log("Zwrócono 3");
+        return "3";
+      case Priority.LEVEL_4:
+        console.log("Zwrócono 4");
+        return "4";
+      case Priority.LEVEL_5:
+        console.log("Zwrócono 5");
+        return "5";
+      default:
+        return "0";
     }
   }
 }

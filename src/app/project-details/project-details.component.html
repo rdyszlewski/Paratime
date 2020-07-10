@@ -27,10 +27,10 @@
             <select class="form-control" id="project-type" name="type"
             [ngModel]='model.getProject().getType()' (ngModelChange)="model.getProject().setType($event)"
             (change)="updateProject()">
-                <option value="projectType.DEFAULT">Nieokreślony</option>
-                <option value="projectType.SMALL">Mały</option>
-                <option value="projectType.MEDIUM">Średni</option>
-                <option value="projectType.BIG">Duży</option>
+                <option [ngValue]="projectType.DEFAULT">Nieokreślony</option>
+                <option [ngValue]="projectType.SMALL">Mały</option>
+                <option [ngValue]="projectType.MEDIUM">Średni</option>
+                <option [ngValue]="projectType.BIG">Duży</option>
             </select>
         </mat-expansion-panel>
     
@@ -41,10 +41,10 @@
             <select class="form-control" id="project-status" name="status"
             [ngModel]='model.getProject().getStatus()' (ngModelChange)="model.getProject().setStatus($event)"
             (change)="updateProject()">
-                <option value="status.STARTED">Aktywny</option>
-                <option value="status.ENDED">Zakończony</option>
-                <option value="status.CANCELED">Anulowany</option>
-                <option value="status.AWAITING">Oczekujący</option>
+                <option [ngValue]="status.STARTED">Aktywny</option>
+                <option [ngValue]="status.ENDED">Zakończony</option>
+                <option [ngValue]="status.CANCELED">Anulowany</option>
+                <option [ngValue]="status.AWAITING">Oczekujący</option>
             </select>
         </mat-expansion-panel>
 

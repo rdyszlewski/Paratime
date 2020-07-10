@@ -29,11 +29,27 @@
             <select class="form-control" id="task-status" name="status"
             [ngModel]='model.getTask().getStatus()' (ngModelChange)="model.getTask().setStatus($event)"
             (change)="updateTask()">
-                <option [value]="status.STARTED">Aktywny</option>
-                <option [value]="status.ENDED">Zakończony</option>
-                <option value="status.CANCELED">Anulowany</option>
-                <option value="status.AWAITING">Oczekujący</option>
+                <option [ngValue]="status.STARTED">Aktywny</option>
+                <option [ngValue]="status.ENDED">Zakończony</option>
+                <option [ngValue]="status.CANCELED">Anulowany</option>
+                <option [ngValue]="status.AWAITING">Oczekujący</option>
             </select>
+        </mat-expansion-panel>
+
+        <mat-expansion-panel class="form-group" [expanded]='model.isPriorityExtended()'>
+            <mat-expansion-panel-header class="form-group-header">
+                Priorytet
+            </mat-expansion-panel-header>
+            <select class="form-control" id="task-priority" name="priority"
+            [ngModel]='model.getTask().getPriority()' (ngModelChange)='model.getTask().setPriority($event)'
+            (change)="updateTask()">
+            <option [ngValue]="null" ></option>
+            <option [ngValue]="priority.LEVEL_1">1</option>
+            <option [ngValue]="priority.LEVEL_2">2</option>
+            <option [ngValue]="priority.LEVEL_3">3</option>
+            <option [ngValue]="priority.LEVEL_4">4</option>
+            <option [ngValue]="priority.LEVEL_5">5</option>
+        </select>
         </mat-expansion-panel>
 
         <mat-expansion-panel class="form-group" [expanded]="model.isEndDateExtended()">

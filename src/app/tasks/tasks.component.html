@@ -4,25 +4,45 @@
     <input id="task-filter" class="filter border" (input)='model.filterTasks($event.target.value)'>
   </div>
   <div id="tasks-list" class="list border">
-      <div *ngFor='let task of model.getTasks()' class="list-item block transparent-border" >
+      <div *ngFor='let task of model.getTasks()' class="task-list-item list-item block transparent-border" 
+        (click)="onEditTask(task)">
+        <input type="checkbox"  class="task-checkbox"/>
         <div class="task-main">
           <div class="list-item-value">{{task.getName()}}</div>
-          <div class="list-item-options" 
+          
+          <div class="task-info">
+
+            <div class="labels-container">
+              <div *ngFor="let label of task.getLabels()" class="label-item border">
+                {{label.getName()}}
+              </div>
+            </div>
+            
+            <div class="task-info-icon">
+              <div *ngIf="task.getDescription()!=null" class="task-description-icon info-icon"
+                tooltip="{{task.getDescription()}}" autoplacement="true" placement="bottom"></div>
+
+              <div *ngIf="task.getEndDate()!=null" class="task-enddate-icon info-icon"
+              tooltip="{{getEndDateText(task)}}" autoplacement="true" placement="bottom"></div>
+
+              <div *ngIf="task.getPriority()!=null" class="task-priority-icon info-icon"
+              >{{getPriorityText(task)}} </div>
+
+              <div *ngIf="task.getSubtasks().length != 0" class="info-icon task-subtask"
+              tooltip="{{getSubtasksList(task)}}" autoplacement="true" placement="bottom"
+              >
+                {{task.getNumberOfSubtaskWithStatus(status.ENDED)}} / {{task.getSubtasks().length}}
+              </div>
+            </div>
+
+            <!-- TODO: pomyśleć, jak to zrobić z etykietami. Lepiej będzie, Jeżeli będą wyświetlone w całości -->
+          </div>
+        </div>
+        
+        <div class="list-item-options" 
           (click)='onTaskMenuClick($event, task)'
           [matMenuTriggerFor]="menu"
           >...</div>
-        </div>
-        <div class="task-info">
-          <div *ngIf="task.getDescription()!=null" class="task-description-icon info-icon"
-          tooltip="{{task.getDescription()}}" autoplacement="true" placement="bottom"></div>
-          <div *ngIf="task.getEndDate()!=null" class="task-enddate-icon info-icon"
-          tooltip="{{getEndDateText(task)}}" autoplacement="true" placement="bottom"></div>
-          <div *ngIf="task.getSubtasks().length != 0" class="info-icon task-subtask"
-          tooltip="{{getSubtasksList(task)}}" autoplacement="true" placement="bottom"
-          >
-            {{task.getNumberOfSubtaskWithStatus(status.ENDED)}} / {{task.getSubtasks().length}}
-          </div>
-        </div>
       </div>
 
       <div *ngIf="model.isAddingTaskMode()" >
@@ -42,7 +62,7 @@
 </div>
 
 <mat-menu #menu="matMenu">
-    <button mat-menu-item (click)="onEditTask()">
+    <button mat-menu-item (click)="onEditTask(null)">
       Edytuj
     </button>
     <button mat-menu-item (click)="onRemoveTask()">

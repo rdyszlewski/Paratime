@@ -3,6 +3,7 @@ import { Status } from './status';
 import { Project } from './project';
 import { Label } from './label';
 import { IFilterable } from 'app/common/filter/i_filterable';
+import { Priority } from './priority';
 
 export class Task implements IFilterable{
 
@@ -19,6 +20,7 @@ export class Task implements IFilterable{
     private progress: number = null;
     private project: Project = null;
     private projectID = null;
+    private priority: Priority = null;
 
     constructor(name=null, description=null, status=null){
         this.name = name;
@@ -108,6 +110,7 @@ export class Task implements IFilterable{
     }
 
     public setStatus(status: Status){
+        console.log("Status " + status);
         this.status = status;
     }
 
@@ -124,10 +127,7 @@ export class Task implements IFilterable{
     }
 
     public setProject(project: Project){
-        console.log("Ustawianie projektu");
-        console.log(project);
         this.project = project;
-        // TODO: usunąć to
         this.projectID = project.getId();
     }
 
@@ -143,4 +143,15 @@ export class Task implements IFilterable{
         let finishedSubtask = this.getSubtasks().filter(x=>x.getStatus()==status);
         return finishedSubtask.length;
     }
+
+    public getPriority():Priority{
+        return this.priority;
+    }
+
+    public setPriority(priority:Priority){
+        console.log("Priority" + priority);
+        this.priority = priority;
+    }
+    
+    
 }

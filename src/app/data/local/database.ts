@@ -28,18 +28,18 @@ export class LocalDatabase extends Dexie{
         console.log("Tworzenie bazy danych");
         // TODO: przejrzeć, czy tutaj są zawarte wszystkie zmienne
         this.version(this.dbVersion).stores({
-            tasks: '++id, name, description, endDate, plannedTime, status, progress, projectID',
+            tasks: '++id, name, description, endDate, plannedTime, status, progress, projectID, priority',
             subtasks: '++id, name, description, status, progress, taskId',
             projects: '++id, name, description, startDate, endDate, status, type',
             labels: '++id, name',
-            task_tags: '[taskId+labelId], taskId, labelId'
+            task_labels: '[taskId+labelId], taskId, labelId'
         });
 
         this.tasksTable = this.table('tasks');
         this.subtasksTable = this.table('subtasks');
         this.projectsTable = this.table('projects');
         this.labelsTable = this.table('labels');
-        this.taskTagsTable = this.table('task_tags');
+        this.taskTagsTable = this.table('task_labels');
 
         this.projectsTable.mapToClass(Project);
         this.tasksTable.mapToClass(Task);

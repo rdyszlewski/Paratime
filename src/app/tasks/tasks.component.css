@@ -10,6 +10,66 @@
 #tasks-list{
     /* height: 100%; */
     overflow: auto;
+} 
+
+.task-list-item{
+    display: flex;
+}
+
+.task-checkbox{
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+}
+
+.list-item-value:hover{
+    cursor: default;
+}
+
+.task-main{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.task-info{
+    display: flex;
+}
+
+.task-name{
+    width: 100%;
+    text-decoration: none;
+}
+
+.labels-container{
+    /* width: 100%; */
+    font-size: small;
+    display: flex;
+    flex-wrap: wrap;
+    box-sizing: border-box;
+}
+
+.label-item{
+    width: fit-content;
+    padding-top: 1px;
+    padding-bottom: 1px;
+}
+
+.label-item:hover{
+    cursor: default;
+}
+
+.task-info-icon{
+    display: flex;
+    flex-wrap: wrap;
+    width: fit-content;
+    margin-right: 0px;
+    margin-left: auto;
+
+}
+
+.task-subtask{
+    width: auto;   
 }
 
 .task-menu-button{
@@ -18,6 +78,11 @@
 
 .task:hover .task-menu-button{
     visibility: visible;
+}
+
+.task-checkbox{
+    margin-top: auto;
+    margin-bottom: auto;
 }
 
 .task{
@@ -32,24 +97,6 @@
 .task:hover{
     cursor: pointer;
     background-color: antiquewhite;
-}
-
-.task-main{
-    display: flex;
-}
-
-.task-info{
-    display: flex;
-
-}
-
-.task-name{
-    width: 100%;
-}
-
-
-.task-subtask{
-    width: auto;   
 }
 
 .filter-container{

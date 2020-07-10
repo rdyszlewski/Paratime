@@ -8,6 +8,7 @@ import { Task } from 'app/models/task';
 import { DataService } from 'app/data.service';
 import { FocusHelper } from 'app/common/view_helper';
 import { KeyCode } from 'app/common/key_codes';
+import { Priority } from 'app/models/priority';
 
 @Component({
   selector: 'app-task-details',
@@ -21,6 +22,7 @@ export class TaskDetailsComponent implements OnInit {
   private SUBTASK_ITEM_ID = '#subtask-name-input_';
 
   public status = Status;
+  public priority = Priority;
   public model: TaskDetails = new TaskDetails();
 
   @Output() closeEvent: EventEmitter<null> = new EventEmitter();

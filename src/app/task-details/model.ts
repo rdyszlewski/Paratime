@@ -112,6 +112,10 @@ export class TaskDetails{
        return this.task.getSubtasks().length > 0;
    }
 
+   public isPriorityExtended(){
+       return this.task.getPriority() != null;
+   }
+
    public setProject(id:number){
         for(let i =0; i<this.projects.length; i++){
             const project = this.projects[i];
