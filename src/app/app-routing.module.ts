@@ -7,6 +7,7 @@ import { MainComponent } from './main/main.component';
 import { ProjectDetailsComponent } from './project-details/project-details.component';
 import { TaskDetailsComponent } from './task-details/task-details.component';
 import { LabelsComponent } from './labels/labels.component';
+import { StageDetailsComponent } from './stage-details/stage-details.component';
 
 
 const routes: Routes = [
@@ -16,7 +17,8 @@ const routes: Routes = [
   {path: 'projects', component: ProjectsComponent},
   {path: 'project_details', component: ProjectDetailsComponent},
   {path: 'task_details', component: TaskDetailsComponent},
-  {path: 'labels', component:LabelsComponent}
+  {path: 'labels', component:LabelsComponent},
+  {path: 'stage_details', component:StageDetailsComponent}
 ];
 
 @NgModule({

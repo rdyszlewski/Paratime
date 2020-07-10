@@ -4,6 +4,7 @@ import { Project } from './project';
 import { Label } from './label';
 import { IFilterable } from 'app/common/filter/i_filterable';
 import { Priority } from './priority';
+import { Stage } from './stage';
 
 export class Task implements IFilterable{
 
@@ -21,6 +22,8 @@ export class Task implements IFilterable{
     private project: Project = null;
     private projectID = null;
     private priority: Priority = null;
+    private projectStage: Stage = null;
+    private projectStageID: number = null;
 
     constructor(name=null, description=null, status=null){
         this.name = name;
@@ -153,5 +156,23 @@ export class Task implements IFilterable{
         this.priority = priority;
     }
     
+    public getProjectStage():Stage{
+        return this.projectStage;
+    }
+
+    public setProjectStage(projectStage: Stage){
+        this.projectStage = projectStage;
+        if(this.projectStage){
+            this.projectStageID = this.projectStage.getId();
+        }
+    }
+
+    public getProjectStageID():number{
+        return this.projectID;
+    }
+
+    public setProjectStageID(id:number){
+        return this.projectStageID;
+    }
     
 }

@@ -32,6 +32,7 @@ export class TaskStore{
 
     private setTaskData(task: Task): Task | PromiseLike<Task> {
         // TODO: przydałaby się refaktoryzacja
+        // TODO: być może będzie trzeba załadować etap
         return this.subtaskStore.getSubtaskByTask(task.getId()).then(subtasks => {
             task.setSubtasks(subtasks);
         }).then(() => {
@@ -44,6 +45,7 @@ export class TaskStore{
                 if(task.getProjectID()!=null){
                     return this.projectRepository.findProjectById(task.getProjectID()).then(project=>{
                         task.setProject(project);
+                        // TODO: w tym miejscu można ustawić odpowiedni etap, pobierając go z projektu 
                         return Promise.resolve(task);
                     })
                 }

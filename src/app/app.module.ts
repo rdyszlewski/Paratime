@@ -23,6 +23,7 @@ import { TooltipModule } from 'ng2-tooltip-directive';
 import { MatDialogModule } from '@angular/material/dialog';
 import { DialogComponent } from './dialog/dialog.component';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
+import { StageDetailsComponent } from './stage-details/stage-details.component';
 
 @NgModule({
   declarations: [
@@ -34,6 +35,7 @@ import {MatSnackBarModule} from '@angular/material/snack-bar';
     ProjectDetailsComponent,
     LabelsComponent,
     DialogComponent,
+    StageDetailsComponent,
   ],
   imports: [
     BrowserModule,

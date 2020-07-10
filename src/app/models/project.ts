@@ -2,6 +2,8 @@ import { Status } from './status';
 import { Task } from './task';
 import { ProjectType } from './project_type';
 import { IFilterable } from 'app/common/filter/i_filterable';
+import { Stage } from './stage';
+import { runInThisContext } from 'vm';
 
 export class Project implements IFilterable{
     
@@ -13,6 +15,7 @@ export class Project implements IFilterable{
     private status: Status = null;
     private tasks: Task[] = [];
     private type: ProjectType = null;
+    private stages: Stage[] = [];
 
     constructor(name=null, description=null, status=null, type=null){
         this.name = name;
@@ -104,4 +107,23 @@ export class Project implements IFilterable{
     public getTasks():Task[]{
         return this.tasks;
     }
+
+    public getStages():Stage[]{
+        return this.stages;
+    }
+
+    public setStages(stages:Stage[]){
+        this.stages = stages;
+    }
+
+    public addStage(stage:Stage){
+        this.stages.push(stage);
+    }
+
+    public removeStage(stage:Stage){
+        const index = this.stages.indexOf(stage);
+        if(index >= 0){
+            this.stages.splice(index, 1);
+        }
+    }   
 }

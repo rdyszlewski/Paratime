@@ -5,11 +5,10 @@ import { Subtask } from 'app/models/subtask';
 import { Project } from 'app/models/project';
 import { Label } from 'app/models/label';
 import { TaskLabelsModel } from '../common/models';
+import { Stage } from 'app/models/stage';
 
 
 export class LocalDatabase extends Dexie{
-
-    // TODO: dodać wszystkie tabele
 
     private dbVersion = 1;
 
@@ -18,6 +17,7 @@ export class LocalDatabase extends Dexie{
     private projectsTable: Dexie.Table<Project, number>;
     private labelsTable: Dexie.Table<Label, number>;
     private taskTagsTable: Dexie.Table<TaskLabelsModel, number>;
+    private stagesTable: Dexie.Table<Stage, number>;
 
     constructor(){
         super("Database");
@@ -25,28 +25,38 @@ export class LocalDatabase extends Dexie{
     }
 
     private createTables(){
-        console.log("Tworzenie bazy danych");
-        // TODO: przejrzeć, czy tutaj są zawarte wszystkie zmienne
+        this.createSchama();
+        this.initTables();
+        this.mapToClasses();
+    }
+
+    private createSchama() {
         this.version(this.dbVersion).stores({
-            tasks: '++id, name, description, endDate, plannedTime, status, progress, projectID, priority',
+            tasks: '++id, name, description, endDate, plannedTime, status, progress, projectID, priority, projectStageID',
             subtasks: '++id, name, status, taskId',
             projects: '++id, name, description, startDate, endDate, status, type',
             labels: '++id, name',
-            task_labels: '[taskId+labelId], taskId, labelId'
+            task_labels: '[taskId+labelId], taskId, labelId',
+            stages: "++id, name, description, endDate, status, projectID"
         });
+    }
 
-        this.tasksTable = this.table('tasks');
-        this.subtasksTable = this.table('subtasks');
-        this.projectsTable = this.table('projects');
-        this.labelsTable = this.table('labels');
-        this.taskTagsTable = this.table('task_labels');
-
+    private mapToClasses() {
         this.projectsTable.mapToClass(Project);
         this.tasksTable.mapToClass(Task);
         this.subtasksTable.mapToClass(Subtask);
         this.labelsTable.mapToClass(Label);
         this.taskTagsTable.mapToClass(TaskLabelsModel);
-        
+        this.stagesTable.mapToClass(Stage);
+    }
+
+    private initTables() {
+        this.tasksTable = this.table('tasks');
+        this.subtasksTable = this.table('subtasks');
+        this.projectsTable = this.table('projects');
+        this.labelsTable = this.table('labels');
+        this.taskTagsTable = this.table('task_labels');
+        this.stagesTable = this.table('stages');
     }
 
     public getTasksTable(){
@@ -69,4 +79,7 @@ export class LocalDatabase extends Dexie{
         return this.taskTagsTable;
     }
 
+    public getStagesTable(){
+        return this.stagesTable;
+    }
 }

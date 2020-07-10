@@ -8,4 +8,4 @@ export interface ILabelRepository{
     updateLabel(label: Label): Promise<number>;
     removeLabel(id: number): Promise<void>;
     removeLabelByName(name:string):Promise<void>;
-}
+}   

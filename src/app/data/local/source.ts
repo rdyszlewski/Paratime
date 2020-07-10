@@ -10,6 +10,8 @@ import { LocalLabelRepository as LocalLabelRepository } from './repositories/lab
 import { LocalTaskLabelsRepository as LocalTaskLabelsRepository } from './repositories/task_labels_repository';
 import { ILabelRepository } from '../common/repositories/label_repository';
 import { ITaskLabelsRepository } from '../common/repositories/task_labels_repository';
+import { LocalProjectStageRepository } from './repositories/stage_repository';
+import { IProjectStageRepository } from '../common/repositories/stage_repository';
 
 export class LocalDataSource implements IDataSource{
 
@@ -18,6 +20,7 @@ export class LocalDataSource implements IDataSource{
     private subtaskRepository: LocalSubtaskRepository;
     private labelRepository: LocalLabelRepository;
     private taskLabelsRepository: LocalTaskLabelsRepository;
+    private stageRepository: LocalProjectStageRepository;
 
     constructor(){
         let database = new LocalDatabase();
@@ -27,6 +30,7 @@ export class LocalDataSource implements IDataSource{
         this.subtaskRepository = new LocalSubtaskRepository(database.getSubtasksTable());
         this.labelRepository = new LocalLabelRepository(database.getLabelsTable());
         this.taskLabelsRepository = new LocalTaskLabelsRepository(database.getTaskLabelsTable());
+        this.stageRepository = new LocalProjectStageRepository(database.getStagesTable());
     }
     
 
@@ -50,5 +54,8 @@ export class LocalDataSource implements IDataSource{
         return this.taskLabelsRepository;
     }
     
+    public getStageRepository():IProjectStageRepository{
+        return this.stageRepository;
+    }
 
 }
