@@ -12,6 +12,8 @@
             <input type="text" class="form-control" id="project-name" name='name'
             [ngModel]='model.getProject().getName()' (ngModelChange)="model.getProject().setName($event)"
             (keyup.enter)="updateProject()" (focusout)="updateProject()">
+            <div *ngIf="!model.isNameValid() && model.isNameChanged()"
+            class="invalid-feedback">Nazwa nie może być pusta</div>
         </mat-expansion-panel>
 
         <mat-expansion-panel class="form-group" [expanded]="model.getProject().getDescription()!=null">
@@ -75,7 +77,9 @@
                 (dateChange)="updateProject()">
                 <mat-datepicker-toggle [for]="endDatePicker" class="datepicker"></mat-datepicker-toggle>
                 <mat-datepicker #endDatePicker></mat-datepicker>
-            </div>  
+            </div>
+            <div *ngIf="!model.isEndDateValid() && model.isEndDateChanged()"
+            class="invalid-feedback">Data końcowa nie może być wcześniejsza niż początkowa</div>
         </mat-expansion-panel>
 
     </form>

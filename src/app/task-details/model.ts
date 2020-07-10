@@ -8,6 +8,8 @@ export class TaskDetails{
     private projects: Project[] = [];
     private selectedProject: Project;
     private labels: Label[] = [];
+
+    private originTask: Task;
     
     private subtaskEditing:boolean = false;
     private editedSubtask:Subtask;
@@ -20,6 +22,20 @@ export class TaskDetails{
         console.log("Ustawianie zadania");
         console.log(task);
         this.task = task;
+        this.originTask = this.copyTask(task);
+        // TODO: wykonać kopie 
+    }
+
+    private copyTask(task:Task):Task{
+        // TODO: można to dokończyć i przenieść do innej klasy
+        const newTask = new Task();
+        newTask.setName(task.getName());
+        newTask.setDescription(task.getDescription());
+        newTask.setStatus(task.getStatus());
+        newTask.setEndDate(task.getEndDate());
+        newTask.setPlannedTime(task.getPlannedTime());
+
+        return newTask;
     }
 
     public getProjects():Project[]{
@@ -125,4 +141,21 @@ export class TaskDetails{
         }
         return null;
    }
+
+   public isNameValid(){
+       return this.task.getName() != null && this.task.getName() != "";
+   }
+
+   public isNameChanged(){
+       // TODO: sprawdzić, czy to będzie miało sens
+       if(this.task != null && this.originTask != null){
+           return this.task.getName() != this.originTask.getName();
+       }
+       return false;
+   }
+
+   public isValid():boolean{
+       return this.isNameValid();
+   }
+
 }

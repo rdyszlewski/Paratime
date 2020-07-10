@@ -10,9 +10,13 @@
             <mat-expansion-panel-header class="form-group-header">
                 Nazwa
             </mat-expansion-panel-header>
+            
             <input type="text" class="form-control" id="task-name" name='name'
             [ngModel]='model.getTask().getName()' (ngModelChange)="model.getTask().setName($event)"
-            (keyup.enter)="updateTask()" (focusout)="updateTask()">
+            (keyup.enter)="updateTask()" (focusout)="updateTask()"
+            >
+            <div *ngIf="!model.isNameValid() && model.isNameChanged()"
+            class="invalid-feedback">Nazwa nie może być pusta</div>
         </mat-expansion-panel>
 
         <mat-expansion-panel class="form-group" [expanded]="model.isDescriptionExtended()">
@@ -72,7 +76,7 @@
             <mat-expansion-panel-header class="form-group-header">
                 Planowany czas
             </mat-expansion-panel-header>
-            <input type='number' class="form-control" id="task-planned_time" name="planned_time"
+            <input type='number' class="form-control" id="task-planned_time" name="planned_time" min="1"
             [ngModel]="model.getTask().getPlannedTime()" (ngModelChange)="model.getTask().setPlannedTime($event)"
             (keyup.enter)="updateTask()" (focusout)="updateTask()">
         </mat-expansion-panel>

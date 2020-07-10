@@ -145,7 +145,9 @@ export class TaskDetailsComponent implements OnInit {
   }  
 
   public updateTask(){
-    DataService.getStoreManager().getTaskStore().updateTask(this.model.getTask()).then(()=>{});
+    if(this.model.isValid()){
+      DataService.getStoreManager().getTaskStore().updateTask(this.model.getTask()).then(()=>{});
+    }
   }
 
   public closeView(){

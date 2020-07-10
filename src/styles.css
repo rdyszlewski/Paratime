@@ -230,3 +230,8 @@ html, body{
     justify-content: flex-end;
     padding-right: 5px;
 }
+
+.invalid-feedback{
+    color: red;
+    font-size: small;
+}
