@@ -8,7 +8,12 @@
     (closeEvent)='closeProjectDetails()'
     (saveEvent)='onCreateProject($event)'
     (updateEvent)="onUpdateProject($event)"
+    (editStageEvent)="onEditProjectStage($event)"
     ></app-project-details>
+
+    <app-stage-details id="stage-details" [hidden]="!stageDetailsOpen"
+    (closeEvent)="closeStageDetails()"
+    (updateEvent)="onUpdateStage($event)"></app-stage-details>
     
     <app-tasks id='tasks' [hidden]='!tasksOpen'
     (detailsEvent)="openTaskDetails($event)"

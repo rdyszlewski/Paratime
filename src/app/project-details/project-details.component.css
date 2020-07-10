@@ -33,6 +33,22 @@
     padding: 5px;
 }
 
+/* TODO: przenieść to do wspólnego stylu. Taki sam styl jest w tasks.components */
+.stage-main{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
 
+/* TODO: to też przenieść */
+.stage-list-item{
+    display: flex;
+}
 
+/* TODO: to po małych przeróbkach też może być wrzucone */
+.stage-info-icons{
+    display: flex;
+    flex-wrap: wrap;
+    width: fit-content;
 
+}

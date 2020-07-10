@@ -98,6 +98,18 @@
             <button class="form-control button small-button" id="manage-label-button" (click)="openLabelsManager()">Zarzadzaj etykietami</button>
         </mat-expansion-panel>
 
+        <mat-expansion-panel class="form-group" [expanded]="model.isStageExtended()">
+            <mat-expansion-panel-header class="form-group-header">
+                Etap projektu
+            </mat-expansion-panel-header>
+            <select class="form-control" name="task-stage"
+            [ngModel]="model.getTask().getProjectStageID()" (ngModelChange)="model.getTask().setProjectStageID($event)"
+            (change)="updateTask()">
+                <option [ngValue]="null"></option>
+                <option *ngFor="let stage of model.getStages()" [ngValue]="stage.getId()">{{stage.getName()}}</option>
+            </select>
+        </mat-expansion-panel>
+
         <mat-expansion-panel class="form-group" [expanded]="model.isSubtasksExtended()">
             <mat-expansion-panel-header class="form-group-header">
                 Kroki ({{getFinishedSubtasks(model.getTask())}} / {{model.getTask().getSubtasks().length}})
@@ -140,6 +152,7 @@
                 (click)="closeAddingSubtask()">Anuluj</button>
             </div>
         </mat-expansion-panel>
+
     </form>
 </div>
 

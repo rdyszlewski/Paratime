@@ -1,4 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { StageDetailsModel } from './model';
+import { Status } from 'app/models/status';
+import { Stage } from 'app/models/stage';
+import { DataService } from 'app/data.service';
 
 @Component({
   selector: 'app-stage-details',
@@ -7,9 +11,32 @@ import { Component, OnInit } from '@angular/core';
 })
 export class StageDetailsComponent implements OnInit {
 
+  @Output() closeEvent: EventEmitter<null> = new EventEmitter();
+  @Output() updateEvent: EventEmitter<Stage> = new EventEmitter();
+
+  public status = Status;
+  public model: StageDetailsModel = new StageDetailsModel();
+
   constructor() { }
 
   ngOnInit(): void {
+
+  }
+
+  public setStage(stage:Stage){
+    this.model.setStage(stage);
+  }
+
+  public updateStage(){
+    if(this.model.isValid()){
+      DataService.getStoreManager().getStageStore().updateStage(this.model.getStage()).then(updatedStage=>{
+        this.updateEvent.emit(updatedStage);
+      });
+    }
+  }
+
+  public closeView(){
+    this.closeEvent.emit();
   }
 
 }

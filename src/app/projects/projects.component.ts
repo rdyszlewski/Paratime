@@ -3,7 +3,6 @@ import { ProjectsModel } from './model';
 import { Project } from 'app/models/project';
 import { DataService } from 'app/data.service';
 import { MatDialog } from '@angular/material/dialog';
-import { DialogComponent } from 'app/dialog/dialog.component';
 import * as $ from 'jquery';
 import { KeyCode } from 'app/common/key_codes';
 import { FocusHelper } from 'app/common/view_helper';
@@ -126,7 +125,6 @@ export class ProjectsComponent implements OnInit {
   }
 
   public closeAddingNewProject(){
-    console.log("Schowano dodanie zadania");
     this.model.setNewProjectName("");
     this.model.setAddingNewProject(false);
   }

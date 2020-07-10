@@ -20,7 +20,7 @@ export class Task implements IFilterable{
     private status: Status = null;
     private progress: number = null;
     private project: Project = null;
-    private projectID = null;
+    private projectID;
     private priority: Priority = null;
     private projectStage: Stage = null;
     private projectStageID: number = null;
@@ -113,7 +113,6 @@ export class Task implements IFilterable{
     }
 
     public setStatus(status: Status){
-        console.log("Status " + status);
         this.status = status;
     }
 
@@ -152,7 +151,6 @@ export class Task implements IFilterable{
     }
 
     public setPriority(priority:Priority){
-        console.log("Priority" + priority);
         this.priority = priority;
     }
     
@@ -168,11 +166,11 @@ export class Task implements IFilterable{
     }
 
     public getProjectStageID():number{
-        return this.projectID;
+        return this.projectStageID;
     }
 
     public setProjectStageID(id:number){
-        return this.projectStageID;
+        this.projectStageID = id;
     }
     
 }

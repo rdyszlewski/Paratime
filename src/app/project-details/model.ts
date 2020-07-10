@@ -1,9 +1,29 @@
 import { Project } from 'app/models/project';
+import { Stage } from 'app/models/stage';
+import { Status } from 'app/models/status';
 
 export class ProjectDetails{
 
     private project:Project = new Project();
     private originProject:Project;
+    private addingStageMode:boolean = false;
+    private newStageName:string = "";
+
+    constructor(){
+        this.project.setName("Dominika");
+
+        let stage1 = new Stage();
+        stage1.setName("Etap 1");
+        stage1.setDescription("To jest pierwszy etap");
+        stage1.setStatus(Status.STARTED);
+        stage1.setEndDate(new Date());
+
+        let stage2 = new Stage();
+        stage2.setName("Etap 2");
+
+        this.project.addStage(stage1);
+        this.project.addStage(stage2);
+    }
 
     public getProject(){
         // TODO: odpowiednie ustawianie dat
@@ -70,5 +90,21 @@ export class ProjectDetails{
 
     public isValid():boolean{
         return this.isNameValid();
+    }
+
+    public isAddingStageMode(){
+        return this.addingStageMode;
+    }
+
+    public setAddingStageMode(mode:boolean):void{
+        this.addingStageMode = mode;
+    }
+
+    public getNewStageName():string{
+        return this.newStageName;
+    }
+
+    public setNewStageName(name:string){
+        this.newStageName = name;
     }
 }

@@ -2,12 +2,14 @@ import { Task } from 'app/models/task';
 import { Project } from 'app/models/project';
 import { Label } from 'app/models/label';
 import { Subtask } from 'app/models/subtask';
+import { Stage } from 'app/models/stage';
 
 export class TaskDetails{
     private task: Task = new Task();
     private projects: Project[] = [];
     private selectedProject: Project;
     private labels: Label[] = [];
+    private stages: Stage[] = [];
 
     private originTask: Task;
     
@@ -19,11 +21,8 @@ export class TaskDetails{
     }
 
     public setTask(task:Task){
-        console.log("Ustawianie zadania");
-        console.log(task);
         this.task = task;
         this.originTask = this.copyTask(task);
-        // TODO: wykonać kopie 
     }
 
     private copyTask(task:Task):Task{
@@ -81,7 +80,15 @@ export class TaskDetails{
         toRemove.forEach(label=>{
           this.getTask().removeLabel(label);
         });
-      }
+    }
+
+    public getStages():Stage[]{
+        return this.stages;
+    }
+
+    public setStages(stages:Stage[]){
+        this.stages = stages;
+    }
 
     public isSubtaskEditing(){
         return this.subtaskEditing;
@@ -97,6 +104,10 @@ export class TaskDetails{
 
     public setEditedSubtask(subtask:Subtask){
         this.editedSubtask = subtask;
+    }
+
+    public isStageExtended():boolean{
+        return this.task.getProjectStageID() != null;
     }
 
    // form group extending

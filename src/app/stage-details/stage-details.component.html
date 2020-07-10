@@ -1,1 +1,58 @@
-<p>stage-details works!</p>
+<div class="app-panel shadow">
+    <div class="tool-panel">
+        <h3 class="panel-header">{{model.getStage().getName()}}</h3>
+        <button class="button border" (click)="closeView()">X</button>
+    </div>
+
+    <form class="stage-form">
+
+        <mat-expansion-panel class="form-group" [expanded]="true">
+            <mat-expansion-panel-header class="form-group-header">
+                Nazwa
+            </mat-expansion-panel-header>
+            <input type="text" class="form-control" id="stage-name" name='name'
+            [ngModel]='model.getStage().getName()' (ngModelChange)="model.getStage().setName($event)"
+            (keyup.enter)="updateStage()" (focusout)="updateStage()">
+            <div *ngIf="!model.isNameValid() && model.isNameChanged()"
+            class="invalid-feedback">Nazwa nie może być pusta</div>
+        </mat-expansion-panel>
+
+        <mat-expansion-panel class="form-group" [expanded]="model.getStage().getDescription()!=null">
+            <mat-expansion-panel-header class="form-group-header">
+                Opis
+            </mat-expansion-panel-header>
+            <textarea class="form-control" id="stage-description" name="description" rows="4"
+            [ngModel]='model.getStage().getDescription()' (ngModelChange)="model.getStage().setDescription($event)"
+            (keyup.enter)="updateStage()" (focusout)="updateStage()"></textarea>
+            
+        </mat-expansion-panel>
+
+        <mat-expansion-panel class="form-group" [expanded]="true">
+            <mat-expansion-panel-header class="form-group-header">
+                Stan
+            </mat-expansion-panel-header>
+            <select class="form-control" id="stage-status" name="status"
+            [ngModel]='model.getStage().getStatus()' (ngModelChange)="model.getStage().setStatus($event)"
+            (change)="updateStage()">
+
+                <option [ngValue]="status.STARTED">Aktywny</option>
+                <option [ngValue]="status.ENDED">Zakończony</option>
+                <option [ngValue]="status.CANCELED">Anulowany</option>
+                <option [ngValue]="status.AWAITING">Oczekujący</option>
+            </select>
+        </mat-expansion-panel>
+
+        <mat-expansion-panel class="form-group" [expanded]="model.getStage().getEndDate()!=null">
+            <mat-expansion-panel-header class="form-group-header">
+                Data końcowa
+            </mat-expansion-panel-header>
+            <div class="datepicker-container">
+                <input matInput class='form-control' id="stage-end-date" name="end-date" [matDatepicker]="endDatePicker"
+                [ngModel]='model.getStage().getEndDate()' (ngModelChange)="model.getStage().setEndDate($event)"
+                (dateChange)="updateStage()">
+                <mat-datepicker-toggle [for]="endDatePicker" class="datepicker"></mat-datepicker-toggle>
+                <mat-datepicker #endDatePicker></mat-datepicker>
+            </div>
+        </mat-expansion-panel>
+    </form>
+</div>

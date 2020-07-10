@@ -4,7 +4,6 @@ import { Stage } from 'app/models/stage';
 export class StageStore{
 
     private stageRepository: IProjectStageRepository;
-
     
     constructor(stageRepository: IProjectStageRepository){
         this.stageRepository = stageRepository;

@@ -9,6 +9,8 @@ import { TasksComponent } from 'app/tasks/tasks.component';
 import { Task } from 'app/models/task';
 import * as $ from 'jquery';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { StageDetailsComponent } from 'app/stage-details/stage-details.component';
+import { Stage } from 'app/models/stage';
 
 @Component({
   selector: 'app-main',
@@ -16,6 +18,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
   styleUrls: ['./main.component.css']
 })
 export class MainComponent implements OnInit {
+
+  // TODO: usprawnić zarządzanie widokami
 
   @ViewChild(ProjectDetailsComponent) 
   private projectDetailsComponent: ProjectDetailsComponent;
@@ -29,16 +33,21 @@ export class MainComponent implements OnInit {
   @ViewChild(TasksComponent)
   private tasksComponent: TasksComponent;
 
+  @ViewChild(StageDetailsComponent)
+  private stageDetailsComponent: StageDetailsComponent;
+
   public projectsOpen = true;
   public projectsDetailsOpen = false;
   public tasksOpen = true;
   public tasksDetailsOpen = false;
   public labelsOpen = false;
+  public stageDetailsOpen = false;
 
   private projectsView;
   private projectDetailsView;
   private tasksView;
   private taskDetailsView;
+  private stageDetailsView;
 
 
   constructor(public snakBar: MatSnackBar) { }
@@ -49,6 +58,7 @@ export class MainComponent implements OnInit {
     this.projectDetailsView = $("#projects-details");
     this.tasksView = $("#tasks");
     this.taskDetailsView = $('#task-details');
+    this.stageDetailsView = $('#stage-details');
 
     this.setOriginalWidth();
     // this.deleteDatabase();
@@ -186,5 +196,24 @@ export class MainComponent implements OnInit {
     this.snakBar.open(message, null, {
       duration: 2000,
     });
+  }
+
+  public closeStageDetails(){
+    this.stageDetailsOpen = false;
+    this.projectsOpen = true;
+    this.tasksOpen = true;
+  }
+
+  public onUpdateStage(stage: Stage){
+    // TODO: coś tutaj dopisać
+  }
+
+  public onEditProjectStage(stage:Stage){
+    // TODO: zrobić lepsze zarządzanie otwartymi oknami
+    this.stageDetailsOpen = true;
+    this.projectsOpen = false;
+    this.tasksOpen = false;
+
+    this.stageDetailsComponent.setStage(stage);
   }
 }

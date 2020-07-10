@@ -3,6 +3,8 @@ import { Task } from 'app/models/task';
 import { SubtaskStore } from './subtask_store';
 import { LabelStore } from './label_store';
 import { IProjectRepository } from '../repositories/project_repository';
+import { IProjectStageRepository } from '../repositories/stage_repository';
+import { StageStore } from './stage_store';
 
 
 // TODO: przydałyby się do tego wszystkiego transakcje. 
@@ -12,13 +14,15 @@ export class TaskStore{
     private subtaskStore: SubtaskStore;
     private labelStore: LabelStore;
     private projectRepository: IProjectRepository;
+    private stageStore: StageStore;
 
-    constructor(taskRepository: ITaskRepository, subtaskStore: SubtaskStore, labelStore:LabelStore, projectRepository:IProjectRepository){
+    constructor(taskRepository: ITaskRepository, subtaskStore: SubtaskStore, labelStore:LabelStore, projectRepository:IProjectRepository, stageStore:StageStore){
         this.taskRepository = taskRepository;
         this.subtaskStore = subtaskStore;
         this.labelStore = labelStore;
         // TODO: przemyśleć, czy na pewno tak to powinno wyglądać
         this.projectRepository = projectRepository;
+        this.stageStore = stageStore;
     }
  
     public getTaskById(id:number):Promise<Task>{
@@ -40,6 +44,13 @@ export class TaskStore{
                 labels.forEach(label => {
                     task.addLabel(label);
                 });
+            }).then(()=>{
+                // TODO: być może to będzie do wyrzucenia
+                if(task.getProjectStageID()){
+                    return this.stageStore.getStageById(task.getProjectStageID()).then(stage=>{
+                        task.setProjectStage(stage);
+                    });
+                    }
             }).then(() => {
                 // TODO: zrobić pobieranie projektu. Chyba nie przyniosło to oczekiwanego rezultatu
                 if(task.getProjectID()!=null){

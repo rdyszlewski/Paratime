@@ -38,8 +38,10 @@ export class TaskDetailsComponent implements OnInit {
   private init(){
     this.loadProjects();
     this.loadLabels();
+    this.loadStages();
   }
 
+  // TODO: zorientować się, czy to jest potrzebne
   private loadProjects() {
     DataService.getStoreManager().getProjectStore().getAllProjects().then(projects => {
       this.model.setProjects(projects);
@@ -48,14 +50,22 @@ export class TaskDetailsComponent implements OnInit {
 
   public loadLabels(){
     DataService.getStoreManager().getLabelStore().getAllLabel().then(labels=>{
-      console.log(labels);
       this.model.setLabels(labels);
     });
   }  
 
+  public loadStages(){
+    if(this.model.getTask().getProjectID()){
+      DataService.getStoreManager().getStageStore().getStagesByProject(this.model.getTask().getProjectID()).then(stages=>{
+        this.model.setStages(stages);
+      });
+    }
+  }
+
   public setTask(task:Task){
     if(task){
       this.model.setTask(task);
+      this.init();
       FocusHelper.focus(this.TASK_NAME_ID);
     }
   }

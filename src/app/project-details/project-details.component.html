@@ -72,7 +72,7 @@
                 Data końcowa
             </mat-expansion-panel-header>
             <div class="datepicker-container">
-                <input matInput class='form-control' id="pproject-end-date" name="end-date" [matDatepicker]="endDatePicker"
+                <input matInput class='form-control' id="project-end-date" name="end-date" [matDatepicker]="endDatePicker"
                 [ngModel]='model.getProject().getEndDate()' (ngModelChange)="model.getProject().setEndDate($event)"
                 (dateChange)="updateProject()">
                 <mat-datepicker-toggle [for]="endDatePicker" class="datepicker"></mat-datepicker-toggle>
@@ -82,5 +82,58 @@
             class="invalid-feedback">Data końcowa nie może być wcześniejsza niż początkowa</div>
         </mat-expansion-panel>
 
+        <mat-expansion-panel class="form-group" [expanded]="model.getProject().getStages().length > 0">
+            <mat-expansion-panel-header class="form-group-header">
+                Etapy
+            </mat-expansion-panel-header>
+            <div class="list border" id="stages-list">
+                <div *ngFor="let stage of model.getProject().getStages()" class="stage-list-item list-item block transparent-border" >
+                    <div class="stage-main">
+                        <div class="list-item-value">{{stage.getName()}}</div>
+                        <div class="stage-info-icons">
+                            <div *ngIf="stage.getDescription()!=null" class="task-description-icon info-icon"
+                                tooltip="{{stage.getDescription()}}" autoplacement="true" placement="bottom">
+                            </div>
+  
+                            <div *ngIf="stage.getEndDate()!=null" class="task-enddate-icon info-icon"
+                                tooltip="{{getDateText(stage.getEndDate())}}" autoplacement="true" placement="bottom">
+                            </div>
+                            <!-- TODO: gdzies można poinformować o stanie -->
+                            
+                        </div>
+                    </div> 
+                    <div class="list-item-options" 
+                        (click)='onStageMenuClick($event, stage)'
+                        [matMenuTriggerFor]="stageMenu">
+                        <!-- TODO: spróbować przenieść to menu gdzieś indziej -->
+                        <mat-menu #stageMenu="matMenu">
+
+                            <ng-template matMenuContent >
+                                <button mat-menu-item (click)="onEditStage(stage)">
+                                    Edytuj
+                                  </button>
+                                  <button mat-menu-item (click)="onRemoveStage(stage)">
+                                    Usuń
+                                  </button>
+                            </ng-template>
+                          </mat-menu>
+                        ...
+                    </div>
+                </div>
+                <div *ngIf="model.isAddingStageMode()" >
+                    <input type="text" class="form-control" id="new-stage-name" (keyup)="handleAddingNewStageKeyUp($event)" name="new-state-name"
+                        [ngModel]="model.getNewStageName()" (ngModelChange)="model.setNewStageName($event)">
+                    <div class="buttons-container">
+                        <button class="button small-button insert-button" id="save-subtask-button" 
+                        (click)="addNewStage()">Zapisz</button>
+                        <button class="button small-button insert-button" id="cancel-subtask-button"
+                        (click)="closeAddingNewStage()">Anuluj</button>
+                    </div>
+                </div>
+                <button class="button border" (click)='onCreateStageClick()'
+                    *ngIf="!model.isAddingStageMode()">Dodaj etap</button>
+            </div>
+        </mat-expansion-panel>
     </form>
 </div>
+
