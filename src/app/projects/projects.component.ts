@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter, ViewChild, TemplateRef } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { ProjectsModel } from './model';
 import { Project } from 'app/models/project';
 import { DataService } from 'app/data.service';
@@ -7,6 +7,8 @@ import * as $ from 'jquery';
 import { KeyCode } from 'app/common/key_codes';
 import { FocusHelper } from 'app/common/view_helper';
 import { DialogHelper } from 'app/common/dialog';
+import { Status } from 'app/models/status';
+import { ProjectType } from 'app/models/project_type';
 
 
 @Component({
@@ -23,6 +25,8 @@ export class ProjectsComponent implements OnInit {
   @Output() loadEvent: EventEmitter<Project> = new EventEmitter();
   @Output() removeEvent: EventEmitter<Project> = new EventEmitter();
 
+  public status = Status;
+  public type = ProjectType;
 
   constructor(public dialog:MatDialog) { }
 
@@ -32,11 +36,15 @@ export class ProjectsComponent implements OnInit {
 
   // loading projects from database
   private loadProjects(){
-    DataService.getStoreManager().getProjectStore().getAllProjects().then(projects=>{
+    this.loadProjectsFromStore().then(projects=>{
       projects.forEach(project=>{
         this.model.addProject(project);
       });
     });
+  }
+  
+  private loadProjectsFromStore(){
+    return DataService.getStoreManager().getProjectStore().getAllProjects();
   }
 
   // update project on the list
@@ -148,5 +156,31 @@ export class ProjectsComponent implements OnInit {
     if(event.keyCode == KeyCode.ESC){
       this.closeAddingNewProject();
     }
+  }
+
+  // FILTROWANIE =======================================================
+
+  public clearFilter(){
+    this.model.getFilter().clear();
+    this.searchFilter();
+  }
+
+  public searchFilter(){
+    // TODO: filtrowanie przenieść do innej klasy
+    // TODO: spróbować to zrobić na bazie danych
+    this.loadProjectsFromStore().then(projects=>{
+      let resultFilter = projects;
+      if(this.model.getFilter().isWithEndDate()){
+        resultFilter = resultFilter.filter(x=>x.getEndDate()!=null);
+      }
+      if(this.model.getFilter().getStatus() != null){
+        resultFilter = resultFilter.filter(x=>x.getStatus()==this.model.getFilter().getStatus());
+      }
+      if(this.model.getFilter().getProjectType() != null){
+        resultFilter = resultFilter.filter(x=>x.getType()==this.model.getFilter().getProjectType());
+      }
+      this.model.setProjects(resultFilter);
+    });
+
   }
 }

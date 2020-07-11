@@ -1,6 +1,8 @@
 import { Task } from 'app/models/task';
 import { Project } from 'app/models/project';
 import { FilteredList } from 'app/common/filter/filtered_list';
+import { Label } from 'app/models/label';
+import { TaskFilterModel } from './filter_model';
 
 export class TasksModel{
 
@@ -9,6 +11,12 @@ export class TasksModel{
     private taskWithOpenMenu: Task;
     private addingTaskMode: boolean = false;
     private newTaskName: string = "";
+
+    private filterOpen = false;
+    private filter: TaskFilterModel = new TaskFilterModel();
+    private labels: Label[] = [];
+    private tasks: Task[] = [];
+    private open;
 
     public getProject(){
         return this.project;
@@ -20,13 +28,25 @@ export class TasksModel{
         }
     }
 
+    public setTasks(tasks:Task[]){
+        this.tasks = tasks;
+        this.updateFilteredList();
+    }
+
     public setProject(project:Project){
+        // TODO: dopracować zarządzanie
         this.project = project;
+        if(project){
+            this.open = true;
+            this.tasks = this.project.getTasks();
+        } else {
+            this.open = false;
+        }
         this.updateFilteredList();
     }
 
     private updateFilteredList(){
-        this.filteredList.setSource(this.project.getTasks());
+        this.filteredList.setSource(this.tasks);
     }
 
     public getTasks():Task[]{
@@ -69,5 +89,33 @@ export class TasksModel{
 
     public setNewTaskName(name:string){
         this.newTaskName = name;
+    }
+
+    public isFilterOpen():boolean{
+        return this.filterOpen;
+    }
+
+    public toggleFilterOpen():void{
+        this.filterOpen = !this.filterOpen;
+    }
+
+    public getLabels():Label[]{
+        return this.labels;
+    }
+
+    public setLabels(labels:Label[]):void{
+        this.labels = labels;
+    }
+
+    public getFilter():TaskFilterModel{
+        return this.filter;
+    }
+
+    public isOpen():boolean{
+        return this.open;
+    }
+
+    public close(){
+        this.open = false;
     }
 }

@@ -31,7 +31,15 @@ export class TasksComponent implements OnInit {
 
   constructor(public dialog:MatDialog) { }
   
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.loadLabels();
+  }
+
+  private loadLabels(){
+    DataService.getStoreManager().getLabelStore().getAllLabel().then(labels=>{
+      this.model.setLabels(labels);
+    });
+  }
 
   public setProject(project:Project):void{
     this.model.setProject(project);
@@ -152,7 +160,46 @@ export class TasksComponent implements OnInit {
 
   public toggleTaskImportance(task:Task, event:MouseEvent){
     task.setImportant(!task.isImportant());
+    this.updateTask(task);
     event.stopPropagation();
+  }
+
+  private updateTask(task:Task){
+    DataService.getStoreManager().getTaskStore().updateTask(task);
+  }
+
+  public clearFilter(){
+    this.model.getFilter().clear();
+    this.searchFilter();
+  }
+
+  // TODO: prawdopodobnie będzie trzeba to gdzieś przenieść
+  public searchFilter(){
+    let resultFilter = this.model.getProject().getTasks();
+    const filter = this.model.getFilter();
+    if(filter.isImportant()){
+      resultFilter = resultFilter.filter(x=>x.isImportant());
+    }
+    if(filter.isWithEndDate()){
+      resultFilter = resultFilter.filter(x=>x.getEndDate()!=null);
+    }
+    if(filter.getStatus() != null){
+      resultFilter = resultFilter.filter(x=>x.getStatus()==filter.getStatus());
+    }
+    if(filter.getStage() != null){
+      resultFilter = resultFilter.filter(x=>x.getProjectStageID() == filter.getStage().getId());
+    }
+    if(filter.getLabel() != null){
+      // TODO: spróbować to napisać jakoś lepiej
+      resultFilter = resultFilter.filter(x=>{
+        let indices = [];
+        x.getLabels().forEach(label=>indices.push(label.getId()));
+        return indices.includes(filter.getLabel().getId());
+        
+      });
+    }
+
+    this.model.setTasks(resultFilter);
   }
 
 }

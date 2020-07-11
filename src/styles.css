@@ -235,3 +235,47 @@ html, body{
     color: red;
     font-size: small;
 }
+
+/* FILTROWANIE PROJEKTÓW I ZADAŃ */
+
+.filter-container{
+    border: 1px solid black;
+    padding: 5px;
+}
+
+.filter-group{
+    display: flex;
+    font-size: medium;
+    padding: 2px;
+}
+
+.filter-label{
+    width: 60%;
+    float: left;
+}
+
+.filter-value{
+    width: 40%;
+    float:right;
+}
+
+.filter-buttons-container{
+    width: fit-content;
+    float: right;
+}
+
+.filter-controls{
+    display: flex;
+    padding: 0;
+}
+
+.filter-button{
+    width: 2em;
+    height: 2em;
+    margin-top: auto;
+    margin-bottom: auto;
+    margin-right: 4px;
+    margin-left: 4px;
+}
+
+/* ================================== */

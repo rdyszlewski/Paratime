@@ -191,7 +191,7 @@ export class MainComponent implements OnInit {
     this.projectsDetailsOpen = false;
     this.tasksDetailsOpen = false;
     this.setOriginalWidth();
-    this.tasksComponent.setProject(new Project);
+    this.tasksComponent.setProject(null); //hide tasks panel
   }
 
   public openSnackBar(message:string){
@@ -224,7 +224,6 @@ export class MainComponent implements OnInit {
   }
 
   public setPomodoroTime(time:string){
-    console.log(time);
     this.pomodoroTime = time;
   }
 

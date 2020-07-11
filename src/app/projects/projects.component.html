@@ -1,7 +1,48 @@
 <div class="app-panel shadow">
     <h3 class="panel-header">Projekty</h3>
     <!-- TODO: ustawić odpowiednio styl do filtra -->
-    <input class="project-filter filter border" (input)='model.filterProject($event.target.value)'>
+    <div class="filter-controls">
+      <input class="project-filter filter border" placeholder="Wyszukaj projektu"
+      (input)='model.filterProject($event.target.value)'>
+      <button class="button filter-button"  (click)="model.toggleFilterOpen()"></button>
+    </div>
+
+    <div class="filter-container" *ngIf="model.isFilterOpen()">
+
+      <div class="filter-group">
+        <label class="filter-label">Z datą zakończenia</label>
+        <input class="filter-value" type='checkbox' 
+        [checked]="model.getFilter().isWithEndDate()" (change)="model.getFilter().setWithEndDate($event)">
+      </div>
+
+      <div class="filter-group">
+        <label class="filter-label">Stan</label>
+        <select class="filter-value" 
+        [ngModel]="model.getFilter().getStatus()" (ngModelChange)="model.getFilter().setStatus($event)">
+          <option [ngValue]="null" >Wszystkie</option>
+          <option [ngValue]="status.STARTED">Aktywne</option>
+          <option [ngValue]="status.ENDED">Zakończone</option>
+          <option [ngValue]="status.AWAITING">Oczekujące</option>
+          <option [ngValue]="status.CANCELED">Zakończone</option>
+        </select>
+      </div>
+      
+      <div class="filter-group">
+        <label class="filter-label">Typ</label>
+        <select class="filter-value" 
+        [ngModel]="model.getFilter().getProjectType()" (ngModelChange)="model.getFilter().setProjectType($event)">
+          <option [ngValue]="null">Wszystkie</option>
+          <option [ngValue]="type.SMALL">Małe</option>
+          <option [ngValue]="type.MEDIUM">Średnie</option>
+          <option [ngValue]="type.BIG">Duże</option>
+        </select>
+      </div>
+
+      <div class="filter-buttons-container">
+        <button class="small-button button" (click)="clearFilter()">Wyczyść</button>
+      <button class="small-button button" (click)="searchFilter()">Szukaj</button>
+      </div>
+    </div>
     <!-- TODO: zrobić globalny styl do listy oraz do jej elementów-->
     <div id="projects-list" class="list border">
       <div *ngFor='let project of model.getProjects()'>

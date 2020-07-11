@@ -1,5 +1,6 @@
 import { Project } from 'app/models/project';
 import { FilteredList } from 'app/common/filter/filtered_list';
+import { ProjectFilterModel } from './filter_model';
 
 export class ProjectsModel{
 
@@ -9,6 +10,15 @@ export class ProjectsModel{
     private projectWithOpenMenu: Project = null;
     private addingNewProject;
     private newProjectName:string = "";
+
+    private filterOpen = false;
+    private filter:ProjectFilterModel = new ProjectFilterModel();
+    
+
+    public setProjects(projects:Project[]){
+        this.projects = projects;
+        this.filteredList.setSource(this.projects);
+    }
 
     public getProjects(){
         return this.filteredList.getElements();
@@ -84,5 +94,17 @@ export class ProjectsModel{
 
     public setNewProjectName(projectName: string){
         this.newProjectName = projectName;
+    }
+
+    public isFilterOpen(){
+        return this.filterOpen;
+    }
+
+    public toggleFilterOpen(){
+        this.filterOpen = !this.filterOpen;
+    }
+
+    public getFilter():ProjectFilterModel{
+        return this.filter;
     }
 }

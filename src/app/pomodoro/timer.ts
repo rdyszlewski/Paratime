@@ -21,7 +21,6 @@ export class PomodoroTimer{
     private emitter: EventEmitter<string>;
 
     public setEmitter(emitter:EventEmitter<string>) {
-        console.log("Ustawiam emitter");
         this.emitter = emitter;
     }
 
@@ -53,7 +52,6 @@ export class PomodoroTimer{
             this.timerRunning = false;
             this.stateFinished = true;
         } else if(this.emitter){
-            console.log("Wysyłam");
             this.emitter.emit(this.getTimeText());
         }
 

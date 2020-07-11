@@ -1,8 +1,64 @@
-<div class='tasks-view shadow app-panel'>
+<div class='tasks-view shadow app-panel'
+*ngIf="model.isOpen()">
   <h3 class="panel-header">{{model.getProjectName()}}</h3>
-  <div class="filter-container">
-    <input id="task-filter" class="filter border" (input)='model.filterTasks($event.target.value)'>
+  <div class="filter-controls">
+    <input id="task-filter" class="filter border" placeholder="Wyszukaj zadania"
+    (input)='model.filterTasks($event.target.value)'>
+    <button class="button filter-button" id="task-filter-button" (click)="model.toggleFilterOpen()"></button>
   </div>
+
+  <div class="filter-container" *ngIf="model.isFilterOpen()">
+
+    <div class="filter-group">
+      <label class="filter-label">Ważne</label>
+      <input class="filter-value" type="checkbox"
+      [checked]="model.getFilter().isImportant()" (change)="model.getFilter().setImportant($event)">
+    </div>
+
+    <div class="filter-group">
+      <label class="filter-label">Z datą zakończenia</label>
+      <input class="filter-value" type='checkbox'
+      [checked]="model.getFilter().isWithEndDate()" (change)="model.getFilter().setWithEndDate($event)">
+    </div>
+
+    <div class="filter-group">
+      <label class="filter-label">Stan</label>
+      <select class="filter-value"
+      [ngModel]="model.getFilter().getStatus()" (ngModelChange)="model.getFilter().setStatus($event)">
+        <option [ngValue]="null" >Wszystkie</option>
+        <option [ngValue]="status.STARTED">Aktywne</option>
+        <option [ngValue]="status.ENDED">Zakończone</option>
+        <option [ngValue]="status.AWAITING">Oczekujące</option>
+        <option [ngValue]="status.CANCELED">Zakończone</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label class="filter-label">Etap</label>
+      <select class="filter-value"
+      [ngModel]="model.getFilter().getStage()" (ngModelChange)="model.getFilter().setStage($event)">
+        <option [ngValue]="null">Wszystkie</option>
+        <option *ngFor="let stage of model.getProject().getStages()" [ngValue]="stage">{{stage.getName()}}</option>
+      </select>
+    </div>
+
+    <div class="filter-group">
+      <label class="filter-label">Etykieta</label>
+    
+      <select class="filter-value"
+      [ngModel]="model.getFilter().getLabel()" (ngModelChange)="model.getFilter().setLabel($event)">
+          <option [ngValue]="null">Wszystkie</option>
+          <option *ngFor="let label of model.getLabels()" [ngValue]="label">{{label.getName()}}</option>
+      </select>
+    </div>
+
+
+    <div class="filter-buttons-container">
+      <button class="small-button button" (click)="clearFilter()">Wyczyść</button>
+    <button class="small-button button" (click)="searchFilter()">Szukaj</button>
+    </div>
+  </div>
+
   <div id="tasks-list" class="list border">
       <div *ngFor='let task of model.getTasks()' class="task-list-item list-item block transparent-border" 
         (click)="onEditTask(task)">
@@ -46,7 +102,17 @@
         <div class="list-item-options" 
           (click)='onTaskMenuClick($event, task)'
           [matMenuTriggerFor]="menu"
-          >...</div>
+          >
+          <mat-menu #menu="matMenu">
+            <button mat-menu-item (click)="onEditTask(task)">
+              Edytuj
+            </button>
+            <button mat-menu-item (click)="onRemoveTask()">
+              Usuń
+            </button>
+          </mat-menu>
+          ...
+        </div>
       </div>
 
       <div *ngIf="model.isAddingTaskMode()" >
@@ -64,12 +130,3 @@
   <button class="button border" (click)='onCreateTaskClick()'
   *ngIf="model.getProject().getId()!=null && !model.isAddingTaskMode()">Dodaj zadanie</button>
 </div>
-
-<mat-menu #menu="matMenu">
-    <button mat-menu-item (click)="onEditTask(null)">
-      Edytuj
-    </button>
-    <button mat-menu-item (click)="onRemoveTask()">
-      Usuń
-    </button>
-  </mat-menu>

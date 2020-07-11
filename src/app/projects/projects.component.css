@@ -44,9 +44,9 @@
 
 
 
-#project-filter{
-    margin: 10px;
+.project-filter{
     height: 2em;
+    width: 100%;
 }
 
 .mat-menu-item{
@@ -58,4 +58,11 @@
 mat-icon{
     height: 5px;;
 }
+
+
+
+
+
+
+
 
