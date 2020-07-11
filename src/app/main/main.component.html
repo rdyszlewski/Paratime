@@ -1,8 +1,14 @@
-<div id="main">
-    <app-projects id="projects" [hidden]="!projectsOpen" 
-    (editEvent)='openProjectDetails($event)'
-    (loadEvent)="loadTasks($event)"
-    (removeEvent)="onRemoveSelectedProject($event)"></app-projects>
+<div class="main">
+    <div class="toolbar">
+        <div class="timer right">{{pomodoroTime}}</div>
+        <button class="button right" (click)="togglePomodoroOpen()">Licznik</button>
+    </div>
+    <div class="app-content">
+        <app-projects id="projects" [hidden]="!projectsOpen" 
+            (editEvent)='openProjectDetails($event)'
+            (loadEvent)="loadTasks($event)"
+            (removeEvent)="onRemoveSelectedProject($event)">
+        </app-projects>
     
     <app-project-details id='projects-details' [hidden]='!projectsDetailsOpen'
     (closeEvent)='closeProjectDetails()'
@@ -27,5 +33,10 @@
     <app-labels id="labels" [hidden]="!labelsOpen"
     (closeEvent)="closeLabelsManager()"
     (updateEvent)="onLabelsUpdate()"></app-labels>
+
+    <app-pomodoro id="pomodoro" [hidden]="!pomodoroOpen"
+    (tickEvent)="setPomodoroTime($event)"></app-pomodoro>
+    </div>
+    
 </div>
 

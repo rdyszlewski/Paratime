@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { PomodoroModel } from './model';
 import { State } from './state';
 
@@ -9,13 +9,14 @@ import { State } from './state';
 })
 export class PomodoroComponent implements OnInit {
 
+  @Output() tickEvent: EventEmitter<string> = new EventEmitter();
+
   public model: PomodoroModel = new PomodoroModel();
   public state = State;
   constructor() { }
 
-
-
   ngOnInit(): void {
+    this.model.getTimer().setEmitter(this.tickEvent);
   }
 
   // TODO: refaktoryzacja
@@ -55,4 +56,17 @@ export class PomodoroComponent implements OnInit {
     return false;
   }
 
+  public getStartButtonContent(){
+    if(!this.model.getTimer().isStateFinished()){
+      return "Rozpocznij pracę";
+    }
+    switch(this.model.getTimer().getNextState()){
+      case State.WORK:
+        return "Rozpocznij pracę"
+      case State.SHORT_BREAK:
+        return "Rozpocznij krótką przerwę";
+      case State.LONG_BREAK:
+        return "Rozpocznij długą przerwę";
+    }
+  }
 }

@@ -1,4 +1,10 @@
-#main{
+.main{
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.app-content{
     display: flex;
     flex-direction: row;
     height: 100%;
@@ -22,4 +28,27 @@
 
 #task-details{
     width: 50%;
+}
+
+#pomodoro{
+    min-width: 300px;
+}
+
+.toolbar{
+    display: flex;
+    align-self: flex-end;
+    margin-right: 10px;
+}
+
+/* TODO: może jakoś zmienić nazwę */
+.right{
+    float: right;
+}
+
+.timer{
+    font-weight: bold;
+    font-size: 1.5em;
+    margin-top: auto;
+    margin-bottom: auto;
+    margin-right: 10px;
 }

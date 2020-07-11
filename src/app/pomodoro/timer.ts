@@ -2,6 +2,7 @@ import { State } from './state';
 import { interval } from 'rxjs';
 import { takeWhile } from 'rxjs/operators';
 import { PomodoroSetting } from './settings';
+import { EventEmitter } from '@angular/core';
 
 // TODO: zrobić refaktoryzację całej klasy
 export class PomodoroTimer{
@@ -16,6 +17,13 @@ export class PomodoroTimer{
     private stateFinished = false;
     private currentInterval = 1;
     private currentStep = 0;
+
+    private emitter: EventEmitter<string>;
+
+    public setEmitter(emitter:EventEmitter<string>) {
+        console.log("Ustawiam emitter");
+        this.emitter = emitter;
+    }
 
     public setSettings(settings: PomodoroSetting){
         this.settings = settings;
@@ -44,7 +52,11 @@ export class PomodoroTimer{
             this.time = 0;
             this.timerRunning = false;
             this.stateFinished = true;
+        } else if(this.emitter){
+            console.log("Wysyłam");
+            this.emitter.emit(this.getTimeText());
         }
+
     }
 
     public isTimerRunning():boolean{
@@ -82,7 +94,8 @@ export class PomodoroTimer{
     }
 
     private setStateTime(){
-        const stateTime = this.getStateTime() * 60;
+        const stateTime = this.getStateTime() 
+        // TODO: pomonożyć prz 60;
         this.time = stateTime;
     }
 

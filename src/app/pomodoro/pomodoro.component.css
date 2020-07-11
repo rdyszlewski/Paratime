@@ -1,10 +1,14 @@
 .timer-container{
     text-align: center;
     margin: 0 auto;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
 }
 
 .settings{
     text-align: left;
+    margin: 10px;
 }
 
 .timer{
@@ -43,4 +47,26 @@
 .current-state{
     border: 2px solid red;
     border-radius: 4px;
+}
+
+.timer-panel{
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.settings-group{
+    width: 100%;
+    display: flex;
+}
+
+.settings-label{
+    width: 100%;
+    float: left;
+}
+
+.settings-value{
+    float: right;
+    min-width: 50px;
+    width: 50px;
+    text-align: end;
 }

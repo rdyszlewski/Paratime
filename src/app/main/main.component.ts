@@ -42,6 +42,7 @@ export class MainComponent implements OnInit {
   public tasksDetailsOpen = false;
   public labelsOpen = false;
   public stageDetailsOpen = false;
+  public pomodoroOpen = false;
 
   private projectsView;
   private projectDetailsView;
@@ -49,6 +50,7 @@ export class MainComponent implements OnInit {
   private taskDetailsView;
   private stageDetailsView;
 
+  public pomodoroTime:string;
 
   constructor(public snakBar: MatSnackBar) { }
 
@@ -216,4 +218,15 @@ export class MainComponent implements OnInit {
 
     this.stageDetailsComponent.setStage(stage);
   }
+
+  public togglePomodoroOpen(){
+    this.pomodoroOpen = !this.pomodoroOpen;
+  }
+
+  public setPomodoroTime(time:string){
+    console.log(time);
+    this.pomodoroTime = time;
+  }
+
+
 }
