@@ -9,6 +9,7 @@ import { FocusHelper } from 'app/common/view_helper';
 import { DialogHelper } from 'app/common/dialog';
 import { Status } from 'app/models/status';
 import { ProjectType } from 'app/models/project_type';
+import { SpecialList } from './special_list';
 
 
 @Component({
@@ -24,6 +25,7 @@ export class ProjectsComponent implements OnInit {
   @Output() editEvent: EventEmitter<Project> = new EventEmitter();
   @Output() loadEvent: EventEmitter<Project> = new EventEmitter();
   @Output() removeEvent: EventEmitter<Project> = new EventEmitter();
+  @Output() listEvent: EventEmitter<SpecialList> = new EventEmitter();
 
   public status = Status;
   public type = ProjectType;
@@ -181,6 +183,15 @@ export class ProjectsComponent implements OnInit {
       }
       this.model.setProjects(resultFilter);
     });
+  }
 
+  // LISTY SPECJALNE
+
+  public onImportantListClick(){
+    this.listEvent.emit(SpecialList.IMPORTANT);
+  }
+
+  public onTodayListClick(){
+    this.listEvent.emit(SpecialList.TODAY);
   }
 }

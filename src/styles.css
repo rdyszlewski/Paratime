@@ -80,14 +80,14 @@ html, body{
 .list-item{
     display: flex;
     border: 1px solid trainsparent;
-    padding: 10px;
+    padding: 5px;
     margin: 0;
 }
 
 /* TODO: spradzić jak to rozdzielić z tym co jest wyżej */
 .task-list-item{
     border: 1px solid trainsparent;
-    padding: 10px;
+    padding: 5px;
     margin: 0;
 }
 

@@ -8,6 +8,7 @@ export class LocalTaskRepository implements ITaskRepository{
     constructor(table: Dexie.Table<Task, number>){
         this.table = table;
     }
+  
 
     public findTaskById(id: number): Promise<Task> {
         return this.table.where('id').equals(id).first();
@@ -31,8 +32,22 @@ export class LocalTaskRepository implements ITaskRepository{
         return this.table.where('description').startsWith(description).toArray();
     }
 
+    public findTasksByDate(date: Date): Promise<Task[]> {
+        // TODO: sprawdzić, dlaczego to działa
+        let d = new Date(date.toDateString());
+        return this.table.where('date').equals(d).toArray();
+    }
+
     public findTasksByDeadlineDate(date: Date): Promise<Task[]> {
         return this.table.where('endDate').equals(date).toArray();
+    }
+
+    public findImportantTasks(): Promise<Task[]> {
+        // TODO: sprawdzić, czy to będzie działać 
+        this.table.toArray().then(tasks=>{
+            console.log(tasks);
+        });
+        return this.table.where('important').equals(1).toArray();
     }
     
     public insertTask(task: Task): Promise<number> {

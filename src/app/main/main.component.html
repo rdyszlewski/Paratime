@@ -7,7 +7,9 @@
         <app-projects id="projects" [hidden]="!projectsOpen" 
             (editEvent)='openProjectDetails($event)'
             (loadEvent)="loadTasks($event)"
-            (removeEvent)="onRemoveSelectedProject($event)">
+            (removeEvent)="onRemoveSelectedProject($event)"
+            (listEvent)="onSpecialListCLick($event)">
+            
         </app-projects>
     
     <app-project-details id='projects-details' [hidden]='!projectsDetailsOpen'

@@ -87,6 +87,20 @@ export class TaskStore{
         });
     }
 
+    public getTasksByDate(date:Date):Promise<Task[]>{
+        return this.taskRepository.findTasksByDate(date).then(tasks=>{
+            return this.getCompletedTasks(tasks);
+        });
+    }
+
+    public getImportantTasks(): Promise<Task[]>{
+        return this.taskRepository.findImportantTasks().then(tasks=>{
+            console.log("Znalazło mi takie zadania");
+            console.log(tasks);
+            return this.getCompletedTasks(tasks);
+        });
+    }
+
     public createTask(task:Task):Promise<Task>{
         return this.taskRepository.insertTask(task).then(insertedId=>{
             // TODO: wstawienie podzadań

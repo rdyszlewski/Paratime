@@ -13,7 +13,7 @@ export class Task implements IFilterable{
     private id: number;
     private name: string = null;
     private description: string = null;
-    private important: boolean = false;
+    private important: number = 0;
     private labels: Label[] = [];
     private date:Date = null;
     private endDate: Date = null;
@@ -59,11 +59,17 @@ export class Task implements IFilterable{
     }
 
     public isImportant():boolean{
-        return this.important;
+        return this.important == 1;
+    }
+
+    public getImportant():number{
+        console.log("Get important");
+        return this.important? 1: 0;
     }
 
     public setImportant(important:boolean){
-        this.important = important;
+        this.important = important ? 1 : 0;
+        // this.important = important;
     }
 
     public getLabels(){

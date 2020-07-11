@@ -11,6 +11,7 @@ import { FocusHelper } from 'app/common/view_helper';
 import * as $ from 'jquery';
 import { KeyCode } from 'app/common/key_codes';
 import { Priority } from 'app/models/priority';
+import { SpecialList } from 'app/projects/special_list';
 
 
 @Component({
@@ -43,6 +44,36 @@ export class TasksComponent implements OnInit {
 
   public setProject(project:Project):void{
     this.model.setProject(project);
+  }
+
+  public setSpecialList(listType: SpecialList){
+    switch(listType){
+      case SpecialList.IMPORTANT:
+        this.loadImportantTasks();
+        break;
+      case SpecialList.TODAY:
+        this.loadTodayTasks();
+        break;
+    }
+  }
+
+  private loadImportantTasks(){
+    DataService.getStoreManager().getTaskStore().getImportantTasks().then(tasks=>{
+      let project = new Project("Ważne");
+      project.setTasks(tasks);
+      this.model.setProject(project);
+      // TODO: sprawdzić to, czy wszysto jest ok
+    });
+  }
+
+  private loadTodayTasks(){
+    DataService.getStoreManager().getTaskStore().getTasksByDate(new Date()).then(tasks=>{
+      console.log("Dzisiaj");
+      console.log(tasks);
+      let project = new Project("Dzisiaj");
+      project.setTasks(tasks);
+      this.model.setProject(project);
+    });
   }
 
   public addTask(task:Task){

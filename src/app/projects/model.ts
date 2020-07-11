@@ -13,6 +13,9 @@ export class ProjectsModel{
 
     private filterOpen = false;
     private filter:ProjectFilterModel = new ProjectFilterModel();
+
+    private listsOpen = false;
+    private projectsOpen = true;
     
 
     public setProjects(projects:Project[]){
@@ -106,5 +109,21 @@ export class ProjectsModel{
 
     public getFilter():ProjectFilterModel{
         return this.filter;
+    }
+
+    public isListsOpen():boolean{
+        return this.listsOpen;
+    }
+
+    public toggleListsOpen():void{
+        this.listsOpen = !this.listsOpen;
+    }
+
+    public isProjectsOpen():boolean{
+        return this.projectsOpen;
+    }
+
+    public toggleProjectsOpen():void{
+        this.projectsOpen = !this.projectsOpen;
     }
 }

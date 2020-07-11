@@ -14,6 +14,29 @@
 
 #projects-list{
     height: 100%;
+
+}
+
+.projects-container{
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.expansion-list-header{
+    padding: 5px;
+    font-size: 1.2em;
+    font-weight: bold;
+    display: flex;
+}
+
+.list-header-name{
+    width: 100%;
+    height: fit-content;
+}
+
+.hidden-list{
+    height: fit-content;
 }
 
 .project-name{
@@ -58,7 +81,6 @@
 mat-icon{
     height: 5px;;
 }
-
 
 
 
