@@ -1,12 +1,12 @@
 <div class="app-panel shadow">
     <div class="tool-panel">
         <mat-icon [ngClass]="({
-            'important-star': model.getTask().isImportant(),
-            'not-important-star': !model.getTask().isImportant(),
-            'star':true})" (click)="toggleTaskImportance()">star</mat-icon>
+        'important-star': model.getTask().isImportant(),
+        'not-important-star': !model.getTask().isImportant(),
+        'star':true})" (click)="toggleTaskImportance()">star</mat-icon>
         <h3 class="panel-header">{{model.getTask().getName()}}</h3>
-        <button class="button border" (click)="closeView()">X</button>
-    </div>
+        <button class="close-button" (click)="closeView()">X</button>
+        </div>
     
     <form class="form" (keydown.enter)="$event.preventDefault()">
 
@@ -147,14 +147,14 @@
                     *ngIf="model.getEditedSubtask()==subtask"
                     (keyup)="handleKeysOnEditSubtask($event, subtask)">
                     <div class="subtask-item-buttons">
-                        <div class="edit-subtask list-item-options small-list-item-icon" (click)='openEditingSubtask(subtask)'
-                        *ngIf="model.getEditedSubtask()!=subtask">E</div>
-                        <div class="remove-subtask list-item-options small-list-item-icon" (click)='removeSubtask(subtask)'
-                        *ngIf="model.getEditedSubtask()!=subtask">U</div>
+                        <div class="list-item-options edit-button small-accept-button" (click)='openEditingSubtask(subtask)'
+                        *ngIf="model.getEditedSubtask()!=subtask"></div>
+                        <div class="list-item-options remove-button small-accept-button" (click)='removeSubtask(subtask)'
+                        *ngIf="model.getEditedSubtask()!=subtask"></div>
                     </div>
                     
-                    <div class='edit-accept list-item-options small-list-item-icon' (click)="acceptEditingSubtask(subtask)"
-                    *ngIf="model.getEditedSubtask()==subtask">V</div>  
+                    <div class='list-item-options accept-button small-accept-button' (click)="acceptEditingSubtask(subtask)"
+                    *ngIf="model.getEditedSubtask()==subtask"></div>  
                 </div>
             </div>
             <input type="text" class="form-control" id="subtask" [hidden]="!model.isSubtaskEditing()"

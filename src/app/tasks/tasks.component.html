@@ -2,9 +2,10 @@
 *ngIf="model.isOpen()">
   <h3 class="panel-header">{{model.getProjectName()}}</h3>
   <div class="filter-controls">
-    <input id="task-filter" class="filter border" placeholder="Wyszukaj zadania"
+    <input id="task-filter" class="filter border" placeholder="Wyszukaj zadanie"
     (input)='model.filterTasks($event.target.value)'>
-    <button class="button filter-button" id="task-filter-button" (click)="model.toggleFilterOpen()"></button>
+    <!-- TODO: kiedyć przyciski pozmianiać na przyciski -->
+    <div class="button filter-button" id="task-filter-button" (click)="model.toggleFilterOpen()"></div>
   </div>
 
   <div class="filter-container" *ngIf="model.isFilterOpen()">
@@ -52,7 +53,6 @@
       </select>
     </div>
 
-
     <div class="filter-buttons-container">
       <button class="small-button button" (click)="clearFilter()">Wyczyść</button>
     <button class="small-button button" (click)="searchFilter()">Szukaj</button>
@@ -62,7 +62,9 @@
   <div id="tasks-list" class="list border">
       <div *ngFor='let task of model.getTasks()' class="task-list-item list-item block transparent-border" 
         (click)="onEditTask(task)">
-        <input type="checkbox"  class="task-checkbox"/>
+        <input type="checkbox"  class="task-checkbox"
+        [checked]="isTaskDone(task)" (change)="setTaskStatus(task, $event)" 
+        (click)="checkBoxClick($event)"/>
         <div class="task-main">
           <div class="list-item-top">
             <div class="list-item-value">{{task.getName()}}</div>

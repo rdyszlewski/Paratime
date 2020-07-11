@@ -21,6 +21,7 @@
     height: 100%;
     display: flex;
     flex-direction: column;
+    overflow: auto;
 }
 
 .expansion-list-header{
@@ -28,6 +29,10 @@
     font-size: 1.2em;
     font-weight: bold;
     display: flex;
+}
+
+.expansion-list-header:hover{
+    cursor: pointer;
 }
 
 .list-header-name{
@@ -76,6 +81,10 @@
     font-size: small;
     height: 30px;
     line-height: 30px;
+}
+
+.expansion-icon{
+    background-image: url('../../assets/icons/arrow-down-icon.png');
 }
 
 mat-icon{

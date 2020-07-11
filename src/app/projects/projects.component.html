@@ -5,7 +5,7 @@
     <div class="filter-controls">
       <input class="project-filter filter border" placeholder="Wyszukaj projekt"
       (input)='model.filterProject($event.target.value)'>
-      <button class="button filter-button"  (click)="model.toggleFilterOpen()"></button>
+      <div id="project-filter-button" class="button filter-button" (click)="model.toggleFilterOpen()"></div>
     </div>
 
     <div class="filter-container" *ngIf="model.isFilterOpen()">
@@ -46,9 +46,9 @@
     </div>
   
     <div class="transparent-border expansion-list"> 
-      <div class="expansion-list-header">
+      <div class="expansion-list-header" (click)="model.toggleListsOpen($event)">
         <span class="list-header-name">Listy</span>
-        <button class="button filter-button" (click)="model.toggleListsOpen()"></button>
+        <div class="filter-button expansion-icon" (click)="model.toggleListsOpen($event)"></div>
       </div>
       <div id="special-list" class="list border" *ngIf="model.isListsOpen()">
         <!-- TODO: zrobić sposób zaznaczania specjalnych list -->
@@ -72,16 +72,16 @@
     
 
     <div id="projects-container" 
-    [ngClass]="{
-      'projects-container': model.isProjectsOpen(),
-      'hidden-list': !model.isProjectsOpen(),
-      'transparent-border':true,
-      'expansion-list':true
-    }"
+      [ngClass]="{
+        'projects-container': model.isProjectsOpen(),
+        'hidden-list': !model.isProjectsOpen(),
+        'transparent-border':true,
+        'expansion-list':true
+      }"
     >
-      <div class="expansion-list-header">
+      <div class="expansion-list-header" (click)="model.toggleProjectsOpen($event)">
         <span class="list-header-name">Projekty</span>
-        <button class="button filter-button" (click)="model.toggleProjectsOpen()"></button>
+        <div class="filter-button expansion-icon" (click)="model.toggleProjectsOpen($event)"></div>
       </div>
       <!-- TODO: zrobić globalny styl do listy oraz do jej elementów-->
   
@@ -112,8 +112,6 @@
           </div>
         </div>
         <button class="button border" (click)='onCreateProjectClick()' *ngIf="!model.isAddingNewProject() && model.isProjectsOpen()">Dodaj projekt</button>
-  
-      
   </div>
 </div>
 

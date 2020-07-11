@@ -14,6 +14,7 @@
 
 .project-form{
     height: 100%;
+    overflow: auto;
 }
 
 /* TODO: te same style są w tesk-details.component.css. Spróbować przenieść to do styles.css */

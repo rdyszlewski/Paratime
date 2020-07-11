@@ -10,6 +10,7 @@
     height: 100%;
     width: 100%;
     box-sizing: border-box;
+    padding-top:40px;
 }
 
 #projects{
@@ -38,6 +39,13 @@
     display: flex;
     align-self: flex-end;
     margin-right: 10px;
+    height: 40px;
+    position: absolute;
+}
+
+.toolbar-button{
+    height: 40px;
+    margin: 0;
 }
 
 /* TODO: może jakoś zmienić nazwę */

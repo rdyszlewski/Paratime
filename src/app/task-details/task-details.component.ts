@@ -99,13 +99,16 @@ export class TaskDetailsComponent implements OnInit {
   }
   
   public addNewSubtask(){
+    // TODO: zmienić to,aby pobierało wartość z modelu
     const subtaskName = $(this.SUBTASK_NAME_ID).val();    
     const subtask = new Subtask(subtaskName, Status.STARTED);
+    subtask.setTaskId(this.model.getTask().getId());
     this.saveNewSubtask(subtask);
     this.closeAddingSubtask();
   }
 
   private saveNewSubtask(subtask: Subtask) {
+    
     DataService.getStoreManager().getSubtaskStore().createSubtask(subtask).then(insertedSubtask => {
       this.model.getTask().addSubtask(insertedSubtask);
     });

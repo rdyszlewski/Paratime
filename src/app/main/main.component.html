@@ -1,8 +1,9 @@
 <div class="main">
     <div class="toolbar">
         <div class="timer right">{{pomodoroTime}}</div>
-        <button class="button right" (click)="togglePomodoroOpen()">Licznik</button>
+        <button class="button right toolbar-button" (click)="togglePomodoroOpen()">Licznik</button>
     </div>
+
     <div class="app-content">
         <app-projects id="projects" [hidden]="!projectsOpen" 
             (editEvent)='openProjectDetails($event)'
@@ -12,32 +13,32 @@
             
         </app-projects>
     
-    <app-project-details id='projects-details' [hidden]='!projectsDetailsOpen'
-    (closeEvent)='closeProjectDetails()'
-    (saveEvent)='onCreateProject($event)'
-    (updateEvent)="onUpdateProject($event)"
-    (editStageEvent)="onEditProjectStage($event)"
-    ></app-project-details>
+        <app-project-details id='projects-details' [hidden]='!projectsDetailsOpen'
+        (closeEvent)='closeProjectDetails()'
+        (saveEvent)='onCreateProject($event)'
+        (updateEvent)="onUpdateProject($event)"
+        (editStageEvent)="onEditProjectStage($event)"
+        ></app-project-details>
 
-    <app-stage-details id="stage-details" [hidden]="!stageDetailsOpen"
-    (closeEvent)="closeStageDetails()"
-    (updateEvent)="onUpdateStage($event)"></app-stage-details>
-    
-    <app-tasks id='tasks' [hidden]='!tasksOpen'
-    (detailsEvent)="openTaskDetails($event)"
-    (removeEvent)="onRemoveTask($event)"></app-tasks>
+        <app-stage-details id="stage-details" [hidden]="!stageDetailsOpen"
+        (closeEvent)="closeStageDetails()"
+        (updateEvent)="onUpdateStage($event)"></app-stage-details>
+        
+        <app-tasks id='tasks' [hidden]='!tasksOpen'
+        (detailsEvent)="openTaskDetails($event)"
+        (removeEvent)="onRemoveTask($event)"></app-tasks>
 
-    <app-task-details id="task-details" [hidden]='!tasksDetailsOpen'
-    (closeEvent)="closeTaskDetails()"
-    (saveEvent)="onCreateTask($event)"
-    (openLabelsEvent)="openLabelsManager()"></app-task-details>
+        <app-task-details id="task-details" [hidden]='!tasksDetailsOpen'
+        (closeEvent)="closeTaskDetails()"
+        (saveEvent)="onCreateTask($event)"
+        (openLabelsEvent)="openLabelsManager()"></app-task-details>
 
-    <app-labels id="labels" [hidden]="!labelsOpen"
-    (closeEvent)="closeLabelsManager()"
-    (updateEvent)="onLabelsUpdate()"></app-labels>
+        <app-labels id="labels" [hidden]="!labelsOpen"
+        (closeEvent)="closeLabelsManager()"
+        (updateEvent)="onLabelsUpdate()"></app-labels>
 
-    <app-pomodoro id="pomodoro" [hidden]="!pomodoroOpen"
-    (tickEvent)="setPomodoroTime($event)"></app-pomodoro>
+        <app-pomodoro id="pomodoro" [hidden]="!pomodoroOpen"
+        (tickEvent)="setPomodoroTime($event)"></app-pomodoro>
     </div>
     
 </div>

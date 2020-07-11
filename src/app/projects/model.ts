@@ -115,15 +115,17 @@ export class ProjectsModel{
         return this.listsOpen;
     }
 
-    public toggleListsOpen():void{
+    public toggleListsOpen(event:MouseEvent):void{
         this.listsOpen = !this.listsOpen;
+        event.stopPropagation();
     }
 
     public isProjectsOpen():boolean{
         return this.projectsOpen;
     }
 
-    public toggleProjectsOpen():void{
+    public toggleProjectsOpen(event:MouseEvent):void{
         this.projectsOpen = !this.projectsOpen;
+        event.stopPropagation();
     }
 }

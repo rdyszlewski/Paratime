@@ -10,14 +10,14 @@
                 *ngIf="model.getEditedLabel()==label"
                 (keyup)="handleKeysOnEditLabel($event, label)">
                 <div class="label-item-buttons">
-                    <div class="list-item-options small-list-item-icon" (click)="openEditingLabel(label)"
-                    *ngIf="model.getEditedLabel()!=label">E</div>
-                    <div class="list-item-options small-list-item-icon" (click)="onRemoveLabel(label)"
-                    *ngIf="model.getEditedLabel()!=label">U</div> 
+                    <button class="list-item-options edit-button small-item-button" (click)="openEditingLabel(label)"
+                        *ngIf="model.getEditedLabel()!=label"></button>
+                    <button class="list-item-options remove-button small-item-button" (click)="onRemoveLabel(label)"
+                        *ngIf="model.getEditedLabel()!=label"></button> 
                 </div>
                 
-                <div class="list-item-options small-list-item-icon" (click)="acceptEditingLabel(label)"
-                *ngIf="model.getEditedLabel()==label">v</div>
+                <div class="list-item-options accept-button small-accept-button" (click)="acceptEditingLabel(label)"
+                *ngIf="model.getEditedLabel()==label"></div>
             </div>
         </div>
         <input type="text" class="form-control" id="label" [hidden]="!model.isLabelEditing()"
