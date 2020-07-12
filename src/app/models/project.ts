@@ -3,7 +3,6 @@ import { Task } from './task';
 import { ProjectType } from './project_type';
 import { IFilterable } from 'app/common/filter/i_filterable';
 import { Stage } from './stage';
-import { runInThisContext } from 'vm';
 
 export class Project implements IFilterable{
     

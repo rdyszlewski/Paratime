@@ -3,7 +3,6 @@ import { Task } from 'app/models/task';
 import { SubtaskStore } from './subtask_store';
 import { LabelStore } from './label_store';
 import { IProjectRepository } from '../repositories/project_repository';
-import { IProjectStageRepository } from '../repositories/stage_repository';
 import { StageStore } from './stage_store';
 
 

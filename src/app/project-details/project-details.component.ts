@@ -2,11 +2,9 @@ import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { Project } from 'app/models/project';
 import { ProjectType } from 'app/models/project_type';
 import { Status } from 'app/models/status';
-
 import { DataService } from 'app/data.service';
 import { ProjectDetails } from './model';
 import { Stage } from 'app/models/stage';
-import * as $ from 'jquery';
 import { KeyCode } from 'app/common/key_codes';
 import { FocusHelper } from 'app/common/view_helper';
 

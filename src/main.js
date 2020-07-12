@@ -1,6 +1,7 @@
 const {app, BrowserWindow} = require('electron')
     const url = require("url");
     const path = require("path");
+    
 
     let mainWindow
 
@@ -21,7 +22,9 @@ const {app, BrowserWindow} = require('electron')
         })
       );
 
-      mainWindow.setMenu(null);
+    //  mainWindow.setMenu(menu);
+      
+      // mainWindow.setMenu(null);
       // Open the DevTools.
       // mainWindow.webContents.openDevTools()
 
