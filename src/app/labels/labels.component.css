@@ -7,11 +7,6 @@
     height: 100%;
 }
 
-.label-item{
-    display: flex;
-    padding: 5px;
-}
-
 .label-name{
     width: 100%;
     margin-top: auto;

@@ -1,7 +1,6 @@
 import { Status } from 'app/models/status';
 import { Stage } from 'app/models/stage';
 import { Label } from 'app/models/label';
-import { stat } from 'fs';
 
 export class TaskFilterModel{
 

@@ -1,6 +1,10 @@
 <div class="app-panel shadow">
-    <h3 class="panel-header">Etykiety</h3>
-    <input id="project-filter" class="filter border" (input)='model.filterLabels($event.target.value)'>
+    <div class="tool-panel">
+        <h3 class="panel-header">Etykiety</h3>
+        <button class="close-button" (click)="closeView()">X</button>
+        </div>
+    <input id="project-filter" class="filter border" (input)='model.filterLabels($event.target.value)'
+    placeholder="Wyszukaj etykietę">
     <div id="labels-container">
         <div class="list border" id="labels-list">
             <div *ngFor="let label of model.getLabels()" class="list-item small-list-item transparent-border">
@@ -33,6 +37,4 @@
             (click)="cancelAddingLabel()">Anuluj</button>
         </div>
     </div>
-    
-    <button class="button form-button" id="labels-close-button" (click)='closeView()'>Zamknij</button>
 </div>

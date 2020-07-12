@@ -13,13 +13,13 @@
     <div class="filter-group">
       <label class="filter-label">Ważne</label>
       <input class="filter-value" type="checkbox"
-      [checked]="model.getFilter().isImportant()" (change)="model.getFilter().setImportant($event)">
+      [checked]="model.getFilter().isImportant()" (change)="model.getFilter().setImportant($event.target.checked)">
     </div>
 
     <div class="filter-group">
       <label class="filter-label">Z datą zakończenia</label>
       <input class="filter-value" type='checkbox'
-      [checked]="model.getFilter().isWithEndDate()" (change)="model.getFilter().setWithEndDate($event)">
+      [checked]="model.getFilter().isWithEndDate()" (change)="model.getFilter().setWithEndDate($event.target.checked)">
     </div>
 
     <div class="filter-group">
@@ -63,7 +63,7 @@
       <div *ngFor='let task of model.getTasks()' class="task-list-item list-item block transparent-border" 
         (click)="onEditTask(task)">
         <input type="checkbox"  class="task-checkbox"
-        [checked]="isTaskDone(task)" (change)="setTaskStatus(task, $event)" 
+        [checked]="isTaskDone(task)" (change)="setTaskStatus(task, $event.target.checked)" 
         (click)="checkBoxClick($event)"/>
         <div class="task-main">
           <div class="list-item-top">
