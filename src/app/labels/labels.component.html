@@ -15,41 +15,44 @@
             <ng-container [ngTemplateOutlet]="label_edit" [ngTemplateOutletContext]="{$implicit:label}"></ng-container>
         </div>
     </div>
-    <div *ngTemplateOutlet="new_label"></div>
+    <div [ngTemplateOutlet]="new_label"></div>
 </ng-template>
 
 <ng-template #label_item let-label>
     <!-- TODO: można sprawdzić, czy ten if powinien być w tym miejscu, czy można go dać gdzieś indziej, żeby nie obliaczało pustego elementu -->
     <div class="label-name"
-        *ngIf="model.getEditedLabel()!=label">{{label.getName()}}</div>
+        *ngIf="!getEditing().isEditingOpen(label)">{{label.getName()}}</div>
 </ng-template>
     
 <ng-template #label_edit let-label>
     <input class="label-name" [value]="label.getName()" [id]="'label-name-input-' + label.getId()"
-        *ngIf="model.getEditedLabel()==label"
-        (keyup)="handleKeysOnEditLabel($event, label)">
-        <div class="label-item-buttons">
-            <button class="list-item-options edit-button small-item-button" (click)="openEditingLabel(label)"
-                *ngIf="model.getEditedLabel()!=label"></button>
-            <button class="list-item-options remove-button small-item-button" (click)="onRemoveLabel(label)"
-                *ngIf="model.getEditedLabel()!=label"></button> 
-        </div>
-        
-        <div class="list-item-options accept-button small-accept-button" (click)="acceptEditingLabel(label)"
-        *ngIf="model.getEditedLabel()==label"></div>
+        *ngIf="getEditing().isEditingOpen(label)"
+        [ngModel] = "getEditing().getModel().getEditingLabelName()" (ngModelChange)="getEditing().getModel().setEditingLabelName($event)"
+        (keyup)="getEditing().handleKeysOnEditLabel($event, label)">
+    <div class="label-item-buttons">
+        <button class="list-item-options edit-button small-item-button" (click)="getEditing().openEditingLabel(label)"
+            *ngIf="!getEditing().isEditingOpen(label)"></button>
+        <button class="list-item-options remove-button small-item-button" (click)="getRemoving().onRemoveLabel(label)"
+            *ngIf="!getEditing().isEditingOpen(label)"></button> 
+    </div>
+    
+    <div class="list-item-options accept-button small-accept-button" (click)="getEditing().acceptEditingLabel(label)"
+        *ngIf="getEditing().isEditingOpen(label)">
+    </div>
 </ng-template>
 
 <ng-template #new_label >
-    <input type="text" class="form-control" id="label" [hidden]="!model.isLabelEditing()"
-    (keyup)="handleKeysOnNewLabelInput($event)">
+    <input type="text" class="form-control" id="label" [hidden]="!getAdding().isAddingOpen()"
+    [ngModel]="getAdding().getModel().getNewLabelName()" (ngModelChange)="getAdding().getModel().setNewLabelName($event)"
+    (keyup)="getAdding().handleKeysOnNewLabelInput($event)">
     <div class="buttons-container">
-        <button class="button small-button insert-button" id="add-label-button" [hidden]="model.isLabelEditing()"
-        (click)="openAddingNewLabel()">
+        <button class="button small-button insert-button" id="add-label-button" [hidden]="getAdding().isAddingOpen()"
+        (click)="getAdding().openAddingNewLabel()">
             Dodaj
         </button>
-        <button class="button small-button insert-button" id="save-label-button" [hidden]="!model.isLabelEditing()"
-        (click)="addNewLabel()">Zapisz</button>
-        <button class="button small-button insert-button" id="cancel-label-button" [hidden]="!model.isLabelEditing()"
-        (click)="cancelAddingLabel()">Anuluj</button>
+        <button class="button small-button insert-button" id="save-label-button" [hidden]="!getAdding().isAddingOpen()"
+        (click)="getAdding().addNewLabel()">Zapisz</button>
+        <button class="button small-button insert-button" id="cancel-label-button" [hidden]="!getAdding().isAddingOpen()"
+        (click)="getAdding().cancelAddingLabel()">Anuluj</button>
     </div>
 </ng-template>
