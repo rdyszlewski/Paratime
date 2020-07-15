@@ -1,13 +1,13 @@
 <div class='tasks-view shadow app-panel'
-*ngIf="model.isOpen()">
-  <h3 class="panel-header">{{model.getProjectName()}}</h3>
+*ngIf="getModel().isOpen()">
+  <h3 class="panel-header">{{getModel().getProjectName()}}</h3>
   <div class="filter-controls">
     <input id="task-filter" class="filter border" placeholder="Wyszukaj zadanie"
-    (input)='model.filterTasks($event.target.value)'>
-    <div class="button filter-button" id="task-filter-button" (click)="model.toggleFilterOpen()"></div>
+    (input)='getModel().filterTasks($event.target.value)'>
+    <div class="button filter-button" id="task-filter-button" (click)="getFiltering().toggleOpen()"></div>
   </div>
 
-  <div class="filter-container" *ngIf="model.isFilterOpen()">
+  <div class="filter-container" *ngIf="getFiltering().isOpen()">
     <ng-container [ngTemplateOutlet]="filter_container"></ng-container>
   </div>
 
@@ -15,8 +15,8 @@
       <ng-container [ngTemplateOutlet]="tasks_list"></ng-container>
   </div>
   
-  <button class="button border" (click)='onCreateTaskClick()'
-    *ngIf="model.getProject().getId()!=null && !model.isAddingTaskMode()">Dodaj zadanie</button>
+  <button class="button border" (click)='getAdding().openAddingTask()'
+    *ngIf="getModel().getProject().getId()!=null && !getAdding().getModel().isAddingOpen()">Dodaj zadanie</button>
 </div>
 
 
@@ -24,19 +24,19 @@
   <div class="filter-group">
     <label class="filter-label">Ważne</label>
     <input class="filter-value" type="checkbox"
-    [checked]="model.getFilter().isImportant()" (change)="model.getFilter().setImportant($event.target.checked)">
+    [checked]="getFiltering().getFilter().isImportant()" (change)="getFiltering().getFilter().setImportant($event.target.checked)">
   </div>
 
   <div class="filter-group">
     <label class="filter-label">Z datą zakończenia</label>
     <input class="filter-value" type='checkbox'
-    [checked]="model.getFilter().isWithEndDate()" (change)="model.getFilter().setWithEndDate($event.target.checked)">
+    [checked]="getFiltering().getFilter().isWithEndDate()" (change)="getFiltering().getFilter().setWithEndDate($event.target.checked)">
   </div>
 
   <div class="filter-group">
     <label class="filter-label">Stan</label>
     <select class="filter-value"
-    [ngModel]="model.getFilter().getStatus()" (ngModelChange)="model.getFilter().setStatus($event)">
+    [ngModel]="getFiltering().getFilter().getStatus()" (ngModelChange)="getFiltering().getFilter().setStatus($event)">
       <option [ngValue]="null" >Wszystkie</option>
       <option [ngValue]="status.STARTED">Aktywne</option>
       <option [ngValue]="status.ENDED">Zakończone</option>
@@ -48,9 +48,11 @@
   <div class="filter-group">
     <label class="filter-label">Etap</label>
     <select class="filter-value"
-    [ngModel]="model.getFilter().getStage()" (ngModelChange)="model.getFilter().setStage($event)">
+    [ngModel]="getFiltering().getFilter().getStage()" (ngModelChange)="getFiltering().getFilter().setStage($event)">
       <option [ngValue]="null">Wszystkie</option>
-      <option *ngFor="let stage of model.getProject().getStages()" [ngValue]="stage">{{stage.getName()}}</option>
+      <option *ngFor="let stage of getModel().getProject().getStages()" [ngValue]="stage">
+        {{stage.getName()}}
+      </option>
     </select>
   </div>
 
@@ -58,42 +60,48 @@
     <label class="filter-label">Etykieta</label>
   
     <select class="filter-value"
-    [ngModel]="model.getFilter().getLabel()" (ngModelChange)="model.getFilter().setLabel($event)">
+    [ngModel]="getFiltering().getFilter().getLabel()" (ngModelChange)="getFiltering().getFilter().setLabel($event)">
         <option [ngValue]="null">Wszystkie</option>
-        <option *ngFor="let label of model.getLabels()" [ngValue]="label">{{label.getName()}}</option>
+        <option *ngFor="let label of getFiltering().getModel().getLabels()" [ngValue]="label">
+          {{label.getName()}}
+        </option>
     </select>
   </div>
 
   <div class="filter-buttons-container">
-    <button class="small-button button" (click)="clearFilter()">Wyczyść</button>
-  <button class="small-button button" (click)="searchFilter()">Szukaj</button>
+    <button class="small-button button" (click)="getFiltering().clearFilter()">
+      Wyczyść
+    </button>
+    <button class="small-button button" (click)="getFiltering().searchFilter()">
+      Szukaj
+    </button>
   </div>
 </ng-template>
 
 <ng-template #tasks_list>
-  <div *ngFor='let task of model.getTasks()' class="task-list-item list-item block transparent-border" 
-        (click)="onEditTask(task)">
+  <div *ngFor='let task of getModel().getTasks()' class="task-list-item list-item block transparent-border" 
+        (click)="getMenu().onEditTask(task)">
     <ng-container [ngTemplateOutlet]="task_item" [ngTemplateOutletContext]="{$implicit:task}"></ng-container>
     
     
   </div>
 
-  <div *ngIf="model.isAddingTaskMode()" >
+  <div *ngIf="getAdding().getModel().isAddingOpen()" >
     <ng-container [ngTemplateOutlet]="new_task"></ng-container>
   </div>
 </ng-template>
 
 <ng-template #task_item let-task>
   <input type="checkbox"  class="task-checkbox"
-    [checked]="isTaskDone(task)" (change)="setTaskStatus(task, $event.target.checked)" 
-    (click)="checkBoxClick($event)"/>
+    [checked]="getItem().isTaskDone(task)" (change)="getItem().setTaskStatus(task, $event.target.checked)" 
+    (click)="getItem().checkBoxClick($event)"/>
   <div class="task-main">
     <div class="list-item-top">
       <div class="list-item-value">{{task.getName()}}</div>
       <mat-icon [ngClass]="({
         'important-star': task.isImportant(),
         'not-important-star': !task.isImportant(),
-        'star':true})" (click)="toggleTaskImportance(task, $event)">star</mat-icon>
+        'star':true})" (click)="getItem().toggleTaskImportance(task, $event)">star</mat-icon>
     </div>
     <div class="task-info">
       <div class="labels-container">
@@ -116,29 +124,29 @@
   </div>
 
   <div *ngIf="task.getEndDate()!=null" class="task-enddate-icon info-icon"
-    tooltip="{{getEndDateText(task)}}" autoplacement="true" placement="bottom">
+    tooltip="{{getInfo().getEndDateText(task)}}" autoplacement="true" placement="bottom">
   </div>
 
   <div *ngIf="task.getPriority()!=null" class="task-priority-icon info-icon">
-    {{getPriorityText(task)}} 
+    {{getInfo().getPriorityText(task)}} 
   </div>
 
   <div *ngIf="task.getSubtasks().length != 0" class="info-icon task-subtask"
-    tooltip="{{getSubtasksList(task)}}" autoplacement="true" placement="bottom">
+    tooltip="{{getInfo().getSubtasksList(task)}}" autoplacement="true" placement="bottom">
     {{task.getNumberOfSubtaskWithStatus(status.ENDED)}} / {{task.getSubtasks().length}}
   </div>
 </ng-template>
 
 <ng-template #item_options let-task>
   <div class="list-item-options" 
-      (click)='onTaskMenuClick($event, task)'
+      (click)='getMenu().onTaskMenuClick($event, task)'
       [matMenuTriggerFor]="menu"
       >
       <mat-menu #menu="matMenu">
-        <button mat-menu-item (click)="onEditTask(task)">
+        <button mat-menu-item (click)="getMenu().onEditTask(task)">
           Edytuj
         </button>
-        <button mat-menu-item (click)="onRemoveTask()">
+        <button mat-menu-item (click)="getMenu().onRemoveTask()">
           Usuń
         </button>
       </mat-menu>
@@ -147,12 +155,12 @@
 </ng-template>
 
 <ng-template #new_task>
-  <input type="text" class="form-control" id="new-task-name" (keyup)="handleAddingNewTaskKeyUp($event)"
-    [ngModel]="model.getNewTaskName()" (ngModelChange)="model.setNewTaskName($event)">
+  <input type="text" class="form-control" id="new-task-name" (keyup)="getAdding().handleAddingNewTaskKeyUp($event)"
+    [ngModel]="getAdding().getModel().getNewTaskName()" (ngModelChange)="getAdding().getModel().setNewTaskName($event)">
     <div class="buttons-container">
         <button class="button small-button insert-button" id="save-subtask-button" 
-        (click)="addNewTask()">Zapisz</button>
+        (click)="getAdding().addNewTask()">Zapisz</button>
         <button class="button small-button insert-button" id="cancel-subtask-button"
-        (click)="closeAddingNewTask()">Anuluj</button>
+        (click)="getAdding().closeAddingNewTask()">Anuluj</button>
     </div>
 </ng-template>

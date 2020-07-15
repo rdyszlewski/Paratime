@@ -1,21 +1,13 @@
 import { Task } from 'app/models/task';
 import { Project } from 'app/models/project';
 import { FilteredList } from 'app/common/filter/filtered_list';
-import { Label } from 'app/models/label';
-import { TaskFilterModel } from './filter_model';
 
 export class TasksModel{
 
     private project: Project = new Project();
     private filteredList: FilteredList<Task> = new FilteredList();
     private taskWithOpenMenu: Task;
-    private addingTaskMode: boolean = false;
-    private newTaskName: string = "";
-
-    private filterOpen = false;
-    private filter: TaskFilterModel = new TaskFilterModel();
-    private labels: Label[] = [];
-    private tasks: Task[] = [];
+    
     private open;
 
     public getProject(){
@@ -29,7 +21,9 @@ export class TasksModel{
     }
 
     public setTasks(tasks:Task[]){
-        this.tasks = tasks;
+        // this.tasks = tasks;
+        // TODO: sprawdzić, czy to będzie dobrze działać
+        this.project.setTasks(tasks);
         this.updateFilteredList();
     }
 
@@ -38,7 +32,8 @@ export class TasksModel{
         this.project = project;
         if(project){
             this.open = true;
-            this.tasks = this.project.getTasks();
+            // TODO: sprawdzać, czy to niczego nie zepsuje
+            // this.tasks = this.project.getTasks();
         } else {
             this.open = false;
         }
@@ -46,7 +41,9 @@ export class TasksModel{
     }
 
     private updateFilteredList(){
-        this.filteredList.setSource(this.tasks);
+        // TODO: przemyśleć, ajk to poprawnie powinno wyglądać
+        // this.filteredList.setSource(this.tasks);
+        this.filteredList.setSource(this.project.getTasks());
     }
 
     public getTasks():Task[]{
@@ -74,43 +71,7 @@ export class TasksModel{
     public setTaskWithOpenMenu(task:Task){
         this.taskWithOpenMenu = task;
     }
-
-    public isAddingTaskMode():boolean{
-        return this.addingTaskMode;
-    }
-
-    public setAddingTaskMode(addingTask:boolean){
-        this.addingTaskMode = addingTask;
-    }
-
-    public getNewTaskName():string{
-        return this.newTaskName;
-    }
-
-    public setNewTaskName(name:string){
-        this.newTaskName = name;
-    }
-
-    public isFilterOpen():boolean{
-        return this.filterOpen;
-    }
-
-    public toggleFilterOpen():void{
-        this.filterOpen = !this.filterOpen;
-    }
-
-    public getLabels():Label[]{
-        return this.labels;
-    }
-
-    public setLabels(labels:Label[]):void{
-        this.labels = labels;
-    }
-
-    public getFilter():TaskFilterModel{
-        return this.filter;
-    }
-
+    
     public isOpen():boolean{
         return this.open;
     }

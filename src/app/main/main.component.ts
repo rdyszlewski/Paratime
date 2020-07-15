@@ -229,6 +229,6 @@ export class MainComponent implements OnInit {
   }
 
   public onSpecialListCLick(listType: SpecialList){
-    this.tasksComponent.setSpecialList(listType);
+    this.tasksComponent.getSpecialList().setSpecialList(listType);
   }
 }
