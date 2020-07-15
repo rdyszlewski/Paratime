@@ -1,10 +1,10 @@
 <div class="app-panel shadow">
     <div class="tool-panel">
         <mat-icon [ngClass]="({
-        'important-star': model.getTask().isImportant(),
-        'not-important-star': !model.getTask().isImportant(),
+        'important-star': getModel().getTask().isImportant(),
+        'not-important-star': !getModel().getTask().isImportant(),
         'star':true})" (click)="toggleTaskImportance()">star</mat-icon>
-        <h3 class="panel-header">{{model.getTask().getName()}}</h3>
+        <h3 class="panel-header">{{getModel().getTask().getName()}}</h3>
         <button class="close-button" (click)="closeView()">X</button>
         </div>
     
@@ -17,65 +17,65 @@
             <ng-container [ngTemplateOutlet]="task_name_group"></ng-container>
         </mat-expansion-panel>
 
-        <mat-expansion-panel class="form-group" [expanded]="model.isDescriptionExtended()">
+        <mat-expansion-panel class="form-group" [expanded]="getState().isDescriptionExtended()">
             <mat-expansion-panel-header class="form-group-header">
                 Opis
             </mat-expansion-panel-header>
             <ng-container [ngTemplateOutlet]="task_description"></ng-container>
         </mat-expansion-panel>
         
-        <mat-expansion-panel class="form-group" [expanded]="model.isStatusExtended()">
+        <mat-expansion-panel class="form-group" [expanded]="getState().isStatusExtended()">
             <mat-expansion-panel-header class="form-group-header">
                 Stan
             </mat-expansion-panel-header>
             <ng-container [ngTemplateOutlet]="task_status"></ng-container>
         </mat-expansion-panel>
 
-        <mat-expansion-panel class="form-group" [expanded]='model.isPriorityExtended()'>
+        <mat-expansion-panel class="form-group" [expanded]='getState().isPriorityExtended()'>
             <mat-expansion-panel-header class="form-group-header">
                 Priorytet
             </mat-expansion-panel-header>
             <ng-container [ngTemplateOutlet]="task_priority"></ng-container>
         </mat-expansion-panel>
 
-        <mat-expansion-panel class="form-group" [expanded]="model.isDateExtended()">
+        <mat-expansion-panel class="form-group" [expanded]="getState().isDateExtended()">
             <mat-expansion-panel-header class="form-group-header">
                 Data
             </mat-expansion-panel-header>
             <ng-container [ngTemplateOutlet]="task_date"></ng-container>
         </mat-expansion-panel>
 
-        <mat-expansion-panel class="form-group" [expanded]="model.isEndDateExtended()">
+        <mat-expansion-panel class="form-group" [expanded]="getState().isEndDateExtended()">
             <mat-expansion-panel-header class="form-group-header">
                 Data końcowa
             </mat-expansion-panel-header>
             <ng-container [ngTemplateOutlet]="task_end_date"></ng-container>
         </mat-expansion-panel>
       
-        <mat-expansion-panel class="form-group" [expanded]="model.isPlannedTimeExtended()">
+        <mat-expansion-panel class="form-group" [expanded]="getState().isPlannedTimeExtended()">
             <mat-expansion-panel-header class="form-group-header">
                 Planowany czas
             </mat-expansion-panel-header>
             <ng-container [ngTemplateOutlet]="task_planned_time"></ng-container>
         </mat-expansion-panel>
 
-        <mat-expansion-panel class="form-group" [expanded]="model.isLabelsExtended()">
+        <mat-expansion-panel class="form-group" [expanded]="getState().isLabelsExtended()">
             <mat-expansion-panel-header class="form-group-header">
-                Etykiety ({{model.getTask().getLabels().length}})
+                Etykiety ({{getModel().getTask().getLabels().length}})
             </mat-expansion-panel-header>
             <ng-container [ngTemplateOutlet]="task_labels_group"></ng-container>
         </mat-expansion-panel>
 
-        <mat-expansion-panel class="form-group" [expanded]="model.isStageExtended()">
+        <mat-expansion-panel class="form-group" [expanded]="getState().isStageExtended()">
             <mat-expansion-panel-header class="form-group-header">
                 Etap projektu
             </mat-expansion-panel-header>
             <ng-container [ngTemplateOutlet]="task_stage"></ng-container>
         </mat-expansion-panel>
 
-        <mat-expansion-panel class="form-group" [expanded]="model.isSubtasksExtended()">
+        <mat-expansion-panel class="form-group" [expanded]="getState().isSubtasksExtended()">
             <mat-expansion-panel-header class="form-group-header">
-                Kroki ({{getFinishedSubtasks(model.getTask())}} / {{model.getTask().getSubtasks().length}})
+                Kroki ({{getFinishedSubtasks(getModel().getTask())}} / {{getModel().getTask().getSubtasks().length}})
             </mat-expansion-panel-header>
             <ng-container [ngTemplateOutlet]="task_subtasks_group"></ng-container>
         </mat-expansion-panel>
@@ -83,28 +83,28 @@
 </div>
 
 <mat-menu #appMenu="matMenu" class="my-menu">
-    <button mat-menu-item *ngFor="let label of model.getLabels()" class="list-item small-list-item"
-    (click)="chooseLabel(label)">{{label.getName()}}</button>
+    <button mat-menu-item *ngFor="let label of getLabels().getModel().getLabels()" class="list-item small-list-item"
+    (click)="getLabels().chooseLabel(label)">{{label.getName()}}</button>
 </mat-menu>
 
 <ng-template #task_name_group> 
     <input type="text" class="form-control" id="task-name" name='name'
-            [ngModel]='model.getTask().getName()' (ngModelChange)="model.getTask().setName($event)"
+            [ngModel]='getModel().getTask().getName()' (ngModelChange)="getModel().getTask().setName($event)"
             (keyup.enter)="updateTask()" (focusout)="updateTask()"
             >
-    <span *ngIf="!model.isNameValid() && model.isNameChanged()"
+    <span *ngIf="!getValidator().isNameValid() && getChangeDetector().isNameChanged()"
     class="invalid-feedback">Nazwa nie może być pusta</span>
 </ng-template>
 
 <ng-template #task_description>
     <textarea class="form-control" id="task-description" name="description" rows="4"
-            [ngModel]='model.getTask().getDescription()' (ngModelChange)="model.getTask().setDescription($event)"
+            [ngModel]='getModel().getTask().getDescription()' (ngModelChange)="getModel().getTask().setDescription($event)"
             (keyup.enter)="updateTask()" (focusout)="updateTask()"></textarea>
 </ng-template>
 
 <ng-template #task_status>
     <select class="form-control" id="task-status" name="status"
-            [ngModel]='model.getTask().getStatus()' (ngModelChange)="model.getTask().setStatus($event)"
+            [ngModel]='getModel().getTask().getStatus()' (ngModelChange)="getModel().getTask().setStatus($event)"
             (change)="updateTask()">
         <option [ngValue]="status.STARTED">Aktywny</option>
         <option [ngValue]="status.ENDED">Zakończony</option>
@@ -115,7 +115,7 @@
 
 <ng-template #task_priority>
     <select class="form-control" id="task-priority" name="priority"
-            [ngModel]='model.getTask().getPriority()' (ngModelChange)='model.getTask().setPriority($event)'
+            [ngModel]='getModel().getTask().getPriority()' (ngModelChange)='getModel().getTask().setPriority($event)'
             (change)="updateTask()">
         <option [ngValue]="null" ></option>
         <option [ngValue]="priority.LEVEL_1">1</option>
@@ -129,7 +129,7 @@
 <ng-template #task_date>
     <div class="datepicker-container">
         <input matInput class='form-control' id="task-date" name="date" [matDatepicker]="datePicker"
-        [ngModel]='model.getTask().getDate()' (ngModelChange)="model.getTask().setDate($event)"
+        [ngModel]='getModel().getTask().getDate()' (ngModelChange)="getModel().getTask().setDate($event)"
         (dateChange)="updateTask()">
         <mat-datepicker-toggle [for]="datePicker" class="datepicker"></mat-datepicker-toggle>
         <mat-datepicker #datePicker></mat-datepicker>      
@@ -139,7 +139,7 @@
 <ng-template #task_end_date>
     <div class="datepicker-container">
         <input matInput class='form-control' id="task-end-date" name="end-date" [matDatepicker]="endDatePicker"
-        [ngModel]='model.getTask().getEndDate()' (ngModelChange)="model.getTask().setEndDate($event)"
+        [ngModel]='getModel().getTask().getEndDate()' (ngModelChange)="getModel().getTask().setEndDate($event)"
         (dateChange)="updateTask()">
         <mat-datepicker-toggle [for]="endDatePicker" class="datepicker"></mat-datepicker-toggle>
         <mat-datepicker #endDatePicker></mat-datepicker>
@@ -148,17 +148,17 @@
 
 <ng-template #task_planned_time>
     <input type='number' class="form-control" id="task-planned_time" name="planned_time" min="1"
-            [ngModel]="model.getTask().getPlannedTime()" (ngModelChange)="model.getTask().setPlannedTime($event)"
+            [ngModel]="getModel().getTask().getPlannedTime()" (ngModelChange)="getModel().getTask().setPlannedTime($event)"
             (keyup.enter)="updateTask()" (focusout)="updateTask()">
 </ng-template>
 
 <ng-template #task_labels_group>
     <div class="labels-list">
-        <div *ngFor="let label of model.getTask().getLabels()" class="label-item transparent-border">
+        <div *ngFor="let label of getModel().getTask().getLabels()" class="label-item transparent-border">
             <span class="label-name">
                 {{label.getName()}}
             </span>
-            <span class="remove-label" (click)="removeLabel(label)"></span>
+            <span class="remove-label" (click)="getLabels().removeLabel(label)"></span>
         </div>
     </div>
     <button class="form-control button small-button" id="task-labels" name="labels" [matMenuTriggerFor]="appMenu">Dodaj</button>
@@ -168,16 +168,16 @@
 
 <ng-template #task_stage>
     <select class="form-control" name="task-stage"
-            [ngModel]="model.getTask().getProjectStageID()" (ngModelChange)="model.getTask().setProjectStageID($event)"
+            [ngModel]="getModel().getTask().getProjectStageID()" (ngModelChange)="getModel().getTask().setProjectStageID($event)"
             (change)="updateTask()">
         <option [ngValue]="null"></option>
-        <option *ngFor="let stage of model.getStages()" [ngValue]="stage.getId()">{{stage.getName()}}</option>
+        <option *ngFor="let stage of getModel().getStages()" [ngValue]="stage.getId()">{{stage.getName()}}</option>
     </select>
 </ng-template>
 
 <ng-template #task_subtasks_group>
     <div class="list border">
-        <div *ngFor="let subtask of model.getTask().getSubtasks()" class="list-item small-list-item transparent-border">
+        <div *ngFor="let subtask of getModel().getTask().getSubtasks()" class="list-item small-list-item transparent-border">
             <ng-container [ngTemplateOutlet]="subtask_item" [ngTemplateOutletContext]="{$implicit:subtask}"></ng-container>
             <ng-container [ngTemplateOutlet]="subtask_edit" [ngTemplateOutletContext]="{$implicit:subtask}"></ng-container>
         </div>
@@ -191,38 +191,42 @@
                         'subtask-done-icon': subtask.getStatus()==status.ENDED,
                         'subtask-icon':true,
                         'checkbox': true}"
-                        (click)="toggleSubtaskStatus(subtask)">
+                        (click)="getSubtask().toggleSubtaskStatus(subtask)">
     </div>
-    <div class="list-item-value" (click)="toggleSubtaskStatus(subtask)"
-    *ngIf="model.getEditedSubtask()!=subtask">{{subtask.getName()}}</div>
+    <div class="list-item-value" (click)="getSubtask().toggleSubtaskStatus(subtask)"
+        *ngIf="!getSubtask().getModel().isEditingSubtask(subtask)">
+        {{subtask.getName()}}
+    </div>
 </ng-template>
 
 <ng-template #subtask_edit let-subtask>
     <input class="subtask-name" value="{{subtask.getName()}}" [id]="'subtask-name-input_' + subtask.getId()"
-            *ngIf="model.getEditedSubtask()==subtask"
-            (keyup)="handleKeysOnEditSubtask($event, subtask)">
+            *ngIf="getSubtask().getModel().isEditingSubtask(subtask)"
+            [ngModel]="getSubtask().getModel().getEditingSubtaskName()" (ngModelChange)="getSubtask().getModel().setEditingSubtaskName($event)"
+            (keyup)="getSubtask().handleKeysOnEditSubtask($event, subtask)">
     <div class="subtask-item-buttons">
-        <div class="list-item-options edit-button small-accept-button" (click)='openEditingSubtask(subtask)'
-        *ngIf="model.getEditedSubtask()!=subtask"></div>
-        <div class="list-item-options remove-button small-accept-button" (click)='removeSubtask(subtask)'
-        *ngIf="model.getEditedSubtask()!=subtask"></div>
+        <div class="list-item-options edit-button small-accept-button" (click)='getSubtask().openEditingSubtask(subtask)'
+        *ngIf="!getSubtask().getModel().isEditingSubtask(subtask)"></div>
+        <div class="list-item-options remove-button small-accept-button" (click)='getSubtask().removeSubtask(subtask)'
+        *ngIf="!getSubtask().getModel().isEditingSubtask(subtask)"></div>
     </div>
     
-    <div class='list-item-options accept-button small-accept-button' (click)="acceptEditingSubtask(subtask)"
-    *ngIf="model.getEditedSubtask()==subtask"></div>  
+    <div class='list-item-options accept-button small-accept-button' (click)="getSubtask().acceptEditingSubtask(subtask)"
+    *ngIf="getSubtask().getModel().isEditingSubtask(subtask)"></div>  
 </ng-template>
 
 <ng-template #new_subtask>
-    <input type="text" class="form-control" id="subtask" [hidden]="!model.isSubtaskEditing()"
-    (keyup)="handleKeysOnNewSubtaskInput($event)">
+    <input type="text" class="form-control" id="subtask" [hidden]="!getSubtask().getModel().isAddingSubtask()"
+    [ngModel]="getSubtask().getModel().getNewSubtaskName()" (ngModelChange)="getSubtask().getModel().setNewSubtaskName($event)"
+    (keyup)="getSubtask().handleKeysOnNewSubtaskInput($event)">
     <div class="buttons-container">
-        <button class="button small-button insert-button" id="add-subtask-button" [hidden]="model.isSubtaskEditing()"
-        (click)="openAddingSubtask()">
+        <button class="button small-button insert-button" id="add-subtask-button" [hidden]="getSubtask().getModel().isAddingSubtask()"
+        (click)="getSubtask().getModel().openAddingSubtask()">
             Dodaj
         </button>
-        <button class="button small-button insert-button" id="save-subtask-button" [hidden]="!model.isSubtaskEditing()"
-        (click)="addNewSubtask()">Zapisz</button>
-        <button class="button small-button insert-button" id="cancel-subtask-button" [hidden]="!model.isSubtaskEditing()"
-        (click)="closeAddingSubtask()">Anuluj</button>
+        <button class="button small-button insert-button" id="save-subtask-button" [hidden]="!getSubtask().getModel().isAddingSubtask()"
+        (click)="getSubtask().addNewSubtask()">Zapisz</button>
+        <button class="button small-button insert-button" id="cancel-subtask-button" [hidden]="!getSubtask().getModel().isAddingSubtask()"
+        (click)="getSubtask().closeAddingSubtask()">Anuluj</button>
     </div>
 </ng-template>

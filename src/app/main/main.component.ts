@@ -164,7 +164,7 @@ export class MainComponent implements OnInit {
   }
 
   public onLabelsUpdate(){
-    this.taskDetailsComponent.loadLabels();
+    this.taskDetailsComponent.getLabels().loadLabels();
   }
 
   public onUpdateProject(project:Project){
@@ -180,7 +180,7 @@ export class MainComponent implements OnInit {
 
   public onRemoveTask(taskId: number){
     if(this.tasksDetailsOpen){
-      if(this.taskDetailsComponent.model.getTask().getId()==taskId){
+      if(this.taskDetailsComponent.getModel().getTask().getId()==taskId){
         // TODO: może lepiej zrobić jakąś metodę close i open
         this.tasksDetailsOpen = false;
         this.setOriginalWidth();

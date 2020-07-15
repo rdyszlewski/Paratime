@@ -1,14 +1,15 @@
 import { Component, OnInit, EventEmitter, Output } from '@angular/core';
 import { Status } from 'app/models/status';
-import { Label } from 'app/models/label';
-import { Subtask } from 'app/models/subtask';
-import { TaskDetails } from './model';
-import * as $ from 'jquery';
+import { TaskDetails } from './model/model';
 import { Task } from 'app/models/task';
 import { DataService } from 'app/data.service';
 import { FocusHelper } from 'app/common/view_helper';
-import { KeyCode } from 'app/common/key_codes';
 import { Priority } from 'app/models/priority';
+import { TaskViewState } from './model/state';
+import { TaskValidator } from './model/validator';
+import { TaskChangeDetector } from './model/change.detector';
+import { SubtasksController } from './subtasks/subtasks.editing.controller';
+import { TaskLabelsController } from './labels/task.labels.controller';
 
 @Component({
   selector: 'app-task-details',
@@ -18,26 +19,60 @@ import { Priority } from 'app/models/priority';
 export class TaskDetailsComponent implements OnInit {
   
   private TASK_NAME_ID = '#task-name';
-  private SUBTASK_NAME_ID = '#subtask';
-  private SUBTASK_ITEM_ID = '#subtask-name-input_';
-
-  public status = Status;
-  public priority = Priority;
-  public model: TaskDetails = new TaskDetails();
 
   @Output() closeEvent: EventEmitter<null> = new EventEmitter();
   @Output() saveEvent: EventEmitter<Task> = new EventEmitter();
   @Output() openLabelsEvent: EventEmitter<null> = new EventEmitter();
+
+  public status = Status;
+  public priority = Priority;
+
+  private model: TaskDetails;
+  private state: TaskViewState;
+  private validator: TaskValidator;
+  private changeDetector: TaskChangeDetector;
+  private subtaskController: SubtasksController;
+  private labelsController: TaskLabelsController;
+
   
   constructor() { }
 
   ngOnInit(): void {
+    this.model = new TaskDetails();
+    this.state = new TaskViewState(this.model);
+    this.validator = new TaskValidator(this.model);
+    this.changeDetector = new TaskChangeDetector(this.model);
+    this.subtaskController = new SubtasksController();
+    this.labelsController = new TaskLabelsController(this.model);
     this.init();
+  }
+
+  public getModel():TaskDetails{
+    return this.model;
+  }
+
+  public getState():TaskViewState{
+    return this.state;
+  }
+
+  public getValidator():TaskValidator{
+    return this.validator;
+  }
+
+  public getChangeDetector():TaskChangeDetector{
+    return this.changeDetector;
+  }
+
+  public getSubtask():SubtasksController{
+    return this.subtaskController;
+  }
+
+  public getLabels():TaskLabelsController{
+    return this.labelsController;
   }
 
   private init(){
     this.loadProjects();
-    this.loadLabels();
     this.loadStages();
   }
 
@@ -47,12 +82,6 @@ export class TaskDetailsComponent implements OnInit {
       this.model.setProjects(projects);
     });
   }
-
-  public loadLabels(){
-    DataService.getStoreManager().getLabelStore().getAllLabel().then(labels=>{
-      this.model.setLabels(labels);
-    });
-  }  
 
   public loadStages(){
     if(this.model.getTask().getProjectID()){
@@ -66,99 +95,13 @@ export class TaskDetailsComponent implements OnInit {
     if(task){
       this.model.setTask(task);
       this.init();
+      this.subtaskController.setTask(task);
       FocusHelper.focus(this.TASK_NAME_ID);
     }
   }
 
-  // LABELS 
-
-  public chooseLabel(label:Label){
-    DataService.getStoreManager().getLabelStore().connectTaskAndLabel(this.model.getTask().getId(), label.getId()).then(()=>{
-      this.model.getTask().addLabel(label);
-    });
-  }
-
-  public removeLabel(label:Label){
-    DataService.getStoreManager().getLabelStore().removeLabelFromTask(this.model.getTask().getId(), label.getId()).then(()=>{
-      this.model.getTask().removeLabel(label);
-      this.model.setEditedSubtask(null);
-    });
-  }
-
-  // SUBTASKS
-  
-  public openAddingSubtask(){
-    this.model.setSubtaskEditing(true);
-    this.model.setEditedSubtask(null);
-    FocusHelper.focus(this.SUBTASK_NAME_ID);
-  }
-
-  public closeAddingSubtask(){
-    $(this.SUBTASK_NAME_ID).val("");
-    this.model.setSubtaskEditing(false);
-  }
-  
-  public addNewSubtask(){
-    // TODO: zmienić to,aby pobierało wartość z modelu
-    const subtaskName = $(this.SUBTASK_NAME_ID).val();    
-    const subtask = new Subtask(subtaskName, Status.STARTED);
-    subtask.setTaskId(this.model.getTask().getId());
-    this.saveNewSubtask(subtask);
-    this.closeAddingSubtask();
-  }
-
-  private saveNewSubtask(subtask: Subtask) {
-    
-    DataService.getStoreManager().getSubtaskStore().createSubtask(subtask).then(insertedSubtask => {
-      this.model.getTask().addSubtask(insertedSubtask);
-    });
-  }
-
-  public openEditingSubtask(subtask:Subtask){
-    this.model.setEditedSubtask(subtask);
-    this.model.setSubtaskEditing(false);
-    FocusHelper.focus(this.getSubtaskItemId(subtask));
-  }
-
-  public closeEditingSubtask(){
-    this.model.setEditedSubtask(null);
-  }
-
-  private getSubtaskItemId(subtask: Subtask):string{
-    return this.SUBTASK_ITEM_ID + subtask.getId();
-  }
-
-  public acceptEditingSubtask(subtask:Subtask){
-    const subtaskNameField = $(this.getSubtaskItemId(subtask));
-    subtask.setName(subtaskNameField.val());
-    this.updateSubtask(subtask);
-  }
-
-  private updateSubtask(subtask: Subtask) {
-    DataService.getStoreManager().getSubtaskStore().updateSubtask(subtask).then(updatedSubtask => {
-      this.closeEditingSubtask();
-    });
-  }
-
-  public removeSubtask(subtask:Subtask){
-    DataService.getStoreManager().getSubtaskStore().removeSubtask(subtask.getId()).then(()=>{
-      this.model.getTask().removeSubtask(subtask);
-    });
-  }
-
-  public toggleSubtaskStatus(subtask:Subtask){
-    switch(subtask.getStatus()){
-      case Status.STARTED:
-        subtask.setStatus(Status.ENDED);
-        break;
-      case Status.ENDED:
-        subtask.setStatus(Status.STARTED);
-        break;
-    }
-  }  
-
   public updateTask(){
-    if(this.model.isValid()){
+    if(this.validator.isValid()){
       DataService.getStoreManager().getTaskStore().updateTask(this.model.getTask()).then(()=>{});
     }
   }
@@ -169,24 +112,6 @@ export class TaskDetailsComponent implements OnInit {
 
   public openLabelsManager(){
     this.openLabelsEvent.emit();
-  }
-
-  public handleKeysOnNewSubtaskInput(event:KeyboardEvent){
-    if(event.keyCode == KeyCode.ENTER){
-      this.addNewSubtask();
-    } 
-    if(event.keyCode == KeyCode.ESC){
-      this.closeAddingSubtask();
-    }
-  }
-
-  public handleKeysOnEditSubtask(event:KeyboardEvent, subtask:Subtask){
-    if(event.keyCode == KeyCode.ENTER){
-      this.acceptEditingSubtask(subtask);
-    } 
-    if(event.keyCode == KeyCode.ESC){
-      this.closeEditingSubtask();
-    }
   }
 
   // return amount of subtask with status ENDED
