@@ -24,7 +24,6 @@
             <textarea class="form-control" id="stage-description" name="description" rows="4"
             [ngModel]='model.getStage().getDescription()' (ngModelChange)="model.getStage().setDescription($event)"
             (keyup.enter)="updateStage()" (focusout)="updateStage()"></textarea>
-            
         </mat-expansion-panel>
 
         <mat-expansion-panel class="form-group" [expanded]="true">

@@ -1,3 +1,4 @@
+
 <div class="app-panel shadow">
     <!-- <h3 class="panel-header">Projekty</h3> -->
     
@@ -9,110 +10,22 @@
     </div>
 
     <div class="filter-container" *ngIf="model.isFilterOpen()">
-
-      <div class="filter-group">
-        <label class="filter-label">Z datą zakończenia</label>
-        <input class="filter-value" type='checkbox' 
-        [checked]="model.getFilter().isWithEndDate()" (change)="model.getFilter().setWithEndDate($event.target.checked)">
-      </div>
-
-      <div class="filter-group">
-        <label class="filter-label">Stan</label>
-        <select class="filter-value" 
-        [ngModel]="model.getFilter().getStatus()" (ngModelChange)="model.getFilter().setStatus($event)">
-          <option [ngValue]="null" >Wszystkie</option>
-          <option [ngValue]="status.STARTED">Aktywne</option>
-          <option [ngValue]="status.ENDED">Zakończone</option>
-          <option [ngValue]="status.AWAITING">Oczekujące</option>
-          <option [ngValue]="status.CANCELED">Zakończone</option>
-        </select>
-      </div>
-      
-      <div class="filter-group">
-        <label class="filter-label">Typ</label>
-        <select class="filter-value" 
-        [ngModel]="model.getFilter().getProjectType()" (ngModelChange)="model.getFilter().setProjectType($event)">
-          <option [ngValue]="null">Wszystkie</option>
-          <option [ngValue]="type.SMALL">Małe</option>
-          <option [ngValue]="type.MEDIUM">Średnie</option>
-          <option [ngValue]="type.BIG">Duże</option>
-        </select>
-      </div>
-
-      <div class="filter-buttons-container">
-        <button class="small-button button" (click)="clearFilter()">Wyczyść</button>
-      <button class="small-button button" (click)="searchFilter()">Szukaj</button>
-      </div>
+      <ng-container [ngTemplateOutlet]="filter_container"></ng-container>
     </div>
   
-    <div class="transparent-border expansion-list"> 
-      <div class="expansion-list-header" (click)="model.toggleListsOpen($event)">
-        <span class="list-header-name">Listy</span>
-        <div class="filter-button expansion-icon" (click)="model.toggleListsOpen($event)"></div>
-      </div>
-      <div id="special-list" class="list border" *ngIf="model.isListsOpen()">
-        <!-- TODO: zrobić sposób zaznaczania specjalnych list -->
-        <div [ngClass]="{'selected-list-item': false,
-                      'project': true,
-                      'list-item':true,
-                      'transparent-border':true}" 
-                      (click)='onImportantListClick()'>
-          <div class="list-item-value">Ważne</div>
-        </div>
-
-        <div [ngClass]="{'selected-list-item': false,
-                      'project': true,
-                      'list-item':true,
-                      'transparent-border':true}" 
-                      (click)='onTodayListClick()'>
-          <div class="list-item-value">Dzisiaj</div>
-        </div>
-      </div>
+    <div id="special-lists-container" class="transparent-border expansion-list"> 
+      <div [ngTemplateOutlet]="special_lists"></div>
     </div>
     
-
     <div id="projects-container" 
       [ngClass]="{
         'projects-container': model.isProjectsOpen(),
         'hidden-list': !model.isProjectsOpen(),
         'transparent-border':true,
         'expansion-list':true
-      }"
-    >
-      <div class="expansion-list-header" (click)="model.toggleProjectsOpen($event)">
-        <span class="list-header-name">Projekty</span>
-        <div class="filter-button expansion-icon" (click)="model.toggleProjectsOpen($event)"></div>
-      </div>
-      <!-- TODO: zrobić globalny styl do listy oraz do jej elementów-->
-  
-        <div id="projects-list"  class="list border" *ngIf="model.isProjectsOpen()">
-          <div *ngFor='let project of model.getProjects()'>
-            <div [ngClass]="{'selected-list-item': model.isSelectedProject(project),
-                        'project': true,
-                        'list-item':true,
-                        'transparent-border':true}" 
-                        (click)='onProjectClick(project)'>
-              <div class="list-item-value">{{project.getName()}}</div>
-              <div class="list-item-options" 
-                (click)='onProjectMenuClick($event, project)'
-                [matMenuTriggerFor]="menu">
-                ...
-              </div>
-            </div>     
-          </div>
-          <div *ngIf="model.isAddingNewProject()" >
-            <input type="text" class="form-control" id="new-project-name" (keyup)="handleAddingNewProjectKeyUp($event)"
-            [ngModel]="model.getNewProjectName()" (ngModelChange)="model.setNewProjectName($event)">
-            <div class="buttons-container">
-                <button class="button small-button insert-button" id="save-subtask-button" 
-                (click)="addNewProject()">Zapisz</button>
-                <button class="button small-button insert-button" id="cancel-subtask-button"
-                (click)="closeAddingNewProject()">Anuluj</button>
-            </div>
-          </div>
-        </div>
-        <button class="button border" (click)='onCreateProjectClick()' *ngIf="!model.isAddingNewProject() && model.isProjectsOpen()">Dodaj projekt</button>
-  </div>
+      }">
+      <div [ngTemplateOutlet]="project_lists_container"></div>
+    </div>
 </div>
 
 <mat-menu #menu="matMenu">
@@ -122,4 +35,111 @@
     <button mat-menu-item (click)="onRemoveProject()">
       Usuń
     </button>
-  </mat-menu>
+</mat-menu>
+
+<ng-template #filter_container>
+  <div class="filter-group">
+    <label class="filter-label">Z datą zakończenia</label>
+    <input class="filter-value" type='checkbox' 
+    [checked]="model.getFilter().isWithEndDate()" (change)="model.getFilter().setWithEndDate($event.target.checked)">
+  </div>
+
+  <div class="filter-group">
+    <label class="filter-label">Stan</label>
+    <select class="filter-value" 
+    [ngModel]="model.getFilter().getStatus()" (ngModelChange)="model.getFilter().setStatus($event)">
+      <option [ngValue]="null" >Wszystkie</option>
+      <option [ngValue]="status.STARTED">Aktywne</option>
+      <option [ngValue]="status.ENDED">Zakończone</option>
+      <option [ngValue]="status.AWAITING">Oczekujące</option>
+      <option [ngValue]="status.CANCELED">Zakończone</option>
+    </select>
+  </div>
+  
+  <div class="filter-group">
+    <label class="filter-label">Typ</label>
+    <select class="filter-value" 
+    [ngModel]="model.getFilter().getProjectType()" (ngModelChange)="model.getFilter().setProjectType($event)">
+      <option [ngValue]="null">Wszystkie</option>
+      <option [ngValue]="type.SMALL">Małe</option>
+      <option [ngValue]="type.MEDIUM">Średnie</option>
+      <option [ngValue]="type.BIG">Duże</option>
+    </select>
+  </div>
+
+  <div class="filter-buttons-container">
+    <button class="small-button button" (click)="clearFilter()">Wyczyść</button>
+  <button class="small-button button" (click)="searchFilter()">Szukaj</button>
+  </div>
+</ng-template>
+
+<ng-template #special_lists>
+  <div class="expansion-list-header" (click)="model.toggleListsOpen($event)">
+    <span class="list-header-name">Listy</span>
+    <div class="filter-button expansion-icon" (click)="model.toggleListsOpen($event)"></div>
+  </div>
+  <div id="special-list" class="list border" *ngIf="model.isListsOpen()">
+
+    <!-- TODO: zrobić sposób zaznaczania specjalnych list -->
+    <div [ngClass]="{'selected-list-item': false,
+                  'project': true,
+                  'list-item':true,
+                  'transparent-border':true}" 
+                  (click)='onImportantListClick()'>
+      <div class="list-item-value">Ważne</div>
+    </div>
+
+    <div [ngClass]="{'selected-list-item': false,
+                  'project': true,
+                  'list-item':true,
+                  'transparent-border':true}" 
+                  (click)='onTodayListClick()'>
+      <div class="list-item-value">Dzisiaj</div>
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #project_lists_container>
+  <div class="expansion-list-header" (click)="model.toggleProjectsOpen($event)">
+    <span class="list-header-name">Projekty</span>
+    <div class="filter-button expansion-icon" (click)="model.toggleProjectsOpen($event)"></div>
+  </div>
+  <!-- TODO: zrobić globalny styl do listy oraz do jej elementów-->
+
+    <div id="projects-list"  class="list border" *ngIf="model.isProjectsOpen()">
+      <div *ngFor='let project of model.getProjects()'>
+        <ng-container [ngTemplateOutlet]="project_item" [ngTemplateOutletContext]="{$implicit:project}"></ng-container>
+      </div>
+      <div *ngIf="model.isAddingNewProject()" >
+        <ng-container [ngTemplateOutlet]="new_project"></ng-container>
+      </div>
+    </div>
+    <button class="button border" (click)='onCreateProjectClick()' *ngIf="!model.isAddingNewProject() && model.isProjectsOpen()">Dodaj projekt</button>
+
+</ng-template>
+
+<ng-template #project_item let-project>
+  <div [ngClass]="{'selected-list-item': model.isSelectedProject(project),
+                    'project': true,
+                    'list-item':true,
+                    'transparent-border':true}" 
+                    (click)='onProjectClick(project)'>
+          <div class="list-item-value">{{project.getName()}}</div>
+          <div class="list-item-options" 
+            (click)='onProjectMenuClick($event, project)'
+            [matMenuTriggerFor]="menu">
+            ...
+          </div>
+        </div>     
+</ng-template>
+
+<ng-template #new_project>
+  <input type="text" class="form-control" id="new-project-name" (keyup)="handleAddingNewProjectKeyUp($event)"
+        [ngModel]="model.getNewProjectName()" (ngModelChange)="model.setNewProjectName($event)">
+        <div class="buttons-container">
+            <button class="button small-button insert-button" id="save-subtask-button" 
+            (click)="addNewProject()">Zapisz</button>
+            <button class="button small-button insert-button" id="cancel-subtask-button"
+            (click)="closeAddingNewProject()">Anuluj</button>
+        </div>
+</ng-template>
