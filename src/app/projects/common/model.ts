@@ -1,6 +1,5 @@
 import { Project } from 'app/models/project';
 import { FilteredList } from 'app/common/filter/filtered_list';
-import { ProjectFilterModel } from './filter_model';
 
 export class ProjectsModel{
 
@@ -8,15 +7,6 @@ export class ProjectsModel{
     private filteredList: FilteredList<Project> = new FilteredList();
     private selectedProject: Project = null;
     private projectWithOpenMenu: Project = null;
-    private addingNewProject;
-    private newProjectName:string = "";
-
-    private filterOpen = false;
-    private filter:ProjectFilterModel = new ProjectFilterModel();
-
-    private listsOpen = false;
-    private projectsOpen = true;
-    
 
     public setProjects(projects:Project[]){
         this.projects = projects;
@@ -81,51 +71,5 @@ export class ProjectsModel{
 
     public setProjectWithOpenMenu(project:Project){
         this.projectWithOpenMenu = project;
-    }
-
-    public isAddingNewProject():boolean{
-        return this.addingNewProject;
-    }
-
-    public setAddingNewProject(addingNewProject:boolean){
-        this.addingNewProject = addingNewProject;
-    }
-
-    public getNewProjectName(){
-        return this.newProjectName;
-    }
-
-    public setNewProjectName(projectName: string){
-        this.newProjectName = projectName;
-    }
-
-    public isFilterOpen(){
-        return this.filterOpen;
-    }
-
-    public toggleFilterOpen(){
-        this.filterOpen = !this.filterOpen;
-    }
-
-    public getFilter():ProjectFilterModel{
-        return this.filter;
-    }
-
-    public isListsOpen():boolean{
-        return this.listsOpen;
-    }
-
-    public toggleListsOpen(event:MouseEvent):void{
-        this.listsOpen = !this.listsOpen;
-        event.stopPropagation();
-    }
-
-    public isProjectsOpen():boolean{
-        return this.projectsOpen;
-    }
-
-    public toggleProjectsOpen(event:MouseEvent):void{
-        this.projectsOpen = !this.projectsOpen;
-        event.stopPropagation();
     }
 }

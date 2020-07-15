@@ -5,11 +5,11 @@
     <!-- TODO: ustawić odpowiednio styl do filtra -->
     <div class="filter-controls">
       <input class="project-filter filter border" placeholder="Wyszukaj projekt"
-      (input)='model.filterProject($event.target.value)'>
-      <div id="project-filter-button" class="button filter-button" (click)="model.toggleFilterOpen()"></div>
+      (input)='getModel().filterProject($event.target.value)'>
+      <div id="project-filter-button" class="button filter-button" (click)="getState().toggleFilteringOpen()"></div>
     </div>
 
-    <div class="filter-container" *ngIf="model.isFilterOpen()">
+    <div class="filter-container" *ngIf="getState().isFilteringOpen()">
       <ng-container [ngTemplateOutlet]="filter_container"></ng-container>
     </div>
   
@@ -19,8 +19,8 @@
     
     <div id="projects-container" 
       [ngClass]="{
-        'projects-container': model.isProjectsOpen(),
-        'hidden-list': !model.isProjectsOpen(),
+        'projects-container': getState().isProjectsListOpen(),
+        'hidden-list': !getState().isProjectsListOpen(),
         'transparent-border':true,
         'expansion-list':true
       }">
@@ -32,7 +32,7 @@
     <button mat-menu-item (click)="onEditProject()">
       Edytuj
     </button>
-    <button mat-menu-item (click)="onRemoveProject()">
+    <button mat-menu-item (click)="getRemoving().onRemoveProject()">
       Usuń
     </button>
 </mat-menu>
@@ -41,13 +41,13 @@
   <div class="filter-group">
     <label class="filter-label">Z datą zakończenia</label>
     <input class="filter-value" type='checkbox' 
-    [checked]="model.getFilter().isWithEndDate()" (change)="model.getFilter().setWithEndDate($event.target.checked)">
+    [checked]="getFiltering().getModel().isWithEndDate()" (change)="getFiltering().getModel().setWithEndDate($event.target.checked)">
   </div>
 
   <div class="filter-group">
     <label class="filter-label">Stan</label>
     <select class="filter-value" 
-    [ngModel]="model.getFilter().getStatus()" (ngModelChange)="model.getFilter().setStatus($event)">
+    [ngModel]="getFiltering().getModel().getStatus()" (ngModelChange)="getFiltering().getModel().setStatus($event)">
       <option [ngValue]="null" >Wszystkie</option>
       <option [ngValue]="status.STARTED">Aktywne</option>
       <option [ngValue]="status.ENDED">Zakończone</option>
@@ -59,7 +59,7 @@
   <div class="filter-group">
     <label class="filter-label">Typ</label>
     <select class="filter-value" 
-    [ngModel]="model.getFilter().getProjectType()" (ngModelChange)="model.getFilter().setProjectType($event)">
+    [ngModel]="getFiltering().getModel().getProjectType()" (ngModelChange)="getFiltering().getModel().setProjectType($event)">
       <option [ngValue]="null">Wszystkie</option>
       <option [ngValue]="type.SMALL">Małe</option>
       <option [ngValue]="type.MEDIUM">Średnie</option>
@@ -68,17 +68,17 @@
   </div>
 
   <div class="filter-buttons-container">
-    <button class="small-button button" (click)="clearFilter()">Wyczyść</button>
-  <button class="small-button button" (click)="searchFilter()">Szukaj</button>
+    <button class="small-button button" (click)="getFiltering().clearFilter()">Wyczyść</button>
+  <button class="small-button button" (click)="getFiltering().searchFilter()">Szukaj</button>
   </div>
 </ng-template>
 
 <ng-template #special_lists>
-  <div class="expansion-list-header" (click)="model.toggleListsOpen($event)">
+  <div class="expansion-list-header" (click)="toggleSpecialListOpen($event)">
     <span class="list-header-name">Listy</span>
-    <div class="filter-button expansion-icon" (click)="model.toggleListsOpen($event)"></div>
+    <div class="filter-button expansion-icon" (click)="toggleSpecialListOpen($event)"></div>
   </div>
-  <div id="special-list" class="list border" *ngIf="model.isListsOpen()">
+  <div id="special-list" class="list border" *ngIf="getState().isSpecialListOpen()">
 
     <!-- TODO: zrobić sposób zaznaczania specjalnych list -->
     <div [ngClass]="{'selected-list-item': false,
@@ -100,26 +100,29 @@
 </ng-template>
 
 <ng-template #project_lists_container>
-  <div class="expansion-list-header" (click)="model.toggleProjectsOpen($event)">
+  <div class="expansion-list-header" (click)="toggleProjectsListOpen($event)">
     <span class="list-header-name">Projekty</span>
-    <div class="filter-button expansion-icon" (click)="model.toggleProjectsOpen($event)"></div>
+    <div class="filter-button expansion-icon" (click)="toggleProjectsListOpen($event)"></div>
   </div>
   <!-- TODO: zrobić globalny styl do listy oraz do jej elementów-->
 
-    <div id="projects-list"  class="list border" *ngIf="model.isProjectsOpen()">
-      <div *ngFor='let project of model.getProjects()'>
+    <div id="projects-list"  class="list border" *ngIf="getState().isProjectsListOpen()">
+      <div *ngFor='let project of getModel().getProjects()'>
         <ng-container [ngTemplateOutlet]="project_item" [ngTemplateOutletContext]="{$implicit:project}"></ng-container>
       </div>
-      <div *ngIf="model.isAddingNewProject()" >
+      <div *ngIf="getState().isAddingOpen()" >
         <ng-container [ngTemplateOutlet]="new_project"></ng-container>
       </div>
     </div>
-    <button class="button border" (click)='onCreateProjectClick()' *ngIf="!model.isAddingNewProject() && model.isProjectsOpen()">Dodaj projekt</button>
+    <button class="button border" (click)='getAdding().onCreateProjectClick()' 
+      *ngIf="!getState().isAddingOpen() && getState().isProjectsListOpen()">
+      Dodaj projekt
+    </button>
 
 </ng-template>
 
 <ng-template #project_item let-project>
-  <div [ngClass]="{'selected-list-item': model.isSelectedProject(project),
+  <div [ngClass]="{'selected-list-item': getModel().isSelectedProject(project),
                     'project': true,
                     'list-item':true,
                     'transparent-border':true}" 
@@ -134,12 +137,12 @@
 </ng-template>
 
 <ng-template #new_project>
-  <input type="text" class="form-control" id="new-project-name" (keyup)="handleAddingNewProjectKeyUp($event)"
-        [ngModel]="model.getNewProjectName()" (ngModelChange)="model.setNewProjectName($event)">
+  <input type="text" class="form-control" id="new-project-name" (keyup)="getAdding().handleAddingNewProjectKeyUp($event)"
+        [ngModel]="getAdding().getModel().getNewProjectName()" (ngModelChange)="getAdding().getModel().setNewProjectName($event)">
         <div class="buttons-container">
             <button class="button small-button insert-button" id="save-subtask-button" 
-            (click)="addNewProject()">Zapisz</button>
+            (click)="getAdding().addNewProject()">Zapisz</button>
             <button class="button small-button insert-button" id="cancel-subtask-button"
-            (click)="closeAddingNewProject()">Anuluj</button>
+            (click)="getAdding().closeAddingNewProject()">Anuluj</button>
         </div>
 </ng-template>

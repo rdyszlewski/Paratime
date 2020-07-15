@@ -56,8 +56,8 @@ export class LabelAddingController{
     
     public handleKeysOnNewLabelInput(event:KeyboardEvent){
         EditInputHandler.handleKeyEvent(event, 
-        ()=>this.addNewLabel(),
-        ()=>this.cancelAddingLabel()
+            ()=>this.addNewLabel(),
+            ()=>this.cancelAddingLabel()
         );
     }
 }

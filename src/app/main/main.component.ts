@@ -11,7 +11,7 @@ import * as $ from 'jquery';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { StageDetailsComponent } from 'app/stage-details/stage-details.component';
 import { Stage } from 'app/models/stage';
-import { SpecialList } from 'app/projects/special_list';
+import { SpecialList } from 'app/projects/common/special_list';
 
 @Component({
   selector: 'app-main',

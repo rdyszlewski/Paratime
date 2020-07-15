@@ -36,7 +36,6 @@ export class ProjectFilterModel{
     }
 
     public clear(){
-        // TODO: prawdopodobnie okaże się to bez sensu, ponieważ nie ma opcji szukacj wszystkich
         this.withEndDate = false;
         this.status = null;
         this.projectType = null;

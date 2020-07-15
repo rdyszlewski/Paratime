@@ -11,7 +11,7 @@ import { FocusHelper } from 'app/common/view_helper';
 import * as $ from 'jquery';
 import { KeyCode } from 'app/common/key_codes';
 import { Priority } from 'app/models/priority';
-import { SpecialList } from 'app/projects/special_list';
+import { SpecialList } from 'app/projects/common/special_list';
 
 
 @Component({

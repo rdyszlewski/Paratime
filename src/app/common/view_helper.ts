@@ -7,3 +7,13 @@ export class FocusHelper{
         },0); 
     }
 }
+
+export class ScrollBarHelper{
+
+    public static moveToBottom(elementName:string){
+        let scrollContainer = $("#projects-list");
+        setTimeout(()=>{
+          scrollContainer.animate({ scrollTop: $(document).height() }, 1000);;
+        },0);
+    }
+}
