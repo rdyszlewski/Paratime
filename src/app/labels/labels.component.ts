@@ -1,11 +1,11 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
-import { LabelsModel } from './list.model';
+import { LabelsModel } from './common/list.model';
 import { DataService } from 'app/data.service';
 import { MatDialog } from '@angular/material/dialog';
-import { LabelEditingManager } from './editing/label.editing.manager';
-import { LabelAddingManager } from './adding/label.adding.manager';
-import { LabelViewState } from './label_view_state';
-import { LabelRemovingManager } from './removing/label.removing.manager';
+import { LabelEditingController } from './editing/label.editing.controller';
+import { LabelAddingController } from './adding/label.adding.controller';
+import { LabelViewState } from './common/label_view_state';
+import { LabelRemovingController } from './removing/label.removing.controller';
 
 @Component({
   selector: 'app-labels',
@@ -22,18 +22,18 @@ export class LabelsComponent implements OnInit {
   public model: LabelsModel = new LabelsModel();
   public state: LabelViewState = new LabelViewState();
 
-  private editingManager: LabelEditingManager;
-  private addingManager: LabelAddingManager;
-  private removingManager: LabelRemovingManager;
+  private editingManager: LabelEditingController;
+  private addingManager: LabelAddingController;
+  private removingManager: LabelRemovingController;
 
   constructor(public dialog:MatDialog) { 
    
   }
 
   ngOnInit(): void {
-    this.editingManager = new LabelEditingManager(this.state, this.updateEvent);
-    this.addingManager = new LabelAddingManager(this.state, this.model, this.updateEvent);
-    this.removingManager = new LabelRemovingManager(this.model, this.dialog, this.updateEvent);
+    this.editingManager = new LabelEditingController(this.state, this.updateEvent);
+    this.addingManager = new LabelAddingController(this.state, this.model, this.updateEvent);
+    this.removingManager = new LabelRemovingController(this.model, this.dialog, this.updateEvent);
     this.loadLabels();
   }
 

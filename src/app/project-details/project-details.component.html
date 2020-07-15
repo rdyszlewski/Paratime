@@ -1,6 +1,6 @@
 <div class="app-panel shadow">
     <div class="tool-panel">
-        <h3 class="panel-header">{{model.getProject().getName()}}</h3>
+        <h3 class="panel-header">{{getModel().getProject().getName()}}</h3>
         <button class="close-button" (click)="closeView()">X</button>
     </div>
     <form class="project-form">
@@ -12,7 +12,7 @@
             <ng-container [ngTemplateOutlet]="project_name"></ng-container>
         </mat-expansion-panel>
 
-        <mat-expansion-panel class="form-group" [expanded]="model.getProject().getDescription()!=null">
+        <mat-expansion-panel class="form-group" [expanded]="getModel().getProject().getDescription()!=null">
             <mat-expansion-panel-header class="form-group-header">
                 Opis
             </mat-expansion-panel-header>
@@ -23,7 +23,7 @@
             <mat-expansion-panel-header class="form-group-header">
                 Typ
             </mat-expansion-panel-header>
-            <<ng-container [ngTemplateOutlet]="project_type"></ng-container>
+            <ng-container [ngTemplateOutlet]="project_type"></ng-container>
         </mat-expansion-panel>
     
         <mat-expansion-panel class="form-group" [expanded]="true">
@@ -33,21 +33,21 @@
             <ng-container [ngTemplateOutlet]="project_status"></ng-container>
         </mat-expansion-panel>
 
-        <mat-expansion-panel class="form-group" [expanded]="model.getProject().getStartDate()!=null">
+        <mat-expansion-panel class="form-group" [expanded]="getModel().getProject().getStartDate()!=null">
             <mat-expansion-panel-header class="form-group-header">
                 Data początkowa
             </mat-expansion-panel-header>
             <ng-container [ngTemplateOutlet]="project_start_date"></ng-container>
         </mat-expansion-panel>
     
-        <mat-expansion-panel class="form-group" [expanded]="model.getProject().getEndDate()!=null">
+        <mat-expansion-panel class="form-group" [expanded]="getModel().getProject().getEndDate()!=null">
             <mat-expansion-panel-header class="form-group-header">
                 Data końcowa
             </mat-expansion-panel-header>
             <ng-container [ngTemplateOutlet]="project_end_date"></ng-container>
         </mat-expansion-panel>
 
-        <mat-expansion-panel class="form-group" [expanded]="model.getProject().getStages().length > 0">
+        <mat-expansion-panel class="form-group" [expanded]="getModel().getProject().getStages().length > 0">
             <mat-expansion-panel-header class="form-group-header">
                 Etapy
             </mat-expansion-panel-header>
@@ -58,22 +58,22 @@
 
 <ng-template #project_name>
     <input type="text" class="form-control" id="project-name" name='name'
-            [ngModel]='model.getProject().getName()' (ngModelChange)="model.getProject().setName($event)"
+            [ngModel]='getModel().getProject().getName()' (ngModelChange)="getModel().getProject().setName($event)"
             (keyup.enter)="updateProject()" (focusout)="updateProject()">
-    <div *ngIf="!model.isNameValid() && model.isNameChanged()"
+    <div *ngIf="!getValidator().isNameValid() && getChangeDetector().isNameChanged()"
     class="invalid-feedback">Nazwa nie może być pusta</div>
 </ng-template>
 
 <ng-template #project_description>
     <textarea class="form-control" id="project-description" name="description" rows="4"
-        [ngModel]='model.getProject().getDescription()' (ngModelChange)="model.getProject().setDescription($event)"
+        [ngModel]='getModel().getProject().getDescription()' (ngModelChange)="getModel().getProject().setDescription($event)"
         (keyup.enter)="updateProject()" (focusout)="updateProject()">
     </textarea>
 </ng-template>
 
 <ng-template #project_type>
     <select class="form-control" id="project-type" name="type"
-        [ngModel]='model.getProject().getType()' (ngModelChange)="model.getProject().setType($event)"
+        [ngModel]='getModel().getProject().getType()' (ngModelChange)="getModel().getProject().setType($event)"
         (change)="updateProject()">
         <option [ngValue]="projectType.DEFAULT">Nieokreślony</option>
         <option [ngValue]="projectType.SMALL">Mały</option>
@@ -84,7 +84,7 @@
 
 <ng-template #project_status>
     <select class="form-control" id="project-status" name="status"
-        [ngModel]='model.getProject().getStatus()' (ngModelChange)="model.getProject().setStatus($event)"
+        [ngModel]='getModel().getProject().getStatus()' (ngModelChange)="getModel().getProject().setStatus($event)"
         (change)="updateProject()">
         <option [ngValue]="status.STARTED">Aktywny</option>
         <option [ngValue]="status.ENDED">Zakończony</option>
@@ -96,7 +96,7 @@
 <ng-template #project_start_date>
     <div class="datepicker-container">
         <input class='form-control' id="project-start-date" name="start-date" [matDatepicker]="startDatePicker"  
-        [ngModel]='model.getProject().getStartDate()' (ngModelChange)="model.getProject().setStartDate($event)" 
+        [ngModel]='getModel().getProject().getStartDate()' (ngModelChange)="getModel().getProject().setStartDate($event)" 
         (dateChange)="updateProject()">
         <mat-datepicker-toggle [for]="startDatePicker" class='datepicker'></mat-datepicker-toggle>
         <mat-datepicker #startDatePicker></mat-datepicker>
@@ -106,25 +106,25 @@
 <ng-template #project_end_date>
     <div class="datepicker-container">
         <input matInput class='form-control' id="project-end-date" name="end-date" [matDatepicker]="endDatePicker"
-        [ngModel]='model.getProject().getEndDate()' (ngModelChange)="model.getProject().setEndDate($event)"
+        [ngModel]='getModel().getProject().getEndDate()' (ngModelChange)="getModel().getProject().setEndDate($event)"
         (dateChange)="updateProject()">
         <mat-datepicker-toggle [for]="endDatePicker" class="datepicker"></mat-datepicker-toggle>
         <mat-datepicker #endDatePicker></mat-datepicker>
     </div>
-    <div *ngIf="!model.isEndDateValid() && model.isEndDateChanged()"
+    <div *ngIf="!getValidator().isEndDateValid() && getChangeDetector().isEndDateChanged()"
     class="invalid-feedback">Data końcowa nie może być wcześniejsza niż początkowa</div>
 </ng-template>
 
 <ng-template #project_stages>
     <div class="list border" id="stages-list">
-        <div *ngFor="let stage of model.getProject().getStages()" class="stage-list-item list-item block transparent-border" >
+        <div *ngFor="let stage of getModel().getProject().getStages()" class="stage-list-item list-item block transparent-border" >
             <ng-container [ngTemplateOutlet]="stage_item" [ngTemplateOutletContext]="{$implicit:stage}"></ng-container>
         </div>
-        <div *ngIf="model.isAddingStageMode()" >
+        <div *ngIf="getStages().getModel().isAddingStageOpen()" >
             <ng-container [ngTemplateOutlet]="new_stage"></ng-container>
         </div>
-        <button class="button border" (click)='onCreateStageClick()'
-            *ngIf="!model.isAddingStageMode()">Dodaj etap</button>
+        <button class="button border" (click)='getStages().onCreateStageClick()'
+            *ngIf="!getStages().getModel().isAddingStageOpen()">Dodaj etap</button>
     </div>
 </ng-template>
 
@@ -147,13 +147,13 @@
 
 <ng-template #stage_options let-stage>
     <div class="list-item-options" 
-        (click)='onStageMenuClick($event, stage)'
+        (click)='getStages().onStageMenuClick($event, stage)'
         [matMenuTriggerFor]="stageMenu">
         <!-- TODO: spróbować przenieść to menu gdzieś indziej -->
         <mat-menu #stageMenu="matMenu">
 
             <ng-template matMenuContent >
-                <button mat-menu-item (click)="onEditStage(stage)">
+                <button mat-menu-item (click)="getStages().onEditStage(stage)">
                     Edytuj
                   </button>
                   <button mat-menu-item (click)="onRemoveStage(stage)">
@@ -166,12 +166,12 @@
 </ng-template>
 
 <ng-template #new_stage>
-    <input type="text" class="form-control" id="new-stage-name" (keyup)="handleAddingNewStageKeyUp($event)" name="new-state-name"
-                [ngModel]="model.getNewStageName()" (ngModelChange)="model.setNewStageName($event)">
+    <input type="text" class="form-control" id="new-stage-name" (keyup)="getStages().handleAddingNewStageKeyUp($event)" name="new-state-name"
+                [ngModel]="getStages().getModel().getNewStageName()" (ngModelChange)="getStages().getModel().setNewStageName($event)">
     <div class="buttons-container">
         <button class="button small-button insert-button" id="save-subtask-button" 
-        (click)="addNewStage()">Zapisz</button>
+        (click)="getStages().addNewStage()">Zapisz</button>
         <button class="button small-button insert-button" id="cancel-subtask-button"
-        (click)="closeAddingNewStage()">Anuluj</button>
+        (click)="getStages().closeAddingNewStage()">Anuluj</button>
     </div>
 </ng-template>

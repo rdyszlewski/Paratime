@@ -64,7 +64,7 @@ export class MainComponent implements OnInit {
     this.stageDetailsView = $('#stage-details');
 
     this.setOriginalWidth();
-    this.deleteDatabase();
+    // this.deleteDatabase();
   }
 
   // metoda do testów TEST

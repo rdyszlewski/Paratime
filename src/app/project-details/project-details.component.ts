@@ -3,10 +3,13 @@ import { Project } from 'app/models/project';
 import { ProjectType } from 'app/models/project_type';
 import { Status } from 'app/models/status';
 import { DataService } from 'app/data.service';
-import { ProjectDetails } from './model';
+import { ProjectDetails } from './model/model';
 import { Stage } from 'app/models/stage';
-import { KeyCode } from 'app/common/key_codes';
-import { FocusHelper } from 'app/common/view_helper';
+import { ProjectDetailsState } from './model/state';
+import { ProjectChangeDetector } from './model/change.detector';
+import { ProjectValidator } from './model/validator';
+import { ProjectStagesController } from './stage/project.stages.controller';
+import { DateFormatter } from 'app/common/date_formatter';
 
 @Component({
   selector: 'app-project-details',
@@ -15,31 +18,59 @@ import { FocusHelper } from 'app/common/view_helper';
 })
 export class ProjectDetailsComponent implements OnInit {
 
-  private STAGE_NAME_INPUT = '#new-stage-name';
 
   @Output() closeEvent: EventEmitter<null> = new EventEmitter();
   @Output() saveEvent: EventEmitter<Project> = new EventEmitter();
   @Output() updateEvent: EventEmitter<Project> = new EventEmitter();
   @Output() editStageEvent: EventEmitter<Stage> = new EventEmitter();
  
-  public model: ProjectDetails = new ProjectDetails();
+  private model: ProjectDetails;
+  private state: ProjectDetailsState;
+  private changeDetector: ProjectChangeDetector;
+  private validator: ProjectValidator;
+  private stageController: ProjectStagesController;
+
+  // enums
   public projectType = ProjectType;
   public status = Status;
 
-  constructor() { }
-
   ngOnInit(): void {
-    // TODO: usunąć to
-    this.model.getProject().setId(1);
+    this.model = new ProjectDetails();
+    this.state = new ProjectDetailsState(this.model);
+    this.changeDetector = new ProjectChangeDetector(this.model);
+    this.validator = new ProjectValidator(this.model);
+    this.stageController = new ProjectStagesController(this.editStageEvent);
+  }
+
+  public getModel():ProjectDetails{
+    return this.model;
+  }
+
+  public getState(): ProjectDetailsState{
+    return this.state;
+  }
+
+  public getChangeDetector(): ProjectChangeDetector{
+    return this.changeDetector;
+  }
+
+  public getValidator(): ProjectValidator{
+    return this.validator;
+  }
+
+  public getStages():ProjectStagesController{
+    return this.stageController;
   }
 
   public setProject(project:Project){
     this.model.setProject(project);
+    this.stageController.setProject(project);
   }
 
-  public closeView(){
-    this.closeEvent.emit();
+  public getDateText(date:Date){
+    return DateFormatter.format(date);
   }
+
 
   public updateProject(){
     // TODO: można też zrobić aktualizację dopiero przy zamykaniu okna. W ten sposób będzie sporo przesyłania danych na serwer
@@ -48,58 +79,13 @@ export class ProjectDetailsComponent implements OnInit {
     });
   }
 
-  public getDateText(date:Date){
-    return date.toDateString();
-  }
-
-  public onStageMenuClick(event: MouseEvent, stage:Stage){
-
-  }
-
-  public onEditStage(stage:Stage){
-    this.editStageEvent.emit(stage);
-  }
-
   public onRemoveStage(stage:Stage){
     DataService.getStoreManager().getStageStore().removeStage(stage.getId()).then(()=>{
       this.model.getProject().removeStage(stage);
     });
   }
 
-  public handleAddingNewStageKeyUp(event:KeyboardEvent){
-    switch(event.keyCode){
-      case KeyCode.ENTER:
-        this.addNewStage();
-        break;
-      case KeyCode.ESC:
-        this.closeAddingNewStage();
-        break;
-    }
+  public closeView(){
+    this.closeEvent.emit();
   }
-
-  public addNewStage(){
-      const stage = new Stage();
-      stage.setName(this.model.getNewStageName());
-      stage.setProject(this.model.getProject());
-      this.saveStage(stage);
-  }
-
-  private saveStage(stage:Stage){
-    DataService.getStoreManager().getStageStore().createStage(stage).then(insertedStage=>{
-      this.model.getProject().addStage(insertedStage);
-      this.closeAddingNewStage();
-    });
-  }
-  
-  public closeAddingNewStage(){
-    this.model.setAddingStageMode(false);
-  }
-
-  public onCreateStageClick(){
-    this.model.setAddingStageMode(true);
-    this.model.setNewStageName("");
-    FocusHelper.focus(this.STAGE_NAME_INPUT);
-  }
-
-
 }

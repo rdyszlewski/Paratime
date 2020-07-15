@@ -1,13 +1,13 @@
 import { LabelAddingModel } from './label.adding.model';
-import { LabelViewState } from '../label_view_state';
+import { LabelViewState } from '../common/label_view_state';
 import { FocusHelper } from 'app/common/view_helper';
 import { Label } from 'app/models/label';
 import { DataService } from 'app/data.service';
 import { EventEmitter } from '@angular/core';
 import { EditInputHandler } from 'app/common/edit_input_handler';
-import { LabelsModel } from '../list.model';
+import { LabelsModel } from '../common/list.model';
 
-export class LabelAddingManager{
+export class LabelAddingController{
 
     private LABEL_INPUT_ID = "#label";
 

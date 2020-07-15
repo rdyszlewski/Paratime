@@ -2,10 +2,10 @@ import { Label } from 'app/models/label';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogHelper } from 'app/common/dialog';
 import { DataService } from 'app/data.service';
-import { LabelsModel } from '../list.model';
+import { LabelsModel } from '../common/list.model';
 import { EventEmitter } from '@angular/core';
 
-export class LabelRemovingManager{
+export class LabelRemovingController{
     
     private dialog: MatDialog;
     private listModel: LabelsModel;

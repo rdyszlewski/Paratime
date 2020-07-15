@@ -4,9 +4,9 @@ import { DataService } from 'app/data.service';
 import { EventEmitter } from '@angular/core';
 import { EditInputHandler } from 'app/common/edit_input_handler';
 import { LabelEditingModel } from './label.editing.model';
-import { LabelViewState } from '../label_view_state';
+import { LabelViewState } from '../common/label_view_state';
 
-export class LabelEditingManager{
+export class LabelEditingController{
 
     private LABEL_ITEM_ID = "#label-name-input-";
 
