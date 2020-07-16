@@ -7,6 +7,8 @@ export class TasksModel{
     private project: Project = new Project();
     private filteredList: FilteredList<Task> = new FilteredList();
     private taskWithOpenMenu: Task;
+    // TODO: przemysleć to
+    private tasks: Task[] = []
     
     private open;
 
@@ -21,9 +23,7 @@ export class TasksModel{
     }
 
     public setTasks(tasks:Task[]){
-        // this.tasks = tasks;
-        // TODO: sprawdzić, czy to będzie dobrze działać
-        this.project.setTasks(tasks);
+        this.tasks = tasks;
         this.updateFilteredList();
     }
 
@@ -32,8 +32,7 @@ export class TasksModel{
         this.project = project;
         if(project){
             this.open = true;
-            // TODO: sprawdzać, czy to niczego nie zepsuje
-            // this.tasks = this.project.getTasks();
+            this.tasks = this.project.getTasks();
         } else {
             this.open = false;
         }
@@ -41,9 +40,30 @@ export class TasksModel{
     }
 
     private updateFilteredList(){
-        // TODO: przemyśleć, ajk to poprawnie powinno wyglądać
-        // this.filteredList.setSource(this.tasks);
-        this.filteredList.setSource(this.project.getTasks());
+        const tasks = this.getSortedTasks(this.tasks);
+        this.filteredList.setSource(tasks);
+        
+    }
+
+    private getSortedTasks(elements: Task[]):Task[]{
+        const result = [];
+        if(elements.length == 0){
+            return result;
+        }
+        let currentTask = this.findFirtstTask(elements);
+        while(currentTask != null){
+            result.push(currentTask);
+            currentTask = this.findTaskByOrderPrev(currentTask.getId(), elements);
+        }
+        return result;
+    }
+
+    private findFirtstTask(elements:Task[]){
+        return elements.find(task=>task.getOrderPrev() == null);
+    }
+
+    private findTaskByOrderPrev(prevId: number, elements:Task[]):Task{
+        return elements.find(task=>task.getOrderPrev() == prevId);
     }
 
     public getTasks():Task[]{
@@ -78,5 +98,15 @@ export class TasksModel{
 
     public close(){
         this.open = false;
+    }
+
+    public getTaskByIndex(index: number): Task{
+        const task = this.filteredList.getElements()[index];
+        return task;
+    }
+
+    public getTaskByOrderPrev(prevId: number): Task{
+        return this.project.getTasks().find(task=>task.getOrderPrev() == prevId);
+        
     }
 }

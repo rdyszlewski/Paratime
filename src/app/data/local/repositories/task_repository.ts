@@ -87,6 +87,7 @@ export class LocalTaskRepository implements ITaskRepository{
         newTask.setProjectID(task.getProjectID());
         newTask.setPriority(task.getPriority());
         newTask.setProjectStageID(task.getProjectStageID());
+        newTask.setOrderPrev(task.getOrderPrev());
 
         return newTask;
     }

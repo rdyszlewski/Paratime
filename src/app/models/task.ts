@@ -5,6 +5,7 @@ import { Label } from './label';
 import { IFilterable } from 'app/common/filter/i_filterable';
 import { Priority } from './priority';
 import { Stage } from './stage';
+import { NumberInput } from '@angular/cdk/coercion';
 
 export class Task implements IFilterable{
 
@@ -26,6 +27,8 @@ export class Task implements IFilterable{
     private priority: Priority = null;
     private projectStage: Stage = null;
     private projectStageID: number = null;
+
+    private orderPrev: number = null;
 
     constructor(name=null, description=null, status=null){
         this.name = name;
@@ -197,4 +200,11 @@ export class Task implements IFilterable{
         this.projectStageID = id;
     }
     
+    public getOrderPrev():number{
+        return this.orderPrev;
+    }
+
+    public setOrderPrev(prevId: number):void{
+        this.orderPrev = prevId;
+    }
 }

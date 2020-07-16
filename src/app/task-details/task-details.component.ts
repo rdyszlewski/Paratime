@@ -10,6 +10,7 @@ import { TaskValidator } from './model/validator';
 import { TaskChangeDetector } from './model/change.detector';
 import { SubtasksController } from './subtasks/subtasks.editing.controller';
 import { TaskLabelsController } from './labels/task.labels.controller';
+import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-task-details',
@@ -123,5 +124,15 @@ export class TaskDetailsComponent implements OnInit {
   public toggleTaskImportance(){
     this.model.toggleTaskImportance();
     this.updateTask();
+  }
+
+  public onDrop(event: CdkDragDrop<any[]>){
+    console.log("Położono to tutaj");
+    if(event.previousContainer === event.container){
+      // TODO: zapisywanie kolejności w bazie danych
+      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+    } else {
+      transferArrayItem(event.previousContainer.data, event.container.data, event.previousIndex, event.currentIndex);
+    }
   }
 }

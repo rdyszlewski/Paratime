@@ -4,6 +4,7 @@ import { EventEmitter } from '@angular/core';
 import { DialogHelper } from 'app/common/dialog';
 import { MatDialog } from '@angular/material/dialog';
 import { DataService } from 'app/data.service';
+import { ignoreElements } from 'rxjs/operators';
 
 export class ItemMenuController{
     
@@ -44,11 +45,26 @@ export class ItemMenuController{
       }
     
       private removeTask():void{
-        const taskId = this.model.getTaskWithOpenMenu().getId();
+        // TODO: ustawianie odpowiedniej pozycji m,ożna przenieść do zarządzania bazą danych
+        const task = this.model.getTaskWithOpenMenu();
+        this.updateOrderPrev(task);
+        const taskId = task.getId();
         DataService.getStoreManager().getTaskStore().removeTask(taskId).then(()=>{
           this.model.removeTask(this.model.getTaskWithOpenMenu());
           this.removeEvent.emit(taskId);
           this.model.setTaskWithOpenMenu(null);
         });
+      }
+
+  private updateOrderPrev(task: Task) {
+    const nextTask = this.model.getProject().getTasks().find(x => x.getOrderPrev() == task.getId());
+    if (nextTask) {
+      nextTask.setOrderPrev(task.getOrderPrev());
+      this.updateTask(nextTask);
+    }
+  }
+
+      private updateTask(task: Task){
+        DataService.getStoreManager().getTaskStore().updateTask(task);
       }
 }

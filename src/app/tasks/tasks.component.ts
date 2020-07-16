@@ -4,17 +4,15 @@ import { Task } from 'app/models/task';
 import { Project } from 'app/models/project';
 import { Status } from 'app/models/status';
 import { TasksModel } from './model';
-import { DataService } from 'app/data.service';
 import { MatDialog } from '@angular/material/dialog';
-import { DialogHelper } from 'app/common/dialog';
-import { Priority } from 'app/models/priority';
-import { SpecialList } from 'app/projects/common/special_list';
 import { TaskItemInfo } from './common/task.item.info';
 import { TaskItemController } from './common/task.item.controller';
 import { SpecialListTaks as SpecialListTask } from './common/special.list';
 import { ItemMenuController } from './common/item.menu.controller';
 import { TaskAddingController } from './adding/task.adding.controller';
 import { TaskFilteringController } from './filtering/task.filtering.controller';
+import {CdkDragDrop, moveItemInArray, transferArrayItem} from "@angular/cdk/drag-drop"
+import { DataService } from 'app/data.service';
 
 
 @Component({
@@ -87,6 +85,44 @@ export class TasksComponent implements OnInit {
     if(task.getProjectID()==this.model.getProject().getId()){
       this.model.addTask(task);
     }
+  }
+
+  onDrop(event:CdkDragDrop<string[]>){
+    console.log("Położono to tutaj");
+    if(event.previousContainer === event.container){
+      this.replaceTasksOrder(event.previousIndex, event.currentIndex);
+      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+
+    } else {
+      transferArrayItem(event.previousContainer.data, event.container.data, event.previousIndex, event.currentIndex);
+    }
+  }
+
+  private replaceTasksOrder(previousIndex: number, currentIndex: number) {
+    const task1 = this.model.getTaskByIndex(previousIndex);
+    const task2 = this.model.getTaskByIndex(currentIndex);
+    const prevTask1 = this.model.getTaskByOrderPrev(task1.getId());
+    const prevTask2 = this.model.getTaskByOrderPrev(task2.getId());
+    if (prevTask1) {
+      prevTask1.setOrderPrev(task2.getId());
+      this.updateTask(prevTask1);
+    }
+    if (prevTask2) {
+      prevTask2.setOrderPrev(task1.getId());
+      this.updateTask(prevTask2);
+    }
+    const prev = task1.getOrderPrev();
+    task1.setOrderPrev(task2.getOrderPrev());
+    task2.setOrderPrev(prev);
+
+    this.updateTask(task1);
+    this.updateTask(task2);
+  }
+
+  private updateTask(task:Task){
+    DataService.getStoreManager().getTaskStore().updateTask(task).then(updatedTask=>{
+      // TODO: można zrobić jakieś działania po zaktualizowaniu zadań
+    });
   }
 
 }

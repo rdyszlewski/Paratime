@@ -11,8 +11,20 @@
     <ng-container [ngTemplateOutlet]="filter_container"></ng-container>
   </div>
 
-  <div id="tasks-list" class="list border">
-      <ng-container [ngTemplateOutlet]="tasks_list"></ng-container>
+  <div id="tasks-list" class="list border" cdkDropList
+    #taskList="cdkDropList"
+    [cdkDropListData]="getModel().getTasks()"
+    (cdkDropListDropped)="onDrop($event)">
+
+      <div *ngFor='let task of getModel().getTasks()' class="task-list-item list-item block transparent-border" 
+      (click)="getMenu().onEditTask(task)" 
+      cdkDrag>
+        <ng-container [ngTemplateOutlet]="task_item" [ngTemplateOutletContext]="{$implicit:task}"></ng-container>
+      </div>
+
+      <div *ngIf="getAdding().getModel().isAddingOpen()" >
+        <ng-container [ngTemplateOutlet]="new_task"></ng-container>
+      </div>
   </div>
   
   <button class="button border" (click)='getAdding().openAddingTask()'
@@ -75,19 +87,6 @@
     <button class="small-button button" (click)="getFiltering().searchFilter()">
       Szukaj
     </button>
-  </div>
-</ng-template>
-
-<ng-template #tasks_list>
-  <div *ngFor='let task of getModel().getTasks()' class="task-list-item list-item block transparent-border" 
-        (click)="getMenu().onEditTask(task)">
-    <ng-container [ngTemplateOutlet]="task_item" [ngTemplateOutletContext]="{$implicit:task}"></ng-container>
-    
-    
-  </div>
-
-  <div *ngIf="getAdding().getModel().isAddingOpen()" >
-    <ng-container [ngTemplateOutlet]="new_task"></ng-container>
   </div>
 </ng-template>
 

@@ -63,7 +63,8 @@ export class TaskFilteringController{
             
           });
         }
-    
+        
+       
         this.mainModel.setTasks(resultFilter);
       }
 

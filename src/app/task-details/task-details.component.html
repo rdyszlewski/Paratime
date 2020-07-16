@@ -176,8 +176,11 @@
 </ng-template>
 
 <ng-template #task_subtasks_group>
-    <div class="list border">
-        <div *ngFor="let subtask of getModel().getTask().getSubtasks()" class="list-item small-list-item transparent-border">
+    <div class="list border"  cdkDropList
+    #subtaskList="cdkDropList"
+    [cdkDropListData]="getModel().getTask().getSubtasks()"
+    (cdkDropListDropped)="onDrop($event)">
+        <div *ngFor="let subtask of getModel().getTask().getSubtasks()" class="list-item small-list-item transparent-border" cdkDrag>
             <ng-container [ngTemplateOutlet]="subtask_item" [ngTemplateOutletContext]="{$implicit:subtask}"></ng-container>
             <ng-container [ngTemplateOutlet]="subtask_edit" [ngTemplateOutletContext]="{$implicit:subtask}"></ng-container>
         </div>

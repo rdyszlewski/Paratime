@@ -35,6 +35,11 @@ export class TaskAddingController{
         const task = new Task();
         task.setName(this.model.getNewTaskName());
         task.setProject(this.mainModel.getProject());
+        const lastElement = this.mainModel.getTasks()[this.mainModel.getTasks().length-1];
+        if(lastElement){
+            task.setOrderPrev(lastElement.getId());
+        }
+        // TODO: pobranie ostantiego elementu na liście i wstawienie 
         DataService.getStoreManager().getTaskStore().createTask(task).then(insertedTask=>{
             this.mainModel.addTask(insertedTask);
             this.closeAddingNewTask();

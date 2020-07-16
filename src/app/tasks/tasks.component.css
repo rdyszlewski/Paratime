@@ -135,3 +135,22 @@
 .list-item-top{
     display: flex;
 }
+
+/* .cdk-drag-placeholder {
+    background: #ccc;
+    border: dotted 1px #999;
+    transition: transform 500ms ease;
+} */
+
+	
+.box-custom-placeholder {
+    height: 20px;
+    width: 120px;
+    background: #fff;
+    border: dotted 1px #0084ff;
+    transition: transform 200ms ease;
+}
+ 
+.box-list.cdk-drop-list-dragging .drag-box:not(.cdk-drag-placeholder) {
+    transition: transform 500ms ease;
+}

@@ -25,6 +25,7 @@ import { DialogComponent } from './dialog/dialog.component';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import { StageDetailsComponent } from './stage-details/stage-details.component';
 import { PomodoroComponent } from './pomodoro/pomodoro.component';
+import {DragDropModule} from "@angular/cdk/drag-drop";
 
 @NgModule({
   declarations: [
@@ -54,7 +55,8 @@ import { PomodoroComponent } from './pomodoro/pomodoro.component';
     MatExpansionModule,
     TooltipModule,
     MatDialogModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    DragDropModule
   ],
   entryComponents:[
     DialogComponent
