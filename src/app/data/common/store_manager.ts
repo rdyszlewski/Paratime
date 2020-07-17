@@ -4,6 +4,7 @@ import { SubtaskStore } from './store/subtask_store';
 import { LabelStore } from './store/label_store';
 import { IDataSource } from './source';
 import { StageStore } from './store/stage_store';
+import { PomodoroStore } from './store/pomodoro_store';
 
 export class StoreManager{
 
@@ -12,6 +13,7 @@ export class StoreManager{
     private subtaskStore: SubtaskStore;
     private labelStore: LabelStore;
     private stageStore: StageStore;
+    private pomodoroStore: PomodoroStore;
 
     constructor(dataSource: IDataSource){
         this.labelStore = new LabelStore(dataSource.getLabelRepository(), dataSource.getTaskLabelsRepository());
@@ -19,6 +21,7 @@ export class StoreManager{
         this.stageStore = new StageStore(dataSource.getStageRepository());
         this.taskStore = new TaskStore(dataSource.getTaskRepository(), this.subtaskStore, this.labelStore, dataSource.getProjectRepository(), this.stageStore);
         this.projectStore = new ProjectStore(dataSource.getProjectRepository(), this.taskStore, this.stageStore);
+        this.pomodoroStore = new PomodoroStore(dataSource.getPomodoroRepository());
     }
 
     public getProjectStore():ProjectStore{
@@ -39,5 +42,9 @@ export class StoreManager{
 
     public getStageStore():StageStore{
         return this.stageStore;
+    }
+
+    public getPomodoroStore():PomodoroStore{
+        return this.pomodoroStore;
     }
 }

@@ -4,6 +4,7 @@ import { ISubtaskRepository } from './repositories/subtask_repository';
 import { ILabelRepository } from './repositories/label_repository';
 import { ITaskLabelsRepository } from './repositories/task_labels_repository';
 import { IProjectStageRepository } from './repositories/stage_repository';
+import { IPomodoroRepository } from './repositories/pomodoro_repository';
 
 export interface IDataSource{
     getTaskRepository():ITaskRepository;
@@ -12,4 +13,5 @@ export interface IDataSource{
     getLabelRepository(): ILabelRepository;
     getTaskLabelsRepository(): ITaskLabelsRepository;
     getStageRepository(): IProjectStageRepository;
+    getPomodoroRepository(): IPomodoroRepository;
 }

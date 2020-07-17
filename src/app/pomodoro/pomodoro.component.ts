@@ -1,6 +1,8 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { PomodoroModel } from './model';
 import { State } from './state';
+import { PomodoroSettingsStore } from './storage/settings.storage';
+import { Task } from 'app/models/task';
 
 @Component({
   selector: 'app-pomodoro',
@@ -68,5 +70,13 @@ export class PomodoroComponent implements OnInit {
       case State.LONG_BREAK:
         return "Rozpocznij długą przerwę";
     }
+  }
+
+  public updateSettings(){
+    PomodoroSettingsStore.saveSettings(this.model.getSettings());
+  }
+
+  public addTaskToPomodoro(task:Task){
+    this.model.setCurrentTask(task);
   }
 }

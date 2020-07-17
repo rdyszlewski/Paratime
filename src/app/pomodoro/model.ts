@@ -1,24 +1,37 @@
-import { interval } from 'rxjs';
-import { takeWhile } from 'rxjs/operators'
 import { State } from './state';
 import { PomodoroSetting } from './settings';
 import { PomodoroTimer } from './timer';
+import { PomodoroSettingsStore } from './storage/settings.storage';
+import { Task } from 'app/models/task';
 
 export class PomodoroModel{
 
     private settings: PomodoroSetting = new PomodoroSetting();
     private timer: PomodoroTimer = new PomodoroTimer();
+    private currentTask: Task;
 
     private settingsOpen: boolean = false;
     
 
     constructor(){
         this.timer.setSettings(this.settings);
-        // TODO: później to usunąć
+        this.initSettings();
+    }
+
+    private initSettings():void{
+        const settings = PomodoroSettingsStore.getSettings();
+        if(settings){
+            this.settings = settings;
+        } else {
+            this.setDefaultSettings();
+        }
+    }
+
+    private setDefaultSettings() {
         this.settings.setWorkTime(25);
         this.settings.setShortBreakTime(5);
         this.settings.setLongBreakTime(15);
-        this.settings.setInterval(2)
+        this.settings.setInterval(2);
     }
 
     public getSettings(){
@@ -39,6 +52,14 @@ export class PomodoroModel{
 
     public isIgnoreBreakVisible(){
         return this.timer.getState() == State.WORK && this.timer.isStateFinished();
+    }
+
+    public getCurrentTask():Task{
+        return this.currentTask;
+    }
+
+    public setCurrentTask(task: Task):void{
+        this.currentTask = task;
     }
     
 }

@@ -4,22 +4,26 @@
         <div class="settings-group">
             <label class="settings-label">Czas pracy</label>
             <input type="number" class="settings-value" 
-            [ngModel]="model.getSettings().getWorkTime()" (ngModelChange)="model.getSettings().setWorkTime($event)">
+            [ngModel]="model.getSettings().getWorkTime()" (ngModelChange)="model.getSettings().setWorkTime($event)"
+            (change)="updateSettings()">
         </div>
         <div class="settings-group">
             <label class="settings-label">Czas krótkiej przerwy</label>
             <input type="number" class="settings-value"
-            [ngModel]="model.getSettings().getShortBreakTime()" (ngModelChange)="model.getSettings().setShortBreakTime($event)">
+            [ngModel]="model.getSettings().getShortBreakTime()" (ngModelChange)="model.getSettings().setShortBreakTime($event)"
+            (change)="updateSettings()">
         </div>
         <div class="settings-group">
             <label class="settings-label">Czas długiej przerwy</label>
             <input type="number" class="settings-value"
-            [ngModel]="model.getSettings().getLongBreakTime()" (ngModelChange)="model.getSettings().setLongBreakTime($event)">
+            [ngModel]="model.getSettings().getLongBreakTime()" (ngModelChange)="model.getSettings().setLongBreakTime($event)"
+            (change)="updateSettings()">
         </div>
         <div class="settings-group">
             <label class="settings-label">Interwał</label>
             <input type="number" class="settings-value"
-            [ngModel]="model.getSettings().getInterval()" (ngModelChange)="model.getSettings().setInterval($event)">
+            [ngModel]="model.getSettings().getInterval()" (ngModelChange)="model.getSettings().setInterval($event)"
+            (change)="updateSettings()">
         </div>
     </div>
 
@@ -37,6 +41,10 @@
     </div>
 
     <div class="timer-panel">
+        <div class="current-task"
+            *ngIf="model.getCurrentTask()">
+            {{model.getCurrentTask().getName()}}
+        </div>
         <div class="timer-state" [ngSwitch]="model.getTimer().getState()">
             <span *ngSwitchCase="state.WORK"> PRACA </span>
             <span *ngSwitchCase="state.SHORT_BREAK"> KRÓTKA PRZERWA </span>

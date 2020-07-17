@@ -12,6 +12,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { StageDetailsComponent } from 'app/stage-details/stage-details.component';
 import { Stage } from 'app/models/stage';
 import { SpecialList } from 'app/projects/common/special_list';
+import { PomodoroComponent } from 'app/pomodoro/pomodoro.component';
 
 @Component({
   selector: 'app-main',
@@ -36,6 +37,9 @@ export class MainComponent implements OnInit {
 
   @ViewChild(StageDetailsComponent)
   private stageDetailsComponent: StageDetailsComponent;
+
+  @ViewChild(PomodoroComponent)
+  private pomodoroComponent: PomodoroComponent;
 
   public projectsOpen = true;
   public projectsDetailsOpen = false;
@@ -230,5 +234,9 @@ export class MainComponent implements OnInit {
 
   public onSpecialListCLick(listType: SpecialList){
     this.tasksComponent.getSpecialList().setSpecialList(listType);
+  }
+
+  public addTaskToPomodoro(task:Task):void{
+    this.pomodoroComponent.addTaskToPomodoro(task);
   }
 }

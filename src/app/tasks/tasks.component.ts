@@ -25,6 +25,7 @@ export class TasksComponent implements OnInit {
   
   @Output() detailsEvent: EventEmitter<Task> = new EventEmitter();
   @Output() removeEvent: EventEmitter<number> = new EventEmitter();
+  @Output() pomodoroEvent: EventEmitter<Task> = new EventEmitter();
   public status = Status;
   
   private model: TasksModel;
@@ -41,7 +42,7 @@ export class TasksComponent implements OnInit {
     this.itemInfo = new TaskItemInfo();
     this.itemController = new TaskItemController();
     this.specialListsController = new SpecialListTask(this.model);
-    this.menuController = new ItemMenuController(this.model, this.detailsEvent, this.removeEvent, this.dialog);
+    this.menuController = new ItemMenuController(this.model, this.detailsEvent, this.removeEvent, this.pomodoroEvent, this.dialog);
     this.addingController = new TaskAddingController(this.model);
     this.filteringController = new TaskFilteringController(this.model);
   }
@@ -124,5 +125,7 @@ export class TasksComponent implements OnInit {
       // TODO: można zrobić jakieś działania po zaktualizowaniu zadań
     });
   }
+
+  
 
 }

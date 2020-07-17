@@ -6,6 +6,7 @@ import { Project } from 'app/models/project';
 import { Label } from 'app/models/label';
 import { TaskLabelsModel } from '../common/models';
 import { Stage } from 'app/models/stage';
+import { PomodoroHistory } from 'app/models/pomodoro.history';
 
 
 export class LocalDatabase extends Dexie{
@@ -18,6 +19,7 @@ export class LocalDatabase extends Dexie{
     private labelsTable: Dexie.Table<Label, number>;
     private taskTagsTable: Dexie.Table<TaskLabelsModel, number>;
     private stagesTable: Dexie.Table<Stage, number>;
+    private pomodoroTable: Dexie.Table<PomodoroHistory, number>;
 
     constructor(){
         super("Database");
@@ -37,17 +39,9 @@ export class LocalDatabase extends Dexie{
             projects: '++id, name, description, startDate, endDate, status, type',
             labels: '++id, name',
             task_labels: '[taskId+labelId], taskId, labelId',
-            stages: "++id, name, description, endDate, status, projectID"
+            stages: "++id, name, description, endDate, status, projectID",
+            pomodoro: "++id, taskId, projectId, time, date"
         });
-    }
-
-    private mapToClasses() {
-        this.projectsTable.mapToClass(Project);
-        this.tasksTable.mapToClass(Task);
-        this.subtasksTable.mapToClass(Subtask);
-        this.labelsTable.mapToClass(Label);
-        this.taskTagsTable.mapToClass(TaskLabelsModel);
-        this.stagesTable.mapToClass(Stage);
     }
 
     private initTables() {
@@ -57,6 +51,17 @@ export class LocalDatabase extends Dexie{
         this.labelsTable = this.table('labels');
         this.taskTagsTable = this.table('task_labels');
         this.stagesTable = this.table('stages');
+        this.pomodoroTable = this.table("pomodoro");
+    }
+
+    private mapToClasses() {
+        this.projectsTable.mapToClass(Project);
+        this.tasksTable.mapToClass(Task);
+        this.subtasksTable.mapToClass(Subtask);
+        this.labelsTable.mapToClass(Label);
+        this.taskTagsTable.mapToClass(TaskLabelsModel);
+        this.stagesTable.mapToClass(Stage);
+        this.pomodoroTable.mapToClass(PomodoroHistory);
     }
 
     public getTasksTable(){
@@ -81,5 +86,9 @@ export class LocalDatabase extends Dexie{
 
     public getStagesTable(){
         return this.stagesTable;
+    }
+
+    public getPomodoroTable(){
+        return this.pomodoroTable;
     }
 }

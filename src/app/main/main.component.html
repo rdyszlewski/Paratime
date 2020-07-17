@@ -26,8 +26,10 @@
         (updateEvent)="onUpdateStage($event)"></app-stage-details>
         
         <app-tasks id='tasks' [hidden]='!tasksOpen'
-        (detailsEvent)="openTaskDetails($event)"
-        (removeEvent)="onRemoveTask($event)"></app-tasks>
+            (detailsEvent)="openTaskDetails($event)"
+            (removeEvent)="onRemoveTask($event)"
+            (pomodoroEvent)="addTaskToPomodoro($event)">
+        </app-tasks>
 
         <app-task-details id="task-details" [hidden]='!tasksDetailsOpen'
         (closeEvent)="closeTaskDetails()"
