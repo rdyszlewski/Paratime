@@ -13,6 +13,7 @@ import { StageDetailsComponent } from 'app/stage-details/stage-details.component
 import { Stage } from 'app/models/stage';
 import { SpecialList } from 'app/projects/common/special_list';
 import { PomodoroComponent } from 'app/pomodoro/pomodoro.component';
+import { KanbanComponent } from 'app/kanban/kanban.component';
 
 @Component({
   selector: 'app-main',
@@ -41,6 +42,9 @@ export class MainComponent implements OnInit {
   @ViewChild(PomodoroComponent)
   private pomodoroComponent: PomodoroComponent;
 
+  @ViewChild(KanbanComponent)
+  private kanbanComponent: KanbanComponent;
+
   public projectsOpen = true;
   public projectsDetailsOpen = false;
   public tasksOpen = true;
@@ -48,6 +52,7 @@ export class MainComponent implements OnInit {
   public labelsOpen = false;
   public stageDetailsOpen = false;
   public pomodoroOpen = false;
+  public kanbanOpen = false;
 
   private projectsView;
   private projectDetailsView;
@@ -60,6 +65,7 @@ export class MainComponent implements OnInit {
   constructor(public snakBar: MatSnackBar) { }
 
   ngOnInit(): void {
+    // this.deleteDatabase();
     // this.configureDexie();
     this.projectsView = $("#projects");
     this.projectDetailsView = $("#projects-details");
@@ -68,7 +74,7 @@ export class MainComponent implements OnInit {
     this.stageDetailsView = $('#stage-details');
 
     this.setOriginalWidth();
-    // this.deleteDatabase();
+    
   }
 
   // metoda do testów TEST
@@ -238,5 +244,16 @@ export class MainComponent implements OnInit {
 
   public addTaskToPomodoro(task:Task):void{
     this.pomodoroComponent.addTaskToPomodoro(task);
+  }
+
+  public openKanban(project:Project){
+    this.tasksOpen = false;
+    this.kanbanOpen = true;
+    this.kanbanComponent.openProject(project);
+  }
+
+  public closeKanban(){
+    this.kanbanOpen = false;
+    this.tasksOpen = true;
   }
 }

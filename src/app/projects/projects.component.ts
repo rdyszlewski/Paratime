@@ -24,6 +24,7 @@ export class ProjectsComponent implements OnInit {
   @Output() loadEvent: EventEmitter<Project> = new EventEmitter();
   @Output() removeEvent: EventEmitter<Project> = new EventEmitter();
   @Output() listEvent: EventEmitter<SpecialList> = new EventEmitter();
+  @Output() kanbanEvent: EventEmitter<Project> = new EventEmitter();
 
   private model: ProjectsModel;
   private state: ProjectsViewState;
@@ -132,5 +133,10 @@ export class ProjectsComponent implements OnInit {
   public toggleProjectsListOpen(event: MouseEvent){
     this.state.toggleProjectsListOpen();
     event.stopPropagation();
+  }
+
+  public openKanban(){
+    // TODO: przerobić sposób przekazywania projektu podczas zdarzenia menu
+    this.kanbanEvent.emit(this.model.getProjectWithOpenMenu());
   }
 }

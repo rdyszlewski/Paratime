@@ -1,7 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { KanbanModel } from './kanban.model';
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { Task } from 'app/models/task';
+import { Project } from 'app/models/project';
+import { DataService } from 'app/data.service';
 
 @Component({
   selector: 'app-kanban',
@@ -9,6 +11,8 @@ import { Task } from 'app/models/task';
   styleUrls: ['./kanban.component.css']
 })
 export class KanbanComponent implements OnInit {
+
+  @Output() closeEvent: EventEmitter<null> = new EventEmitter();
 
   private model: KanbanModel = new KanbanModel();
 
@@ -19,6 +23,16 @@ export class KanbanComponent implements OnInit {
 
   public getModel(){
     return this.model;
+  }
+
+  public openProject(project:Project){
+    console.log("Otwieranie");
+      DataService.getStoreManager().getKanbanStore().getColumnsByProject(project.getId()).then(columns=>{
+        console.log(columns);
+        columns.forEach(column=>{
+          this.model.addColumn(column);
+        })
+      })
   }
 
   public drop(event: CdkDragDrop<Task[]>){
@@ -39,5 +53,8 @@ export class KanbanComponent implements OnInit {
     // TODO: przeniesienie do kolumny
   }
   
+  public closeView(){
+    this.closeEvent.emit();
+  }
 
 }

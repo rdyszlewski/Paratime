@@ -7,6 +7,7 @@ import { Label } from 'app/models/label';
 import { TaskLabelsModel } from '../common/models';
 import { Stage } from 'app/models/stage';
 import { PomodoroHistory } from 'app/models/pomodoro.history';
+import { KanbanColumn, KanbanTask } from 'app/models/kanban';
 
 
 export class LocalDatabase extends Dexie{
@@ -20,6 +21,8 @@ export class LocalDatabase extends Dexie{
     private taskTagsTable: Dexie.Table<TaskLabelsModel, number>;
     private stagesTable: Dexie.Table<Stage, number>;
     private pomodoroTable: Dexie.Table<PomodoroHistory, number>;
+    private kanbanColumnsTable: Dexie.Table<KanbanColumn, number>;
+    private kanbanTasksTable: Dexie.Table<KanbanTask, number>;
 
     constructor(){
         super("Database");
@@ -40,7 +43,9 @@ export class LocalDatabase extends Dexie{
             labels: '++id, name',
             task_labels: '[taskId+labelId], taskId, labelId',
             stages: "++id, name, description, endDate, status, projectID",
-            pomodoro: "++id, taskId, projectId, time, date"
+            pomodoro: "++id, taskId, projectId, time, date",
+            kanban_columns: "++id, projectId, name, default, prevColumnId, nextColumnId",
+            kanban_tasks: "++id, taskId, columnId, prevTaskId, nextTaskId"
         });
     }
 
@@ -52,6 +57,8 @@ export class LocalDatabase extends Dexie{
         this.taskTagsTable = this.table('task_labels');
         this.stagesTable = this.table('stages');
         this.pomodoroTable = this.table("pomodoro");
+        this.kanbanColumnsTable = this.table("kanban_columns");
+        this.kanbanTasksTable = this.table("kanban_tasks");
     }
 
     private mapToClasses() {
@@ -62,6 +69,8 @@ export class LocalDatabase extends Dexie{
         this.taskTagsTable.mapToClass(TaskLabelsModel);
         this.stagesTable.mapToClass(Stage);
         this.pomodoroTable.mapToClass(PomodoroHistory);
+        this.kanbanColumnsTable.mapToClass(KanbanColumn);
+        this.kanbanTasksTable.mapToClass(KanbanTask);
     }
 
     public getTasksTable(){
@@ -90,5 +99,13 @@ export class LocalDatabase extends Dexie{
 
     public getPomodoroTable(){
         return this.pomodoroTable;
+    }
+
+    public getKanbanColumnsTable(){
+        return this.kanbanColumnsTable;
+    }
+
+    public getKanbanTasksTable(){
+        return this.kanbanTasksTable;
     }
 }

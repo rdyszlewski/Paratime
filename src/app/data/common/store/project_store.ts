@@ -3,24 +3,33 @@ import { IProjectRepository } from '../repositories/project_repository';
 import { TaskStore } from './task_store';
 import { StageStore } from './stage_store';
 import { promise } from 'protractor';
+import { KanbanStore } from './kanban_store';
+import { KanbanColumn } from 'app/models/kanban';
 
 export class ProjectStore{
 
     private projectRepository: IProjectRepository;
     private taskStore: TaskStore;
     private stageStore: StageStore;
+    private kanbanStore: KanbanStore;
     
-    constructor(projectRepository: IProjectRepository, taskStore: TaskStore, stageStore: StageStore){
+    constructor(projectRepository: IProjectRepository, taskStore: TaskStore, stageStore: StageStore, kanbanStore: KanbanStore){
         this.projectRepository = projectRepository;
         this.taskStore = taskStore;
         this.stageStore = stageStore;
+        this.kanbanStore = kanbanStore;
     }
 
     // TODO: postarać się, żeby potrzebne elementy były wstrzykiwane
 
     public createProject(project:Project): Promise<Project>{
         return this.projectRepository.insertProject(project).then(insertedId=>{
-            return this.getProjectById(insertedId);
+            const column = new KanbanColumn();
+            column.setDefault(true);
+            column.setProjectId(insertedId);
+            return this.kanbanStore.createColumn(column).then(()=>{
+                return this.getProjectById(insertedId);
+            })
         });
     }
 

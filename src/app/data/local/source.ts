@@ -14,6 +14,10 @@ import { LocalProjectStageRepository } from './repositories/stage_repository';
 import { IProjectStageRepository } from '../common/repositories/stage_repository';
 import { LocalPomodoroRepository } from './repositories/pomodoro_repository';
 import { IPomodoroRepository } from '../common/repositories/pomodoro_repository';
+import { LocalKanbanColumnsRepository } from './repositories/kanban_columns_repository';
+import { LocalKanbanTasksRepository } from './repositories/kanban_tasks_repository';
+import { IKanbanColumnsRepository } from '../common/repositories/kanban_columns_repository';
+import { IKanbanTasksRepository } from '../common/repositories/kanban_tasks_repository';
 
 export class LocalDataSource implements IDataSource{
 
@@ -24,6 +28,8 @@ export class LocalDataSource implements IDataSource{
     private taskLabelsRepository: LocalTaskLabelsRepository;
     private stageRepository: LocalProjectStageRepository;
     private pomodoroRepository: LocalPomodoroRepository;
+    private kanbanColumnsRepository: LocalKanbanColumnsRepository;
+    private kanbanTasksRepository: LocalKanbanTasksRepository;
 
     constructor(){
         let database = new LocalDatabase();
@@ -35,9 +41,10 @@ export class LocalDataSource implements IDataSource{
         this.taskLabelsRepository = new LocalTaskLabelsRepository(database.getTaskLabelsTable());
         this.stageRepository = new LocalProjectStageRepository(database.getStagesTable());
         this.pomodoroRepository = new LocalPomodoroRepository(database.getPomodoroTable());
+        this.kanbanColumnsRepository = new LocalKanbanColumnsRepository(database.getKanbanColumnsTable());
+        this.kanbanTasksRepository = new LocalKanbanTasksRepository(database.getKanbanTasksTable());
     }
     
-
     public getTaskRepository(): ITaskRepository {
         return this.taskRepository;
     }
@@ -64,6 +71,14 @@ export class LocalDataSource implements IDataSource{
 
     public getPomodoroRepository():IPomodoroRepository{
         return this.pomodoroRepository;
+    }
+
+    public getKanbanColumnsRepository(): IKanbanColumnsRepository {
+        return this.kanbanColumnsRepository;
+    }
+    
+    public getKanbanTasksRepository(): IKanbanTasksRepository {
+        return this.kanbanTasksRepository;
     }
 
 }

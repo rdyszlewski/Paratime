@@ -4,6 +4,8 @@ import { SubtaskStore } from './subtask_store';
 import { LabelStore } from './label_store';
 import { IProjectRepository } from '../repositories/project_repository';
 import { StageStore } from './stage_store';
+import { KanbanStore } from './kanban_store';
+import { KanbanTask } from 'app/models/kanban';
 
 
 // TODO: przydałyby się do tego wszystkiego transakcje. 
@@ -14,14 +16,17 @@ export class TaskStore{
     private labelStore: LabelStore;
     private projectRepository: IProjectRepository;
     private stageStore: StageStore;
+    private kanbanStore: KanbanStore;
 
-    constructor(taskRepository: ITaskRepository, subtaskStore: SubtaskStore, labelStore:LabelStore, projectRepository:IProjectRepository, stageStore:StageStore){
+    constructor(taskRepository: ITaskRepository, subtaskStore: SubtaskStore, labelStore:LabelStore, projectRepository:IProjectRepository, stageStore:StageStore,
+        kanbanStore: KanbanStore){
         this.taskRepository = taskRepository;
         this.subtaskStore = subtaskStore;
         this.labelStore = labelStore;
         // TODO: przemyśleć, czy na pewno tak to powinno wyglądać
         this.projectRepository = projectRepository;
         this.stageStore = stageStore;
+        this.kanbanStore = kanbanStore;
     }
  
     public getTaskById(id:number):Promise<Task>{
@@ -116,6 +121,7 @@ export class TaskStore{
                 let labelPromise = this.labelStore.connectTaskAndLabel(insertedId, label.getId());
                 promises.push(labelPromise);
             });
+
             return Promise.all(promises).then(()=>{
                 return this.getTaskById(insertedId);
             });

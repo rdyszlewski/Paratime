@@ -10,7 +10,8 @@
             (editEvent)='openProjectDetails($event)'
             (loadEvent)="loadTasks($event)"
             (removeEvent)="onRemoveSelectedProject($event)"
-            (listEvent)="onSpecialListCLick($event)">
+            (listEvent)="onSpecialListCLick($event)"
+            (kanbanEvent)="openKanban($event)">
             
         </app-projects>
     
@@ -31,10 +32,15 @@
             (pomodoroEvent)="addTaskToPomodoro($event)">
         </app-tasks>
 
+        <app-kanban id="kanban" [hidden]="!kanbanOpen"
+            (closeEvent)="closeKanban()">
+        </app-kanban>
+
         <app-task-details id="task-details" [hidden]='!tasksDetailsOpen'
-        (closeEvent)="closeTaskDetails()"
-        (saveEvent)="onCreateTask($event)"
-        (openLabelsEvent)="openLabelsManager()"></app-task-details>
+            (closeEvent)="closeTaskDetails()"
+            (saveEvent)="onCreateTask($event)"
+            (openLabelsEvent)="openLabelsManager()">
+        </app-task-details>
 
         <app-labels id="labels" [hidden]="!labelsOpen"
         (closeEvent)="closeLabelsManager()"

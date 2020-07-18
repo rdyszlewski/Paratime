@@ -1,16 +1,17 @@
 <div>
     <div class="columns-container">
         <div class="column" id="{{columnName}}"
-        *ngFor="let columnName of getModel().getColumnsNames()"
+        *ngFor="let column of getModel().getColumns()"
         cdkDropList #columnName="cdkDropList" 
-        [cdkDropListData]="getModel().getTasks(columnName)"
+        [cdkDropListData]="column.getKanbanTasks()"
         [cdkDropListConnectedTo]="getModel().getColumnsNames()"
         (cdkDropListDropped)="drop($event)">
             {{columnName}}
-            <div cdkDrag *ngFor="let task of getModel().getTasks(columnName)"
+            <div cdkDrag *ngFor="let kanbanTask of column.getKanbanTasks()"
                 class="task-item">
-                {{task.getName()}}
+                {{kanbanTask.getTask().getName()}}
             </div>            
         </div>
     </div>
+    <button (click)="closeView()"> Zamknij</button>
 </div>
