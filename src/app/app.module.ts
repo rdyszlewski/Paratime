@@ -26,6 +26,11 @@ import {MatSnackBarModule} from '@angular/material/snack-bar';
 import { StageDetailsComponent } from './stage-details/stage-details.component';
 import { PomodoroComponent } from './pomodoro/pomodoro.component';
 import {DragDropModule} from "@angular/cdk/drag-drop";
+import { PomodoroStatisticsComponent } from './pomodoro-statistics/pomodoro-statistics.component';
+import {MatTabsModule} from '@angular/material/tabs';
+import { MatTableModule} from "@angular/material/table";
+import {MatSortModule} from "@angular/material/sort";
+import {MatProgressSpinnerModule} from "@angular/material/progress-spinner" ;
 
 @NgModule({
   declarations: [
@@ -39,6 +44,7 @@ import {DragDropModule} from "@angular/cdk/drag-drop";
     DialogComponent,
     StageDetailsComponent,
     PomodoroComponent,
+    PomodoroStatisticsComponent,
   ],
   imports: [
     BrowserModule,
@@ -56,7 +62,12 @@ import {DragDropModule} from "@angular/cdk/drag-drop";
     TooltipModule,
     MatDialogModule,
     MatSnackBarModule,
-    DragDropModule
+    DragDropModule,
+    MatTabsModule,
+    MatProgressSpinnerModule,
+    MatTableModule,
+    MatSortModule,
+    MatInputModule
   ],
   entryComponents:[
     DialogComponent

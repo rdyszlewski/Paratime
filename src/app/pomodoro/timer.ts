@@ -1,15 +1,20 @@
 import { State } from './state';
-import { interval } from 'rxjs';
+import { interval, timer } from 'rxjs';
 import { takeWhile } from 'rxjs/operators';
 import { PomodoroSetting } from './settings';
 import { EventEmitter } from '@angular/core';
+import { DataService } from 'app/data.service';
+import { PomodoroHistory } from 'app/models/pomodoro.history';
 
 // TODO: zrobić refaktoryzację całej klasy
 export class PomodoroTimer{
 
     private settings: PomodoroSetting;
 
+    private counter = 0;
+
     private time: number = 0;
+    private stateTime: number = 0;
     private timerRunning = false;
     private timerPause = false;
 
@@ -18,10 +23,15 @@ export class PomodoroTimer{
     private currentInterval = 1;
     private currentStep = 0;
 
-    private emitter: EventEmitter<string>;
+    private timeEmitter: EventEmitter<string>;
+    private endEmitter: EventEmitter<PomodoroHistory>;
 
-    public setEmitter(emitter:EventEmitter<string>) {
-        this.emitter = emitter;
+    public setTimeEmitter(emitter:EventEmitter<string>) {
+        this.timeEmitter = emitter;
+    }
+
+    public setEndEmitter(emitter:EventEmitter<PomodoroHistory>){
+        this.endEmitter = emitter;
     }
 
     public setSettings(settings: PomodoroSetting){
@@ -47,14 +57,14 @@ export class PomodoroTimer{
 
     public tick(){
         this.time--;
+        this.stateTime++;
         if(this.time < 0){
             this.time = 0;
             this.timerRunning = false;
             this.stateFinished = true;
-        } else if(this.emitter){
-            this.emitter.emit(this.getTimeText());
+        } else if(this.timeEmitter){
+            this.timeEmitter.emit(this.getTimeText());
         }
-
     }
 
     public isTimerRunning():boolean{
@@ -84,6 +94,8 @@ export class PomodoroTimer{
             // TODO: W przypadku dodania czasu to się psuje
             if(this.time == 0){
                 this.setStateTime();
+                // TODO: sprawdzić, czy jest ok
+                this.stateTime = 0;
             }
             this.startTicking();
             this.timerPause = false;
@@ -109,17 +121,23 @@ export class PomodoroTimer{
     }
 
     public stopTimer(){
+        // TODO: 
         this.timerRunning = false;
         this.timerPause = false;
         this.stateFinished = true;
+
         this.time = 0;
+        
     }
 
     private startTicking(){
+        // prevent against running many counter at the same time
+        this.counter ++;
+        const counter = this.counter;
         interval(1000)
             .pipe(takeWhile(() => this.isTimerRunning()))
             .subscribe(() => {
-                if(!this.isTimerPause()){
+                if(!this.isTimerPause() && counter == this.counter){
                     this.tick();
                 }
         });
@@ -130,6 +148,9 @@ export class PomodoroTimer{
     }
 
     public setNextState(){
+        // TODO: w tym miejscu prawdopodobnie powinno być zapisywanie czasu
+        this.saveStatistics();
+
         const state = this.getNextState();
         this.currentState = state;
         this.currentStep++;
@@ -137,6 +158,21 @@ export class PomodoroTimer{
             this.currentStep = 0;
         }
     }
+
+    private saveStatistics(){
+        // TODO: robić zapisywanie czasu rzeczywistego
+        // TODO: prześledzić to wszystko
+        const time = this.stateTime - 1;
+        console.log("Wyszło mi tyle czasu");
+        console.log(time);
+        console.log(this.currentState);
+       
+        const entry = new PomodoroHistory();
+        entry.setTime(time);
+        entry.setDate(new Date());
+        this.endEmitter.emit(entry);
+    }
+
 
     public getNextState(){
         if(this.currentState == State.WORK){

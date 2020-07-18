@@ -22,9 +22,11 @@ export class PomodoroModel{
         const settings = PomodoroSettingsStore.getSettings();
         if(settings){
             this.settings = settings;
+            console.log(this.settings);
         } else {
             this.setDefaultSettings();
         }
+        this.timer.setSettings(this.settings);
     }
 
     private setDefaultSettings() {
@@ -62,4 +64,5 @@ export class PomodoroModel{
         this.currentTask = task;
     }
     
+
 }

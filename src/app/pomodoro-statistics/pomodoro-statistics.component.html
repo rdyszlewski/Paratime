@@ -1,0 +1,57 @@
+<div class="pomodoro-statistics">
+    <mat-tab-group animationDuration="100ms">
+        <mat-tab label="Zadania" (selectedTabChange)="tabChanged($event)">
+            
+            <input matInput placeholder="Znajdź zadanie" #taskInput>
+            <mat-table class="mat-elevation-z8" [dataSource]="taskDataSource"
+                #tasksSort="matSort" matSort matSortActive="name" matSortActive="time" matSortDirection="desc" >
+                <ng-container matColumnDef="name">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>Zadanie</mat-header-cell>
+                    <mat-cell class="name-cell" *matCellDef="let entry">{{entry.getTask().getName()}}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="time">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>Czas</mat-header-cell>
+                    <mat-cell class="time-cell" *matCellDef="let entry">{{entry.getTime()}}</mat-cell>
+                </ng-container>
+
+                <ng-container matColumnDef="intervals">
+                    <mat-header-cell *matHeaderCellDef mat-sort-header>Interwały</mat-header-cell>
+                    <mat-cell class="intervals-cell" *matCellDef="let entry">{{entry.getIntervals()}}</mat-cell>
+                </ng-container>
+
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+            </mat-table>
+           
+        </mat-tab> 
+        <mat-tab label="Projekty">
+
+            <input matInput placeholder="Znajdź projekt" #projectInput>
+            <mat-table class="mat-elevation-z8" [dataSource]="projectDataSource"
+                #projectsSort="matSort" matSort matSortActive="name" matSortActive="time" matSortDirection="desc" >
+            <ng-container matColumnDef="name">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Projekt</mat-header-cell>
+                <mat-cell class="name-cell" *matCellDef="let entry">{{entry.getProject().getName()}}</mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="time">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Czas</mat-header-cell>
+                <mat-cell class="time-cell" *matCellDef="let entry">{{entry.getTime()}}</mat-cell>
+            </ng-container>
+
+            <ng-container matColumnDef="intervals">
+                <mat-header-cell *matHeaderCellDef mat-sort-header>Interwały</mat-header-cell>
+                <mat-cell class="intervals-cell" *matCellDef="let entry">{{entry.getIntervals()}}</mat-cell>
+            </ng-container>
+
+            <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+            <mat-row *matRowDef="let row; columns: displayedColumns"></mat-row>
+        </mat-table>
+        </mat-tab>
+    </mat-tab-group>
+</div>
+
+<ng-template #tasks_table>
+   
+</ng-template>

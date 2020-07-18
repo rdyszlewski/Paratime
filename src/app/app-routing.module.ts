@@ -8,6 +8,7 @@ import { TaskDetailsComponent } from './task-details/task-details.component';
 import { LabelsComponent } from './labels/labels.component';
 import { StageDetailsComponent } from './stage-details/stage-details.component';
 import { PomodoroComponent } from './pomodoro/pomodoro.component';
+import { PomodoroStatisticsComponent } from './pomodoro-statistics/pomodoro-statistics.component';
 
 
 const routes: Routes = [
@@ -19,7 +20,8 @@ const routes: Routes = [
   {path: 'task_details', component: TaskDetailsComponent},
   {path: 'labels', component:LabelsComponent},
   {path: 'stage_details', component:StageDetailsComponent},
-  {path: 'pomodoro', component:PomodoroComponent}
+  {path: 'pomodoro', component:PomodoroComponent},
+  {path: 'pomodoro_statistics', component: PomodoroStatisticsComponent}
 ];
 
 @NgModule({

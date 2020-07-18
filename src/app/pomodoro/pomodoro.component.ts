@@ -3,6 +3,8 @@ import { PomodoroModel } from './model';
 import { State } from './state';
 import { PomodoroSettingsStore } from './storage/settings.storage';
 import { Task } from 'app/models/task';
+import { PomodoroHistory } from 'app/models/pomodoro.history';
+import { DataService } from 'app/data.service';
 
 @Component({
   selector: 'app-pomodoro',
@@ -12,13 +14,19 @@ import { Task } from 'app/models/task';
 export class PomodoroComponent implements OnInit {
 
   @Output() tickEvent: EventEmitter<string> = new EventEmitter();
+  private endEvent: EventEmitter<PomodoroHistory> = new EventEmitter();
 
   public model: PomodoroModel = new PomodoroModel();
   public state = State;
   constructor() { }
 
   ngOnInit(): void {
-    this.model.getTimer().setEmitter(this.tickEvent);
+    this.model.getTimer().setTimeEmitter(this.tickEvent);
+
+    this.endEvent.subscribe(entry=>{
+      this.savePomodoroStatistics(entry);
+    });
+    this.model.getTimer().setEndEmitter(this.endEvent);
   }
 
   // TODO: refaktoryzacja
@@ -78,5 +86,19 @@ export class PomodoroComponent implements OnInit {
 
   public addTaskToPomodoro(task:Task){
     this.model.setCurrentTask(task);
+  }
+
+  public savePomodoroStatistics(entry: PomodoroHistory){
+    // TODO: zrobić tutaj jakąś magie
+    // TODO: zastanowić się, czy chcemy zapisywać wyniki bez przypisanego zadania
+    if(this.model.getTimer().getState()==State.WORK){
+      console.log("Zapisujem");
+      console.log(entry);
+      if(this.model.getCurrentTask()){
+        entry.setTaskId(this.model.getCurrentTask().getId());
+        entry.setProjectId(this.model.getCurrentTask().getProjectID());
+      }
+      DataService.getStoreManager().getPomodoroStore().create(entry);
+    }
   }
 }

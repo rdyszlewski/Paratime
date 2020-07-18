@@ -58,7 +58,11 @@ export class ProjectStore{
 
     public getProjectById(id: number): Promise<Project>{
         return this.projectRepository.findProjectById(id).then(project=>{
-            return this.fillProject(project);
+            if(project){
+                return this.fillProject(project);
+            } else {
+                return Promise.resolve(null);
+            }
         });
     }
 
