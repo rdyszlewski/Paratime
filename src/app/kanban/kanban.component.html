@@ -1,0 +1,16 @@
+<div>
+    <div class="columns-container">
+        <div class="column" id="{{columnName}}"
+        *ngFor="let columnName of getModel().getColumnsNames()"
+        cdkDropList #columnName="cdkDropList" 
+        [cdkDropListData]="getModel().getTasks(columnName)"
+        [cdkDropListConnectedTo]="getModel().getColumnsNames()"
+        (cdkDropListDropped)="drop($event)">
+            {{columnName}}
+            <div cdkDrag *ngFor="let task of getModel().getTasks(columnName)"
+                class="task-item">
+                {{task.getName()}}
+            </div>            
+        </div>
+    </div>
+</div>

@@ -1,4 +1,5 @@
 <div class="pomodoro-statistics">
+
     <mat-tab-group animationDuration="100ms">
         <mat-tab label="Zadania" (selectedTabChange)="tabChanged($event)">
             
@@ -50,8 +51,6 @@
         </mat-table>
         </mat-tab>
     </mat-tab-group>
-</div>
 
-<ng-template #tasks_table>
-   
-</ng-template>
+    <button (click)="closeStatistics()">Wróć</button>
+</div>

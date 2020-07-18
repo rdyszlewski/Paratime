@@ -15,7 +15,8 @@ export class PomodoroComponent implements OnInit {
 
   @Output() tickEvent: EventEmitter<string> = new EventEmitter();
   private endEvent: EventEmitter<PomodoroHistory> = new EventEmitter();
-
+  
+  public statisticsOpen = false;
   public model: PomodoroModel = new PomodoroModel();
   public state = State;
   constructor() { }
@@ -92,13 +93,19 @@ export class PomodoroComponent implements OnInit {
     // TODO: zrobić tutaj jakąś magie
     // TODO: zastanowić się, czy chcemy zapisywać wyniki bez przypisanego zadania
     if(this.model.getTimer().getState()==State.WORK){
-      console.log("Zapisujem");
-      console.log(entry);
       if(this.model.getCurrentTask()){
         entry.setTaskId(this.model.getCurrentTask().getId());
         entry.setProjectId(this.model.getCurrentTask().getProjectID());
       }
       DataService.getStoreManager().getPomodoroStore().create(entry);
     }
+  }
+
+  public openStatistics(){
+    this.statisticsOpen = true;
+  }
+
+  public closeStatistics(){
+    this.statisticsOpen = false;
   }
 }

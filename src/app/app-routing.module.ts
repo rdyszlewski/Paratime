@@ -9,6 +9,7 @@ import { LabelsComponent } from './labels/labels.component';
 import { StageDetailsComponent } from './stage-details/stage-details.component';
 import { PomodoroComponent } from './pomodoro/pomodoro.component';
 import { PomodoroStatisticsComponent } from './pomodoro-statistics/pomodoro-statistics.component';
+import { KanbanComponent } from './kanban/kanban.component';
 
 
 const routes: Routes = [
@@ -21,7 +22,8 @@ const routes: Routes = [
   {path: 'labels', component:LabelsComponent},
   {path: 'stage_details', component:StageDetailsComponent},
   {path: 'pomodoro', component:PomodoroComponent},
-  {path: 'pomodoro_statistics', component: PomodoroStatisticsComponent}
+  {path: 'pomodoro_statistics', component: PomodoroStatisticsComponent},
+  {path: 'kanban', component: KanbanComponent}
 ];
 
 @NgModule({

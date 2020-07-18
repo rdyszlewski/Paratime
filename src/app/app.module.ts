@@ -30,7 +30,8 @@ import { PomodoroStatisticsComponent } from './pomodoro-statistics/pomodoro-stat
 import {MatTabsModule} from '@angular/material/tabs';
 import { MatTableModule} from "@angular/material/table";
 import {MatSortModule} from "@angular/material/sort";
-import {MatProgressSpinnerModule} from "@angular/material/progress-spinner" ;
+import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
+import { KanbanComponent } from './kanban/kanban.component' ;
 
 @NgModule({
   declarations: [
@@ -45,6 +46,7 @@ import {MatProgressSpinnerModule} from "@angular/material/progress-spinner" ;
     StageDetailsComponent,
     PomodoroComponent,
     PomodoroStatisticsComponent,
+    KanbanComponent,
   ],
   imports: [
     BrowserModule,
