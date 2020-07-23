@@ -1,5 +1,5 @@
 <div class="kanban-view shadow app-panel">
-    <input class="add-column-input" 
+    <input class="add-column-input" autocomplete="off"
     [ngModel]="getModel().getColumnName()" (ngModelChange)="getModel().setColumnName($event)">
     <button class="add-column-button" (click)="addColumn()">Dodaj kolumnę</button>
     <div class="columns-container">

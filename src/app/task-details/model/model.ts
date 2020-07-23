@@ -1,6 +1,7 @@
 import { Task } from 'app/models/task';
 import { Project } from 'app/models/project';
 import { Stage } from 'app/models/stage';
+import { Subtask } from 'app/models/subtask';
 
 export class TaskDetails{
     private task: Task = new Task();
@@ -14,8 +15,33 @@ export class TaskDetails{
     }
 
     public setTask(task:Task){
+        // TODO: w tym miejscu posortować podzadania
         this.task = task;
+        this.task.setSubtasks(this.getSortedSubtasks(this.task.getSubtasks()));
     }
+
+    private getSortedSubtasks(elements: Subtask[]):Subtask[]{
+        const result = [];
+        if(elements.length == 0){
+            return result;
+        }
+        let currentTask = this.findFirstSubtask(elements);
+        while(currentTask != null){
+            console.log("Sortowanie podzadania");
+            result.push(currentTask);
+            currentTask = this.findSubtaskByPrevious(currentTask.getId(), elements);
+        }
+        return result;
+    }
+
+    private findFirstSubtask(elements: Subtask[]):Subtask{
+        return elements.find(subtask=>subtask.getPreviousSubtask() == -1);
+    }
+
+    private findSubtaskByPrevious(prevId: number, elements:Subtask[]):Subtask{
+        return elements.find(subtask=>subtask.getPreviousSubtask() == prevId);
+    }
+
 
     public getProjects():Project[]{
         return this.projects;
@@ -46,5 +72,13 @@ export class TaskDetails{
 
    public toggleTaskImportance(){
        this.task.setImportant(!this.task.isImportant());
+   }
+
+   public getSubtaskByIndex(index:number){
+    return this.task.getSubtasks()[index];
+   }
+
+   public getSubtaskByOrderPrev(subtask: Subtask):Subtask{
+       return this.task.getSubtasks().find(x=>x.getPreviousSubtask()==subtask.getId());
    }
 }

@@ -54,61 +54,35 @@ export class KanbanComponent implements OnInit {
 
   private changeTasksOrder(column: string, previousIndex: number, currentIndex: number){
     const currentColumn = this.model.getColumnById(Number.parseInt(column));
-
-
-    console.log("Previous Index " + previousIndex);
-    console.log("Current Index " + currentIndex);
-    
     const kanbanTasksToUpdate = currentColumn.moveKanbanTasks(previousIndex, currentIndex);
-    const promises = [];
-    kanbanTasksToUpdate.forEach(task=>{
-      promises.push(DataService.getStoreManager().getKanbanStore().updateKanbanTask(task));
-    })
-    Promise.all(promises).then(()=>{
-      console.log("Zaktualizowano");
-    });
-
+    this.updateKanbanTasks(kanbanTasksToUpdate);
   }
 
   private moveTaskToColumn(previousColumnId: string, currentColumnId:string, previousIndex: number, currentIndex: number){
-      console.log(this.model.getColumns());
-      console.log(previousColumnId);
-      console.log(currentColumnId);
       const previousColumn = this.model.getColumnById(Number.parseInt(previousColumnId));
       const currentColumn = this.model.getColumnById(Number.parseInt(currentColumnId));
-      console.log("Previous column");
-      console.log(previousColumn);
-      console.log("currentColumn");
-      console.log(currentColumn);
-
       const previousTask = previousColumn.getKanbanTasks()[previousIndex];
-      // const currentTask = currentColumn.getKanbanTasks()[currentIndex];
-      console.log('previous task');
-      console.log(previousTask);
 
-      let toUpdate = [];
-      toUpdate = toUpdate.concat(previousColumn.removeKanbanTask(previousTask));
-      toUpdate = toUpdate.concat(currentColumn.insertKanbanTask(previousTask, currentIndex));
-
-      console.log("Do zaktualizowania");
-      console.log(toUpdate);
-      const promises = [];
-      toUpdate.forEach(task=>{
-        promises.push(DataService.getStoreManager().getKanbanStore().updateKanbanTask(task));
-      })
-      Promise.all(promises).then(()=>{
-        console.log("Zaktualizowano");
-      })
-
-      // TODO: jeżeli jest pierwsza na liście, to ustawiamy nulle
-      // TODO: z pierwszej listy też należy ustawić odpowiednio nulle
-      
-
-      
+      let toUpdate = this.splitKanbanTaskColumns(previousColumn, previousTask, currentColumn, currentIndex);
+      this.updateKanbanTasks(toUpdate);
   }
 
+  private splitKanbanTaskColumns(previousColumn: KanbanColumn, previousTask: KanbanTask, currentColumn: KanbanColumn, currentIndex: number) {
+    let toUpdate = [];
+    toUpdate = toUpdate.concat(previousColumn.removeKanbanTask(previousTask));
+    toUpdate = toUpdate.concat(currentColumn.insertKanbanTask(previousTask, currentIndex));
+    return toUpdate;
+  }
 
-  
+  private updateKanbanTasks(toUpdate: any[]) {
+    const promises = [];
+    toUpdate.forEach(task => {
+      promises.push(DataService.getStoreManager().getKanbanStore().updateKanbanTask(task));
+    });
+    Promise.all(promises).then(() => {
+    });
+  }
+
   public closeView(){
     this.closeEvent.emit();
   }

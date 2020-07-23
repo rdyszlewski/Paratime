@@ -57,7 +57,7 @@
 </div>
 
 <ng-template #project_name>
-    <input type="text" class="form-control" id="project-name" name='name'
+    <input type="text" class="form-control" id="project-name" name='name' autocomplete="off"
             [ngModel]='getModel().getProject().getName()' (ngModelChange)="getModel().getProject().setName($event)"
             (keyup.enter)="updateProject()" (focusout)="updateProject()">
     <div *ngIf="!getValidator().isNameValid() && getChangeDetector().isNameChanged()"
@@ -95,7 +95,8 @@
 
 <ng-template #project_start_date>
     <div class="datepicker-container">
-        <input class='form-control' id="project-start-date" name="start-date" [matDatepicker]="startDatePicker"  
+        <input class='form-control' id="project-start-date" name="start-date" autocomplete="off"
+        [matDatepicker]="startDatePicker"  
         [ngModel]='getModel().getProject().getStartDate()' (ngModelChange)="getModel().getProject().setStartDate($event)" 
         (dateChange)="updateProject()">
         <mat-datepicker-toggle [for]="startDatePicker" class='datepicker'></mat-datepicker-toggle>
@@ -105,7 +106,8 @@
 
 <ng-template #project_end_date>
     <div class="datepicker-container">
-        <input matInput class='form-control' id="project-end-date" name="end-date" [matDatepicker]="endDatePicker"
+        <input matInput class='form-control' id="project-end-date" name="end-date" autocomplete="off"
+        [matDatepicker]="endDatePicker"
         [ngModel]='getModel().getProject().getEndDate()' (ngModelChange)="getModel().getProject().setEndDate($event)"
         (dateChange)="updateProject()">
         <mat-datepicker-toggle [for]="endDatePicker" class="datepicker"></mat-datepicker-toggle>
@@ -166,8 +168,9 @@
 </ng-template>
 
 <ng-template #new_stage>
-    <input type="text" class="form-control" id="new-stage-name" (keyup)="getStages().handleAddingNewStageKeyUp($event)" name="new-state-name"
-                [ngModel]="getStages().getModel().getNewStageName()" (ngModelChange)="getStages().getModel().setNewStageName($event)">
+    <input type="text" class="form-control" id="new-stage-name" autocomplete="off"
+            (keyup)="getStages().handleAddingNewStageKeyUp($event)" name="new-state-name"
+            [ngModel]="getStages().getModel().getNewStageName()" (ngModelChange)="getStages().getModel().setNewStageName($event)">
     <div class="buttons-container">
         <button class="button small-button insert-button" id="save-subtask-button" 
         (click)="getStages().addNewStage()">Zapisz</button>

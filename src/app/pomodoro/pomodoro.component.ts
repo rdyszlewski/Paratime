@@ -108,4 +108,8 @@ export class PomodoroComponent implements OnInit {
   public closeStatistics(){
     this.statisticsOpen = false;
   }
+  
+  public isStatisticsEnabled():boolean{
+    return !this.model.getTimer().isTimerRunning() && !this.model.getTimer().isTimerPause();
+  }
 }

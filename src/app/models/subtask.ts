@@ -7,6 +7,8 @@ export class Subtask{
     private status: Status = null;
     private taskId: number = null;
 
+    private previousSubtask: number = -1;
+
     constructor(name=null, status=null){
         this.name = name;
         this.status = status;
@@ -44,4 +46,11 @@ export class Subtask{
         this.taskId = id;
     }
        
+    public getPreviousSubtask():number{
+        return this.previousSubtask;
+    }
+
+    public setPreviousSubtask(subtaskId: number){
+        this.previousSubtask = subtaskId;
+    }
 }

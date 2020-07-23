@@ -1,4 +1,4 @@
-import { FocusHelper } from 'app/common/view_helper';
+import { FocusHelper, ScrollBarHelper } from 'app/common/view_helper';
 import { SubtasksEditingModel } from './subtasks.editing.model';
 import { Status } from 'app/models/status';
 import { Subtask } from 'app/models/subtask';
@@ -8,8 +8,9 @@ import { EditInputHandler } from 'app/common/edit_input_handler';
 
 export class SubtasksController{
     
-    private SUBTASK_NAME_ID = '#subtask';
+    private SUBTASK_NAME_ID = '#subtask-input';
     private SUBTASK_ITEM_ID = '#subtask-name-input_';
+    private LIST_DETAILS_FORM = "#list-details-form";
 
     private model: SubtasksEditingModel = new SubtasksEditingModel();
     private task: Task;
@@ -25,6 +26,7 @@ export class SubtasksController{
     public openAddingSubtask(){
         this.model.openAddingSubtask();
         FocusHelper.focus(this.SUBTASK_NAME_ID);
+        ScrollBarHelper.moveToBottom(this.LIST_DETAILS_FORM);
     }
 
     public closeAddingSubtask(){
@@ -33,11 +35,21 @@ export class SubtasksController{
     }
     
     public addNewSubtask(){
+        // TODO: określenie pozycji
         const subtask = new Subtask(this.model.getNewSubtaskName(), Status.STARTED);
         subtask.setTaskId(this.task.getId());
-        console.log(subtask);
+        const lastSubtask = this.getLastSubtask();
+        if(lastSubtask){
+            subtask.setPreviousSubtask(lastSubtask.getId());
+        }
         this.saveNewSubtask(subtask);
         this.closeAddingSubtask();
+        ScrollBarHelper.moveToBottom(this.LIST_DETAILS_FORM);
+    }
+
+    private getLastSubtask(){
+        // TODO: być może lepiej będzie zrobić to przez pobieranie z bazy
+        return this.task.getSubtasks()[this.task.getSubtasks().length-1];
     }
 
     private saveNewSubtask(subtask: Subtask) {

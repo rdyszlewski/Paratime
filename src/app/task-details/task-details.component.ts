@@ -11,6 +11,7 @@ import { TaskChangeDetector } from './model/change.detector';
 import { SubtasksController } from './subtasks/subtasks.editing.controller';
 import { TaskLabelsController } from './labels/task.labels.controller';
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
+import { Subtask } from 'app/models/subtask';
 
 @Component({
   selector: 'app-task-details',
@@ -130,9 +131,40 @@ export class TaskDetailsComponent implements OnInit {
     console.log("Położono to tutaj");
     if(event.previousContainer === event.container){
       // TODO: zapisywanie kolejności w bazie danych
+      this.replaceSubtaskOrder(event.previousIndex, event.currentIndex);
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
     } else {
       transferArrayItem(event.previousContainer.data, event.container.data, event.previousIndex, event.currentIndex);
     }
+  }
+
+  private replaceSubtaskOrder(previousIndex: number, currentIndex: number){
+    // TODO: spróbować połączyć to z sortowaniem zadań
+    const subtask1 = this.model.getSubtaskByIndex(previousIndex);
+    const subtask2 = this.model.getSubtaskByIndex(currentIndex);
+    const nextSubtask1 = this.model.getSubtaskByOrderPrev(subtask1);
+    const nextSubtask2 = this.model.getSubtaskByOrderPrev(subtask2);
+    console.log(nextSubtask1);
+    console.log(nextSubtask2);
+    if(nextSubtask1){
+      nextSubtask1.setPreviousSubtask(subtask2.getId());
+      this.updateSubtask(nextSubtask1);
+    }
+    if(nextSubtask2){
+      nextSubtask2.setPreviousSubtask(subtask1.getId());
+      this.updateSubtask(nextSubtask2);
+    }
+    const temp = subtask1.getPreviousSubtask();
+    subtask1.setPreviousSubtask(subtask2.getPreviousSubtask());
+    subtask2.setPreviousSubtask(temp);
+
+    this.updateSubtask(subtask1);
+    this.updateSubtask(subtask2);
+  }
+
+  private updateSubtask(subtask:Subtask){
+    DataService.getStoreManager().getSubtaskStore().updateSubtask(subtask).then(updatedSubtask=>{
+
+    });
   }
 }

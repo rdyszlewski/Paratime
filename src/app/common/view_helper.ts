@@ -11,7 +11,7 @@ export class FocusHelper{
 export class ScrollBarHelper{
 
     public static moveToBottom(elementName:string){
-        let scrollContainer = $("#projects-list");
+        let scrollContainer = $(elementName);
         setTimeout(()=>{
           scrollContainer.animate({ scrollTop: $(document).height() }, 1000);;
         },0);

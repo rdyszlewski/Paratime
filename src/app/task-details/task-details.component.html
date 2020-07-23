@@ -8,7 +8,8 @@
         <button class="close-button" (click)="closeView()">X</button>
         </div>
     
-    <form class="form" (keydown.enter)="$event.preventDefault()">
+    <form class="form" id="list-details-form"
+        (keydown.enter)="$event.preventDefault()">
 
         <mat-expansion-panel class="form-group" [expanded]="true">
             <mat-expansion-panel-header class="form-group-header">
@@ -88,7 +89,7 @@
 </mat-menu>
 
 <ng-template #task_name_group> 
-    <input type="text" class="form-control" id="task-name" name='name'
+    <input type="text" class="form-control" id="task-name" name='name' autocomplete="off"
             [ngModel]='getModel().getTask().getName()' (ngModelChange)="getModel().getTask().setName($event)"
             (keyup.enter)="updateTask()" (focusout)="updateTask()"
             >
@@ -128,7 +129,8 @@
 
 <ng-template #task_date>
     <div class="datepicker-container">
-        <input matInput class='form-control' id="task-date" name="date" [matDatepicker]="datePicker"
+        <input matInput class='form-control' id="task-date" name="date" autocomplete="off"
+        [matDatepicker]="datePicker"
         [ngModel]='getModel().getTask().getDate()' (ngModelChange)="getModel().getTask().setDate($event)"
         (dateChange)="updateTask()">
         <mat-datepicker-toggle [for]="datePicker" class="datepicker"></mat-datepicker-toggle>
@@ -138,7 +140,8 @@
 
 <ng-template #task_end_date>
     <div class="datepicker-container">
-        <input matInput class='form-control' id="task-end-date" name="end-date" [matDatepicker]="endDatePicker"
+        <input matInput class='form-control' id="task-end-date" name="end-date" autocomplete="off"
+        [matDatepicker]="endDatePicker"
         [ngModel]='getModel().getTask().getEndDate()' (ngModelChange)="getModel().getTask().setEndDate($event)"
         (dateChange)="updateTask()">
         <mat-datepicker-toggle [for]="endDatePicker" class="datepicker"></mat-datepicker-toggle>
@@ -147,9 +150,9 @@
 </ng-template>
 
 <ng-template #task_planned_time>
-    <input type='number' class="form-control" id="task-planned_time" name="planned_time" min="1"
-            [ngModel]="getModel().getTask().getPlannedTime()" (ngModelChange)="getModel().getTask().setPlannedTime($event)"
-            (keyup.enter)="updateTask()" (focusout)="updateTask()">
+    <input type='number' class="form-control" id="task-planned_time" name="planned_time" autocomplete="off"
+            min="1" (keyup.enter)="updateTask()" (focusout)="updateTask()"
+            [ngModel]="getModel().getTask().getPlannedTime()" (ngModelChange)="getModel().getTask().setPlannedTime($event)">
 </ng-template>
 
 <ng-template #task_labels_group>
@@ -176,7 +179,8 @@
 </ng-template>
 
 <ng-template #task_subtasks_group>
-    <div class="list border"  cdkDropList
+    <div class="list border"  id="subtask-list"
+    cdkDropList
     #subtaskList="cdkDropList"
     [cdkDropListData]="getModel().getTask().getSubtasks()"
     (cdkDropListDropped)="onDrop($event)">
@@ -204,6 +208,7 @@
 
 <ng-template #subtask_edit let-subtask>
     <input class="subtask-name" value="{{subtask.getName()}}" [id]="'subtask-name-input_' + subtask.getId()"
+            autocomplete="off"
             *ngIf="getSubtask().getModel().isEditingSubtask(subtask)"
             [ngModel]="getSubtask().getModel().getEditingSubtaskName()" (ngModelChange)="getSubtask().getModel().setEditingSubtaskName($event)"
             (keyup)="getSubtask().handleKeysOnEditSubtask($event, subtask)">
@@ -219,12 +224,13 @@
 </ng-template>
 
 <ng-template #new_subtask>
-    <input type="text" class="form-control" id="subtask" [hidden]="!getSubtask().getModel().isAddingSubtask()"
+    <input type="text" class="form-control" id="subtask-input" autocomplete="off"
+    [hidden]="!getSubtask().getModel().isAddingSubtask()"
     [ngModel]="getSubtask().getModel().getNewSubtaskName()" (ngModelChange)="getSubtask().getModel().setNewSubtaskName($event)"
     (keyup)="getSubtask().handleKeysOnNewSubtaskInput($event)">
     <div class="buttons-container">
         <button class="button small-button insert-button" id="add-subtask-button" [hidden]="getSubtask().getModel().isAddingSubtask()"
-        (click)="getSubtask().getModel().openAddingSubtask()">
+        (click)="getSubtask().openAddingSubtask()">
             Dodaj
         </button>
         <button class="button small-button insert-button" id="save-subtask-button" [hidden]="!getSubtask().getModel().isAddingSubtask()"

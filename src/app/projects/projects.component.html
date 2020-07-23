@@ -4,7 +4,7 @@
     
     <!-- TODO: ustawić odpowiednio styl do filtra -->
     <div class="filter-controls">
-      <input class="project-filter filter border" placeholder="Wyszukaj projekt"
+      <input class="project-filter filter border" placeholder="Wyszukaj projekt" autocomplete="off"
       (input)='getModel().filterProject($event.target.value)'>
       <div id="project-filter-button" class="button filter-button" (click)="getState().toggleFilteringOpen()"></div>
     </div>
@@ -43,7 +43,7 @@
 <ng-template #filter_container>
   <div class="filter-group">
     <label class="filter-label">Z datą zakończenia</label>
-    <input class="filter-value" type='checkbox' 
+    <input class="filter-value" type='checkbox'
     [checked]="getFiltering().getModel().isWithEndDate()" (change)="getFiltering().getModel().setWithEndDate($event.target.checked)">
   </div>
 
@@ -140,7 +140,8 @@
 </ng-template>
 
 <ng-template #new_project>
-  <input type="text" class="form-control" id="new-project-name" (keyup)="getAdding().handleAddingNewProjectKeyUp($event)"
+  <input type="text" class="form-control" id="new-project-name" autocomplete="off"
+        (keyup)="getAdding().handleAddingNewProjectKeyUp($event)"
         [ngModel]="getAdding().getModel().getNewProjectName()" (ngModelChange)="getAdding().getModel().setNewProjectName($event)">
         <div class="buttons-container">
             <button class="button small-button insert-button" id="save-subtask-button" 

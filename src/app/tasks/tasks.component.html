@@ -2,7 +2,7 @@
 *ngIf="getModel().isOpen()">
   <h3 class="panel-header">{{getModel().getProjectName()}}</h3>
   <div class="filter-controls">
-    <input id="task-filter" class="filter border" placeholder="Wyszukaj zadanie"
+    <input id="task-filter" class="filter border" placeholder="Wyszukaj zadanie" autocomplete="off"
     (input)='getModel().filterTasks($event.target.value)'>
     <div class="button filter-button" id="task-filter-button" (click)="getFiltering().toggleOpen()"></div>
   </div>
@@ -158,7 +158,8 @@
 </ng-template>
 
 <ng-template #new_task>
-  <input type="text" class="form-control" id="new-task-name" (keyup)="getAdding().handleAddingNewTaskKeyUp($event)"
+  <input type="text" class="form-control" id="new-task-name" autocomplete="off"
+    (keyup)="getAdding().handleAddingNewTaskKeyUp($event)"
     [ngModel]="getAdding().getModel().getNewTaskName()" (ngModelChange)="getAdding().getModel().setNewTaskName($event)">
     <div class="buttons-container">
         <button class="button small-button insert-button" id="save-subtask-button" 

@@ -5,25 +5,25 @@
             <label class="settings-label">Czas pracy</label>
             <input type="number" class="settings-value" 
             [ngModel]="model.getSettings().getWorkTime()" (ngModelChange)="model.getSettings().setWorkTime($event)"
-            (change)="updateSettings()">
+            (change)="updateSettings()" [disabled]="!isStatisticsEnabled()">
         </div>
         <div class="settings-group">
             <label class="settings-label">Czas krótkiej przerwy</label>
             <input type="number" class="settings-value"
             [ngModel]="model.getSettings().getShortBreakTime()" (ngModelChange)="model.getSettings().setShortBreakTime($event)"
-            (change)="updateSettings()">
+            (change)="updateSettings()" [disabled]="!isStatisticsEnabled()">
         </div>
         <div class="settings-group">
             <label class="settings-label">Czas długiej przerwy</label>
             <input type="number" class="settings-value"
             [ngModel]="model.getSettings().getLongBreakTime()" (ngModelChange)="model.getSettings().setLongBreakTime($event)"
-            (change)="updateSettings()">
+            (change)="updateSettings()" [disabled]="!isStatisticsEnabled()">
         </div>
         <div class="settings-group">
             <label class="settings-label">Interwał</label>
             <input type="number" class="settings-value"
             [ngModel]="model.getSettings().getInterval()" (ngModelChange)="model.getSettings().setInterval($event)"
-            (change)="updateSettings()">
+            (change)="updateSettings()" [disabled]="!isStatisticsEnabled()">
         </div>
     </div>
 

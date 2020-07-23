@@ -37,7 +37,7 @@
 </div>
 
 <ng-template #stage_name>
-    <input type="text" class="form-control" id="stage-name" name='name'
+    <input type="text" class="form-control" id="stage-name" name='name' autocomplete="off"
         [ngModel]='model.getStage().getName()' (ngModelChange)="model.getStage().setName($event)"
         (keyup.enter)="updateStage()" (focusout)="updateStage()">
     <div *ngIf="!model.isNameValid() && model.isNameChanged()"
@@ -66,7 +66,8 @@
 
 <ng-template #stage_end_date>
     <div class="datepicker-container">
-        <input matInput class='form-control' id="stage-end-date" name="end-date" [matDatepicker]="endDatePicker"
+        <input matInput class='form-control' id="stage-end-date" name="end-date" autocomplete="off"
+        [matDatepicker]="endDatePicker"
         [ngModel]='model.getStage().getEndDate()' (ngModelChange)="model.getStage().setEndDate($event)"
         (dateChange)="updateStage()">
         <mat-datepicker-toggle [for]="endDatePicker" class="datepicker"></mat-datepicker-toggle>

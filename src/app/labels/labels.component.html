@@ -3,8 +3,9 @@
         <h3 class="panel-header">Etykiety</h3>
         <button class="close-button" (click)="closeView()">X</button>
         </div>
-    <input id="project-filter" class="filter border" (input)='model.filterLabels($event.target.value)'
-    placeholder="Wyszukaj etykietę">
+    <input id="project-filter" class="filter border" autocomplete="off"
+        (input)='model.filterLabels($event.target.value)'
+        placeholder="Wyszukaj etykietę">
     <ng-container *ngTemplateOutlet="labels_list"></ng-container>
 </div>
 
@@ -26,6 +27,7 @@
     
 <ng-template #label_edit let-label>
     <input class="label-name" [value]="label.getName()" [id]="'label-name-input-' + label.getId()"
+        autocomplete="off"
         *ngIf="getEditing().isEditingOpen(label)"
         [ngModel] = "getEditing().getModel().getEditingLabelName()" (ngModelChange)="getEditing().getModel().setEditingLabelName($event)"
         (keyup)="getEditing().handleKeysOnEditLabel($event, label)">
@@ -42,7 +44,8 @@
 </ng-template>
 
 <ng-template #new_label >
-    <input type="text" class="form-control" id="label" [hidden]="!getAdding().isAddingOpen()"
+    <input type="text" class="form-control" id="label" autocomplete="off"
+    [hidden]="!getAdding().isAddingOpen()"
     [ngModel]="getAdding().getModel().getNewLabelName()" (ngModelChange)="getAdding().getModel().setNewLabelName($event)"
     (keyup)="getAdding().handleKeysOnNewLabelInput($event)">
     <div class="buttons-container">

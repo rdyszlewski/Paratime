@@ -36,11 +36,10 @@ export class TaskAddingController{
         const task = new Task();
         task.setName(this.model.getNewTaskName());
         task.setProject(this.mainModel.getProject());
-        const lastElement = this.mainModel.getTasks()[this.mainModel.getTasks().length-1];
+        const lastElement = this.findLastTask();
         if(lastElement){
             task.setOrderPrev(lastElement.getId());
         }
-        // TODO: pobranie ostantiego elementu na liście i wstawienie 
         DataService.getStoreManager().getTaskStore().createTask(task).then(insertedTask=>{
             // TODO: to można przenieść w inne miejsce 
             this.insertKanbanTask(insertedTask);
@@ -49,6 +48,10 @@ export class TaskAddingController{
             this.closeAddingNewTask();
             ScrollBarHelper.moveToBottom(this.TASK_LIST);
         });
+    }
+
+    private findLastTask() {
+        return this.mainModel.getTasks()[this.mainModel.getTasks().length - 1];
     }
 
     private insertKanbanTask(task: Task){
