@@ -54,13 +54,10 @@ export class TaskAddingController{
     private insertKanbanTask(task: Task){
         // TODO: to powinno być w pakiecie z bazą danych
         DataService.getStoreManager().getKanbanStore().getDefaultColumn(task.getProject().getId()).then(defaultColumn=>{
-            console.log(1);
-            DataService.getStoreManager().getKanbanStore().getColumnsByProject(1).then(columns=>{
-                console.log(columns); 
-            });
+            console.log("Domyślna");
+            console.log(defaultColumn);
             DataService.getStoreManager().getKanbanStore().getLastKanbanTask(defaultColumn.getId()).then(lastKanbanTask=>{
-                console.log(2);
-                console.log(defaultColumn);
+                console.log("ostatni");
                 console.log(lastKanbanTask);
                 const kanbanTask = new KanbanTask();
                 kanbanTask.setColumnId(defaultColumn.getId());
@@ -70,9 +67,12 @@ export class TaskAddingController{
                 }
                 console.log(3);
                 DataService.getStoreManager().getKanbanStore().createKanbanTask(kanbanTask).then(createdTask=>{
-                    console.log(4);
+                    console.log("Wstawianie Kanban Task");
+                    console.log(createdTask);
                     if(lastKanbanTask){
                         lastKanbanTask.setNextTaskId(createdTask.getId());
+                        console.log("Aktualizowanie ostatniego Kanban Task");
+                        console.log(lastKanbanTask);
                         DataService.getStoreManager().getKanbanStore().updateKanbanTask(lastKanbanTask);
                     }
                     console.log(5);

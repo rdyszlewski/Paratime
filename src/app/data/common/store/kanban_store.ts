@@ -2,7 +2,6 @@ import { IKanbanColumnsRepository } from '../repositories/kanban_columns_reposit
 import { IKanbanTasksRepository } from '../repositories/kanban_tasks_repository';
 import { KanbanColumn, KanbanTask } from 'app/models/kanban';
 import { TaskStore } from './task_store';
-import { TaskDataSorter } from 'app/pomodoro-statistics/sorter/task.data.sorter';
 
 export class KanbanStore{
 

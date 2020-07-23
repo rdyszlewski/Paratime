@@ -1,21 +1,46 @@
+.kanban-view{
+    display: flex;
+    flex-direction: column;
+    padding: 5px;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+}
+
 .columns-container{
     display: flex;
+    height: 100%;
     width: 100%;
-    height: 100vh;
     box-sizing: border-box;
+    overflow-x: auto;
+    overflow-y: hidden;
 }
 
 .column{
     border: 1px solid black;
-    margin: 10px;
-    width: 100%;
-    height: 100%;
+    /* margin: 10px; */
+   
+    min-width: 200px;
+    max-width: 200px;
+    margin: 3px;
+   
+}
+
+.column-header{
+  font-weight: bold;
+  border: 1px solid black;
+  padding: 5px;
+}
+
+.column-content{
+  height: 100%;
+  padding: 3px;
 }
 
 .task-item{
     border: 1px solid black;
-    margin:  5px;
     padding: 5px;
+    margin: 3px;
 }
 
 .cdk-drag-preview {

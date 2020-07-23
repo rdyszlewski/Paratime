@@ -1,6 +1,5 @@
 import { IPomodoroRepository } from '../repositories/pomodoro_repository';
 import { PomodoroHistory } from 'app/models/pomodoro.history';
-import { start } from 'repl';
 
 export class PomodoroStore{
 

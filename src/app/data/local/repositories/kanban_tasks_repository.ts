@@ -22,11 +22,11 @@ export class LocalKanbanTasksRepository implements IKanbanTasksRepository{
     }
 
     public findLastTask(columnId: number): Promise<KanbanTask> {
-        return this.table.where({"columnId": columnId, "nextColumnId": null}).first();
+        return this.table.where({"columnId": columnId, "nextTaskId": -1}).first();
     }
 
     public findFirstTask(columnId: number): Promise<KanbanTask> {
-        return this.table.where({"columnId":columnId, "prevColumnId": null}).first();
+        return this.table.where({"columnId":columnId, "prevTaskId": -1}).first();
     }
 
     public insertTask(task: KanbanTask): Promise<number> {

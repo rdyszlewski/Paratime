@@ -59,6 +59,7 @@ export class MainComponent implements OnInit {
   private tasksView;
   private taskDetailsView;
   private stageDetailsView;
+  private kanbanView;
 
   public pomodoroTime:string;
 
@@ -72,6 +73,7 @@ export class MainComponent implements OnInit {
     this.tasksView = $("#tasks");
     this.taskDetailsView = $('#task-details');
     this.stageDetailsView = $('#stage-details');
+    this.kanbanView = $('#kanban');
 
     this.setOriginalWidth();
     
@@ -147,6 +149,7 @@ export class MainComponent implements OnInit {
 
   private setOriginalWidth(){
     this.projectsView.width("30%");
+    this.kanbanView.width("70%");
     this.tasksView.width("70%");
   }
 

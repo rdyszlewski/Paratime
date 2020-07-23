@@ -2,7 +2,6 @@ import { Project } from 'app/models/project';
 import { IProjectRepository } from '../repositories/project_repository';
 import { TaskStore } from './task_store';
 import { StageStore } from './stage_store';
-import { promise } from 'protractor';
 import { KanbanStore } from './kanban_store';
 import { KanbanColumn } from 'app/models/kanban';
 
@@ -25,6 +24,8 @@ export class ProjectStore{
     public createProject(project:Project): Promise<Project>{
         return this.projectRepository.insertProject(project).then(insertedId=>{
             const column = new KanbanColumn();
+            // column.setName("-X-DEFAULT-X-");
+            
             column.setDefault(true);
             column.setProjectId(insertedId);
             return this.kanbanStore.createColumn(column).then(()=>{

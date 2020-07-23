@@ -1,9 +1,10 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, ɵsetCurrentInjector, ComponentFactoryResolver } from '@angular/core';
 import { KanbanModel } from './kanban.model';
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { Task } from 'app/models/task';
 import { Project } from 'app/models/project';
 import { DataService } from 'app/data.service';
+import { KanbanColumn, KanbanTask } from 'app/models/kanban';
 
 @Component({
   selector: 'app-kanban',
@@ -26,6 +27,8 @@ export class KanbanComponent implements OnInit {
   }
 
   public openProject(project:Project){
+    this.model.clearColumns();
+    this.model.setProject(project);
     console.log("Otwieranie");
       DataService.getStoreManager().getKanbanStore().getColumnsByProject(project.getId()).then(columns=>{
         console.log(columns);
@@ -40,21 +43,90 @@ export class KanbanComponent implements OnInit {
       this.changeTasksOrder(event.container.id, event.previousIndex, event.currentIndex);
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
     } else {
+      console.log("Przesuwanie do innnej kolumny");
+      console.log(event.container);
+      console.log(event.previousContainer);
+      // TODO: pobranie kolumny po id
       this.moveTaskToColumn(event.previousContainer.id, event.container.id, event.previousIndex, event.currentIndex);
       transferArrayItem(event.previousContainer.data, event.container.data, event.previousIndex, event.currentIndex);
     }
   }
 
   private changeTasksOrder(column: string, previousIndex: number, currentIndex: number){
-    // TODO: zmiana kolejnośći
+    const currentColumn = this.model.getColumnById(Number.parseInt(column));
+
+
+    console.log("Previous Index " + previousIndex);
+    console.log("Current Index " + currentIndex);
+    
+    const kanbanTasksToUpdate = currentColumn.moveKanbanTasks(previousIndex, currentIndex);
+    const promises = [];
+    kanbanTasksToUpdate.forEach(task=>{
+      promises.push(DataService.getStoreManager().getKanbanStore().updateKanbanTask(task));
+    })
+    Promise.all(promises).then(()=>{
+      console.log("Zaktualizowano");
+    });
+
   }
 
-  private moveTaskToColumn(previousColumn: string, currentColumn:string, previousIndex: number, currentIndex: number){
-    // TODO: przeniesienie do kolumny
+  private moveTaskToColumn(previousColumnId: string, currentColumnId:string, previousIndex: number, currentIndex: number){
+      console.log(this.model.getColumns());
+      console.log(previousColumnId);
+      console.log(currentColumnId);
+      const previousColumn = this.model.getColumnById(Number.parseInt(previousColumnId));
+      const currentColumn = this.model.getColumnById(Number.parseInt(currentColumnId));
+      console.log("Previous column");
+      console.log(previousColumn);
+      console.log("currentColumn");
+      console.log(currentColumn);
+
+      const previousTask = previousColumn.getKanbanTasks()[previousIndex];
+      // const currentTask = currentColumn.getKanbanTasks()[currentIndex];
+      console.log('previous task');
+      console.log(previousTask);
+
+      let toUpdate = [];
+      toUpdate = toUpdate.concat(previousColumn.removeKanbanTask(previousTask));
+      toUpdate = toUpdate.concat(currentColumn.insertKanbanTask(previousTask, currentIndex));
+
+      console.log("Do zaktualizowania");
+      console.log(toUpdate);
+      const promises = [];
+      toUpdate.forEach(task=>{
+        promises.push(DataService.getStoreManager().getKanbanStore().updateKanbanTask(task));
+      })
+      Promise.all(promises).then(()=>{
+        console.log("Zaktualizowano");
+      })
+
+      // TODO: jeżeli jest pierwsza na liście, to ustawiamy nulle
+      // TODO: z pierwszej listy też należy ustawić odpowiednio nulle
+      
+
+      
   }
+
+
   
   public closeView(){
     this.closeEvent.emit();
   }
+
+  public addColumn(){
+     const kanbanColumn = new KanbanColumn();
+     kanbanColumn.setDefault(false);
+     kanbanColumn.setProjectId(this.model.getProject().getId());
+     kanbanColumn.setName(this.model.getColumnName());
+     kanbanColumn.setPrevColumnId(this.model.getLastColumn().getId());
+     
+     DataService.getStoreManager().getKanbanStore().createColumn(kanbanColumn).then(insertedColumn=>{
+        console.log(insertedColumn);
+        this.model.addColumn(insertedColumn);
+     });
+     // TODO: pobranie ostatniej kolumny
+     
+  }
+
 
 }

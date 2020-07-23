@@ -114,6 +114,7 @@ export class TasksComponent implements OnInit {
     }
     const prev = task1.getOrderPrev();
     task1.setOrderPrev(task2.getOrderPrev());
+    task1.setOrderPrev(task2.getOrderPrev());
     task2.setOrderPrev(prev);
 
     this.updateTask(task1);
