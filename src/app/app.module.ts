@@ -33,6 +33,7 @@ import {MatSortModule} from "@angular/material/sort";
 import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 import { KanbanComponent } from './kanban/kanban.component' ;
 import {MatCheckboxModule} from '@angular/material/checkbox';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
   declarations: [
@@ -71,12 +72,15 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
     MatTableModule,
     MatSortModule,
     MatInputModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    NgbModule
   ],
   entryComponents:[
     DialogComponent
   ],
-  providers: [{provide: MAT_DATE_LOCALE, useValue: 'pl-PL'},],
+  providers: [
+    {provide: MAT_DATE_LOCALE, useValue: 'pl-PL'},
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { 

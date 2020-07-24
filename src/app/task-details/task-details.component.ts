@@ -16,7 +16,7 @@ import { Subtask } from 'app/models/subtask';
 @Component({
   selector: 'app-task-details',
   templateUrl: './task-details.component.html',
-  styleUrls: ['./task-details.component.css']
+  styleUrls: ['./task-details.component.css'],
 })
 export class TaskDetailsComponent implements OnInit {
   
@@ -165,5 +165,24 @@ export class TaskDetailsComponent implements OnInit {
     DataService.getStoreManager().getSubtaskStore().updateSubtask(subtask).then(updatedSubtask=>{
 
     });
+  }
+
+  // TODO: przerzucić to gdzieś
+  public timeChange(time: string){
+    console.log("Siemano");
+    console.log(time);
+    const values = time.split(":");
+    const hours = values[0];
+    const minutes = values[1];
+    console.log(hours);
+    console.log(minutes);
+  }
+
+  public getTime():string{
+    console.log("Jestem");
+    const value = 100
+    const hours = Math.floor(value / 60);
+    const minutes = value % 60;
+    return hours.toString() + ":" + minutes.toString();
   }
 }

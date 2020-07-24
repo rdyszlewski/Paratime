@@ -46,6 +46,13 @@
             <ng-container [ngTemplateOutlet]="task_date"></ng-container>
         </mat-expansion-panel>
 
+        <mat-expansion-panel class="form-group" >
+            <mat-expansion-panel-header class="form-group-header">
+                Godzina
+            </mat-expansion-panel-header>
+            <ng-container [ngTemplateOutlet]="task_time"></ng-container>
+        </mat-expansion-panel>
+
         <mat-expansion-panel class="form-group" [expanded]="getState().isEndDateExtended()">
             <mat-expansion-panel-header class="form-group-header">
                 Data końcowa
@@ -82,6 +89,7 @@
         </mat-expansion-panel>
     </form>
 </div>
+
 
 <mat-menu #appMenu="matMenu" class="my-menu">
     <div mat-menu-item *ngFor="let label of getLabels().getModel().getLabels()" class="list-item small-list-item"
@@ -142,6 +150,14 @@
         (dateChange)="updateTask()">
         <mat-datepicker-toggle [for]="datePicker" class="datepicker"></mat-datepicker-toggle>
         <mat-datepicker #datePicker></mat-datepicker>      
+    </div>
+</ng-template>
+
+<ng-template #task_time>
+    <div class="time-container">
+        <ngb-timepicker></ngb-timepicker>
+       <!-- <input class="form-control" [ngxTimepicker]="timepicker" >
+       <ngx-material-timepicker #timepicker [defaultTime]="getTime()" (timeChanged)="timeChange($event)"></ngx-material-timepicker> -->
     </div>
 </ng-template>
 
