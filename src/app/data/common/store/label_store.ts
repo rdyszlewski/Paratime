@@ -1,7 +1,7 @@
 import { ITaskLabelsRepository } from '../repositories/task_labels_repository';
 import { ILabelRepository } from '../repositories/label_repository';
 import { Label } from 'app/models/label';
-import { TaskLabelsModel } from '../models';
+import { LabelsTask } from '../models';
 
 export class LabelStore{
 
@@ -31,8 +31,8 @@ export class LabelStore{
         });
     }
 
-    public connectTaskAndLabel(taskId: number, labelId:number):Promise<TaskLabelsModel>{
-        return this.taskLabelsRepository.insert(new TaskLabelsModel(taskId, labelId));
+    public connectTaskAndLabel(taskId: number, labelId:number):Promise<LabelsTask>{
+        return this.taskLabelsRepository.insert(new LabelsTask(taskId, labelId));
     }
 
     public updateLabel(label:Label):Promise<Label>{
@@ -65,7 +65,7 @@ export class LabelStore{
     }
 
     public removeLabelFromTask(taskId: number, labelId: number):Promise<void>{
-        return this.taskLabelsRepository.remove(new TaskLabelsModel(taskId, labelId));
+        return this.taskLabelsRepository.remove(new LabelsTask(taskId, labelId));
     }
 
 }

@@ -1,5 +1,5 @@
 
-export class TaskLabelsModel{
+export class LabelsTask{
 
     private taskId: number;
     private labelId: number;

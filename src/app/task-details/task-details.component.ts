@@ -128,9 +128,7 @@ export class TaskDetailsComponent implements OnInit {
   }
 
   public onDrop(event: CdkDragDrop<any[]>){
-    console.log("Położono to tutaj");
     if(event.previousContainer === event.container){
-      // TODO: zapisywanie kolejności w bazie danych
       this.replaceSubtaskOrder(event.previousIndex, event.currentIndex);
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
     } else {
@@ -138,6 +136,7 @@ export class TaskDetailsComponent implements OnInit {
     }
   }
 
+  // TODO: przenieść to w jakieś inne miejsce. Połączyć ze zmianą kolejności w zadaniach
   private replaceSubtaskOrder(previousIndex: number, currentIndex: number){
     // TODO: spróbować połączyć to z sortowaniem zadań
     const subtask1 = this.model.getSubtaskByIndex(previousIndex);

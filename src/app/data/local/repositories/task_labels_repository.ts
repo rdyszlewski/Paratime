@@ -1,29 +1,29 @@
 import { ITaskLabelsRepository } from '../../common/repositories/task_labels_repository';
-import { TaskLabelsModel } from '../../common/models';
+import { LabelsTask } from '../../common/models';
 
 export class LocalTaskLabelsRepository implements ITaskLabelsRepository{
 
-    private table: Dexie.Table<TaskLabelsModel, number>;
+    private table: Dexie.Table<LabelsTask, number>;
 
-    constructor(table: Dexie.Table<TaskLabelsModel, number>){
+    constructor(table: Dexie.Table<LabelsTask, number>){
         this.table = table;
     }
 
-    public findByTaskId(taskId: number): Promise<TaskLabelsModel[]> {
+    public findByTaskId(taskId: number): Promise<LabelsTask[]> {
         return this.table.where('taskId').equals(taskId).toArray();
     }
 
-    public findByLabelId(labelId: number): Promise<TaskLabelsModel[]> {
+    public findByLabelId(labelId: number): Promise<LabelsTask[]> {
         return this.table.where('labelId').equals(labelId).toArray();
     }
 
-    public insert(entry: TaskLabelsModel): Promise<TaskLabelsModel> {
+    public insert(entry: LabelsTask): Promise<LabelsTask> {
         return this.table.add(entry).then(insertedId=>{
             return this.table.get(insertedId);
         });
     }
 
-    public remove(entry: TaskLabelsModel): Promise<void> {
+    public remove(entry: LabelsTask): Promise<void> {
         return this.table.where({
             'taskId': entry.getTaskId(),
             'labelId': entry.getLabelId()

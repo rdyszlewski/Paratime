@@ -4,7 +4,7 @@ import { Task } from 'app/models/task';
 import { Subtask } from 'app/models/subtask';
 import { Project } from 'app/models/project';
 import { Label } from 'app/models/label';
-import { TaskLabelsModel } from '../common/models';
+import { LabelsTask } from '../common/models';
 import { Stage } from 'app/models/stage';
 import { PomodoroHistory } from 'app/models/pomodoro.history';
 import { KanbanColumn, KanbanTask } from 'app/models/kanban';
@@ -18,7 +18,7 @@ export class LocalDatabase extends Dexie{
     private subtasksTable: Dexie.Table<Subtask, number>;
     private projectsTable: Dexie.Table<Project, number>;
     private labelsTable: Dexie.Table<Label, number>;
-    private taskTagsTable: Dexie.Table<TaskLabelsModel, number>;
+    private taskTagsTable: Dexie.Table<LabelsTask, number>;
     private stagesTable: Dexie.Table<Stage, number>;
     private pomodoroTable: Dexie.Table<PomodoroHistory, number>;
     private kanbanColumnsTable: Dexie.Table<KanbanColumn, number>;
@@ -66,7 +66,7 @@ export class LocalDatabase extends Dexie{
         this.tasksTable.mapToClass(Task);
         this.subtasksTable.mapToClass(Subtask);
         this.labelsTable.mapToClass(Label);
-        this.taskTagsTable.mapToClass(TaskLabelsModel);
+        this.taskTagsTable.mapToClass(LabelsTask);
         this.stagesTable.mapToClass(Stage);
         this.pomodoroTable.mapToClass(PomodoroHistory);
         this.kanbanColumnsTable.mapToClass(KanbanColumn);

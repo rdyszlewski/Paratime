@@ -84,8 +84,15 @@
 </div>
 
 <mat-menu #appMenu="matMenu" class="my-menu">
-    <button mat-menu-item *ngFor="let label of getLabels().getModel().getLabels()" class="list-item small-list-item"
-    (click)="getLabels().chooseLabel(label)">{{label.getName()}}</button>
+    <div mat-menu-item *ngFor="let label of getLabels().getModel().getLabels()" class="list-item small-list-item"
+    (click) = "getLabels().selectLabel(label, $event)">
+        <mat-checkbox type='checkbox' [checked]="getLabels().isLabelSelected(label)"></mat-checkbox>
+        <span >{{label.getName()}}</span>
+    </div>
+    <!-- <button mat-menu-item *ngFor="let label of getLabels().getModel().getLabels()" class="list-item small-list-item"
+    (click)="getLabels().chooseLabel(label)">{{label.getName()}}</button> -->
+    <button (click)="getLabels().cancelChoosingLabels()">Anuluj</button>
+    <button (click)="getLabels().acceptSelectedLabels()">Gotowe</button>
 </mat-menu>
 
 <ng-template #task_name_group> 
@@ -164,7 +171,11 @@
             <span class="remove-label" (click)="getLabels().removeLabel(label)"></span>
         </div>
     </div>
-    <button class="form-control button small-button" id="task-labels" name="labels" [matMenuTriggerFor]="appMenu">Dodaj</button>
+    <button class="form-control button small-button" id="task-labels" name="labels" 
+    [matMenuTriggerFor]="appMenu" (menuClosed)="getLabels().cancelChoosingLabels()"
+    (menuOpened)="getLabels().openChoosingLabels()">
+        Dodaj
+    </button>
     <!-- TODO: można to zrobić w ten sposób, że ostatnią pozycją będzie dodaj inną -->
     <button class="form-control button small-button" id="manage-label-button" (click)="openLabelsManager()">Zarzadzaj etykietami</button>
 </ng-template>

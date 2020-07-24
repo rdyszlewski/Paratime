@@ -1,11 +1,11 @@
-import { TaskLabelsModel as TaskLabelsModel } from '../models';
+import { LabelsTask as LabelsTask } from '../models';
 
 export interface ITaskLabelsRepository{
 
-    findByTaskId(taskId: number): Promise<TaskLabelsModel[]>;
-    findByLabelId(labelId: number): Promise<TaskLabelsModel[]>;
-    insert(entry: TaskLabelsModel): Promise<TaskLabelsModel>;
-    remove(entry: TaskLabelsModel): Promise<void>;
+    findByTaskId(taskId: number): Promise<LabelsTask[]>;
+    findByLabelId(labelId: number): Promise<LabelsTask[]>;
+    insert(entry: LabelsTask): Promise<LabelsTask>;
+    remove(entry: LabelsTask): Promise<void>;
     removeByTaskId(taskId: number): Promise<void>;
     removeByLabelId(labelId: number): Promise<void>;
 }

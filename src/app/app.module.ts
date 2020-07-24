@@ -32,6 +32,7 @@ import { MatTableModule} from "@angular/material/table";
 import {MatSortModule} from "@angular/material/sort";
 import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 import { KanbanComponent } from './kanban/kanban.component' ;
+import {MatCheckboxModule} from '@angular/material/checkbox';
 
 @NgModule({
   declarations: [
@@ -69,7 +70,8 @@ import { KanbanComponent } from './kanban/kanban.component' ;
     MatProgressSpinnerModule,
     MatTableModule,
     MatSortModule,
-    MatInputModule
+    MatInputModule,
+    MatCheckboxModule
   ],
   entryComponents:[
     DialogComponent

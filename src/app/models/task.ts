@@ -85,6 +85,10 @@ export class Task implements IFilterable{
         }
     }
 
+    public setLabels(labels:Label[]){
+        this.labels = labels;
+    }
+
     public removeLabel(label: Label){
         const index = this.labels.indexOf(label);
         if(index >= 0){
