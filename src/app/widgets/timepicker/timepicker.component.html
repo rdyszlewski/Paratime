@@ -1,0 +1,24 @@
+<div class="timepicker-container" (click)="clickedInside($event)"
+*ngIf="open">
+    <div class="time-container">
+        <div class="picker-part">
+            <button (click)="increaseHours()">+</button>
+            <input type="number" [min]="minHours" [max]="maxHours" value="0" 
+            [(ngModel)]="model.hours">
+            <button (click)="decreaseHours()">-</button>
+        </div>
+        :
+        <div class="picker-part">
+            <button (click)="increaseMinutes()">+</button>
+            <input type="number" [min]="minMinutes" [max]="maxMinutes" value="0"
+            [(ngModel)]="model.minutes">
+            <button (click)="decreaseMinutes()">-</button>
+        </div>
+    </div>
+   
+
+    <div class="buttons-container">
+        <button class="timepicker-button" (click)="cancel()">Anuluj</button>
+        <button class="timepicker-button" (click)='setTime()'>Ustaw</button> 
+    </div>
+</div>

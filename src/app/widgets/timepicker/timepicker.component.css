@@ -1,0 +1,25 @@
+.timepicker-container{
+    position: fixed;
+    z-index: 100;
+    background: bisque;
+    padding: 20px;
+    margin-top: -20px;
+}
+
+.time-container{
+    display: flex;
+}
+
+.picker-part{
+    display: flex;
+    flex-direction: column;
+}
+
+.buttons-container{
+    display: flex;
+}
+
+.timepicker-button{
+    width: 50%;
+    margin: 5px;
+}

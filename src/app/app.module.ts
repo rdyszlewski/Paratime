@@ -34,6 +34,7 @@ import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 import { KanbanComponent } from './kanban/kanban.component' ;
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { WidgetsModule } from './widgets/widgets.module';
 
 @NgModule({
   declarations: [
@@ -73,7 +74,8 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
     MatSortModule,
     MatInputModule,
     MatCheckboxModule,
-    NgbModule
+    NgbModule,
+    WidgetsModule
   ],
   entryComponents:[
     DialogComponent

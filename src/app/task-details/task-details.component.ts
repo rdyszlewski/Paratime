@@ -179,7 +179,6 @@ export class TaskDetailsComponent implements OnInit {
   }
 
   public getTime():string{
-    console.log("Jestem");
     const value = 100
     const hours = Math.floor(value / 60);
     const minutes = value % 60;
