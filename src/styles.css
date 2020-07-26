@@ -18,22 +18,32 @@ html, body{
     border-radius: 8px;
 }
 
-.form-label{
-    display: block;
-}
-
 .form-control{
     width: 100%;
     box-sizing: border-box;
     padding: 5px;
-    margin-top: 10px;
     border-radius: 8px;
     background-color: white;
     border: 1px solid black;
 }
 
+.form-label{
+    font-size: small;
+    margin-bottom: 0px;
+}
+
+.form-container{
+    margin-top: 5px;
+}
+
 .datepicker-container{
     display: flex;
+}
+
+.datepicker button{
+    width: 20px!important;
+    height: 20px!important;
+    line-height: 20px!important;
 }
 
 #description{
@@ -202,6 +212,7 @@ html, body{
 .mat-expansion-panel-body{
     padding: 5px!important;
 }
+
 
 .insert-button{
     float:right;
