@@ -14,33 +14,45 @@
 }
 
 #projects{
-    width: 30%;
-    max-width: 30%;
-    min-width: 10%;
+    
 }
 
 #project-details{
-    width: 50%;
+    
 }
 
 #tasks{
-    width: 50%;
+    
 }
 
 #task-details{
-    width: 50%;
+    
 }
 
 #pomodoro{
     min-width: 300px;
 }
 
+.top-actionbar{
+    display: flex;
+    position: absolute;
+    margin-right: 10px;
+    height: 40px;
+    width:100%;
+}
+
+.work-model-switch{
+    display: flex;
+
+}
+
 .toolbar{
     display: flex;
     align-self: flex-end;
-    margin-right: 10px;
-    height: 40px;
-    position: absolute;
+   
+    margin-left: auto;
+    margin-right:0;
+    
 }
 
 .toolbar-button{

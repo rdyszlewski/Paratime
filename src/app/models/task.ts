@@ -17,6 +17,7 @@ export class Task implements IFilterable{
     private important: number = 0;
     private labels: Label[] = [];
     private date:Date = null;
+    private time: number = null;
     private endDate: Date = null;
     private plannedTime: number = null;
     private subtasks: Subtask[] = []
@@ -66,7 +67,6 @@ export class Task implements IFilterable{
     }
 
     public getImportant():number{
-        console.log("Get important");
         return this.important? 1: 0;
     }
 
@@ -102,6 +102,14 @@ export class Task implements IFilterable{
 
     public setDate(date:Date):void{
         this.date = date;
+    }
+
+    public getTime():number{
+        return this.time;
+    }
+
+    public setTime(time:number):void{
+        this.time = time;
     }
 
     public getEndDate():Date{

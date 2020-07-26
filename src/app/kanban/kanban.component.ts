@@ -98,9 +98,10 @@ export class KanbanComponent implements OnInit {
         console.log(insertedColumn);
         this.model.addColumn(insertedColumn);
      });
-     // TODO: pobranie ostatniej kolumny
-     
   }
 
+  public isOpen():boolean{
+    return this.model.getProject() != null;
+  }
 
 }

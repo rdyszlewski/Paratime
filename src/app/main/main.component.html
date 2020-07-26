@@ -1,53 +1,74 @@
 <div class="main">
-    <div class="toolbar">
-        <div class="timer right">{{pomodoroTime}}</div>
-        <button class="button right toolbar-button" (click)="togglePomodoroOpen()">Licznik</button>
-        <button class="button right toolbar-button" (click)="openLabelsManager()">Etykiety</button>
+    <div class="top-actionbar">
+        <div class="work-modes-switch">
+            <button class="button toolbar-button" (click)="openTaskListMode()">Lista</button>
+            <button class="button toolbar-button" (click)="openKanbanMode()">Tablica</button>
+        </div>
+        <div class="toolbar">
+            <div class="timer">{{pomodoroTime}}</div>
+            <button class="button toolbar-button" (click)="togglePomodoroOpen()">Licznik</button>
+            <button class="button toolbar-button" (click)="openLabelsManager()">Etykiety</button>
+        </div>
     </div>
 
     <div class="app-content">
-        <app-projects id="projects" [hidden]="!projectsOpen" 
-            (editEvent)='openProjectDetails($event)'
-            (loadEvent)="loadTasks($event)"
-            (removeEvent)="onRemoveSelectedProject($event)"
-            (listEvent)="onSpecialListCLick($event)"
-            (kanbanEvent)="openKanban($event)">
-            
-        </app-projects>
+
+        <div #listSpace>
+            <app-projects id="projects" [hidden]="!projectsOpen" 
+                (editEvent)='openProjectDetails($event)'
+                (loadEvent)="loadTasks($event)"
+                (removeEvent)="onRemoveSelectedProject($event)"
+                (listEvent)="onSpecialListCLick($event)"
+                (kanbanEvent)="openKanban($event)">
+                
+            </app-projects>
+        </div>
+
+        <div #listDetailsSpace>
+            <app-project-details id='projects-details' [hidden]='!projectsDetailsOpen'
+                (closeEvent)='closeProjectDetails()'
+                (saveEvent)='onCreateProject($event)'
+                (updateEvent)="onUpdateProject($event)"
+                (editStageEvent)="onEditProjectStage($event)">
+            </app-project-details>
+
+            <app-stage-details id="stage-details" [hidden]="!stageDetailsOpen"
+                (closeEvent)="closeStageDetails()"
+                (updateEvent)="onUpdateStage($event)">
+            </app-stage-details>
+        </div>
     
-        <app-project-details id='projects-details' [hidden]='!projectsDetailsOpen'
-        (closeEvent)='closeProjectDetails()'
-        (saveEvent)='onCreateProject($event)'
-        (updateEvent)="onUpdateProject($event)"
-        (editStageEvent)="onEditProjectStage($event)"
-        ></app-project-details>
+        <div #workSpace>
+            <app-tasks id='tasks' [hidden]='!tasksOpen'
+                (detailsEvent)="openTaskDetails($event)"
+                (removeEvent)="onRemoveTask($event)"
+                (pomodoroEvent)="addTaskToPomodoro($event)">
+            </app-tasks>
 
-        <app-stage-details id="stage-details" [hidden]="!stageDetailsOpen"
-        (closeEvent)="closeStageDetails()"
-        (updateEvent)="onUpdateStage($event)"></app-stage-details>
+            <app-kanban id="kanban" [hidden]="!kanbanOpen"
+                (closeEvent)="closeKanban()">
+            </app-kanban>
+        </div>
         
-        <app-tasks id='tasks' [hidden]='!tasksOpen'
-            (detailsEvent)="openTaskDetails($event)"
-            (removeEvent)="onRemoveTask($event)"
-            (pomodoroEvent)="addTaskToPomodoro($event)">
-        </app-tasks>
+        <div #workDetailsSpace>
+            <app-task-details id="task-details" [hidden]='!tasksDetailsOpen'
+                (closeEvent)="closeTaskDetails()"
+                (saveEvent)="onCreateTask($event)"
+                (openLabelsEvent)="openLabelsManager()">
+            </app-task-details>
+        </div>
 
-        <app-kanban id="kanban" [hidden]="!kanbanOpen"
-            (closeEvent)="closeKanban()">
-        </app-kanban>
+        <div #sidebarSpace>
+            <app-labels id="labels" [hidden]="!labelsOpen"
+                (closeEvent)="closeLabelsManager()"
+                (updateEvent)="onLabelsUpdate()">
+            </app-labels>
 
-        <app-task-details id="task-details" [hidden]='!tasksDetailsOpen'
-            (closeEvent)="closeTaskDetails()"
-            (saveEvent)="onCreateTask($event)"
-            (openLabelsEvent)="openLabelsManager()">
-        </app-task-details>
+            <app-pomodoro id="pomodoro" [hidden]="!pomodoroOpen"
+                (tickEvent)="setPomodoroTime($event)">
+            </app-pomodoro>
+        </div>
 
-        <app-labels id="labels" [hidden]="!labelsOpen"
-        (closeEvent)="closeLabelsManager()"
-        (updateEvent)="onLabelsUpdate()"></app-labels>
-
-        <app-pomodoro id="pomodoro" [hidden]="!pomodoroOpen"
-        (tickEvent)="setPomodoroTime($event)"></app-pomodoro>
     </div>
     
 </div>

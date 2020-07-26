@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 import { DatabaseTest } from 'app/data/test/database_test';
 import { LocalDatabase } from 'app/data/local/database';
 import { ProjectDetailsComponent } from 'app/project-details/project-details.component';
@@ -14,13 +14,14 @@ import { Stage } from 'app/models/stage';
 import { SpecialList } from 'app/projects/common/special_list';
 import { PomodoroComponent } from 'app/pomodoro/pomodoro.component';
 import { KanbanComponent } from 'app/kanban/kanban.component';
+import { AppService } from 'app/services/app.service';
 
 @Component({
   selector: 'app-main',
   templateUrl: './main.component.html',
   styleUrls: ['./main.component.css']
 })
-export class MainComponent implements OnInit {
+export class MainComponent implements OnInit, AfterViewInit {
 
   // TODO: usprawnić zarządzanie widokami
 
@@ -54,29 +55,24 @@ export class MainComponent implements OnInit {
   public pomodoroOpen = false;
   public kanbanOpen = false;
 
-  private projectsView;
-  private projectDetailsView;
-  private tasksView;
-  private taskDetailsView;
-  private stageDetailsView;
-  private kanbanView;
+  @ViewChild('listSpace') listSpace: ElementRef;
+  @ViewChild('listDetailsSpace') listDetailsSpace: ElementRef;
+  @ViewChild('workSpace') workSpace: ElementRef;
+  @ViewChild('workDetailsSpace') workDetailsSpace: ElementRef;
+  @ViewChild('sidebarSpace') sidebarSpace: ElementRef;
 
   public pomodoroTime:string;
 
-  constructor(public snakBar: MatSnackBar) { }
+  constructor(private appService: AppService,public snakBar: MatSnackBar) { }
+
+  ngAfterViewInit(): void {
+    this.setOriginalWidth(); 
+  }
 
   ngOnInit(): void {
     // this.deleteDatabase();
     // this.configureDexie();
-    this.projectsView = $("#projects");
-    this.projectDetailsView = $("#projects-details");
-    this.tasksView = $("#tasks");
-    this.taskDetailsView = $('#task-details');
-    this.stageDetailsView = $('#stage-details');
-    this.kanbanView = $('#kanban');
 
-    this.setOriginalWidth();
-    
   }
 
   // metoda do testów TEST
@@ -116,9 +112,13 @@ export class MainComponent implements OnInit {
   // TODO: wymyślić jakiś sprytniejszy plan wstawiania szerokości
   // TODO: może nazwać jakoś poszczególne stany, i przygotować odgórnie ustawienia
   private setWidthOnProjectViewOpen(){
-    this.tasksView.width('20%');
-    this.projectsView.width('20%');
-    this.projectDetailsView.width('60%');
+    this.setWidth(this.workSpace, 20);
+    this.setWidth(this.listSpace, 20);
+    this.setWidth(this.listDetailsSpace, 60);
+  }
+
+  private setWidth(element: ElementRef, width){
+    element.nativeElement.style.minWidth = width + "%";
   }
 
   closeProjectDetails(){
@@ -135,9 +135,9 @@ export class MainComponent implements OnInit {
   }
 
   private setWidthOnTaskViewOpen(){
-    this.tasksView.width('30%');
-    this.projectsView.width('15%');
-    this.taskDetailsView.width('55%');
+    this.setWidth(this.workSpace, 30);
+    this.setWidth(this.listSpace, 15);
+    this.setWidth(this.workDetailsSpace, 55);
   }
 
   public closeTaskDetails(){
@@ -148,13 +148,16 @@ export class MainComponent implements OnInit {
   }
 
   private setOriginalWidth(){
-    this.projectsView.width("30%");
-    this.kanbanView.width("70%");
-    this.tasksView.width("70%");
+    console.log(this.listSpace);
+    console.log(this.workSpace);
+    this.setWidth(this.listSpace, 30);
+    this.setWidth(this.workSpace, 70);
   }
 
   loadTasks(project:Project){
     this.tasksComponent.setProject(project);
+    this.appService.setCurrentProject(project);
+    // TODO: możliwe, że tutja przydałoby się jakieś ustawianie rozmiaru
   }
 
   public onCreateProject(project:Project){
@@ -250,6 +253,7 @@ export class MainComponent implements OnInit {
   }
 
   public openKanban(project:Project){
+    this.appService.setCurrentProject(project);
     this.tasksOpen = false;
     this.kanbanOpen = true;
     this.kanbanComponent.openProject(project);
@@ -258,5 +262,17 @@ export class MainComponent implements OnInit {
   public closeKanban(){
     this.kanbanOpen = false;
     this.tasksOpen = true;
+  }
+
+  public openTaskListMode(){
+    this.loadTasks(this.appService.getCurrentProject());
+    this.kanbanOpen = false;
+    this.tasksOpen = true;
+  }
+
+  public openKanbanMode(){
+    this.openKanban(this.appService.getCurrentProject());
+    this.kanbanOpen = true;
+    this.tasksOpen = false;
   }
 }

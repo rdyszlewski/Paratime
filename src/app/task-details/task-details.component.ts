@@ -169,19 +169,30 @@ export class TaskDetailsComponent implements OnInit {
 
   // TODO: przerzucić to gdzieś
   public timeChange(time: string){
-    console.log("Siemano");
-    console.log(time);
     const values = time.split(":");
-    const hours = values[0];
-    const minutes = values[1];
-    console.log(hours);
-    console.log(minutes);
+    const hours = Number.parseInt(values[0]);
+    const minutes = Number.parseInt(values[1]);
+    this.model.getTask().setTime(this.getTimeValue(hours, minutes));
+    this.updateTask();
+  }
+
+  private getTimeValue(hour: number, minutes: number){
+    return hour * 60 + minutes;
   }
 
   public getTime():string{
-    const value = 100
-    const hours = Math.floor(value / 60);
-    const minutes = value % 60;
+    const value = this.model.getTask().getTime();
+    let hours;
+    let minutes;
+    if(value){
+      hours = Math.floor(value / 60);
+      minutes = value % 60;
+    } else {
+      // TODO: tutaj można podać aktualną godzinę
+      hours = 0;
+      minutes = 0;
+      // TODO: zrobić obsługe braku czasu w timepicker
+    }
     return hours.toString() + ":" + minutes.toString();
   }
 }

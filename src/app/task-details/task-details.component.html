@@ -155,7 +155,7 @@
 
 <ng-template #task_time>
     <div class="time-container">
-        <input paraInput [paraTimepickerTrigger]="picker" >
+        <input paraInput class="form-control" [paraTimepickerTrigger]="picker" >
         <para-timepicker #picker [time]="getTime()" (timeChange)="timeChange($event)"></para-timepicker>
        <!-- <input class="form-control" [ngxTimepicker]="timepicker" >
        <ngx-material-timepicker #timepicker [defaultTime]="getTime()" (timeChanged)="timeChange($event)"></ngx-material-timepicker> -->

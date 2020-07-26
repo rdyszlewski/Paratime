@@ -81,6 +81,7 @@ export class LocalTaskRepository implements ITaskRepository{
         }
         newTask.setImportant(task.isImportant());
         newTask.setDate(task.getDate());
+        newTask.setTime(task.getTime());
         newTask.setEndDate(task.getEndDate());
         newTask.setPlannedTime(task.getPlannedTime());
         newTask.setProgress(task.getProgress());

@@ -30,6 +30,8 @@ export class TimepickerComponent implements OnInit {
     this.updateText();
   }
 
+  private insideClick:boolean = false;
+
   @Input("paraTimepickerTrigger") trigger: TimepickerTriggerDirective;
   // @Input() time: Observable<string>;
   @Input() time: string;
@@ -39,19 +41,19 @@ export class TimepickerComponent implements OnInit {
   @Output() timeChange: EventEmitter<string> = new EventEmitter();
 
   @HostListener('document:click', ['$event']) clickedOutside($event){
-    this.open = false;
+    if(event.target != this.input){
+      this.open = false;
+    }
   }
 
-
   public clickedInside(event:MouseEvent){
-    // console.log("CLICKED INSIDE");
+    event.stopPropagation();
   }
 
   constructor() { }
 
   ngOnInit(): void {
-    
-
+    this
   }
 
   private  updateText(){
@@ -96,6 +98,7 @@ export class TimepickerComponent implements OnInit {
 
   public cancel(){
     this.onClose.emit();
+    console.log("Wychodzę");
     this.open = false;
   }
 
@@ -104,6 +107,7 @@ export class TimepickerComponent implements OnInit {
       const time = this.getTimeText();
       this._input.value = time;
       this.timeChange.emit(time);
+      console.log("Ustawiam czas i wcyhodze");
       this.open = false;
     } 
     else 
