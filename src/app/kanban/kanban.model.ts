@@ -59,11 +59,9 @@ export class KanbanModel{
         }
 
         let currentTask = this.findFirstKanbanTask(elements);
-        console.log(currentTask);
         while(currentTask != null){
             result.push(currentTask);
             currentTask = this.findKanbanTaskByPrev(currentTask.getId(), elements);
-            console.log(currentTask);
         }
         return result;
     }

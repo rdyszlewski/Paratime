@@ -99,8 +99,6 @@ export class TaskStore{
 
     public getImportantTasks(): Promise<Task[]>{
         return this.taskRepository.findImportantTasks().then(tasks=>{
-            console.log("Znalazło mi takie zadania");
-            console.log(tasks);
             return this.getCompletedTasks(tasks);
         });
     }

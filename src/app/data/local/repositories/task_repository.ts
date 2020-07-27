@@ -43,10 +43,6 @@ export class LocalTaskRepository implements ITaskRepository{
     }
 
     public findImportantTasks(): Promise<Task[]> {
-        // TODO: sprawdzić, czy to będzie działać 
-        this.table.toArray().then(tasks=>{
-            console.log(tasks);
-        });
         return this.table.where('important').equals(1).toArray();
     }
     

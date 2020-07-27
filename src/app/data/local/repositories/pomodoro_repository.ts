@@ -30,8 +30,6 @@ export class LocalPomodoroRepository implements IPomodoroRepository{
         // TODO: sprawdzić to
         let startDateToSave = new Date(startDate.toDateString());
         let endDateToSave = new Date(endDate.toDateString());
-        console.log(startDateToSave);
-        console.log(endDateToSave);
         return this.table.where("date").between(startDate, endDate).toArray();
     }
 

@@ -63,6 +63,8 @@ export class MainComponent implements OnInit, AfterViewInit {
 
   public pomodoroTime:string;
 
+  private currentProject: Project;
+
   constructor(private appService: AppService,public snakBar: MatSnackBar) { }
 
   ngAfterViewInit(): void {
@@ -148,15 +150,16 @@ export class MainComponent implements OnInit, AfterViewInit {
   }
 
   private setOriginalWidth(){
-    console.log(this.listSpace);
-    console.log(this.workSpace);
     this.setWidth(this.listSpace, 30);
     this.setWidth(this.workSpace, 70);
   }
 
   loadTasks(project:Project){
+    this.currentProject = project;
     this.tasksComponent.setProject(project);
-    this.appService.setCurrentProject(project);
+    // this.appService.setCurrentProject(project);
+    
+
     // TODO: możliwe, że tutja przydałoby się jakieś ustawianie rozmiaru
   }
 
@@ -253,7 +256,8 @@ export class MainComponent implements OnInit, AfterViewInit {
   }
 
   public openKanban(project:Project){
-    this.appService.setCurrentProject(project);
+    // this.appService.setCurrentProject(project);
+    this.currentProject = project;
     this.tasksOpen = false;
     this.kanbanOpen = true;
     this.kanbanComponent.openProject(project);
@@ -265,13 +269,14 @@ export class MainComponent implements OnInit, AfterViewInit {
   }
 
   public openTaskListMode(){
-    this.loadTasks(this.appService.getCurrentProject());
+    this.loadTasks(this.currentProject);
     this.kanbanOpen = false;
     this.tasksOpen = true;
   }
 
   public openKanbanMode(){
-    this.openKanban(this.appService.getCurrentProject());
+    // this.openKanban(this.appService.getCurrentProject());
+    this.openKanban(this.currentProject);
     this.kanbanOpen = true;
     this.tasksOpen = false;
   }

@@ -32,9 +32,7 @@ export class KanbanComponent implements OnInit {
   public openProject(project:Project){
     this.model.clearColumns();
     this.model.setProject(project);
-    console.log("Otwieranie");
       DataService.getStoreManager().getKanbanStore().getColumnsByProject(project.getId()).then(columns=>{
-        console.log(columns);
         columns.forEach(column=>{
           this.model.addColumn(column);
         })
@@ -46,10 +44,6 @@ export class KanbanComponent implements OnInit {
       this.changeTasksOrder(event.container.id, event.previousIndex, event.currentIndex);
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
     } else {
-      console.log("Przesuwanie do innnej kolumny");
-      console.log(event.container);
-      console.log(event.previousContainer);
-      // TODO: pobranie kolumny po id
       this.moveTaskToColumn(event.previousContainer.id, event.container.id, event.previousIndex, event.currentIndex);
       transferArrayItem(event.previousContainer.data, event.container.data, event.previousIndex, event.currentIndex);
     }
@@ -98,7 +92,6 @@ export class KanbanComponent implements OnInit {
      kanbanColumn.setPrevColumnId(this.model.getLastColumn().getId());
      
      DataService.getStoreManager().getKanbanStore().createColumn(kanbanColumn).then(insertedColumn=>{
-        console.log(insertedColumn);
         this.model.addColumn(insertedColumn);
      });
   }
@@ -123,7 +116,7 @@ export class KanbanComponent implements OnInit {
 
     DataService.getStoreManager().getTaskStore().createTask(task).then(createdTask=>{
       this.insertKanbanTask(createdTask, column).then((kanbanTask)=>{
-        this.model.getProject().addTask(task);
+        this.model.getProject().addTask(createdTask);
         // TODO: jeżeli będzie dołączanie zadania na poczatek, będzie to trzeba zmienić
         column.getKanbanTasks().push(kanbanTask);
       });

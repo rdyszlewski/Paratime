@@ -107,7 +107,6 @@ export class TimepickerComponent implements OnInit {
       const time = this.getTimeText();
       this._input.value = time;
       this.timeChange.emit(time);
-      console.log("Ustawiam czas i wcyhodze");
       this.open = false;
     } 
     else 

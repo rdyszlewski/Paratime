@@ -35,7 +35,6 @@ export class TaskLabelsController{
       this.mainModel.getTask().getLabels().forEach(label=>{
         this.selectedLabels.push(label);
       });
-      console.log(this.selectedLabels);
     }
 
     public selectLabel(label:Label, event:MouseEvent){

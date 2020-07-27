@@ -89,7 +89,6 @@ export class TasksComponent implements OnInit {
   }
 
   onDrop(event:CdkDragDrop<string[]>){
-    console.log("Położono to tutaj");
     if(event.previousContainer === event.container){
       this.replaceTasksOrder(event.previousIndex, event.currentIndex);
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);

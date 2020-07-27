@@ -27,8 +27,6 @@ export class TaskDetails{
         }
         let currentTask = this.findFirstSubtask(elements);
         while(currentTask != null){
-            console.log("Sortowanie podzadania");
-            result.push(currentTask);
             currentTask = this.findSubtaskByPrevious(currentTask.getId(), elements);
         }
         return result;

@@ -22,7 +22,6 @@ export class PomodoroModel{
         const settings = PomodoroSettingsStore.getSettings();
         if(settings){
             this.settings = settings;
-            console.log(this.settings);
         } else {
             this.setDefaultSettings();
         }
