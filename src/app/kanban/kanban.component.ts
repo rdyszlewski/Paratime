@@ -5,6 +5,8 @@ import { Task } from 'app/models/task';
 import { Project } from 'app/models/project';
 import { DataService } from 'app/data.service';
 import { KanbanColumn, KanbanTask } from 'app/models/kanban';
+import { FocusHelper } from 'app/common/view_helper';
+import { last } from 'rxjs/operators';
 
 @Component({
   selector: 'app-kanban',
@@ -16,6 +18,7 @@ export class KanbanComponent implements OnInit {
   @Output() closeEvent: EventEmitter<null> = new EventEmitter();
 
   private model: KanbanModel = new KanbanModel();
+  private defaultColumnOpen = true;
 
   constructor() { }
 
@@ -104,4 +107,78 @@ export class KanbanComponent implements OnInit {
     return this.model.getProject() != null;
   }
 
+  public isDefaultColumnOpen():boolean{
+    return this.defaultColumnOpen;
+  }
+
+  public toggleOpenDefautlColumn():void{
+    this.defaultColumnOpen = !this.defaultColumnOpen;
+  }
+
+  // TODO: całe dodwanie przenieść w inne miejsce
+  public addNewTask(column:KanbanColumn){
+    const task = new Task(this.model.getNewTaskName());
+    task.setProject(this.model.getProject());
+    task.setOrderPrev(this.getLastTask(this.model.getProject()).getId());
+
+    DataService.getStoreManager().getTaskStore().createTask(task).then(createdTask=>{
+      this.insertKanbanTask(createdTask, column).then((kanbanTask)=>{
+        this.model.getProject().addTask(task);
+        // TODO: jeżeli będzie dołączanie zadania na poczatek, będzie to trzeba zmienić
+        column.getKanbanTasks().push(kanbanTask);
+      });
+    });
+
+    this.closeAddingNewTask();
+  }
+
+  // TODO: podobna metoda jest w task.adding.controller.ts
+  private insertKanbanTask(task:Task, column: KanbanColumn):Promise<KanbanTask>{
+    const kanbanStore = DataService.getStoreManager().getKanbanStore();
+    const lastTaskInColumn = column.getKanbanTasks()[column.getKanbanTasks().length - 1];
+    const kanbanTask = this.createKanbanTask(task, column, lastTaskInColumn);
+    return kanbanStore.createKanbanTask(kanbanTask).then(createdKanbanTask=>{
+      if(lastTaskInColumn){
+        this.updatePreviousKanbanTask(lastTaskInColumn, createdKanbanTask);
+      }
+      return Promise.resolve(createdKanbanTask);
+    });
+  }
+
+  private createKanbanTask(task:Task, column:KanbanColumn, lastKanbanTask: KanbanTask){
+    const kanbanTask = new KanbanTask();
+    kanbanTask.setColumnId(column.getId());
+    kanbanTask.setTaskId(task.getId());
+    if(lastKanbanTask){
+      kanbanTask.setPrevTaskId(lastKanbanTask.getId());
+    }
+    return kanbanTask;
+  }
+
+  private updatePreviousKanbanTask(lastKanbanTask: KanbanTask, createdTask: KanbanTask) {
+    lastKanbanTask.setNextTaskId(createdTask.getId());
+    return DataService.getStoreManager().getKanbanStore().updateKanbanTask(lastKanbanTask);
+}
+
+  private getLastTask(project:Project){
+    return project.getTasks()[project.getTasks().length-1];
+  }
+
+  public closeAddingNewTask(){
+      this.model.setColumnAddingOpen(null);
+      this.model.setNewTaskName("");
+  }
+
+  public handleAddingKeyUp(event:KeyboardEvent){
+    // TODO
+  }
+
+  public onAddKanbanTaskClick(column:KanbanColumn){
+    this.model.setColumnAddingOpen(column);
+    FocusHelper.focus(this.getNewTaskInputId(column));
+  }
+
+  private getNewTaskInputId(column:KanbanColumn){
+    return "#new_task_input_" + column.getId();
+  }
 }

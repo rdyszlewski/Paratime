@@ -4,7 +4,7 @@ import { TasksModel } from '../model';
 import { DataService } from 'app/data.service';
 import { ScrollBarHelper, FocusHelper } from 'app/common/view_helper';
 import { EditInputHandler } from 'app/common/edit_input_handler';
-import { KanbanTask } from 'app/models/kanban';
+import { KanbanTask, KanbanColumn } from 'app/models/kanban';
 
 export class TaskAddingController{
 
@@ -56,36 +56,36 @@ export class TaskAddingController{
 
     private insertKanbanTask(task: Task){
         // TODO: to powinno być w pakiecie z bazą danych
+        // TODO: można to przenieść do jakiegoś serwisu, który będzie wstawiał to w odpowiednie miejsce
         DataService.getStoreManager().getKanbanStore().getDefaultColumn(task.getProject().getId()).then(defaultColumn=>{
-            console.log("Domyślna");
-            console.log(defaultColumn);
+            // insert to default column
             DataService.getStoreManager().getKanbanStore().getLastKanbanTask(defaultColumn.getId()).then(lastKanbanTask=>{
-                console.log("ostatni");
-                console.log(lastKanbanTask);
-                const kanbanTask = new KanbanTask();
-                kanbanTask.setColumnId(defaultColumn.getId());
-                kanbanTask.setTaskId(task.getId());
-                if(lastKanbanTask){
-                    kanbanTask.setPrevTaskId(lastKanbanTask.getId());
-                }
-                console.log(3);
+                const kanbanTask = this.createKanbanTask(defaultColumn, task, lastKanbanTask);
                 DataService.getStoreManager().getKanbanStore().createKanbanTask(kanbanTask).then(createdTask=>{
-                    console.log("Wstawianie Kanban Task");
-                    console.log(createdTask);
                     if(lastKanbanTask){
-                        lastKanbanTask.setNextTaskId(createdTask.getId());
-                        console.log("Aktualizowanie ostatniego Kanban Task");
-                        console.log(lastKanbanTask);
-                        DataService.getStoreManager().getKanbanStore().updateKanbanTask(lastKanbanTask);
+                        this.updatePreviousKanbanTask(lastKanbanTask, createdTask);
                     }
-                    console.log(5);
                 });
-                
             })
             
         });
     }
     
+    private updatePreviousKanbanTask(lastKanbanTask: KanbanTask, createdTask: KanbanTask) {
+        lastKanbanTask.setNextTaskId(createdTask.getId());
+        DataService.getStoreManager().getKanbanStore().updateKanbanTask(lastKanbanTask);
+    }
+
+    private createKanbanTask(defaultColumn: KanbanColumn, task: Task, lastKanbanTask: KanbanTask) {
+        const kanbanTask = new KanbanTask();
+        kanbanTask.setColumnId(defaultColumn.getId());
+        kanbanTask.setTaskId(task.getId());
+        if (lastKanbanTask) {
+            kanbanTask.setPrevTaskId(lastKanbanTask.getId());
+        }
+        return kanbanTask;
+    }
+
     public closeAddingNewTask(){
         this.model.setNewTaskName("");
         this.model.closeAddingTask();

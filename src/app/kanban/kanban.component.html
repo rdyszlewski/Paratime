@@ -4,39 +4,73 @@
     [ngModel]="getModel().getColumnName()" (ngModelChange)="getModel().setColumnName($event)">
     <button class="add-column-button" (click)="addColumn()">Dodaj kolumnę</button>
     <div class="columns-container">
-        <div class="column" 
-        *ngFor="let column of getModel().getColumns()">
-            <div class="column-header">
-                {{column.getName()}}
-            </div>
-            <div class="column-content"  id="{{getModel().getColumnIdText(column)}}"
-            cdkDropList #column.getId().toString()="cdkDropList" 
-            [cdkDropListData]="column.getKanbanTasks()"
-            [cdkDropListConnectedTo]="getModel().getColumnsNames()"
-            (cdkDropListDropped)="drop($event)">
-                <div cdkDrag *ngFor="let kanbanTask of column.getKanbanTasks()"
-                class="task-item">
-                {{kanbanTask.getTask().getName()}}
-            </div>
-            </div>       
-        </div>
+        <div class="kanban-columns">
+            <div class="column"
+            *ngFor="let column of getModel().getColumns()">
+                <div class="column-header">
+                    {{column.getName()}}
+                </div>
+                <div class="column-content"  id="{{getModel().getColumnIdText(column)}}"
+                cdkDropList #column.getId().toString()="cdkDropList" 
+                [cdkDropListData]="column.getKanbanTasks()"
+                [cdkDropListConnectedTo]="getModel().getColumnsNames()"
+                (cdkDropListDropped)="drop($event)">
+                    <div cdkDrag *ngFor="let kanbanTask of column.getKanbanTasks()"
+                    class="task-item">
+                    {{kanbanTask.getTask().getName()}}
+                    </div>
+                    <div class="add-task-container">
 
-        <div class="column" >
-            <div class="column-header">
-                {{getModel().getDefaultColumn().getName()}}
+                    </div>
+                    <div *ngIf="getModel().getColumnAddingOpen()==column">
+                        <ng-container [ngTemplateOutlet]="new_kanban_task" [ngTemplateOutletContext]="{$implicit:column}"></ng-container>
+                    </div>
+                    <button class="column-add-button"
+                    *ngIf="getModel().getColumnAddingOpen() != column"
+                    (click)="onAddKanbanTaskClick(column)">
+                        Dodaj zadanie
+                    </button>
+                </div>       
             </div>
-            <div class="column-content" id='{{getModel().getColumnIdText(getModel().getDefaultColumn())}}'
-            cdkDropList #getModel().getDefaultColumn().getId().toString()="cdkDropList" 
-            [cdkDropListData]="getModel().getDefaultColumn().getKanbanTasks()"
-            [cdkDropListConnectedTo]="getModel().getColumnsNames()"
-            (cdkDropListDropped)="drop($event)">
-                <div cdkDrag *ngFor="let kanbanTask of getModel().getDefaultColumn().getKanbanTasks()"
-                class="task-item">
-                {{kanbanTask.getTask().getName()}}
-            </div> 
-            </div>
-                       
         </div>
+        
+        <div class="default-column-container">
+            <div class="column" id="default-column"
+            *ngIf="isDefaultColumnOpen()">
+                <div class="column-header">
+                    <span class="column-name">{{getModel().getDefaultColumn().getName()}}</span>
+                    <button (click)="toggleOpenDefautlColumn()">></button>
+                    
+                </div>
+                <div class="column-content" id='{{getModel().getColumnIdText(getModel().getDefaultColumn())}}'
+                cdkDropList #getModel().getDefaultColumn().getId().toString()="cdkDropList" 
+                [cdkDropListData]="getModel().getDefaultColumn().getKanbanTasks()"
+                [cdkDropListConnectedTo]="getModel().getColumnsNames()"
+                (cdkDropListDropped)="drop($event)">
+                    <div cdkDrag *ngFor="let kanbanTask of getModel().getDefaultColumn().getKanbanTasks()"
+                    class="task-item">
+                    {{kanbanTask.getTask().getName()}}
+                </div> 
+                </div>
+                        
+            </div>
+            <div class="default-column-sidebar" *ngIf="!isDefaultColumnOpen()">
+                <button (click)="toggleOpenDefautlColumn()"><</button>
+            </div>
+        </div>
+        
     </div>
     <button (click)="closeView()"> Zamknij</button>
 </div>
+
+<ng-template #new_kanban_task let-column>
+    <input type="text" class="form-control" id="new_task_input_{{column.getId()}}" autocomplete="off"
+    (keyup)="handleAddingKeyUp($event)"
+    [ngModel]="getModel().getNewTaskName()" (ngModelChange)="getModel().setNewTaskName($event)">
+    <div class="buttons-container">
+        <button class="button small-button insert-button" id="save-kanban-task-button"
+        (click)="addNewTask(column)">Zapisz</button>
+        <button class="button small-button insert-button" id="cancel-kanban-task-button"
+        (click)="closeAddingNewTask()">Anuluj</button>
+    </div>
+</ng-template>

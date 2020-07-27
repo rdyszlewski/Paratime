@@ -1,5 +1,6 @@
 import { KanbanColumn, KanbanTask } from 'app/models/kanban';
 import { Project } from 'app/models/project';
+import { BooleanInput } from '@angular/cdk/coercion';
 
 export class KanbanModel{
     
@@ -7,6 +8,9 @@ export class KanbanModel{
     private columns: KanbanColumn[] = [];
     private project: Project;
     private columnName: string;
+
+    private newTaskName: string;
+    private columnAddingOpen: KanbanColumn;
     // private columns: Map<string, Task[]> = new Map();
 
     constructor(){
@@ -111,5 +115,21 @@ export class KanbanModel{
             return column.getId().toString();
         }
         return null;
+    }
+
+    public getNewTaskName():string{
+        return this.newTaskName;
+    }
+
+    public setNewTaskName(name:string):void{
+        this.newTaskName = name;
+    }
+
+    public getColumnAddingOpen():KanbanColumn{
+        return this.columnAddingOpen;
+    }
+
+    public setColumnAddingOpen(column: KanbanColumn):void{
+        this.columnAddingOpen = column;
     }
 }

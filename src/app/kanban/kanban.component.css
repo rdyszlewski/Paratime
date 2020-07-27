@@ -12,6 +12,12 @@
     height: 100%;
     width: 100%;
     box-sizing: border-box;
+    
+}
+
+.kanban-columns{
+  display: flex;
+    width: 100%;
     overflow-x: auto;
     overflow-y: hidden;
 }
@@ -23,7 +29,11 @@
     min-width: 200px;
     max-width: 200px;
     margin: 3px;
-   
+    height: fit-content;
+}
+
+.column-add-button{
+  width: 100%;
 }
 
 .column-header{
@@ -41,6 +51,16 @@
     border: 1px solid black;
     padding: 5px;
     margin: 3px;
+}
+
+.default-column-container{
+  height: 100%;
+  display: flex;
+}
+
+.default-column-sidebar{
+  height: 100%;
+  width: fit-content;
 }
 
 .cdk-drag-preview {
@@ -63,3 +83,5 @@
   .item-list.cdk-drop-list-dragging .item-box:not(.cdk-drag-placeholder) {
     transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
   }
+
+  
