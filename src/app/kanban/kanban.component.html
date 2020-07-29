@@ -16,20 +16,10 @@
                 [cdkDropListConnectedTo]="getModel().getColumnsNames()"
                 (cdkDropListDropped)="drop($event)">
                     <div cdkDrag *ngFor="let kanbanTask of column.getKanbanTasks()"
-                    class="task-item">
-                    {{kanbanTask.getTask().getName()}}
+                    class="task-list-item list-item block transparent-border">
+                        <ng-container [ngTemplateOutlet]="task_item", [ngTemplateOutletContext]="{$implicit:kanbanTask.getTask()}"></ng-container>
                     </div>
-                    <div class="add-task-container">
-
-                    </div>
-                    <div *ngIf="getModel().getColumnAddingOpen()==column">
-                        <ng-container [ngTemplateOutlet]="new_kanban_task" [ngTemplateOutletContext]="{$implicit:column}"></ng-container>
-                    </div>
-                    <button class="column-add-button"
-                    *ngIf="getModel().getColumnAddingOpen() != column"
-                    (click)="onAddKanbanTaskClick(column)">
-                        Dodaj zadanie
-                    </button>
+                    <ng-container [ngTemplateOutlet]='new_task' [ngTemplateOutletContext]="{$implicit:column}"></ng-container>
                 </div>       
             </div>
         </div>
@@ -48,9 +38,10 @@
                 [cdkDropListConnectedTo]="getModel().getColumnsNames()"
                 (cdkDropListDropped)="drop($event)">
                     <div cdkDrag *ngFor="let kanbanTask of getModel().getDefaultColumn().getKanbanTasks()"
-                    class="task-item">
-                    {{kanbanTask.getTask().getName()}}
-                </div> 
+                    class="task-list-item list-item block transparent-border">
+                        <ng-container [ngTemplateOutlet]="task_item" [ngTemplateOutletContext]="{$implicit:kanbanTask.getTask()}"></ng-container>
+                    </div> 
+                    <ng-container [ngTemplateOutlet]='new_task' [ngTemplateOutletContext]="{$implicit:getModel().getDefaultColumn()}"></ng-container>
                 </div>
                         
             </div>
@@ -74,3 +65,72 @@
         (click)="closeAddingNewTask()">Anuluj</button>
     </div>
 </ng-template>
+
+<ng-template #task_item let-task>
+    <div class="task-main">
+        <div class="list-item-top">
+            <div class="list-item-value">{{task.getName()}}</div>
+        </div>
+        <ng-container [ngTemplateOutlet]="task_labels" [ngTemplateOutletContext]="{$implicit:task}"></ng-container>
+        <ng-container [ngTemplateOutlet]="task_details" [ngTemplateOutletContext]="{$implicit:task}"></ng-container> 
+    </div>
+    <ng-container [ngTemplateOutlet]="item_options" [ngTemplateOutletContext]="{$implicit:task}"></ng-container>
+</ng-template>
+
+<ng-template #new_task let-column>
+    <div class="add-task-container">
+        <div *ngIf="getModel().getColumnAddingOpen()==column">
+            <ng-container [ngTemplateOutlet]="new_kanban_task" [ngTemplateOutletContext]="{$implicit:column}"></ng-container>
+        </div>
+        <button class="column-add-button"
+        *ngIf="getModel().getColumnAddingOpen() != column"
+        (click)="onAddKanbanTaskClick(column)">
+            Dodaj zadanie
+        </button>
+    </div>
+</ng-template>
+
+<ng-template #task_labels let-task>
+    <div *ngFor="let label of task.getLabels()" class="label-item border">
+        {{label.getName()}}
+      </div>
+</ng-template>
+
+<ng-template #task_details let-task>
+    <div class="task-detauls-container">
+        <div *ngIf='task.getDescription()!=null' class="task-description-icon info-icon"
+            tooltip ="{{task.getDescription()}}" autoplacement="true" placement="bottom">
+        </div>
+
+        <div *ngIf="task.getEndDate()!=null" class="task-enddate-icon info-icon"
+            tooltip="{{getInfo().getEndDateText(task)}}" autoplacement="true" placement="bottom">
+        </div>
+
+        <div *ngIf="task.getPriority()!=null" class="task-priority-icon info-icon">
+            {{getInfo().getPriorityText(task)}} 
+        </div>
+
+        <div *ngIf="task.getSubtasks().length != 0" class="info-icon task-subtask"
+            tooltip="{{getInfo().getSubtasksList(task)}}" autoplacement="true" placement="bottom">
+            {{task.getNumberOfSubtaskWithStatus(status.ENDED)}} / {{task.getSubtasks().length}}
+        </div>
+    </div>
+   
+</ng-template>
+
+<ng-template #item_options let-task>
+    <div class="list-item-options"
+        (click)="null"
+        [matMenuTriggerFor]="task_menu">
+        <mat-menu #task_menu="matMenu">
+            <button mat-menu-item (click)="null">
+                Edytuj
+            </button>
+            <button mat-menu-item (click)="null">
+                Usuń
+            </button>
+        </mat-menu>
+        ...
+    </div>
+</ng-template>
+

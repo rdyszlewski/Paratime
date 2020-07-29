@@ -4,7 +4,6 @@ import { EventEmitter } from '@angular/core';
 import { DialogHelper } from 'app/common/dialog';
 import { MatDialog } from '@angular/material/dialog';
 import { DataService } from 'app/data.service';
-import { ignoreElements } from 'rxjs/operators';
 
 export class ItemMenuController{
     
@@ -13,6 +12,7 @@ export class ItemMenuController{
     private pomodoroEvent: EventEmitter<Task>;
     private dialog: MatDialog;
     private model: TasksModel;
+
     // TODO: można zrobić model, który będzie obsługiwał zaznaczone elementy
 
     constructor(model:TasksModel, detailsEvent:EventEmitter<Task>, removeEvent:EventEmitter<number>, pomodoroEvent:EventEmitter<Task>, dialog: MatDialog){

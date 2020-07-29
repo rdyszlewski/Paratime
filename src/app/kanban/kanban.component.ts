@@ -7,6 +7,9 @@ import { DataService } from 'app/data.service';
 import { KanbanColumn, KanbanTask } from 'app/models/kanban';
 import { FocusHelper } from 'app/common/view_helper';
 import { last } from 'rxjs/operators';
+import { TaskItemInfo } from 'app/tasks/common/task.item.info';
+import { Status } from 'app/models/status';
+import { ItemMenuController } from 'app/tasks/common/item.menu.controller';
 
 @Component({
   selector: 'app-kanban',
@@ -18,7 +21,11 @@ export class KanbanComponent implements OnInit {
   @Output() closeEvent: EventEmitter<null> = new EventEmitter();
 
   private model: KanbanModel = new KanbanModel();
+  private info: TaskItemInfo = new TaskItemInfo();
+  // TODO: tutaj jakoś wstawić obsługę menu
   private defaultColumnOpen = true;
+
+  public status = Status;
 
   constructor() { }
 
@@ -27,6 +34,10 @@ export class KanbanComponent implements OnInit {
 
   public getModel(){
     return this.model;
+  }
+
+  public getInfo(){
+    return this.info;
   }
 
   public openProject(project:Project){
@@ -173,5 +184,13 @@ export class KanbanComponent implements OnInit {
 
   private getNewTaskInputId(column:KanbanColumn){
     return "#new_task_input_" + column.getId();
+  }
+
+  public onTaskEdit(task:Task){
+    // TODO: obsługa edytowania
+  }
+
+  public onTaskDelete(task:Task){
+    // TODO: usuwanie zadania
   }
 }

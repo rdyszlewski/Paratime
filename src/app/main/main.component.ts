@@ -14,7 +14,7 @@ import { Stage } from 'app/models/stage';
 import { SpecialList } from 'app/projects/common/special_list';
 import { PomodoroComponent } from 'app/pomodoro/pomodoro.component';
 import { KanbanComponent } from 'app/kanban/kanban.component';
-import { AppService } from 'app/services/app.service';
+import { AppService } from 'app/services/app/app.service';
 
 @Component({
   selector: 'app-main',
