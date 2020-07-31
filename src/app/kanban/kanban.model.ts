@@ -1,9 +1,10 @@
 import { KanbanColumn, KanbanTask } from 'app/models/kanban';
 import { Project } from 'app/models/project';
-import { BooleanInput } from '@angular/cdk/coercion';
+import { TaskItemOrderer } from 'app/common/order/orderer';
 
 export class KanbanModel{
-    
+    // TODO: do tej klasy powinniśmy jeszcze dodać
+
     private defaultColumn: KanbanColumn = new KanbanColumn();
     private columns: KanbanColumn[] = [];
     private project: Project;
@@ -11,6 +12,7 @@ export class KanbanModel{
 
     private newTaskName: string;
     private columnAddingOpen: KanbanColumn;
+    private taskOrderer: TaskItemOrderer<KanbanTask> = new TaskItemOrderer();
     // private columns: Map<string, Task[]> = new Map();
 
     constructor(){
@@ -44,34 +46,13 @@ export class KanbanModel{
     public addColumn(kanbanColumn: KanbanColumn){
         // TODO: w tym miejscu zrobić sortowanie kolumn
         // TODO: sortowanie zadań, później gdzieś to przełożyć
-        kanbanColumn.setKanbanTasks(this.getSortedKanabanTasks(kanbanColumn.getKanbanTasks()));
+        const sortedTasks = this.taskOrderer.getSortedItems(kanbanColumn.getKanbanTasks());
+        kanbanColumn.setKanbanTasks(sortedTasks);
         if(kanbanColumn.isDefault()){
             this.defaultColumn = kanbanColumn;
         } else {
             this.columns.push(kanbanColumn);
         }
-    }
-
-    private getSortedKanabanTasks(elements: KanbanTask[]){
-        const result = [];
-        if(elements.length == 0){
-            return result;
-        }
-
-        let currentTask = this.findFirstKanbanTask(elements);
-        while(currentTask != null){
-            result.push(currentTask);
-            currentTask = this.findKanbanTaskByPrev(currentTask.getId(), elements);
-        }
-        return result;
-    }
-
-    private findFirstKanbanTask(elements: KanbanTask[]){
-        return elements.find(x=>x.getPrevTaskId()==-1);
-    }
-
-    private findKanbanTaskByPrev(prevId:number, elements: KanbanTask[]){
-        return elements.find(x=>x.getPrevTaskId()==prevId);
     }
 
     public getColumnsNames():string[]{

@@ -8,7 +8,7 @@ export class LocalTaskRepository implements ITaskRepository{
     constructor(table: Dexie.Table<Task, number>){
         this.table = table;
     }
-  
+
 
     public findTaskById(id: number): Promise<Task> {
         return this.table.where('id').equals(id).first();
@@ -45,7 +45,16 @@ export class LocalTaskRepository implements ITaskRepository{
     public findImportantTasks(): Promise<Task[]> {
         return this.table.where('important').equals(1).toArray();
     }
-    
+
+    public findFirstTask(projectId: number): Promise<Task> {
+        return this.table.where('prevId').equals(-1).first();
+    }
+
+    public findLastTask(projectId: number): Promise<Task> {
+        return this.table.where("nextId").equals(-1).first();
+    }
+
+
     public insertTask(task: Task): Promise<number> {
         let taskToSave = this.getTaskCopyReadyToSave(task);
         return this.table.add(taskToSave);
@@ -71,6 +80,8 @@ export class LocalTaskRepository implements ITaskRepository{
     }
 
     private getTaskCopyReadyToSave(task: Task): Task{
+        console.log("getTaskCopyReadyToSave");
+        console.log(task);
         let newTask = new Task(task.getName(), task.getDescription(), task.getStatus());
         if(task.getId()){
             newTask.setId(task.getId());
@@ -84,7 +95,9 @@ export class LocalTaskRepository implements ITaskRepository{
         newTask.setProjectID(task.getProjectID());
         newTask.setPriority(task.getPriority());
         newTask.setProjectStageID(task.getProjectStageID());
-        newTask.setOrderPrev(task.getOrderPrev());
+        newTask.setPrevId(task.getPrevId());
+        newTask.setNextId(task.getNextId());
+        console.log("Koniec kopiowania");
 
         return newTask;
     }

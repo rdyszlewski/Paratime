@@ -9,6 +9,8 @@ export interface ITaskRepository{
     findTasksByDate(date:Date):Promise<Task[]>;
     findTasksByDeadlineDate(date:Date):Promise<Task[]>;
     findImportantTasks():Promise<Task[]>;
+    findFirstTask(projectId: number):Promise<Task>;
+    findLastTask(projectId: number):Promise<Task>;
     insertTask(task:Task):Promise<number>;
     updateTask(task:Task):Promise<number>;
     removeTask(id:number):Promise<void>;

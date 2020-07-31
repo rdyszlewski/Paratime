@@ -1,7 +1,7 @@
 import { Status } from './status';
 import { Task } from './task';
 import { ProjectType } from './project_type';
-import { IFilterable } from 'app/common/filter/i_filterable';
+import { IFilterable } from 'app/common/filter/filterable';
 import { Stage } from './stage';
 
 export class Project implements IFilterable{

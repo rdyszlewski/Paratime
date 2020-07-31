@@ -2,6 +2,8 @@ import { IKanbanColumnsRepository } from '../repositories/kanban_columns_reposit
 import { IKanbanTasksRepository } from '../repositories/kanban_tasks_repository';
 import { KanbanColumn, KanbanTask } from 'app/models/kanban';
 import { TaskStore } from './task_store';
+import { InsertKanbanTaskResult } from '../models/insert.kanban.task.result';
+import { InsertTaskData } from '../models/insert.task.data';
 
 export class KanbanStore{
 
@@ -73,7 +75,7 @@ export class KanbanStore{
     public updateColumn(column: KanbanColumn): Promise<KanbanColumn>{
         return this.kanbanColumnsRepository.updateColumn(column).then(updatedId=>{
             return Promise.resolve(column);
-        }); 
+        });
     }
 
     public removeColumn(columnId: number): Promise<void>{
@@ -101,11 +103,66 @@ export class KanbanStore{
         })
     }
 
-    public createKanbanTask(kanbanTask: KanbanTask): Promise<KanbanTask>{
+    public createKanbanTask(data: InsertTaskData):Promise<InsertKanbanTaskResult>{
+        const result: InsertKanbanTaskResult = new InsertKanbanTaskResult();
+
+        const kanbanTask = new KanbanTask();
+        kanbanTask.setTask(data.task);
+
+        return this.prepareKanbanColumn(data).then(columnId=>{ // get kanban column
+            kanbanTask.setColumnId(columnId);
+            return columnId;
+        }).then(columndId=>{ // find last kanban task
+            return this.getLastKanbanTask(columndId);
+        }).then(lastTask=>{ // inserty kanban task and update order in last task in column
+            return this.insertKanbanTask(kanbanTask).then(insertedTask=>{
+                result.insertedKanbanTask = insertedTask;
+                if(lastTask){
+                    return this.updatePreviousKanbanTask(lastTask, insertedTask).then(updatedTask=>{
+                        result.updatedKanbanTask.push(updatedTask);
+                    })
+                }
+            });
+        }).then(()=>{
+            return Promise.resolve(result);
+        });
+    }
+
+    private prepareKanbanColumn(data: InsertTaskData){
+        let columnPromise:Promise<number>;
+        if(data.column != null){
+            columnPromise = Promise.resolve(data.column.getId());
+        } else {
+            columnPromise = this.getDefaultColumn(data.projectId).then(column=>Promise.resolve(column.getId()));
+        }
+        return columnPromise;
+    }
+
+    private insertKanbanTask(kanbanTask:KanbanTask):Promise<KanbanTask>{
         return this.kanbanTasksRepository.insertTask(kanbanTask).then(insertedId=>{
             return this.getKanbanTaskById(insertedId);
         });
     }
+
+    private updatePreviousKanbanTask(lastKanbanTask: KanbanTask, createTask: KanbanTask){
+        lastKanbanTask.setNextId(createTask.getId());
+        return this.updateKanbanTask(lastKanbanTask);
+    }
+
+
+    // public createKanbanTask(kanbanTask: KanbanTask): Promise<KanbanTask>{
+    //     // TODO: utworzenie zadania Kanban
+
+    //     // TODO: ustalenie kolumny, jeśli nie ma
+    //     // TODO: pobranie ostatniego zadania kanban w tej kolumnie
+    //     // TODO: zapisanie zadania kanban
+    //     // TODO: aktualizacja poprzedniego zadania
+
+    //     // TODO: zastanowić się, czy wprowadzanie kolejności w tym miejscu jest odpowiednie
+    //     return this.kanbanTasksRepository.insertTask(kanbanTask).then(insertedId=>{
+    //         return this.getKanbanTaskById(insertedId);
+    //     });
+    // }
 
     public getLastKanbanTask(columnId:number){
         return this.kanbanTasksRepository.findLastTask(columnId);

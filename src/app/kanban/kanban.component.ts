@@ -6,10 +6,11 @@ import { Project } from 'app/models/project';
 import { DataService } from 'app/data.service';
 import { KanbanColumn, KanbanTask } from 'app/models/kanban';
 import { FocusHelper } from 'app/common/view_helper';
-import { last } from 'rxjs/operators';
 import { TaskItemInfo } from 'app/tasks/common/task.item.info';
 import { Status } from 'app/models/status';
-import { ItemMenuController } from 'app/tasks/common/item.menu.controller';
+import { InsertTaskData } from 'app/data/common/models/insert.task.data';
+import { InsertTaskResult } from 'app/data/common/models/insert.task.result';
+import { OrderController } from 'app/common/order/order.controller';
 
 @Component({
   selector: 'app-kanban',
@@ -24,6 +25,7 @@ export class KanbanComponent implements OnInit {
   private info: TaskItemInfo = new TaskItemInfo();
   // TODO: tutaj jakoś wstawić obsługę menu
   private defaultColumnOpen = true;
+  private orderController: OrderController<KanbanTask> = new OrderController();
 
   public status = Status;
 
@@ -43,11 +45,12 @@ export class KanbanComponent implements OnInit {
   public openProject(project:Project){
     this.model.clearColumns();
     this.model.setProject(project);
+    // TPDP: przyjrzeć się temu. Pomyśleć, jak to można dobrze zrobić
       DataService.getStoreManager().getKanbanStore().getColumnsByProject(project.getId()).then(columns=>{
         columns.forEach(column=>{
           this.model.addColumn(column);
         })
-      })
+      });
   }
 
   public drop(event: CdkDragDrop<Task[]>){
@@ -62,7 +65,7 @@ export class KanbanComponent implements OnInit {
 
   private changeTasksOrder(column: string, previousIndex: number, currentIndex: number){
     const currentColumn = this.model.getColumnById(Number.parseInt(column));
-    const kanbanTasksToUpdate = currentColumn.moveKanbanTasks(previousIndex, currentIndex);
+    const kanbanTasksToUpdate = this.orderController.move(previousIndex, currentIndex, currentColumn.getKanbanTasks());
     this.updateKanbanTasks(kanbanTasksToUpdate);
   }
 
@@ -77,8 +80,8 @@ export class KanbanComponent implements OnInit {
 
   private splitKanbanTaskColumns(previousColumn: KanbanColumn, previousTask: KanbanTask, currentColumn: KanbanColumn, currentIndex: number) {
     let toUpdate = [];
-    toUpdate = toUpdate.concat(previousColumn.removeKanbanTask(previousTask));
-    toUpdate = toUpdate.concat(currentColumn.insertKanbanTask(previousTask, currentIndex));
+    toUpdate = toUpdate.concat(this.orderController.removeItem(previousTask, previousColumn.getKanbanTasks()));
+    toUpdate = toUpdate.concat(this.orderController.insertItem(previousTask, currentIndex, currentColumn.getKanbanTasks()));
     return toUpdate;
   }
 
@@ -121,52 +124,30 @@ export class KanbanComponent implements OnInit {
 
   // TODO: całe dodwanie przenieść w inne miejsce
   public addNewTask(column:KanbanColumn){
-    const task = new Task(this.model.getNewTaskName());
-    task.setProject(this.model.getProject());
-    task.setOrderPrev(this.getLastTask(this.model.getProject()).getId());
-
-    DataService.getStoreManager().getTaskStore().createTask(task).then(createdTask=>{
-      this.insertKanbanTask(createdTask, column).then((kanbanTask)=>{
-        this.model.getProject().addTask(createdTask);
-        // TODO: jeżeli będzie dołączanie zadania na poczatek, będzie to trzeba zmienić
-        column.getKanbanTasks().push(kanbanTask);
-      });
+    const task = this.prepareTaskToInsert();
+    // task.setOrderPrev(this.getLastTask(this.model.getProject()).getId());
+    const data = new InsertTaskData(task, column, this.model.getProject().getId());
+    DataService.getStoreManager().getTaskStore().createTask(data).then(result=>{
+      this.updateTasksAfterInsert(result, column);
+     
     });
-
     this.closeAddingNewTask();
   }
 
-  // TODO: podobna metoda jest w task.adding.controller.ts
-  private insertKanbanTask(task:Task, column: KanbanColumn):Promise<KanbanTask>{
-    const kanbanStore = DataService.getStoreManager().getKanbanStore();
-    const lastTaskInColumn = column.getKanbanTasks()[column.getKanbanTasks().length - 1];
-    const kanbanTask = this.createKanbanTask(task, column, lastTaskInColumn);
-    return kanbanStore.createKanbanTask(kanbanTask).then(createdKanbanTask=>{
-      if(lastTaskInColumn){
-        this.updatePreviousKanbanTask(lastTaskInColumn, createdKanbanTask);
-      }
-      return Promise.resolve(createdKanbanTask);
-    });
+  private updateTasksAfterInsert(result: InsertTaskResult, column: KanbanColumn) {
+    // TODO: sprawdzić=, czy będzie można pominąć dodawanie do projektu
+    this.model.getProject().addTask(result.insertedTask);
+    column.getKanbanTasks().push(result.insertedKanbanTask);
+     // TODO: zrobić zaktualizowanie zmienionych obiektóœ
   }
 
-  private createKanbanTask(task:Task, column:KanbanColumn, lastKanbanTask: KanbanTask){
-    const kanbanTask = new KanbanTask();
-    kanbanTask.setColumnId(column.getId());
-    kanbanTask.setTaskId(task.getId());
-    if(lastKanbanTask){
-      kanbanTask.setPrevTaskId(lastKanbanTask.getId());
-    }
-    return kanbanTask;
+  private prepareTaskToInsert() {
+    const task = new Task(this.model.getNewTaskName());
+    task.setProject(this.model.getProject());
+    return task;
   }
 
-  private updatePreviousKanbanTask(lastKanbanTask: KanbanTask, createdTask: KanbanTask) {
-    lastKanbanTask.setNextTaskId(createdTask.getId());
-    return DataService.getStoreManager().getKanbanStore().updateKanbanTask(lastKanbanTask);
-}
 
-  private getLastTask(project:Project){
-    return project.getTasks()[project.getTasks().length-1];
-  }
 
   public closeAddingNewTask(){
       this.model.setColumnAddingOpen(null);
@@ -174,7 +155,7 @@ export class KanbanComponent implements OnInit {
   }
 
   public handleAddingKeyUp(event:KeyboardEvent){
-    // TODO
+    // TODO: obsługa klawiszy
   }
 
   public onAddKanbanTaskClick(column:KanbanColumn){

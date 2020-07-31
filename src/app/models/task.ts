@@ -2,12 +2,13 @@ import { Subtask } from './subtask';
 import { Status } from './status';
 import { Project } from './project';
 import { Label } from './label';
-import { IFilterable } from 'app/common/filter/i_filterable';
+import { IFilterable } from 'app/common/filter/filterable';
 import { Priority } from './priority';
 import { Stage } from './stage';
-import { NumberInput } from '@angular/cdk/coercion';
+import { IOrderable } from 'app/common/order/order';
+import { HashLocationStrategy } from '@angular/common';
 
-export class Task implements IFilterable{
+export class Task implements IFilterable, IOrderable{
 
     // TODO: przejrzeć wszystkie zmienne i zobaczyć, czy wszystko jest ok
 
@@ -29,7 +30,9 @@ export class Task implements IFilterable{
     private projectStage: Stage = null;
     private projectStageID: number = null;
 
-    private orderPrev: number = null;
+    private prevId: number;
+    private nextId: number;
+
 
     constructor(name=null, description=null, status=null){
         this.name = name;
@@ -212,11 +215,19 @@ export class Task implements IFilterable{
         this.projectStageID = id;
     }
     
-    public getOrderPrev():number{
-        return this.orderPrev;
-    }
 
-    public setOrderPrev(prevId: number):void{
-        this.orderPrev = prevId;
+// ORDERABLE 
+    public getPrevId(): number {
+        return this.prevId;
+    }
+    public getNextId(): number {
+        return this.nextId;
+    }
+    public setPrevId(id: number): void {
+        this.prevId = id;
+    }
+    
+    public setNextId(id: number): void {
+        this.nextId = id;
     }
 }

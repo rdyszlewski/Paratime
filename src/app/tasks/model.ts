@@ -1,6 +1,8 @@
 import { Task } from 'app/models/task';
 import { Project } from 'app/models/project';
 import { FilteredList } from 'app/common/filter/filtered_list';
+import { OrderedList } from 'app/common/order/ordered.list';
+import { nullSafeIsEquivalent } from '@angular/compiler/src/output/output_ast';
 
 export class TasksModel{
 
@@ -8,8 +10,8 @@ export class TasksModel{
     private filteredList: FilteredList<Task> = new FilteredList();
     private taskWithOpenMenu: Task;
     // TODO: przemysleć to
-    private tasks: Task[] = []
-    
+    private tasks: OrderedList<Task> = new OrderedList();
+
     private open;
 
     public getProject(){
@@ -23,7 +25,7 @@ export class TasksModel{
     }
 
     public setTasks(tasks:Task[]){
-        this.tasks = tasks;
+        this.tasks.setItems(tasks);
         this.updateFilteredList();
     }
 
@@ -31,39 +33,18 @@ export class TasksModel{
         // TODO: dopracować zarządzanie
         this.project = project;
         if(project){
-            this.open = true;
-            this.tasks = this.project.getTasks();
-        } else {
-            this.open = false;
+          console.log("Zadania");
+          console.log(project.getTasks());
+          this.tasks.setItems(project.getTasks());
+          this.updateFilteredList();
+            // this.setTasks(project.getTasks());
         }
-        this.updateFilteredList();
     }
 
+    // TODO: może zmienić tę motodę
     private updateFilteredList(){
-        const tasks = this.getSortedTasks(this.tasks);
-        this.filteredList.setSource(tasks);
-        
-    }
-
-    private getSortedTasks(elements: Task[]):Task[]{
-        const result = [];
-        if(elements.length == 0){
-            return result;
-        }
-        let currentTask = this.findFirtstTask(elements);
-        while(currentTask != null){
-            result.push(currentTask);
-            currentTask = this.findTaskByOrderPrev(currentTask.getId(), elements);
-        }
-        return result;
-    }
-
-    private findFirtstTask(elements:Task[]){
-        return elements.find(task=>task.getOrderPrev() == null);
-    }
-
-    private findTaskByOrderPrev(prevId: number, elements:Task[]):Task{
-        return elements.find(task=>task.getOrderPrev() == prevId);
+      console.log(this.tasks.getItems());
+        this.filteredList.setSource(this.tasks.getItems());
     }
 
     public getTasks():Task[]{
@@ -72,6 +53,8 @@ export class TasksModel{
 
     public addTask(task:Task){
         this.project.addTask(task);
+        this.tasks.addItem(task);
+        console.log("Zaraz będę filtrował");
         this.updateFilteredList();
     }
 
@@ -81,6 +64,7 @@ export class TasksModel{
 
     public removeTask(task:Task){
         this.project.removeTask(task);
+        this.tasks.removeItem(task);
         this.updateFilteredList();
     }
 
@@ -91,9 +75,9 @@ export class TasksModel{
     public setTaskWithOpenMenu(task:Task){
         this.taskWithOpenMenu = task;
     }
-    
+
     public isOpen():boolean{
-        return this.open;
+        return this.project != null;
     }
 
     public close(){
@@ -105,8 +89,5 @@ export class TasksModel{
         return task;
     }
 
-    public getTaskByOrderPrev(prevId: number): Task{
-        return this.project.getTasks().find(task=>task.getOrderPrev() == prevId);
-        
-    }
+
 }

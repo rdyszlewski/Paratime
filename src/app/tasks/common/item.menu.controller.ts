@@ -6,7 +6,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { DataService } from 'app/data.service';
 
 export class ItemMenuController{
-    
+
     private detailsEvent: EventEmitter<Task>;
     private removeEvent: EventEmitter<number>;
     private pomodoroEvent: EventEmitter<Task>;
@@ -26,17 +26,17 @@ export class ItemMenuController{
     public onTaskMenuClick(mouseEvent: MouseEvent, task:Task){
         mouseEvent.stopPropagation();
         this.model.setTaskWithOpenMenu(task);
-        // TODO: wymyślić, w jakis sposbó zaznaczyć element 
+        // TODO: wymyślić, w jakis sposbó zaznaczyć element
       }
-    
-    
+
+
       public onEditTask(task:Task){
         // TODO: można spróbować pobrać z bazy i przekazać dalej. Może rozwiązać problem pracy na jednym obiekcie
         // this.detailsEvent.emit(this.model.getTaskWithOpenMenu());
         this.detailsEvent.emit(task);
         this.model.setTaskWithOpenMenu(null);
       }
-    
+
       public onRemoveTask(){
         const message = "Czy na pewno usunąć zadanie?";
         DialogHelper.openDialog(message, this.dialog).subscribe(result=>{
@@ -45,30 +45,18 @@ export class ItemMenuController{
           }
         });
       }
-    
-      private removeTask():void{
-        // TODO: ustawianie odpowiedniej pozycji m,ożna przenieść do zarządzania bazą danych
-        const task = this.model.getTaskWithOpenMenu();
-        this.updateOrderPrev(task);
-        const taskId = task.getId();
-        DataService.getStoreManager().getTaskStore().removeTask(taskId).then(()=>{
-          this.model.removeTask(this.model.getTaskWithOpenMenu());
-          this.removeEvent.emit(taskId);
+
+    private removeTask():void{
+      // TODO: ustawianie odpowiedniej pozycji m,ożna przenieść do zarządzania bazą danych
+      const task = this.model.getTaskWithOpenMenu();
+      // TODO: sprawdzi, czy aktualizują się odpowiednie elementy. Można skorzystać
+      DataService.getStoreManager().getTaskStore().removeTask(task.getId()).then(()=>{
+        this.model.removeTask(this.model.getTaskWithOpenMenu());
+          this.removeEvent.emit(task.getId());
           this.model.setTaskWithOpenMenu(null);
-        });
-      }
-
-  private updateOrderPrev(task: Task) {
-    const nextTask = this.model.getProject().getTasks().find(x => x.getOrderPrev() == task.getId());
-    if (nextTask) {
-      nextTask.setOrderPrev(task.getOrderPrev());
-      this.updateTask(nextTask);
+      });
     }
-  }
 
-  private updateTask(task: Task){
-    DataService.getStoreManager().getTaskStore().updateTask(task);
-  }
 
   public addTaskToPomodoro(task:Task){
     this.pomodoroEvent.emit(task);

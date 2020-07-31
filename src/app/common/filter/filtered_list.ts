@@ -1,4 +1,4 @@
-import { IFilterable } from './i_filterable';
+import { IFilterable } from './filterable';
 
 
 export class FilteredList<T extends IFilterable>{
@@ -16,6 +16,8 @@ export class FilteredList<T extends IFilterable>{
     }
 
     public filter(filterValue:string):void{
+        console.log(this.source);
+        console.log(this.list);
         this.list = [];
         this.source.filter(x=>x.getName().includes(filterValue)).forEach(project=>{
             this.list.push(project);

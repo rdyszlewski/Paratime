@@ -1,5 +1,4 @@
 import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
-import { DatabaseTest } from 'app/data/test/database_test';
 import { LocalDatabase } from 'app/data/local/database';
 import { ProjectDetailsComponent } from 'app/project-details/project-details.component';
 import { TaskDetailsComponent } from 'app/task-details/task-details.component';
@@ -25,12 +24,12 @@ export class MainComponent implements OnInit, AfterViewInit {
 
   // TODO: usprawnić zarządzanie widokami
 
-  @ViewChild(ProjectDetailsComponent) 
+  @ViewChild(ProjectDetailsComponent)
   private projectDetailsComponent: ProjectDetailsComponent;
 
-  @ViewChild(TaskDetailsComponent) 
+  @ViewChild(TaskDetailsComponent)
   private taskDetailsComponent: TaskDetailsComponent;
-  
+
   @ViewChild(ProjectsComponent)
   private projectsComponent: ProjectsComponent;
 
@@ -68,32 +67,13 @@ export class MainComponent implements OnInit, AfterViewInit {
   constructor(private appService: AppService,public snakBar: MatSnackBar) { }
 
   ngAfterViewInit(): void {
-    this.setOriginalWidth(); 
+    this.setOriginalWidth();
   }
 
   ngOnInit(): void {
     // this.deleteDatabase();
     // this.configureDexie();
 
-  }
-
-  // metoda do testów TEST
-  private configureDexie(){
-    this.deleteDatabase(); // TODO: po testowaniu sunąć to 
-
-    let databaseTest = new DatabaseTest();
-    let project1 =databaseTest.createProjectWithName("Projekt 1");
-    let project2 = databaseTest.createProjectWithName("Project 2");
-    databaseTest.insertProject(project1).then(insertedProject=>{
-      let task1 = databaseTest.createTask("Zadanie 1");
-      let task2 = databaseTest.createTask("Zadanie 2");
-      
-      databaseTest.insertTasks(task1, task2, insertedProject);
-    });
-    databaseTest.insertProject(project2);
-
-
-    databaseTest.insertLabels();
   }
 
   private deleteDatabase(){
@@ -145,7 +125,7 @@ export class MainComponent implements OnInit, AfterViewInit {
   public closeTaskDetails(){
     this.tasksDetailsOpen = false;
     this.taskDetailsComponent.setTask(new Task()); //clearing fields
-    
+
     this.setOriginalWidth();
   }
 
@@ -158,7 +138,7 @@ export class MainComponent implements OnInit, AfterViewInit {
     this.currentProject = project;
     this.tasksComponent.setProject(project);
     // this.appService.setCurrentProject(project);
-    
+
 
     // TODO: możliwe, że tutja przydałoby się jakieś ustawianie rozmiaru
   }
@@ -170,10 +150,10 @@ export class MainComponent implements OnInit, AfterViewInit {
     this.projectsDetailsOpen = false;
     this.setOriginalWidth();
     this.projectsComponent.selectProject(project);
-    
+
     this.openSnackBar("Pomyślnie utworzono nowy projekt");
   }
-  
+
   public openLabelsManager(){
     this.labelsOpen = true;
   }
@@ -193,7 +173,7 @@ export class MainComponent implements OnInit, AfterViewInit {
   public onCreateTask(task:Task){
     this.tasksDetailsOpen = false;
     this.setOriginalWidth();
-    
+
     this.tasksComponent.addTask(task);
   }
 

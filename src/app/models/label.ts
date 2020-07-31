@@ -1,4 +1,4 @@
-import { IFilterable } from 'app/common/filter/i_filterable';
+import { IFilterable } from 'app/common/filter/filterable';
 
 export class Label implements IFilterable{
     

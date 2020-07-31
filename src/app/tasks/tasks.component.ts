@@ -13,6 +13,7 @@ import { TaskAddingController } from './adding/task.adding.controller';
 import { TaskFilteringController } from './filtering/task.filtering.controller';
 import {CdkDragDrop, moveItemInArray, transferArrayItem} from "@angular/cdk/drag-drop"
 import { DataService } from 'app/data.service';
+import { OrderController } from 'app/common/order/order.controller';
 
 
 @Component({
@@ -35,6 +36,8 @@ export class TasksComponent implements OnInit {
   private menuController: ItemMenuController;
   private addingController: TaskAddingController;
   private filteringController: TaskFilteringController; 
+
+  private orderController:OrderController<Task> = new OrderController();
   
 
   constructor(public dialog:MatDialog) { 
@@ -90,7 +93,7 @@ export class TasksComponent implements OnInit {
 
   onDrop(event:CdkDragDrop<string[]>){
     if(event.previousContainer === event.container){
-      this.replaceTasksOrder(event.previousIndex, event.currentIndex);
+      this.changeTasksOrder(event.previousIndex, event.currentIndex);
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
 
     } else {
@@ -98,26 +101,18 @@ export class TasksComponent implements OnInit {
     }
   }
 
-  private replaceTasksOrder(previousIndex: number, currentIndex: number) {
-    const task1 = this.model.getTaskByIndex(previousIndex);
-    const task2 = this.model.getTaskByIndex(currentIndex);
-    const prevTask1 = this.model.getTaskByOrderPrev(task1.getId());
-    const prevTask2 = this.model.getTaskByOrderPrev(task2.getId());
-    if (prevTask1) {
-      prevTask1.setOrderPrev(task2.getId());
-      this.updateTask(prevTask1);
-    }
-    if (prevTask2) {
-      prevTask2.setOrderPrev(task1.getId());
-      this.updateTask(prevTask2);
-    }
-    const prev = task1.getOrderPrev();
-    task1.setOrderPrev(task2.getOrderPrev());
-    task1.setOrderPrev(task2.getOrderPrev());
-    task2.setOrderPrev(prev);
+  private changeTasksOrder(previousIndex: number, currentIndex: number){
+    const tasksToUpdate = this.orderController.move(previousIndex, currentIndex, this.model.getTasks());
+    this.updateTasks(tasksToUpdate);
+  }
 
-    this.updateTask(task1);
-    this.updateTask(task2);
+
+  private updateTasks(tasks:Task[]){
+     const promises = [];
+     tasks.forEach(task=>{
+       promises.push(this.updateTask(task));
+     })
+     return Promise.all(promises);
   }
 
   private updateTask(task:Task){

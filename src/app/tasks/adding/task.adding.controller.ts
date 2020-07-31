@@ -4,7 +4,8 @@ import { TasksModel } from '../model';
 import { DataService } from 'app/data.service';
 import { ScrollBarHelper, FocusHelper } from 'app/common/view_helper';
 import { EditInputHandler } from 'app/common/edit_input_handler';
-import { KanbanTask, KanbanColumn } from 'app/models/kanban';
+import { InsertTaskData } from 'app/data/common/models/insert.task.data';
+import { InsertTaskResult } from 'app/data/common/models/insert.task.result';
 
 export class TaskAddingController{
 
@@ -31,72 +32,43 @@ export class TaskAddingController{
     public addNewTask(){
         this.saveTask();
       }
-    
-    private saveTask(){
+
+      private saveTask(){
+        const task = this.prepareTaskToInsert();
+        const data = new InsertTaskData(task, null, this.mainModel.getProject().getId());
+        DataService.getStoreManager().getTaskStore().createTask(data).then(result=>{
+            console.log("Otrzymanie wyniku");
+            console.log(result);
+            this.updateViewAfterInserting(result);
+        });
+    }
+
+    private updateViewAfterInserting(result: InsertTaskResult){
+        this.mainModel.addTask(result.insertedTask);
+        this.closeAddingNewTask();
+        ScrollBarHelper.moveToBottom(this.TASK_LIST);
+        // TODO: prawdopodobnie będzie trzeba zaktualizoreplaceTasksOrderwać elementy, w których została zmieniona kolejność
+    }
+
+    private prepareTaskToInsert() {
         const task = new Task();
         task.setName(this.model.getNewTaskName());
         task.setProject(this.mainModel.getProject());
-        const lastElement = this.findLastTask();
-        if(lastElement){
-            task.setOrderPrev(lastElement.getId());
-        }
-        DataService.getStoreManager().getTaskStore().createTask(task).then(insertedTask=>{
-            // TODO: to można przenieść w inne miejsce 
-            this.insertKanbanTask(insertedTask);
-
-            this.mainModel.addTask(insertedTask);
-            this.closeAddingNewTask();
-            ScrollBarHelper.moveToBottom(this.TASK_LIST);
-        });
+        return task;
     }
 
-    private findLastTask() {
-        return this.mainModel.getTasks()[this.mainModel.getTasks().length - 1];
-    }
-
-    private insertKanbanTask(task: Task){
-        // TODO: to powinno być w pakiecie z bazą danych
-        // TODO: można to przenieść do jakiegoś serwisu, który będzie wstawiał to w odpowiednie miejsce
-        DataService.getStoreManager().getKanbanStore().getDefaultColumn(task.getProject().getId()).then(defaultColumn=>{
-            // insert to default column
-            DataService.getStoreManager().getKanbanStore().getLastKanbanTask(defaultColumn.getId()).then(lastKanbanTask=>{
-                const kanbanTask = this.createKanbanTask(defaultColumn, task, lastKanbanTask);
-                DataService.getStoreManager().getKanbanStore().createKanbanTask(kanbanTask).then(createdTask=>{
-                    if(lastKanbanTask){
-                        this.updatePreviousKanbanTask(lastKanbanTask, createdTask);
-                    }
-                });
-            })
-            
-        });
-    }
-    
-    private updatePreviousKanbanTask(lastKanbanTask: KanbanTask, createdTask: KanbanTask) {
-        lastKanbanTask.setNextTaskId(createdTask.getId());
-        DataService.getStoreManager().getKanbanStore().updateKanbanTask(lastKanbanTask);
-    }
-
-    private createKanbanTask(defaultColumn: KanbanColumn, task: Task, lastKanbanTask: KanbanTask) {
-        const kanbanTask = new KanbanTask();
-        kanbanTask.setColumnId(defaultColumn.getId());
-        kanbanTask.setTaskId(task.getId());
-        if (lastKanbanTask) {
-            kanbanTask.setPrevTaskId(lastKanbanTask.getId());
-        }
-        return kanbanTask;
-    }
 
     public closeAddingNewTask(){
         this.model.setNewTaskName("");
         this.model.closeAddingTask();
     }
-    
+
     public handleAddingNewTaskKeyUp(event:KeyboardEvent){
-        EditInputHandler.handleKeyEvent(event, 
+        EditInputHandler.handleKeyEvent(event,
             ()=>this.addNewTask(),
             ()=>this.closeAddingNewTask()
         );
-       
+
     }
 
 }
