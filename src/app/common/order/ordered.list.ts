@@ -1,7 +1,7 @@
-import { IOrderable } from './order';
 import { TaskItemOrderer } from './orderer';
+import { OrderableItem } from 'app/models/orderable.item';
 
-export class OrderedList<T extends IOrderable>{
+export class OrderedList<T extends OrderableItem>{
 
     private items: T[] = [];
     private orderer: TaskItemOrderer<T> = new TaskItemOrderer();
@@ -23,8 +23,6 @@ export class OrderedList<T extends IOrderable>{
     }
 
     public setItems(items: T[]){
-      console.log("Jeden");
-      console.log(items);
         this.items = this.orderer.getSortedItems(items);
         console.log(this.items);
     }
@@ -37,11 +35,10 @@ export class OrderedList<T extends IOrderable>{
         return this.items[this.items.length-1];
     }
 
-    public getItemByPrev(prevId: number){
-        return this.items.find(item=>item.getPrevId() == prevId);
-    }
-
-    public getItemByNext(nextId:number){
-        return this.items.find(item=>item.getNextId() == nextId);
+    public updateItems(items:T[]){
+      items.forEach(item=>{
+        const index = this.items.findIndex(x=>x.getId()==item.getId());
+        this.items[index] = item;
+      })
     }
 }

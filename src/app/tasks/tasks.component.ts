@@ -23,24 +23,24 @@ import { OrderController } from 'app/common/order/order.controller';
 })
 export class TasksComponent implements OnInit {
 
-  
+
   @Output() detailsEvent: EventEmitter<Task> = new EventEmitter();
   @Output() removeEvent: EventEmitter<number> = new EventEmitter();
   @Output() pomodoroEvent: EventEmitter<Task> = new EventEmitter();
   public status = Status;
-  
+
   private model: TasksModel;
   private itemInfo: TaskItemInfo;
   private itemController: TaskItemController;
   private specialListsController: SpecialListTask;
   private menuController: ItemMenuController;
   private addingController: TaskAddingController;
-  private filteringController: TaskFilteringController; 
+  private filteringController: TaskFilteringController;
 
   private orderController:OrderController<Task> = new OrderController();
-  
 
-  constructor(public dialog:MatDialog) { 
+
+  constructor(public dialog:MatDialog) {
     this.model = new TasksModel();
     this.itemInfo = new TaskItemInfo();
     this.itemController = new TaskItemController();
@@ -77,7 +77,7 @@ export class TasksComponent implements OnInit {
   public getFiltering(){
     return this.filteringController;
   }
-  
+
   ngOnInit(): void {
   }
 
@@ -103,7 +103,10 @@ export class TasksComponent implements OnInit {
 
   private changeTasksOrder(previousIndex: number, currentIndex: number){
     const tasksToUpdate = this.orderController.move(previousIndex, currentIndex, this.model.getTasks());
-    this.updateTasks(tasksToUpdate);
+    this.updateTasks(tasksToUpdate).then(()=>{
+      // TODO: sprawdzić, czy to jest ok
+      this.updateTasksInView(tasksToUpdate);
+    });
   }
 
 
@@ -115,12 +118,13 @@ export class TasksComponent implements OnInit {
      return Promise.all(promises);
   }
 
+  private updateTasksInView(tasks:Task[]){
+    this.model.updateTasks(tasks);
+  }
+
   private updateTask(task:Task){
     DataService.getStoreManager().getTaskStore().updateTask(task).then(updatedTask=>{
       // TODO: można zrobić jakieś działania po zaktualizowaniu zadań
     });
   }
-
-  
-
 }

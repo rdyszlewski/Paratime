@@ -15,6 +15,7 @@ import { InsertTaskResult } from '../models/insert.task.result';
 import { DataService } from 'app/data.service';
 import { InsertKanbanTaskResult } from '../models/insert.kanban.task.result';
 import { resolve } from 'dns';
+import { Position } from 'app/models/orderable.item';
 
 
 // TODO: przydałyby się do tego wszystkiego transakcje.
@@ -116,45 +117,35 @@ export class TaskStore{
         // TODO: spróbować to jakoś czytelniej napisać
         const result = new InsertTaskResult();
         const task = data.task;
-        console.log(data.projectId);
         return this.taskRepository.findLastTask(data.projectId).then(lastTask=>{
-            console.log("Jestem tutaj i jestem z tego dumny");
-            const lastTaskId = lastTask != null ? lastTask.getId() : -1;
-            task.setPrevId(lastTaskId);
-            task.setNextId(-1);
-            console.log(2);
-            console.log(task);
+          task.setSuccessorId(-1);
+          return this.taskRepository.findFirstTask(data.projectId).then(firstTask=>{
+            if(!firstTask){
+              task.setPosition(Position.HEAD);
+            }
             return this.insertTask(task).then(insertedTask=>{
-                const insertedId = insertedTask.getId();
-                result.insertedTask = insertedTask;
-                console.log("Wstawiono to");
-                console.log(insertedTask);
-                console.log(3);
-                const promises = [];
-                // TODO: sprawdzić, czy to index jest ok
-                promises.concat(this.insertSubtasks(task, insertedId));
-                promises.concat(this.insertTasksLabels(task, insertedId));
-                this.createKanbanTask(data).then(kanbanTaskResult=>{
-                    result.insertedKanbanTask = kanbanTaskResult.insertedKanbanTask;
-                    result.updatedKanbanTasks = kanbanTaskResult.updatedKanbanTask;
-                    console.log("Zaraz będę wykonywał dodawanie zadania");
-                    promises.push(Promise.resolve(null));
-                });
-                console.log(4);
-                if(lastTask){
-                    lastTask.setNextId(insertedId);
-                    promises.push(this.updateTask(lastTask));
-                    result.updatedTasks.push(lastTask);
-                    console.log(5);
-                }
-                // TODO: przetestować, czy wykonanie ostaniego zdania
-                console.log("Wykonanie promise all");
-                return Promise.all(promises).then(()=>{
-                  console.log("Zwracanie wyniku");
-                  return Promise.resolve(result);
-                });
-                // TODO: wstawianie podzadań
+              const insertedId = insertedTask.getId();
+              result.insertedTask = insertedTask;
+              const promises = [];
+              // TODO: sprawdzić, czy to index jest ok
+              promises.concat(this.insertSubtasks(task, insertedId));
+              promises.concat(this.insertTasksLabels(task, insertedId));
+              this.createKanbanTask(data).then(kanbanTaskResult=>{
+                  result.insertedKanbanTask = kanbanTaskResult.insertedKanbanTask;
+                  result.updatedKanbanTasks = kanbanTaskResult.updatedKanbanTask;
+                  promises.push(Promise.resolve(null));
+              });
+              if(lastTask){
+                  lastTask.setSuccessorId(insertedId);
+                  promises.push(this.updateTask(lastTask));
+                  result.updatedTasks.push(lastTask);
+              }
+              // TODO: przetestować, czy wykonanie ostaniego zdania
+              return Promise.all(promises).then(()=>{
+                return Promise.resolve(result);
+              });
             })
+          })
         });
     }
 

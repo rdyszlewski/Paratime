@@ -5,14 +5,12 @@ import { Label } from './label';
 import { IFilterable } from 'app/common/filter/filterable';
 import { Priority } from './priority';
 import { Stage } from './stage';
-import { IOrderable } from 'app/common/order/order';
-import { HashLocationStrategy } from '@angular/common';
+import { OrderableItem } from './orderable.item';
 
-export class Task implements IFilterable, IOrderable{
+export class Task extends OrderableItem implements IFilterable{
 
     // TODO: przejrzeć wszystkie zmienne i zobaczyć, czy wszystko jest ok
 
-    private id: number;
     private name: string = null;
     private description: string = null;
     private important: number = 0;
@@ -30,22 +28,11 @@ export class Task implements IFilterable, IOrderable{
     private projectStage: Stage = null;
     private projectStageID: number = null;
 
-    private prevId: number;
-    private nextId: number;
-
-
     constructor(name=null, description=null, status=null){
-        this.name = name;
-        this.description = description;
-        this.status = status;
-    }
-
-    public getId(){
-        return this.id;
-    }
-
-    public setId(id:number){
-        this.id = id;
+      super();
+      this.name = name;
+      this.description = description;
+      this.status = status;
     }
 
     public getName(){
@@ -165,7 +152,7 @@ export class Task implements IFilterable, IOrderable{
     public setProgress(progress: number){
         this.progress = progress;
     }
-    
+
     public getProject(){
         return this.project;
     }
@@ -195,7 +182,7 @@ export class Task implements IFilterable, IOrderable{
     public setPriority(priority:Priority){
         this.priority = priority;
     }
-    
+
     public getProjectStage():Stage{
         return this.projectStage;
     }
@@ -213,21 +200,5 @@ export class Task implements IFilterable, IOrderable{
 
     public setProjectStageID(id:number){
         this.projectStageID = id;
-    }
-    
-
-// ORDERABLE 
-    public getPrevId(): number {
-        return this.prevId;
-    }
-    public getNextId(): number {
-        return this.nextId;
-    }
-    public setPrevId(id: number): void {
-        this.prevId = id;
-    }
-    
-    public setNextId(id: number): void {
-        this.nextId = id;
     }
 }

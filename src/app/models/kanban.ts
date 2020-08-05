@@ -1,10 +1,8 @@
 import { Task } from './task';
-import { JsonpClientBackend } from '@angular/common/http';
-import { IOrderable } from 'app/common/order/order';
-import { OrderValues } from 'app/common/valuse';
+import { OrderableItem } from './orderable.item';
 
 export class KanbanColumn{
-    
+
     // TODO: przetestować, czy nie będzie to sprawiało problemów
     private id:number;
     private projectId: number;
@@ -76,23 +74,11 @@ export class KanbanColumn{
 
 }
 
-export class KanbanTask implements IOrderable{
+export class KanbanTask extends OrderableItem{
 
-    private id: number;
     private taskId:number;
     private columnId: number;
     private task: Task;
-
-    private prevId: number = -1;
-    private nextId: number = -1;
-
-    public getId():number{
-        return this.id;
-    }
-
-    public setId(id:number){
-        this.id = id;
-    }
 
     public getTaskId():number{
         return this.taskId;
@@ -116,23 +102,6 @@ export class KanbanTask implements IOrderable{
 
     public setTask(task: Task){
         this.task = task;
-    }
-
-
-    public getPrevId():number{
-        return this.prevId;
-    }
-
-    public getNextId(): number {
-        return this.nextId;
-    }
-
-    public setPrevId(id: number): void {
-        this.prevId = id;
-    }
-
-    public setNextId(id: number): void {
-        this.nextId = id;
     }
 
 }

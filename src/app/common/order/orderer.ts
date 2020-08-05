@@ -1,6 +1,6 @@
-import { IOrderable } from './order';
+import { OrderableItem } from 'app/models/orderable.item';
 
-export class TaskItemOrderer <T extends IOrderable>{
+export class TaskItemOrderer <T extends OrderableItem>{
 
     public getSortedItems(items:T[]){
         if(items.length == 0){
@@ -10,23 +10,34 @@ export class TaskItemOrderer <T extends IOrderable>{
     }
 
     private order(items: T[]) {
-        const result = [];
+        const orderedItems = [];
+        const itemsMap = this.getItemsMap(items);
         let currentItem = this.findFirstItem(items);
-        console.log("Teraz tutaj");
-        console.log(currentItem);
-        while (currentItem != null) {
-            console.log("Jestem tutaj");
-            result.push(currentItem);
-            currentItem = this.findItemByPrev(currentItem.getId(), items);
+        let lastItemId = currentItem.getId();
+        while(currentItem!=null){
+          orderedItems.push(currentItem);
+          currentItem = itemsMap.get(currentItem.getSuccessorId());
+          if(currentItem){
+            if(currentItem.getId() == lastItemId){
+              return orderedItems;
+            } else {
+              lastItemId = currentItem.getId();
+            }
+          }
         }
-        return result;
+        return orderedItems;
+    }
+
+    private getItemsMap(items:T[]):Map<number, T>{
+      const map = new Map<number, T>();
+      items.forEach(item=>{
+        map.set(item.getId(), item);
+      });
+      return map;
     }
 
     private findFirstItem(items: T[]){
-        return items.find(item=>item.getPrevId() == -1);
+      return items.find(item=>item.isHead());
     }
 
-    private findItemByPrev(prevId:number, items:T[]){
-        return items.find(item=>item.getPrevId() == prevId);
-    }
 }

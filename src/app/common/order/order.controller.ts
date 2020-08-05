@@ -1,49 +1,49 @@
-import { IOrderable } from './order';
-import { OrderValues } from '../valuse';
+import { OrderableItem, Position } from 'app/models/orderable.item';
 
-export class OrderController<T extends IOrderable>{
+export class OrderController<T extends OrderableItem>{
 
-    // TODO: pytanie, czcy to będzie poprawne 
     public move(previousIndex: number, currentIndex: number, items:T[]):T[]{
-        // TODO: zastanowić się, czy potrzeba 
-        const toUpdate:T[] = [];
+      // TODO: refaktoryzacja
+        const toUpdate = [];
 
-        const previousTask = items[previousIndex];
-        const currentTask = items[currentIndex];
-       
-        const prevPrev = this.findItemById(previousTask.getPrevId(), items);
-        const prevNext = this.findItemById(previousTask.getNextId(), items);
-        const currPrev = this.findItemById(currentTask.getPrevId(), items);
-        const currNext = this.findItemById(currentTask.getNextId(), items);
-  
-        if(prevPrev){
-            prevPrev.setNextId(currentTask.getId());
-            toUpdate.push(prevPrev);
-        }
-        if(prevNext ){
-            prevNext.setPrevId(currentTask.getId());
-            toUpdate.push(prevNext);
-        }
-        if(currPrev ){
-            currPrev.setNextId(previousTask.getId());
-            toUpdate.push(currPrev);
-        }
-        if(currNext){
-            currNext.setPrevId(previousTask.getId());
-            toUpdate.push(currNext);
-        }
-        
-        const tempPrevious = previousTask.getPrevId();
-        const tempNext = previousTask.getNextId();
-        previousTask.setPrevId(currentTask.getPrevId());
-        previousTask.setNextId(currentTask.getNextId());
-        currentTask.setPrevId(tempPrevious);
-        currentTask.setNextId(tempNext);
+        const previousItem = items[previousIndex];
+        const currentItem = items[currentIndex];
+        const prevPreviousItem = this.findItemBySuccessor(previousItem.getId(), items);
+        const prevCurrentItem = this.findItemBySuccessor(currentItem.getId(), items);
 
-        toUpdate.push(previousTask);
-        toUpdate.push(currentTask);
+        const tempSuccessor = previousItem.getSuccessorId();
+        if(currentItem.getSuccessorId() != previousItem.getId()){
+          previousItem.setSuccessorId(currentItem.getSuccessorId());
+        } else {
+          previousItem.setSuccessorId(currentItem.getId());
+        }
+        if(tempSuccessor != currentItem.getId()){
+          currentItem.setSuccessorId(tempSuccessor);
+        } else {
+          currentItem.setSuccessorId(previousItem.getId());
+        }
+
+        const tempPosition = currentItem.getPosition();
+        currentItem.setPosition(previousItem.getPosition());
+        previousItem.setPosition(tempPosition);
+
+        toUpdate.push(previousItem);
+        toUpdate.push(currentItem);
+
+        if(prevPreviousItem && prevPreviousItem.getId() != currentItem.getId()){
+          prevPreviousItem.setSuccessorId(currentItem.getId());
+          toUpdate.push(prevPreviousItem);
+        }
+        if(prevCurrentItem && prevCurrentItem.getId() != previousItem.getId()){
+          prevCurrentItem.setSuccessorId(previousItem.getId());
+          toUpdate.push(prevCurrentItem);
+        }
 
         return toUpdate;
+    }
+
+    private findItemBySuccessor(successorId, items:T[]):T{
+      return items.find(x=>x.getSuccessorId()==successorId);
     }
 
     private findItemById(id:number, items:T[]):T{
@@ -52,66 +52,70 @@ export class OrderController<T extends IOrderable>{
 
     public removeItem(item:T, items: T[]):T[]{
         const toUpdate = [];
-        const previousTask = this.findItemById(item.getPrevId(), items);
-        const nextTask = this.findItemById(item.getNextId(), items);
-        if(previousTask){
-            previousTask.setNextId(nextTask?nextTask.getId(): -1);
-            toUpdate.push(previousTask);
+        const previousItem = this.findItemBySuccessor(item.getId(), items);
+        if(previousItem){
+          previousItem.setSuccessorId(item.getSuccessorId());
+          toUpdate.push(previousItem);
         }
-        if(nextTask){
-            nextTask.setPrevId(previousTask?previousTask.getId(): -1);
-            toUpdate.push(nextTask);
+
+        if(item.isHead()){
+          const nextItem = this.findItemById(item.getSuccessorId(), items);
+          if(nextItem){
+            nextItem.setPosition(Position.HEAD);
+            toUpdate.push(nextItem);
+          }
         }
 
         return toUpdate;
     }
 
+    // TODO: dokładnie sprawdzić tę metodę
     public insertItem(item: T, position:number, items:T[]):T[]{
         const toUpdate = [];
         // TODO: to będzie trzeba przenieść w inne miejsce
         // this.changeKanbanColumn(item);
         toUpdate.push(item);
         if(items.length == 0){
-            this.setItemFirst(item, items);
-            return toUpdate;
+          item.setPosition(Position.HEAD);
+          return toUpdate;
         }
-        const currentTask = items[position];
-        if(currentTask){
-            this.insertItemBefore(currentTask, item, items);
+        const currentItem = items[position];
+        if(currentItem){
+            const itemsToUpdate = this.insertItemBefore(currentItem, item, items);
+            toUpdate.concat(itemsToUpdate);
         } else {
-            this.insertItemToEnd(item, items);
+            const itemsToUpdate = this.insertItemToEnd(item, items);
+            toUpdate.concat(itemsToUpdate);
         }
         return toUpdate;
-    }
-
-    private setItemFirst(item: T, items:T[]) {
-        item.setPrevId(OrderValues.DEFAULT_ORDER);
-        item.setPrevId(OrderValues.DEFAULT_ORDER);
     }
 
     // TODO: sprawdzić, czy to będzie przydatne
     public insertItemToEnd(item:T, items:T[]){
         // TODO: tutaj chyba będzie trzeba dodać zaktualizowane
-        const lastElement = items[items.length - 1];
-        lastElement.setNextId(item.getId());
-        item.setPrevId(lastElement.getId());
-        item.setNextId(-1);
+        const toUpdate = [];
+        const lastItem = this.findLastItem(items);
+        if(lastItem){
+          lastItem.setSuccessorId(item.getId());
+          toUpdate.push(lastItem);
+        }
+        return toUpdate;
+    }
+
+    private findLastItem(items:T[]):T{
+      return items.find(x=>x.getSuccessorId()==-1);
     }
 
     public insertItemBefore(currentItem: T, item: T, items:T[]):T[]{
         const toUpdate = [];
 
-        const previousTask = this.findItemById(currentItem.getPrevId(), items);
-
-        item.setPrevId(currentItem.getPrevId());
-        item.setNextId(currentItem.getId());
-        currentItem.setPrevId(item.getId());
-
-        toUpdate.push(currentItem);
-        if (previousTask) {
-            previousTask.setNextId(item.getId());
-            toUpdate.push(previousTask);
+        item.setSuccessorId(currentItem.getId());
+        const previousItem = this.findItemBySuccessor(currentItem.getId(), items);
+        if(previousItem){
+          previousItem.setSuccessorId(item.getId());
+          toUpdate.push(previousItem);
         }
+
         return toUpdate;
     }
 

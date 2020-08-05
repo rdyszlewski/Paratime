@@ -54,8 +54,14 @@ export class TasksModel{
     public addTask(task:Task){
         this.project.addTask(task);
         this.tasks.addItem(task);
-        console.log("Zaraz będę filtrował");
-        this.updateFilteredList();
+    }
+
+    public updateTasks(tasks:Task[]){
+      this.tasks.updateItems(tasks);
+    }
+
+    public refresh(){
+      this.filteredList.refresh();
     }
 
     public filterTasks(filter:string):void{

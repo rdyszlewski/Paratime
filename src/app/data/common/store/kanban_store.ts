@@ -4,6 +4,8 @@ import { KanbanColumn, KanbanTask } from 'app/models/kanban';
 import { TaskStore } from './task_store';
 import { InsertKanbanTaskResult } from '../models/insert.kanban.task.result';
 import { InsertTaskData } from '../models/insert.task.data';
+import { ok } from 'assert';
+import { Task } from 'app/models/task';
 
 export class KanbanStore{
 
@@ -70,6 +72,12 @@ export class KanbanStore{
         return this.kanbanColumnsRepository.insertColumn(column).then(insertedId=>{
             return this.getColumnById(insertedId);
         });
+    }
+
+    public createFirtKanbanTask(columnId){
+        const kanbanTask = new KanbanTask();
+        kanbanTask.setColumnId(columnId);
+
     }
 
     public updateColumn(column: KanbanColumn): Promise<KanbanColumn>{
@@ -145,7 +153,7 @@ export class KanbanStore{
     }
 
     private updatePreviousKanbanTask(lastKanbanTask: KanbanTask, createTask: KanbanTask){
-        lastKanbanTask.setNextId(createTask.getId());
+        lastKanbanTask.setSuccessorId(createTask.getId());
         return this.updateKanbanTask(lastKanbanTask);
     }
 

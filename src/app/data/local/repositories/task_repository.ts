@@ -1,5 +1,6 @@
 import { ITaskRepository } from '../../common/repositories/task_repository';
 import { Task } from 'app/models/task';
+import { Position } from 'app/models/orderable.item';
 
 export class LocalTaskRepository implements ITaskRepository{
 
@@ -47,11 +48,11 @@ export class LocalTaskRepository implements ITaskRepository{
     }
 
     public findFirstTask(projectId: number): Promise<Task> {
-        return this.table.where('prevId').equals(-1).first();
+        return this.table.where({"position":Position.HEAD, "projectID":projectId}).first();
     }
 
     public findLastTask(projectId: number): Promise<Task> {
-        return this.table.where("nextId").equals(-1).first();
+        return this.table.where({"successor":-1, "projectID":projectId}).first();
     }
 
 
@@ -95,9 +96,8 @@ export class LocalTaskRepository implements ITaskRepository{
         newTask.setProjectID(task.getProjectID());
         newTask.setPriority(task.getPriority());
         newTask.setProjectStageID(task.getProjectStageID());
-        newTask.setPrevId(task.getPrevId());
-        newTask.setNextId(task.getNextId());
-        console.log("Koniec kopiowania");
+        newTask.setSuccessorId(task.getSuccessorId());
+        newTask.setPosition(task.getPosition());
 
         return newTask;
     }

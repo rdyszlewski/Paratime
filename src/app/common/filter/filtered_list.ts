@@ -16,13 +16,15 @@ export class FilteredList<T extends IFilterable>{
     }
 
     public filter(filterValue:string):void{
-        console.log(this.source);
-        console.log(this.list);
         this.list = [];
         this.source.filter(x=>x.getName().includes(filterValue)).forEach(project=>{
             this.list.push(project);
         });
         this.lastFilter = filterValue;
+    }
+
+    public refresh():void{
+      this.filter(this.lastFilter);
     }
 
 }

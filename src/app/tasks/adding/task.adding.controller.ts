@@ -45,6 +45,8 @@ export class TaskAddingController{
 
     private updateViewAfterInserting(result: InsertTaskResult){
         this.mainModel.addTask(result.insertedTask);
+        this.mainModel.updateTasks(result.updatedTasks);
+        this.mainModel.refresh();
         this.closeAddingNewTask();
         ScrollBarHelper.moveToBottom(this.TASK_LIST);
         // TODO: prawdopodobnie będzie trzeba zaktualizoreplaceTasksOrderwać elementy, w których została zmieniona kolejność

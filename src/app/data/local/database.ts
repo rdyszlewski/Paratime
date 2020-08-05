@@ -37,7 +37,7 @@ export class LocalDatabase extends Dexie{
 
     private createSchama() {
         this.version(this.dbVersion).stores({
-            tasks: '++id, name, description, important, date, endDate, plannedTime, status, progress, projectID, priority, projectStageID, prevId, nextId',
+            tasks: '++id, name, description, important, date, endDate, plannedTime, status, progress, projectID, priority, projectStageID, successor, position',
             subtasks: '++id, name, status, taskId',
             projects: '++id, name, description, startDate, endDate, status, type',
             labels: '++id, name',
@@ -45,7 +45,7 @@ export class LocalDatabase extends Dexie{
             stages: "++id, name, description, endDate, status, projectID",
             pomodoro: "++id, taskId, projectId, time, date",
             kanban_columns: "++id, projectId, name, default, prevColumnId, nextColumnId",
-            kanban_tasks: "++id, taskId, columnId, prevId, nextId"
+            kanban_tasks: "++id, taskId, columnId, successor, position"
         });
     }
 
