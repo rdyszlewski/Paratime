@@ -35,7 +35,7 @@ export class TimepickerComponent implements OnInit {
   @Input("paraTimepickerTrigger") trigger: TimepickerTriggerDirective;
   // @Input() time: Observable<string>;
   @Input() time: string;
-  
+
 
   @Output() onClose: EventEmitter<null> = new EventEmitter();
   @Output() timeChange: EventEmitter<string> = new EventEmitter();
@@ -98,7 +98,6 @@ export class TimepickerComponent implements OnInit {
 
   public cancel(){
     this.onClose.emit();
-    console.log("Wychodzę");
     this.open = false;
   }
 
@@ -108,8 +107,8 @@ export class TimepickerComponent implements OnInit {
       this._input.value = time;
       this.timeChange.emit(time);
       this.open = false;
-    } 
-    else 
+    }
+    else
     {
       // TODO: wyświetlić informacje o niepoprawnych danych
     }
@@ -132,5 +131,5 @@ export class TimepickerComponent implements OnInit {
     return hours >= this.minHours && hours <= this.maxHours && minutes >= this.minMinutes && minutes <= this.maxMinutes
   }
 
-  
+
 }

@@ -16,7 +16,6 @@ export class LabelsModel{
     }
 
     private updateFilterdList(){
-        console.log(this.labels);
         this.filteredList.setSource(this.labels);
     }
 

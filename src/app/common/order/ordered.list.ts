@@ -16,15 +16,14 @@ export class OrderedList<T extends OrderableItem>{
     }
 
     public removeItem(item: T){
-        const index = this.items.indexOf(item);
-        if(index >= 0){
-            this.items = this.items.splice(index, 1);
-        }
+      const index = this.items.findIndex(x=>x.getId() == item.getId());
+      if(index >= 0){
+          this.items.splice(index, 1);
+      }
     }
 
     public setItems(items: T[]){
         this.items = this.orderer.getSortedItems(items);
-        console.log(this.items);
     }
 
     public getFirstItem(){

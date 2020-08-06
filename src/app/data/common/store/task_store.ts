@@ -5,17 +5,14 @@ import { LabelStore } from './label_store';
 import { IProjectRepository } from '../repositories/project_repository';
 import { StageStore } from './stage_store';
 import { KanbanStore } from './kanban_store';
-import { KanbanTask } from 'app/models/kanban';
 import { Subtask } from 'app/models/subtask';
-import { promise } from 'protractor';
-import { TaskLabelsModel } from 'app/task-details/labels/task.label.model';
 import { LabelsTask } from '../models';
 import { InsertTaskData } from '../models/insert.task.data';
 import { InsertTaskResult } from '../models/insert.task.result';
-import { DataService } from 'app/data.service';
 import { InsertKanbanTaskResult } from '../models/insert.kanban.task.result';
-import { resolve } from 'dns';
 import { Position } from 'app/models/orderable.item';
+import { Status } from 'app/models/status';
+import { OrderValues } from 'app/common/valuse';
 
 
 // TODO: przydałyby się do tego wszystkiego transakcje.
@@ -101,6 +98,15 @@ export class TaskStore{
         });
     }
 
+    public getActiveTasks(projectId: number):Promise<Task[]>{
+      return this.taskRepository.findTasksExceptStatus(projectId,Status.ENDED);
+    }
+
+    public getFinishedTasks(projectId: number): Promise<Task[]>{
+      // TODO: zastanowić się, czy anulowane zadania nalęzy zaliczać do aktywnych
+      return this.taskRepository.findTasksByStatus(projectId, Status.ENDED);
+    }
+
     public getTasksByDate(date:Date):Promise<Task[]>{
         return this.taskRepository.findTasksByDate(date).then(tasks=>{
             return this.getCompletedTasks(tasks);
@@ -155,19 +161,6 @@ export class TaskStore{
       });
     }
 
-    // public createTask(task:Task):Promise<Task>{
-    //     return this.taskRepository.insertTask(task).then(insertedId=>{
-    //         const promises = [];
-    //         promises.concat(this.insertSubtasks(task, insertedId));
-    //         promises.concat(this.insertTasksLabels(task, insertedId));
-
-
-    //         return Promise.all(promises).then(()=>{
-    //             return this.getTaskById(insertedId);
-    //         });
-    //     });
-    // }
-
     private insertSubtasks(task: Task, insertedId: number) {
         const promises: Promise<Subtask>[] = [];
         task.getSubtasks().forEach(subtask => {
@@ -201,11 +194,36 @@ export class TaskStore{
     }
 
     public removeTask(taskId:number):Promise<void>{
-        return this.subtaskStore.removeSubtaskFromTask(taskId).then(()=>{
-            return this.labelStore.removeTaskLabels(taskId).then(()=>{
-                return this.taskRepository.removeTask(taskId);
-            });
-        });
+      // TODO: w tym miejscu będzie trzeba zrobić ustawianie kolejności. Będzie trzeba utworzyć jakiś wspólny iterfejs, aby nie powtarzać kodu
+      const promises = [];
+      promises.push(this.subtaskStore.removeSubtaskFromTask(taskId));
+      promises.push(this.labelStore.removeTaskLabels(taskId));
+      promises.push(this.kanbanStore.removeKanbanTask(taskId)); // TODO: sprawdzić, czy id jest ok
+      return Promise.all(promises).then(()=>{
+        return this.taskRepository.removeTask(taskId);
+      });
     }
 
+    public changeStatus(task:Task, status:Status):Promise<Task[]>{
+      const toUpdate = [];
+      task.setStatus(status);
+      task.setPosition(Position.HEAD);
+      task.setSuccessorId(OrderValues.DEFAULT_ORDER);
+      return this.taskRepository.findFirstTaskWithStatus(task.getProjectID(), status).then(firstTask=>{
+        if(firstTask){
+          firstTask.setPosition(Position.NORMAL);
+          task.setSuccessorId(firstTask.getId());
+          toUpdate.push(firstTask);
+        }
+      }).then(()=>{
+        toUpdate.push(task);
+
+        const promises = [];
+        toUpdate.forEach(task=>{
+          promises.push(this.updateTask(task));
+        })
+
+        return Promise.all(promises);
+      });
+    }
 }

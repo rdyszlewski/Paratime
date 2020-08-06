@@ -26,5 +26,4 @@ export class FilteredList<T extends IFilterable>{
     public refresh():void{
       this.filter(this.lastFilter);
     }
-
 }

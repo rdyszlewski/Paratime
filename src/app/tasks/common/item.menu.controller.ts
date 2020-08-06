@@ -4,6 +4,8 @@ import { EventEmitter } from '@angular/core';
 import { DialogHelper } from 'app/common/dialog';
 import { MatDialog } from '@angular/material/dialog';
 import { DataService } from 'app/data.service';
+import { OrderController } from 'app/common/order/order.controller';
+import { Status } from 'app/models/status';
 
 export class ItemMenuController{
 
@@ -12,6 +14,8 @@ export class ItemMenuController{
     private pomodoroEvent: EventEmitter<Task>;
     private dialog: MatDialog;
     private model: TasksModel;
+
+    private orderController = new OrderController<Task>();
 
     // TODO: można zrobić model, który będzie obsługiwał zaznaczone elementy
 
@@ -37,28 +41,55 @@ export class ItemMenuController{
         this.model.setTaskWithOpenMenu(null);
       }
 
-      public onRemoveTask(){
+      public onRemoveTask(task:Task){
         const message = "Czy na pewno usunąć zadanie?";
         DialogHelper.openDialog(message, this.dialog).subscribe(result=>{
           if(result){
-            this.removeTask();
+            this.removeTask(task);
           }
         });
       }
 
-    private removeTask():void{
-      // TODO: ustawianie odpowiedniej pozycji m,ożna przenieść do zarządzania bazą danych
-      const task = this.model.getTaskWithOpenMenu();
+    private removeTask(task:Task):void{
       // TODO: sprawdzi, czy aktualizują się odpowiednie elementy. Można skorzystać
-      DataService.getStoreManager().getTaskStore().removeTask(task.getId()).then(()=>{
-        this.model.removeTask(this.model.getTaskWithOpenMenu());
-          this.removeEvent.emit(task.getId());
-          this.model.setTaskWithOpenMenu(null);
-      });
+      // TODO: tą część będzie trzeba przenieść w inne miejsce, tak, żeby nie było trzeba powtarzać kodu dla innych elementów
+      const tasksToUpdate = this.orderController.removeItem(task, this.model.getTasks());
+      this.updateTasks(tasksToUpdate).then(()=>{
+        DataService.getStoreManager().getTaskStore().removeTask(task.getId()).then(()=>{
+
+          this.model.removeTask(this.model.getTaskWithOpenMenu());
+            this.removeEvent.emit(task.getId());
+        });
+      })
     }
+
+    // TODO: oprznieść to w inne miejsce, tak, żeby wszystkie elementy które mają kolejnośc korzystały z tego samego kodu
+  private updateTasks(tasks:Task[]):Promise<Task[]>{
+    // TODO: napisać i wykorzystać metodę z bazy danych
+    const promises = [];
+    tasks.forEach(task=>{
+      promises.push(DataService.getStoreManager().getTaskStore().updateTask(task));
+    });
+    return Promise.all(promises);
+  }
 
 
   public addTaskToPomodoro(task:Task){
     this.pomodoroEvent.emit(task);
+  }
+
+  public finishTask(task:Task){
+    // TODO: będzie trzeba zauważyć, że to nie usuwa elementów, tylko ustawia odpowiednią kolejnośc
+    const toUpdate = this.orderController.removeItem(task, this.model.getTasks());
+    this.updateTasks(toUpdate).then(updatedTasks=>{
+      DataService.getStoreManager().getTaskStore().changeStatus(task, Status.ENDED).then(updatedTasks2=>{
+        this.model.removeTask(task); // TODO: tutaj zrobić warunek, czy chcemy oglądać zakończone czy nie
+        this.model.updateTasks(updatedTasks);
+        this.model.updateTasks(updatedTasks2);
+        this.model.refresh();
+      });
+    });
+    // TODO: pomyśleć, jak skończyć zadanie
+    // TODO: znalezienie pierwszego elementu
   }
 }

@@ -1,6 +1,7 @@
 import { ITaskRepository } from '../../common/repositories/task_repository';
 import { Task } from 'app/models/task';
 import { Position } from 'app/models/orderable.item';
+import { Status } from 'app/models/status';
 
 export class LocalTaskRepository implements ITaskRepository{
 
@@ -9,7 +10,6 @@ export class LocalTaskRepository implements ITaskRepository{
     constructor(table: Dexie.Table<Task, number>){
         this.table = table;
     }
-
 
     public findTaskById(id: number): Promise<Task> {
         return this.table.where('id').equals(id).first();
@@ -43,6 +43,16 @@ export class LocalTaskRepository implements ITaskRepository{
         return this.table.where('endDate').equals(date).toArray();
     }
 
+    public findTasksByStatus(projectId: number, status: Status): Promise<Task[]> {
+      return this.table.where({"projectID": projectId, "status":status}).toArray();
+    }
+
+    public findTasksExceptStatus(projectId: number, status: Status): Promise<Task[]> {
+      // TODO: sprawdzić, czy to będzie dobrze działać
+      // return this.table.where({"projectID":projectId, "status": !status}).toArray();
+      return this.table.where("projectID").equals(projectId).and(x=>x['status']!=status).toArray();
+    }
+
     public findImportantTasks(): Promise<Task[]> {
         return this.table.where('important').equals(1).toArray();
     }
@@ -53,6 +63,10 @@ export class LocalTaskRepository implements ITaskRepository{
 
     public findLastTask(projectId: number): Promise<Task> {
         return this.table.where({"successor":-1, "projectID":projectId}).first();
+    }
+
+    public findFirstTaskWithStatus(projectId, status:Status): Promise<Task>{
+      return this.table.where({"position":Position.HEAD, "projectID":projectId, "status": status}).first();
     }
 
 
@@ -81,8 +95,6 @@ export class LocalTaskRepository implements ITaskRepository{
     }
 
     private getTaskCopyReadyToSave(task: Task): Task{
-        console.log("getTaskCopyReadyToSave");
-        console.log(task);
         let newTask = new Task(task.getName(), task.getDescription(), task.getStatus());
         if(task.getId()){
             newTask.setId(task.getId());

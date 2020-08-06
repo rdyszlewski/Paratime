@@ -35,7 +35,7 @@ export class PomodoroStatisticsComponent implements AfterViewInit, OnInit {
     this.tasksSort.sortChange.subscribe(()=>{
       this.loadTasksEntries()
     });
-    
+
     this.projectsSort.sortChange.subscribe(()=>{
       this.loadProjectsEntries();
     });
@@ -69,7 +69,6 @@ export class PomodoroStatisticsComponent implements AfterViewInit, OnInit {
   }
 
   private loadTasksEntries(){
-    console.log(this.taskFilter.nativeElement);
     this.taskDataSource.loadTasks(this.taskFilter.nativeElement.value, this.tasksSort.active, this.tasksSort.direction);
   }
 

@@ -134,10 +134,11 @@ export class MainComponent implements OnInit, AfterViewInit {
     this.setWidth(this.workSpace, 70);
   }
 
+  // TODO: przydałoby się zmienić nazwę
   loadTasks(project:Project){
     this.currentProject = project;
     this.tasksComponent.setProject(project);
-    // this.appService.setCurrentProject(project);
+    // this.appService.setCurrentProject(project); // TODO: to można przywrócić. Będzie lepsze zarządzanie zadaniami
 
 
     // TODO: możliwe, że tutja przydałoby się jakieś ustawianie rozmiaru

@@ -1,7 +1,7 @@
 export class OrderableItem{
   protected id: number;
   protected successor: number = -1;
-  protected position: Position;
+  protected position: Position = Position.NORMAL;
 
   public getId():number{
     return this.id;
@@ -33,5 +33,6 @@ export class OrderableItem{
 }
 
 export enum Position{
-  HEAD
+  NORMAL = 0,
+  HEAD = 1,
 }

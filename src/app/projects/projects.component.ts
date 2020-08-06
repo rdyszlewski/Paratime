@@ -19,7 +19,7 @@ import { ProjectsLoader } from './common/projects.loader';
   styleUrls: ['./projects.component.css']
 })
 export class ProjectsComponent implements OnInit {
-  
+
   @Output() editEvent: EventEmitter<Project> = new EventEmitter();
   @Output() loadEvent: EventEmitter<Project> = new EventEmitter();
   @Output() removeEvent: EventEmitter<Project> = new EventEmitter();
@@ -74,7 +74,7 @@ export class ProjectsComponent implements OnInit {
       });
     });
   }
-  
+
   // update project on the list
   public updateProject(project:Project){
     this.model.updateProject(project);
@@ -94,10 +94,11 @@ export class ProjectsComponent implements OnInit {
 // click events
 
   public onProjectClick(project:Project){
-    DataService.getStoreManager().getProjectStore().getProjectById(project.getId()).then(loadedProject=>{
-      this.loadEvent.emit(loadedProject);
-    });
-    this.model.setSelectedProject(project);
+    // DataService.getStoreManager().getProjectStore().getProjectById(project.getId()).then(loadedProject=>{
+    //   this.loadEvent.emit(loadedProject);
+    // });
+    // this.model.setSelectedProject(project);
+    this.loadEvent.emit(project);
   }
 
   public onProjectMenuClick(event:MouseEvent, project:Project){

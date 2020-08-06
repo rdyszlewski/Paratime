@@ -24,7 +24,7 @@ export class TaskLabelsController{
         DataService.getStoreManager().getLabelStore().getAllLabel().then(labels=>{
           this.model.setLabels(labels);
         });
-    }  
+    }
 
     public getModel():TaskLabelsModel{
         return this.model;
@@ -60,14 +60,11 @@ export class TaskLabelsController{
     public acceptSelectedLabels(){
       // TODO: dodać sprawdzenie, czy cokolwiek się zmieniło
 
-      console.log("Akceptowanie wyboru etykiet");
-      console.log(this.isChanged());
       if(!this.isChanged()){
         return;
       }
       const selected = [];
       this.selectedLabels.forEach(label=>selected.push(label));
-      console.log(this.selectLabel);
       return this.removeAllLabels().then(()=>{
         const promises = [];
         selected.forEach(label=>{
@@ -75,7 +72,6 @@ export class TaskLabelsController{
         })
         return Promise.all(promises).then(()=>{
           this.mainModel.getTask().setLabels(selected);
-          console.log(selected);
           this.selectedLabels=[];
         });
       })
@@ -84,8 +80,6 @@ export class TaskLabelsController{
     private isChanged(){
       const selected = this.selectedLabels;
       const current = this.mainModel.getTask().getLabels();
-      console.log(selected);
-      console.log(current);
       if(selected.length == current.length){
         current.forEach(label=>{
           if(!this.isLabelSelected(label)){
@@ -120,7 +114,7 @@ export class TaskLabelsController{
           this.mainModel.getTask().addLabel(label);
         });
       }
-    
+
       public removeLabel(label:Label){
         DataService.getStoreManager().getLabelStore().removeLabelFromTask(this.mainModel.getTask().getId(), label.getId()).then(()=>{
           this.mainModel.getTask().removeLabel(label);

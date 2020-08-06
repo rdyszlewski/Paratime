@@ -19,7 +19,7 @@ import { Subtask } from 'app/models/subtask';
   styleUrls: ['./task-details.component.css'],
 })
 export class TaskDetailsComponent implements OnInit {
-  
+
   private TASK_NAME_ID = '#task-name';
 
   @Output() closeEvent: EventEmitter<null> = new EventEmitter();
@@ -36,7 +36,7 @@ export class TaskDetailsComponent implements OnInit {
   private subtaskController: SubtasksController;
   private labelsController: TaskLabelsController;
 
-  
+
   constructor() { }
 
   ngOnInit(): void {
@@ -143,8 +143,7 @@ export class TaskDetailsComponent implements OnInit {
     const subtask2 = this.model.getSubtaskByIndex(currentIndex);
     const nextSubtask1 = this.model.getSubtaskByOrderPrev(subtask1);
     const nextSubtask2 = this.model.getSubtaskByOrderPrev(subtask2);
-    console.log(nextSubtask1);
-    console.log(nextSubtask2);
+
     if(nextSubtask1){
       nextSubtask1.setPreviousSubtask(subtask2.getId());
       this.updateSubtask(nextSubtask1);

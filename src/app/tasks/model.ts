@@ -33,8 +33,6 @@ export class TasksModel{
         // TODO: dopracować zarządzanie
         this.project = project;
         if(project){
-          console.log("Zadania");
-          console.log(project.getTasks());
           this.tasks.setItems(project.getTasks());
           this.updateFilteredList();
             // this.setTasks(project.getTasks());
@@ -43,8 +41,7 @@ export class TasksModel{
 
     // TODO: może zmienić tę motodę
     private updateFilteredList(){
-      console.log(this.tasks.getItems());
-        this.filteredList.setSource(this.tasks.getItems());
+      this.filteredList.setSource(this.tasks.getItems());
     }
 
     public getTasks():Task[]{
@@ -69,9 +66,11 @@ export class TasksModel{
     }
 
     public removeTask(task:Task){
+
         this.project.removeTask(task);
         this.tasks.removeItem(task);
-        this.updateFilteredList();
+        // this.updateFilteredList();
+        this.refresh();
     }
 
     public getTaskWithOpenMenu():Task{

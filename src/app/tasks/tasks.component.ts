@@ -82,7 +82,22 @@ export class TasksComponent implements OnInit {
   }
 
   public setProject(project:Project):void{
-    this.model.setProject(project);
+    // this.model.setProject(project);
+    this.loadTasks(project, true);
+  }
+
+  private loadTasks(project: Project, active: boolean){
+    let tasks;
+    if(active){
+      tasks = DataService.getStoreManager().getTaskStore().getActiveTasks(project.getId());
+    } else {
+      tasks = DataService.getStoreManager().getTaskStore().getFinishedTasks(project.getId());
+    }
+    tasks.then(tasks=>{
+      // TODO: można pomyśleć o wstawianiu kopii tego obiektu
+      project.setTasks(tasks);
+      this.model.setProject(project);
+    });
   }
 
   public addTask(task:Task){
@@ -126,5 +141,16 @@ export class TasksComponent implements OnInit {
     DataService.getStoreManager().getTaskStore().updateTask(task).then(updatedTask=>{
       // TODO: można zrobić jakieś działania po zaktualizowaniu zadań
     });
+  }
+
+  public loadActiveTasks(){
+    // TODO: załadowanie aktywnych zadań
+    this.loadTasks(this.model.getProject(), true);
+
+  }
+
+  public loadFinishedTasks(){
+    // TODO: załadowanie zakończonych zadań
+    this.loadTasks(this.model.getProject(), false);
   }
 }

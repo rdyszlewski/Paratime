@@ -99,12 +99,12 @@ export class PomodoroTimer{
             }
             this.startTicking();
             this.timerPause = false;
-        } 
+        }
         this.timerPause = false;
     }
 
     private setStateTime(){
-        const stateTime = this.getStateTime() 
+        const stateTime = this.getStateTime()
         // TODO: pomonożyć prz 60;
         this.time = stateTime;
     }
@@ -121,13 +121,13 @@ export class PomodoroTimer{
     }
 
     public stopTimer(){
-        // TODO: 
+        // TODO:
         this.timerRunning = false;
         this.timerPause = false;
         this.stateFinished = true;
 
         this.time = 0;
-        
+
     }
 
     private startTicking(){
@@ -141,7 +141,7 @@ export class PomodoroTimer{
                     this.tick();
                 }
         });
-    } 
+    }
 
     public isStateFinished(){
         return this.stateFinished;
@@ -163,10 +163,7 @@ export class PomodoroTimer{
         // TODO: robić zapisywanie czasu rzeczywistego
         // TODO: prześledzić to wszystko
         const time = this.stateTime - 1;
-        console.log("Wyszło mi tyle czasu");
-        console.log(time);
-        console.log(this.currentState);
-       
+
         const entry = new PomodoroHistory();
         entry.setTime(time);
         entry.setDate(new Date());
@@ -180,7 +177,7 @@ export class PomodoroTimer{
                 return State.LONG_BREAK;
             }
             return State.SHORT_BREAK;
-        } 
+        }
         return State.WORK;
     }
 

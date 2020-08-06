@@ -16,15 +16,8 @@ export class TimepickerTriggerDirective implements AfterContentInit, OnDestroy{
 
   @Output() readonly timepickerOpended: EventEmitter<void> = new EventEmitter<void>();
 
-  // @HostListener("focus")
-  // setInputFocus(): void {
-  //     console.log("Mam focus");
-  //     this.timepicker.open = true;
-  // }
-
   @HostListener("click")
   click(event:MouseEvent):void{
-    console.log("Kliknięto");
     this.timepicker.open = true;
   }
 

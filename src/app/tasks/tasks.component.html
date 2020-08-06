@@ -11,13 +11,17 @@
     <ng-container [ngTemplateOutlet]="filter_container"></ng-container>
   </div>
 
+  <div class="status-buttons">
+    <button (click)="loadActiveTasks()">Aktywne</button>
+    <button (click)="loadFinishedTasks()">Zakończone</button>
+  </div>
   <div id="tasks-list" class="list border" cdkDropList
     #taskList="cdkDropList"
     [cdkDropListData]="getModel().getTasks()"
     (cdkDropListDropped)="onDrop($event)">
 
-      <div *ngFor='let task of getModel().getTasks()' class="task-list-item list-item block transparent-border" 
-      (click)="getMenu().onEditTask(task)" 
+      <div *ngFor='let task of getModel().getTasks()' class="task-list-item list-item block transparent-border"
+      (click)="getMenu().onEditTask(task)"
       cdkDrag>
         <ng-container [ngTemplateOutlet]="task_item" [ngTemplateOutletContext]="{$implicit:task}"></ng-container>
       </div>
@@ -26,7 +30,7 @@
         <ng-container [ngTemplateOutlet]="new_task"></ng-container>
       </div>
   </div>
-  
+
   <button class="button border" (click)='getAdding().openAddingTask()'
     *ngIf="getModel().getProject().getId()!=null && !getAdding().getModel().isAddingOpen()">Dodaj zadanie</button>
 </div>
@@ -70,7 +74,7 @@
 
   <div class="filter-group">
     <label class="filter-label">Etykieta</label>
-  
+
     <select class="filter-value"
     [ngModel]="getFiltering().getFilter().getLabel()" (ngModelChange)="getFiltering().getFilter().setLabel($event)">
         <option [ngValue]="null">Wszystkie</option>
@@ -92,7 +96,7 @@
 
 <ng-template #task_item let-task>
   <input type="checkbox"  class="task-checkbox"
-    [checked]="getItem().isTaskDone(task)" (change)="getItem().setTaskStatus(task, $event.target.checked)" 
+    [checked]="getItem().isTaskDone(task)" (change)="getItem().setTaskStatus(task, $event.target.checked)"
     (click)="getItem().checkBoxClick($event)"/>
   <div class="task-main">
     <div class="list-item-top">
@@ -108,7 +112,7 @@
           {{label.getName()}}
         </div>
       </div>
-      
+
       <div class="task-info-icon">
         <ng-container [ngTemplateOutlet]="task_details" [ngTemplateOutletContext]="{$implicit:task}"></ng-container>
       </div>
@@ -127,7 +131,7 @@
   </div>
 
   <div *ngIf="task.getPriority()!=null" class="task-priority-icon info-icon">
-    {{getInfo().getPriorityText(task)}} 
+    {{getInfo().getPriorityText(task)}}
   </div>
 
   <div *ngIf="task.getSubtasks().length != 0" class="info-icon task-subtask"
@@ -137,7 +141,7 @@
 </ng-template>
 
 <ng-template #item_options let-task>
-  <div class="list-item-options" 
+  <div class="list-item-options"
       (click)='getMenu().onTaskMenuClick($event, task)'
       [matMenuTriggerFor]="menu"
       >
@@ -145,8 +149,12 @@
         <button mat-menu-item (click)="getMenu().onEditTask(task)">
           Edytuj
         </button>
-        <button mat-menu-item (click)="getMenu().onRemoveTask()">
+        <button mat-menu-item (click)="getMenu().onRemoveTask(task)">
           Usuń
+        </button>
+
+        <button mat-menu-item (click)="getMenu().finishTask(task)">
+          Zakończ zadanie
         </button>
 
         <button mat-menu-item (click)="getMenu().addTaskToPomodoro(task)">
@@ -162,7 +170,7 @@
     (keyup)="getAdding().handleAddingNewTaskKeyUp($event)"
     [ngModel]="getAdding().getModel().getNewTaskName()" (ngModelChange)="getAdding().getModel().setNewTaskName($event)">
     <div class="buttons-container">
-        <button class="button small-button insert-button" id="save-subtask-button" 
+        <button class="button small-button insert-button" id="save-subtask-button"
         (click)="getAdding().addNewTask()">Zapisz</button>
         <button class="button small-button insert-button" id="cancel-subtask-button"
         (click)="getAdding().closeAddingNewTask()">Anuluj</button>

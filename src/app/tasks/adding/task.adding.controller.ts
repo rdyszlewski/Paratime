@@ -37,19 +37,18 @@ export class TaskAddingController{
         const task = this.prepareTaskToInsert();
         const data = new InsertTaskData(task, null, this.mainModel.getProject().getId());
         DataService.getStoreManager().getTaskStore().createTask(data).then(result=>{
-            console.log("Otrzymanie wyniku");
-            console.log(result);
+
             this.updateViewAfterInserting(result);
         });
     }
 
     private updateViewAfterInserting(result: InsertTaskResult){
-        this.mainModel.addTask(result.insertedTask);
-        this.mainModel.updateTasks(result.updatedTasks);
-        this.mainModel.refresh();
-        this.closeAddingNewTask();
-        ScrollBarHelper.moveToBottom(this.TASK_LIST);
-        // TODO: prawdopodobnie będzie trzeba zaktualizoreplaceTasksOrderwać elementy, w których została zmieniona kolejność
+      this.mainModel.addTask(result.insertedTask);
+      this.mainModel.updateTasks(result.updatedTasks);
+      this.mainModel.refresh();
+      this.closeAddingNewTask();
+      ScrollBarHelper.moveToBottom(this.TASK_LIST);
+      // TODO: prawdopodobnie będzie trzeba zaktualizoreplaceTasksOrderwać elementy, w których została zmieniona kolejność
     }
 
     private prepareTaskToInsert() {
