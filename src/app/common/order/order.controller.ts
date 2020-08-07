@@ -3,42 +3,23 @@ import { OrderableItem, Position } from 'app/models/orderable.item';
 export class OrderController<T extends OrderableItem>{
 
     public move(previousIndex: number, currentIndex: number, items:T[]):T[]{
-      // TODO: refaktoryzacja
         const toUpdate = [];
 
-        const previousItem = items[previousIndex];
-        const currentItem = items[currentIndex];
-        const prevPreviousItem = this.findItemBySuccessor(previousItem.getId(), items);
-        const prevCurrentItem = this.findItemBySuccessor(currentItem.getId(), items);
+        const firstItem = items[Math.min(previousIndex, currentIndex)];
+        const secondItem = items[Math.max(previousIndex, currentIndex)];
+        const prevFirst = this.findItemBySuccessor(firstItem.getId(), items);
+        const prevSecond = this.findItemBySuccessor(secondItem.getId(), items);
 
-        const tempSuccessor = previousItem.getSuccessorId();
-        if(currentItem.getSuccessorId() != previousItem.getId()){
-          previousItem.setSuccessorId(currentItem.getSuccessorId());
-        } else {
-          previousItem.setSuccessorId(currentItem.getId());
+        if(prevFirst){
+          prevFirst.setSuccessorId(secondItem.getId());
+          toUpdate.push(prevFirst);
         }
-        if(tempSuccessor != currentItem.getId()){
-          currentItem.setSuccessorId(tempSuccessor);
-        } else {
-          currentItem.setSuccessorId(previousItem.getId());
+        if(prevSecond){
+          prevSecond.setSuccessorId(secondItem.getSuccessorId());
+          toUpdate.push(prevSecond);
         }
-
-        const tempPosition = currentItem.getPosition();
-        currentItem.setPosition(previousItem.getPosition());
-        previousItem.setPosition(tempPosition);
-
-        toUpdate.push(previousItem);
-        toUpdate.push(currentItem);
-
-        if(prevPreviousItem && prevPreviousItem.getId() != currentItem.getId()){
-          prevPreviousItem.setSuccessorId(currentItem.getId());
-          toUpdate.push(prevPreviousItem);
-        }
-        if(prevCurrentItem && prevCurrentItem.getId() != previousItem.getId()){
-          prevCurrentItem.setSuccessorId(previousItem.getId());
-          toUpdate.push(prevCurrentItem);
-        }
-
+        secondItem.setSuccessorId(firstItem.getId());
+        toUpdate.push(secondItem);
         return toUpdate;
     }
 

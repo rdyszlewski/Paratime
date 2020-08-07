@@ -13,6 +13,9 @@ export class TaskItemOrderer <T extends OrderableItem>{
         const orderedItems = [];
         const itemsMap = this.getItemsMap(items);
         let currentItem = this.findFirstItem(items);
+        if(!currentItem){
+          return orderedItems;
+        }
         let lastItemId = currentItem.getId();
         while(currentItem!=null){
           orderedItems.push(currentItem);

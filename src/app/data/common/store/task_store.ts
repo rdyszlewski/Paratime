@@ -120,6 +120,7 @@ export class TaskStore{
     }
 
     public createTask(data: InsertTaskData): Promise<InsertTaskResult>{
+        // TODO: to odnosi się do wstawiania na koniec
         // TODO: spróbować to jakoś czytelniej napisać
         const result = new InsertTaskResult();
         const task = data.task;
@@ -127,6 +128,7 @@ export class TaskStore{
           task.setSuccessorId(-1);
           return this.taskRepository.findFirstTask(data.projectId).then(firstTask=>{
             if(!firstTask){
+              // TODO: to też przenieść do klasy, która zarządza kolejnościa
               task.setPosition(Position.HEAD);
             }
             return this.insertTask(task).then(insertedTask=>{
@@ -136,12 +138,14 @@ export class TaskStore{
               // TODO: sprawdzić, czy to index jest ok
               promises.concat(this.insertSubtasks(task, insertedId));
               promises.concat(this.insertTasksLabels(task, insertedId));
+              data.task = insertedTask; // TODO: sprawdzić, czy działa, ewentualnie zmienić miejsce
               this.createKanbanTask(data).then(kanbanTaskResult=>{
                   result.insertedKanbanTask = kanbanTaskResult.insertedKanbanTask;
                   result.updatedKanbanTasks = kanbanTaskResult.updatedKanbanTask;
                   promises.push(Promise.resolve(null));
               });
               if(lastTask){
+                  // TODO: przenieść to do jakieś specjalnej metody, która zarządza kolejnością
                   lastTask.setSuccessorId(insertedId);
                   promises.push(this.updateTask(lastTask));
                   result.updatedTasks.push(lastTask);
@@ -156,6 +160,7 @@ export class TaskStore{
     }
 
     private insertTask(task:Task){
+      // TODO: tutaj chyba powinno być wstawianie kanbanów
       return this.taskRepository.insertTask(task).then(insertedId=>{
         return this.taskRepository.findTaskById(insertedId);
       });

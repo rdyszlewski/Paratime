@@ -104,7 +104,7 @@ export class KanbanComponent implements OnInit {
      kanbanColumn.setProjectId(this.model.getProject().getId());
      kanbanColumn.setName(this.model.getColumnName());
      kanbanColumn.setPrevColumnId(this.model.getLastColumn().getId());
-     
+
      DataService.getStoreManager().getKanbanStore().createColumn(kanbanColumn).then(insertedColumn=>{
         this.model.addColumn(insertedColumn);
      });
@@ -129,7 +129,7 @@ export class KanbanComponent implements OnInit {
     const data = new InsertTaskData(task, column, this.model.getProject().getId());
     DataService.getStoreManager().getTaskStore().createTask(data).then(result=>{
       this.updateTasksAfterInsert(result, column);
-     
+
     });
     this.closeAddingNewTask();
   }

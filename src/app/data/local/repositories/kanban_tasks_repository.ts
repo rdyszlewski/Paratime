@@ -1,5 +1,6 @@
 import { IKanbanTasksRepository } from 'app/data/common/repositories/kanban_tasks_repository';
 import { KanbanTask } from 'app/models/kanban';
+import { Position } from 'app/models/orderable.item';
 
 export class LocalKanbanTasksRepository implements IKanbanTasksRepository{
 
@@ -22,11 +23,11 @@ export class LocalKanbanTasksRepository implements IKanbanTasksRepository{
     }
 
     public findLastTask(columnId: number): Promise<KanbanTask> {
-        return this.table.where({"columnId": columnId, "nextId": -1}).first();
+        return this.table.where({"columnId":columnId, "successor": -1}).first();
     }
 
     public findFirstTask(columnId: number): Promise<KanbanTask> {
-        return this.table.where({"columnId":columnId, "prevId": -1}).first();
+      return this.table.where({"columnId":columnId, "position": Position.HEAD}).first();
     }
 
     public insertTask(task: KanbanTask): Promise<number> {

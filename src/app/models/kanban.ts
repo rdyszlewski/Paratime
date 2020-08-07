@@ -102,6 +102,8 @@ export class KanbanTask extends OrderableItem{
 
     public setTask(task: Task){
         this.task = task;
+        if(task){
+          this.taskId = task.getId();
+        }
     }
-
 }
