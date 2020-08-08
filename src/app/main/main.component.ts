@@ -13,7 +13,7 @@ import { Stage } from 'app/models/stage';
 import { SpecialList } from 'app/projects/common/special_list';
 import { PomodoroComponent } from 'app/pomodoro/pomodoro.component';
 import { KanbanComponent } from 'app/kanban/kanban.component';
-import { AppService } from 'app/services/app/app.service';
+import { AppService, TasksMode } from 'app/services/app/app.service';
 
 @Component({
   selector: 'app-main',
@@ -21,6 +21,8 @@ import { AppService } from 'app/services/app/app.service';
   styleUrls: ['./main.component.css']
 })
 export class MainComponent implements OnInit, AfterViewInit {
+
+  public taskMode = TasksMode;
 
   // TODO: usprawnić zarządzanie widokami
 
@@ -134,16 +136,6 @@ export class MainComponent implements OnInit, AfterViewInit {
     this.setWidth(this.workSpace, 70);
   }
 
-  // TODO: przydałoby się zmienić nazwę
-  loadTasks(project:Project){
-    this.currentProject = project;
-    this.tasksComponent.setProject(project);
-    // this.appService.setCurrentProject(project); // TODO: to można przywrócić. Będzie lepsze zarządzanie zadaniami
-
-
-    // TODO: możliwe, że tutja przydałoby się jakieś ustawianie rozmiaru
-  }
-
   public onCreateProject(project:Project){
     // TODO: alternatywą będzie ponowne wyszukanie wszystkim projektów
     // TODO: nie można tego robić w ten sposób, ponieważ przy aktualizacji dodaje do listy
@@ -192,7 +184,7 @@ export class MainComponent implements OnInit, AfterViewInit {
     this.projectsDetailsOpen = false;
     this.tasksDetailsOpen = false;
     this.setOriginalWidth();
-    this.tasksComponent.setProject(null); //hide tasks panel
+    this.tasksComponent.openProject(null); //hide tasks panel
   }
 
   public openSnackBar(message:string){
@@ -236,29 +228,38 @@ export class MainComponent implements OnInit, AfterViewInit {
     this.pomodoroComponent.addTaskToPomodoro(task);
   }
 
-  public openKanban(project:Project){
-    // this.appService.setCurrentProject(project);
-    this.currentProject = project;
-    this.tasksOpen = false;
-    this.kanbanOpen = true;
-    this.kanbanComponent.openProject(project);
-  }
+
 
   public closeKanban(){
     this.kanbanOpen = false;
     this.tasksOpen = true;
   }
 
-  public openTaskListMode(){
-    this.loadTasks(this.currentProject);
-    this.kanbanOpen = false;
-    this.tasksOpen = true;
+  public openProject(project: Project, taskMode: TasksMode){
+    let currentProject = project ? project : this.appService.getCurrentProject();
+    let currentTaskMode = taskMode != null ? taskMode : this.appService.getTasksMode();
+    this.appService.setCurrentProject(currentProject);
+    this.appService.setTasksMode(currentTaskMode);
+    switch(currentTaskMode){
+      case TasksMode.LIST:
+        this.openTaskListMode(currentProject);
+        break;
+      case TasksMode.KANBAN:
+        this.openKanbanMode(currentProject);
+        break;
+    }
   }
 
-  public openKanbanMode(){
-    // this.openKanban(this.appService.getCurrentProject());
-    this.openKanban(this.currentProject);
+  private openTaskListMode(project:Project){
+    this.kanbanOpen = false;
+    this.tasksOpen = true;
+    this.tasksComponent.openProject(project);
+  }
+
+  private openKanbanMode(project:Project){
     this.kanbanOpen = true;
     this.tasksOpen = false;
+
+    this.kanbanComponent.openProject(project);
   }
 }

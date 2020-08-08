@@ -1,17 +1,27 @@
 import { Injectable } from '@angular/core';
 import { Project } from 'app/models/project';
 import { Task } from 'app/models/task';
-import { TypeScriptEmitter } from '@angular/compiler';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AppService {
 
+  private taskMode: TasksMode = TasksMode.LIST;
   private currentProject: Project;
   private currentTask: Task;
 
   constructor() { }
+
+  public getTasksMode():TasksMode{
+    return this.taskMode;
+  }
+
+  public setTasksMode(mode: TasksMode): void{
+    this.taskMode = mode;
+   // TODO: dobrze byłoby tutaj zrobić przeładowanie zadań i uruchomienie odpowiedniego widoku
+
+  }
 
   public getCurrentProject():Project{
     return this.currentProject;
@@ -29,5 +39,11 @@ export class AppService {
     this.currentTask = task;
   }
 
-  
+
+}
+
+export enum TasksMode{
+  LIST,
+  KANBAN,
+  CALENDAR
 }

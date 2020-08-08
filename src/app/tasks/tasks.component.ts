@@ -81,8 +81,8 @@ export class TasksComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  public setProject(project:Project):void{
-    // this.model.setProject(project);
+  public openProject(project:Project):void{
+    // TODO: spróbować zlikwidować tę metodę
     this.loadTasks(project, true);
   }
 

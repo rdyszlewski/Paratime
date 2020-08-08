@@ -139,11 +139,12 @@ export class TaskStore{
               promises.concat(this.insertSubtasks(task, insertedId));
               promises.concat(this.insertTasksLabels(task, insertedId));
               data.task = insertedTask; // TODO: sprawdzić, czy działa, ewentualnie zmienić miejsce
-              this.createKanbanTask(data).then(kanbanTaskResult=>{
-                  result.insertedKanbanTask = kanbanTaskResult.insertedKanbanTask;
-                  result.updatedKanbanTasks = kanbanTaskResult.updatedKanbanTask;
-                  promises.push(Promise.resolve(null));
-              });
+              // TODO: sprawdzić, czy to będzie dobrze działać
+              promises.push(this.createKanbanTask(data).then(kanbanTaskResult=>{
+                result.insertedKanbanTask = kanbanTaskResult.insertedKanbanTask;
+                result.updatedKanbanTasks = kanbanTaskResult.updatedKanbanTask;
+              }));
+
               if(lastTask){
                   // TODO: przenieść to do jakieś specjalnej metody, która zarządza kolejnością
                   lastTask.setSuccessorId(insertedId);

@@ -46,11 +46,12 @@ export class KanbanComponent implements OnInit {
     this.model.clearColumns();
     this.model.setProject(project);
     // TPDP: przyjrzeć się temu. Pomyśleć, jak to można dobrze zrobić
-      DataService.getStoreManager().getKanbanStore().getColumnsByProject(project.getId()).then(columns=>{
-        columns.forEach(column=>{
-          this.model.addColumn(column);
-        })
-      });
+    DataService.getStoreManager().getKanbanStore().getColumnsByProject(project.getId()).then(columns=>{
+      // TODO: dodać metodę, która od razu doda wszystkie potrzebne elementy
+      columns.forEach(column=>{
+        this.model.addColumn(column);
+      })
+    });
   }
 
   public drop(event: CdkDragDrop<Task[]>){
@@ -74,14 +75,16 @@ export class KanbanComponent implements OnInit {
       const currentColumn = this.model.getColumnById(Number.parseInt(currentColumnId));
       const previousTask = previousColumn.getKanbanTasks()[previousIndex];
 
-      let toUpdate = this.splitKanbanTaskColumns(previousColumn, previousTask, currentColumn, currentIndex);
+      let toUpdate = this.swapKanbanTaskColumns(previousColumn, previousTask, currentColumn, currentIndex);
       this.updateKanbanTasks(toUpdate);
   }
 
-  private splitKanbanTaskColumns(previousColumn: KanbanColumn, previousTask: KanbanTask, currentColumn: KanbanColumn, currentIndex: number) {
+  private swapKanbanTaskColumns(previousColumn: KanbanColumn, previousTask: KanbanTask, currentColumn: KanbanColumn, currentIndex: number) {
     let toUpdate = [];
+    previousTask.setColumnId(currentColumn.getId());
     toUpdate = toUpdate.concat(this.orderController.removeItem(previousTask, previousColumn.getKanbanTasks()));
     toUpdate = toUpdate.concat(this.orderController.insertItem(previousTask, currentIndex, currentColumn.getKanbanTasks()));
+    toUpdate.push(previousTask); // TODO: sprawdzić dokładnie, czy to powinno być dodawane tutaj, a nie w poprzednich metodach
     return toUpdate;
   }
 
@@ -127,9 +130,9 @@ export class KanbanComponent implements OnInit {
     const task = this.prepareTaskToInsert();
     // task.setOrderPrev(this.getLastTask(this.model.getProject()).getId());
     const data = new InsertTaskData(task, column, this.model.getProject().getId());
+
     DataService.getStoreManager().getTaskStore().createTask(data).then(result=>{
       this.updateTasksAfterInsert(result, column);
-
     });
     this.closeAddingNewTask();
   }

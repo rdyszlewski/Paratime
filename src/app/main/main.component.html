@@ -1,8 +1,8 @@
 <div class="main">
     <div class="top-actionbar">
         <div class="work-modes-switch">
-            <button class="button toolbar-button" (click)="openTaskListMode()">Lista</button>
-            <button class="button toolbar-button" (click)="openKanbanMode()">Tablica</button>
+            <button class="button toolbar-button" (click)="openProject(null,taskMode.LIST)">Lista</button>
+            <button class="button toolbar-button" (click)="openProject(null,taskMode.KANBAN)">Tablica</button>
         </div>
         <div class="toolbar">
             <div class="timer">{{pomodoroTime}}</div>
@@ -14,13 +14,13 @@
     <div class="app-content">
 
         <div #listSpace>
-            <app-projects id="projects" [hidden]="!projectsOpen" 
+            <app-projects id="projects" [hidden]="!projectsOpen"
                 (editEvent)='openProjectDetails($event)'
-                (loadEvent)="loadTasks($event)"
+                (loadEvent)="openProject($event, null)"
                 (removeEvent)="onRemoveSelectedProject($event)"
                 (listEvent)="onSpecialListCLick($event)"
-                (kanbanEvent)="openKanban($event)">
-                
+                (kanbanEvent)="openProject($event, taskMode.KANBAN)">
+
             </app-projects>
         </div>
 
@@ -37,7 +37,7 @@
                 (updateEvent)="onUpdateStage($event)">
             </app-stage-details>
         </div>
-    
+
         <div #workSpace>
             <app-tasks id='tasks' [hidden]='!tasksOpen'
                 (detailsEvent)="openTaskDetails($event)"
@@ -49,7 +49,7 @@
                 (closeEvent)="closeKanban()">
             </app-kanban>
         </div>
-        
+
         <div #workDetailsSpace>
             <app-task-details id="task-details" [hidden]='!tasksDetailsOpen'
                 (closeEvent)="closeTaskDetails()"
@@ -70,6 +70,6 @@
         </div>
 
     </div>
-    
+
 </div>
 

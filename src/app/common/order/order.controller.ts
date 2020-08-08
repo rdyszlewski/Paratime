@@ -1,4 +1,5 @@
 import { OrderableItem, Position } from 'app/models/orderable.item';
+import { OrderValues } from '../valuse';
 
 export class OrderController<T extends OrderableItem>{
 
@@ -58,6 +59,7 @@ export class OrderController<T extends OrderableItem>{
         toUpdate.push(item);
         if(items.length == 0){
           item.setPosition(Position.HEAD);
+          item.setSuccessorId(OrderValues.DEFAULT_ORDER);
           return toUpdate;
         }
         const currentItem = items[position];
