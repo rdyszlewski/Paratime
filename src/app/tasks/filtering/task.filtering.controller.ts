@@ -37,10 +37,10 @@ export class TaskFilteringController{
         this.getFilter().clear();
         this.searchFilter();
       }
-    
+
       // TODO: prawdopodobnie będzie trzeba to gdzieś przenieść
       public searchFilter(){
-        let resultFilter = this.mainModel.getProject().getTasks();
+        let resultFilter = this.mainModel.getTasks();
         const filter = this.getFilter();
         if(filter.isImportant()){
           resultFilter = resultFilter.filter(x=>x.isImportant());
@@ -60,11 +60,11 @@ export class TaskFilteringController{
             let indices = [];
             x.getLabels().forEach(label=>indices.push(label.getId()));
             return indices.includes(filter.getLabel().getId());
-            
+
           });
         }
-        
-       
+
+
         this.mainModel.setTasks(resultFilter);
       }
 

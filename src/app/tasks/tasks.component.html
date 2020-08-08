@@ -12,8 +12,8 @@
   </div>
 
   <div class="status-buttons">
-    <button (click)="loadActiveTasks()">Aktywne</button>
-    <button (click)="loadFinishedTasks()">Zakończone</button>
+    <button (click)="loadTasks(taskType.ACTIVE)">Aktywne</button>
+    <button (click)="loadTasks(taskType.FINISHED)">Zakończone</button>
   </div>
   <div id="tasks-list" class="list border" cdkDropList
     #taskList="cdkDropList"
@@ -32,7 +32,7 @@
   </div>
 
   <button class="button border" (click)='getAdding().openAddingTask()'
-    *ngIf="getModel().getProject().getId()!=null && !getAdding().getModel().isAddingOpen()">Dodaj zadanie</button>
+    *ngIf="getModel().getProject().getId()!=null && !getAdding().getModel().isAddingOpen() && getModel().isActiveTaskType()">Dodaj zadanie</button>
 </div>
 
 

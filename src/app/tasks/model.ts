@@ -2,7 +2,8 @@ import { Task } from 'app/models/task';
 import { Project } from 'app/models/project';
 import { FilteredList } from 'app/common/filter/filtered_list';
 import { OrderedList } from 'app/common/order/ordered.list';
-import { nullSafeIsEquivalent } from '@angular/compiler/src/output/output_ast';
+import { TasksMode } from 'app/services/app/app.service';
+import { TaskType } from './tasks.component';
 
 export class TasksModel{
 
@@ -11,8 +12,8 @@ export class TasksModel{
     private taskWithOpenMenu: Task;
     // TODO: przemysleć to
     private tasks: OrderedList<Task> = new OrderedList();
+    private taskType: TaskType = TaskType.ACTIVE;
 
-    private open;
 
     public getProject(){
         return this.project;
@@ -30,13 +31,7 @@ export class TasksModel{
     }
 
     public setProject(project:Project){
-        // TODO: dopracować zarządzanie
         this.project = project;
-        if(project){
-          this.tasks.setItems(project.getTasks());
-          this.updateFilteredList();
-            // this.setTasks(project.getTasks());
-        }
     }
 
     // TODO: może zmienić tę motodę
@@ -85,14 +80,16 @@ export class TasksModel{
         return this.project != null;
     }
 
-    public close(){
-        this.open = false;
-    }
-
     public getTaskByIndex(index: number): Task{
         const task = this.filteredList.getElements()[index];
         return task;
     }
 
+    public setTaskType(taskType: TaskType){
+      this.taskType = taskType;
+    }
 
+    public isActiveTaskType(){
+      return this.taskType == TaskType.ACTIVE;
+    }
 }
