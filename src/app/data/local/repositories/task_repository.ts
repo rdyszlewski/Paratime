@@ -2,16 +2,19 @@ import { ITaskRepository } from '../../common/repositories/task_repository';
 import { Task } from 'app/models/task';
 import { Position } from 'app/models/orderable.item';
 import { Status } from 'app/models/status';
+import { OrderRepository } from 'app/data/common/repositories/orderable.repository';
 
 export class LocalTaskRepository implements ITaskRepository{
 
-    private table: Dexie.Table<Task, number>
+    private table: Dexie.Table<Task, number>;
+    private orderRepository: OrderRepository<Task>;
 
     constructor(table: Dexie.Table<Task, number>){
         this.table = table;
+        this.orderRepository = new OrderRepository(table, "projectID");
     }
 
-    public findTaskById(id: number): Promise<Task> {
+    public findById(id: number): Promise<Task> {
         return this.table.where('id').equals(id).first();
     }
 
@@ -57,12 +60,17 @@ export class LocalTaskRepository implements ITaskRepository{
         return this.table.where('important').equals(1).toArray();
     }
 
-    public findFirstTask(projectId: number): Promise<Task> {
-        return this.table.where({"position":Position.HEAD, "projectID":projectId}).first();
+    public findFirst(projectId: number): Promise<Task> {
+        return this.orderRepository.findFirst(projectId);
     }
 
-    public findLastTask(projectId: number): Promise<Task> {
-        return this.table.where({"successor":-1, "projectID":projectId}).first();
+    public findBySuccessor(successorId: number): Promise<Task> {
+      return this.orderRepository.findBySuccessor(successorId);
+    }
+
+    public findLast(projectId: number, exceptTask: number = -1): Promise<Task> {
+        return this.orderRepository.findLast(projectId, exceptTask);
+        // return this.table.where({"successor": -1, "projectID": projectId}).first();
     }
 
     public findFirstTaskWithStatus(projectId, status:Status): Promise<Task>{
@@ -75,7 +83,7 @@ export class LocalTaskRepository implements ITaskRepository{
         return this.table.add(taskToSave);
     }
 
-    public updateTask(task: Task): Promise<number> {
+    public update(task: Task): Promise<number> {
         let taskToUpdate = this.getTaskCopyReadyToSave(task);
         return this.table.update(task.getId(), taskToUpdate);
     }

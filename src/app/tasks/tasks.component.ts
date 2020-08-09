@@ -15,11 +15,7 @@ import {CdkDragDrop, moveItemInArray, transferArrayItem} from "@angular/cdk/drag
 import { DataService } from 'app/data.service';
 import { OrderController } from 'app/common/order/order.controller';
 import { AppService } from 'app/services/app/app.service';
-
-export enum TaskType{
-  ACTIVE,
-  FINISHED
-}
+import { TaskType } from './task.type';
 
 @Component({
   selector: 'app-tasks',
@@ -102,29 +98,16 @@ export class TasksComponent implements OnInit {
   }
 
   private changeTasksOrder(previousIndex: number, currentIndex: number){
-    const tasksToUpdate = this.orderController.move(previousIndex, currentIndex, this.model.getTasks());
-    this.updateTasks(tasksToUpdate).then(()=>{
-      // TODO: sprawdzić, czy to jest ok
-      this.updateTasksInView(tasksToUpdate);
+    // TODO: tutaj chyba powinny być chyba filtrowane
+    const previousTask = this.model.getTasks()[previousIndex];
+    const currentTask = this.model.getTasks()[currentIndex];
+    DataService.getStoreManager().getTaskStore().move(previousTask, currentTask).then(updatedTask=>{
+      this.updateTasksInView(updatedTask);
     });
-  }
-
-  private updateTasks(tasks:Task[]){
-     const promises = [];
-     tasks.forEach(task=>{
-       promises.push(this.updateTask(task));
-     })
-     return Promise.all(promises);
   }
 
   private updateTasksInView(tasks:Task[]){
     this.model.updateTasks(tasks);
-  }
-
-  private updateTask(task:Task){
-    DataService.getStoreManager().getTaskStore().updateTask(task).then(updatedTask=>{
-      // TODO: można zrobić jakieś działania po zaktualizowaniu zadań albo wyświetlić komunikat
-    });
   }
 
   public openProject(project:Project):void{

@@ -106,4 +106,12 @@ export class KanbanTask extends OrderableItem{
           this.taskId = task.getId();
         }
     }
+
+    public getContainerId():number{
+      return this.getColumnId();
+    }
+
+    public setContainerId(id: number):void{
+      this.setColumnId(id);
+    }
 }

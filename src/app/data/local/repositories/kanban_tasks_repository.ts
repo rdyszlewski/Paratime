@@ -1,16 +1,18 @@
 import { IKanbanTasksRepository } from 'app/data/common/repositories/kanban_tasks_repository';
 import { KanbanTask } from 'app/models/kanban';
-import { Position } from 'app/models/orderable.item';
+import { OrderRepository } from 'app/data/common/repositories/orderable.repository';
 
 export class LocalKanbanTasksRepository implements IKanbanTasksRepository{
 
     private table: Dexie.Table<KanbanTask, number>;
+    private orderRepository: OrderRepository<KanbanTask>;
 
     constructor(table: Dexie.Table<KanbanTask, number>){
         this.table = table;
+        this.orderRepository = new OrderRepository(table, "columnId");
     }
 
-    public findTaskById(id: number): Promise<KanbanTask>{
+    public findById(id: number): Promise<KanbanTask>{
         return this.table.get(id);
     }
 
@@ -22,19 +24,23 @@ export class LocalKanbanTasksRepository implements IKanbanTasksRepository{
         return this.table.where("columnId").equals(columnId).toArray();
     }
 
-    public findLastTask(columnId: number): Promise<KanbanTask> {
-        return this.table.where({"columnId":columnId, "successor": -1}).first();
+    public findLast(columnId: number): Promise<KanbanTask> {
+        return this.orderRepository.findLast(columnId);
     }
 
-    public findFirstTask(columnId: number): Promise<KanbanTask> {
-      return this.table.where({"columnId":columnId, "position": Position.HEAD}).first();
+    public findFirst(columnId: number): Promise<KanbanTask> {
+      return this.orderRepository.findFirst(columnId);
+    }
+
+    public findBySuccessor(successorId: number):Promise<KanbanTask>{
+      return this.orderRepository.findBySuccessor(successorId);
     }
 
     public insertTask(task: KanbanTask): Promise<number> {
         return this.table.add(task);
     }
 
-    public updateTask(task: KanbanTask): Promise<number> {
+    public update(task: KanbanTask): Promise<number> {
         return this.table.update(task.getId(), task);
     }
 

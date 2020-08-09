@@ -2,8 +2,7 @@ import { Task } from 'app/models/task';
 import { Project } from 'app/models/project';
 import { FilteredList } from 'app/common/filter/filtered_list';
 import { OrderedList } from 'app/common/order/ordered.list';
-import { TasksMode } from 'app/services/app/app.service';
-import { TaskType } from './tasks.component';
+import { TaskType } from './task.type';
 
 export class TasksModel{
 

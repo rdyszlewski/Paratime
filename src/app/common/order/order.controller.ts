@@ -6,23 +6,37 @@ export class OrderController<T extends OrderableItem>{
     public move(previousIndex: number, currentIndex: number, items:T[]):T[]{
         const toUpdate = [];
 
-        const firstItem = items[Math.min(previousIndex, currentIndex)];
-        const secondItem = items[Math.max(previousIndex, currentIndex)];
+        // const firstItem = items[Math.min(previousIndex, currentIndex)];
+        // const secondItem = items[Math.max(previousIndex, currentIndex)];
+        const previousItem = items[previousIndex];
+        const currentItem = items[currentIndex];
+        const firstItem = previousItem.getSuccessorId() == currentItem.getId()? previousItem: currentItem;
+        const secondItem = previousItem.getSuccessorId() == currentItem.getId()? currentItem: previousItem;
         const prevFirst = this.findItemBySuccessor(firstItem.getId(), items);
         const prevSecond = this.findItemBySuccessor(secondItem.getId(), items);
+
+        const secondItemSuccessor = secondItem.getSuccessorId();
+        secondItem.setSuccessorId(firstItem.getId());
+        secondItem.setPosition(firstItem.getPosition());
+        // const secondItem = items[Math.max(previousIndex, currentIndex)];
+        toUpdate.push(secondItem);
 
         if(prevFirst){
           prevFirst.setSuccessorId(secondItem.getId());
           toUpdate.push(prevFirst);
         }
         if(prevSecond){
-          prevSecond.setSuccessorId(secondItem.getSuccessorId());
+          prevSecond.setSuccessorId(secondItemSuccessor);
+          if(prevSecond==firstItem){
+            console.log("HAHAHAHHAH");
+            prevSecond.setPosition(Position.NORMAL);
+          }
           toUpdate.push(prevSecond);
         }
-        secondItem.setSuccessorId(firstItem.getId());
-        toUpdate.push(secondItem);
+
+
         return toUpdate;
-    }
+      }
 
     private findItemBySuccessor(successorId, items:T[]):T{
       return items.find(x=>x.getSuccessorId()==successorId);

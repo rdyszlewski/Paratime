@@ -46,7 +46,7 @@ export class KanbanStore{
     }
 
     private fillKanbanTask(kanbanTask: KanbanTask): Promise<KanbanTask>{
-        return this.taskStore.getTaskById(kanbanTask.getTaskId()).then(task=>{
+        return this.taskStore.getById(kanbanTask.getTaskId()).then(task=>{
             kanbanTask.setTask(task);
             return Promise.resolve(kanbanTask);
         })
@@ -105,7 +105,7 @@ export class KanbanStore{
     }
 
     public getKanbanTaskById(id: number): Promise<KanbanTask>{
-        return this.kanbanTasksRepository.findTaskById(id).then(kanbanTask=>{
+        return this.kanbanTasksRepository.findById(id).then(kanbanTask=>{
             return this.fillKanbanTask(kanbanTask);
         })
     }
@@ -169,15 +169,15 @@ export class KanbanStore{
     }
 
     public getLastKanbanTask(columnId:number){
-        return this.kanbanTasksRepository.findLastTask(columnId);
+        return this.kanbanTasksRepository.findLast(columnId);
     }
 
     public getFirstKanbanTask(columnId: number){
-        return this.kanbanTasksRepository.findFirstTask(columnId);
+        return this.kanbanTasksRepository.findFirst(columnId);
     }
 
     public updateKanbanTask(kanbanTask: KanbanTask): Promise<KanbanTask>{
-        return this.kanbanTasksRepository.updateTask(kanbanTask).then(result=>{
+        return this.kanbanTasksRepository.update(kanbanTask).then(result=>{
             return Promise.resolve(kanbanTask);
         });
     }

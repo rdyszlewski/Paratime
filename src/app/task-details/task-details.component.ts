@@ -104,7 +104,7 @@ export class TaskDetailsComponent implements OnInit {
 
   public updateTask(){
     if(this.validator.isValid()){
-      DataService.getStoreManager().getTaskStore().updateTask(this.model.getTask()).then(()=>{});
+      DataService.getStoreManager().getTaskStore().update(this.model.getTask()).then(()=>{});
     }
   }
 

@@ -201,4 +201,13 @@ export class Task extends OrderableItem implements IFilterable{
     public setProjectStageID(id:number){
         this.projectStageID = id;
     }
+
+    public getContainerId():number{
+      return this.getProjectID();
+    }
+
+    public setContainerId(id:number):void{
+      // TODO: sprawdzić, czy ustawianie tylko id czegoś nie popsuje
+      this.setProjectID(id);
+    }
 }

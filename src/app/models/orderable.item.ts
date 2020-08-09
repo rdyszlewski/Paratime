@@ -1,4 +1,5 @@
-export class OrderableItem{
+export abstract class OrderableItem{
+  // TODO: chyba lepiej będzie to przenieść gdzies do zarzadzania bazą
   protected id: number;
   protected successor: number = -1;
   protected position: Position = Position.NORMAL;
@@ -30,6 +31,9 @@ export class OrderableItem{
   public isHead(){
     return this.position == Position.HEAD;
   }
+
+  public abstract getContainerId():number;
+  public abstract setContainerId(id:number):void;
 }
 
 export enum Position{

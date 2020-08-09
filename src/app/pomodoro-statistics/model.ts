@@ -27,7 +27,7 @@ export class PomodoroStatisticsModel{
 }
 
 export class TaskEntry{
-    
+
     private task: Task;
     private time: number;
     private intervals: number;
@@ -62,7 +62,7 @@ export class ProjectEntry{
     private project: Project;
     private time: number;
     private intervals: number;
-    
+
     public getProject():Project{
         return this.project;
     }
@@ -127,7 +127,7 @@ export class TaskEntryCreator{
     }
 
     private static getTask(taskId:number):Promise<Task>{
-        return DataService.getStoreManager().getTaskStore().getTaskById(taskId);
+        return DataService.getStoreManager().getTaskStore().getById(taskId);
     }
 
     private static createTaskEntry(task:Task, list:PomodoroHistory[]){

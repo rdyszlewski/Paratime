@@ -37,7 +37,6 @@ export class TaskAddingController{
         const task = this.prepareTaskToInsert();
         const data = new InsertTaskData(task, null, this.mainModel.getProject().getId());
         DataService.getStoreManager().getTaskStore().createTask(data).then(result=>{
-
             this.updateViewAfterInserting(result);
         });
     }

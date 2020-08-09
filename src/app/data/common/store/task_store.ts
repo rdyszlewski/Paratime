@@ -13,10 +13,12 @@ import { InsertKanbanTaskResult } from '../models/insert.kanban.task.result';
 import { Position } from 'app/models/orderable.item';
 import { Status } from 'app/models/status';
 import { OrderValues } from 'app/common/valuse';
+import { IOrderableStore } from './orderable.store';
+import { StoreOrderController } from '../order/order.controller';
 
 
 // TODO: przydałyby się do tego wszystkiego transakcje.
-export class TaskStore{
+export class TaskStore implements IOrderableStore<Task>{
 
     private taskRepository: ITaskRepository;
     private subtaskStore: SubtaskStore;
@@ -24,6 +26,8 @@ export class TaskStore{
     private projectRepository: IProjectRepository;
     private stageStore: StageStore;
     private kanbanStore: KanbanStore;
+
+    private orderController: StoreOrderController<Task>;
 
     constructor(taskRepository: ITaskRepository, subtaskStore: SubtaskStore, labelStore:LabelStore, projectRepository:IProjectRepository, stageStore:StageStore,
         kanbanStore: KanbanStore){
@@ -34,10 +38,12 @@ export class TaskStore{
         this.projectRepository = projectRepository;
         this.stageStore = stageStore;
         this.kanbanStore = kanbanStore;
+
+        this.orderController = new StoreOrderController(taskRepository);
     }
 
-    public getTaskById(id:number):Promise<Task>{
-        return this.taskRepository.findTaskById(id).then(task=>{
+    public getById(id:number):Promise<Task>{
+        return this.taskRepository.findById(id).then(task=>{
             if(task){
                 return this.setTaskData(task);
             }
@@ -119,51 +125,44 @@ export class TaskStore{
         });
     }
 
-    public createTask(data: InsertTaskData): Promise<InsertTaskResult>{
-        // TODO: to odnosi się do wstawiania na koniec
-        // TODO: spróbować to jakoś czytelniej napisać
-        const result = new InsertTaskResult();
-        const task = data.task;
-        return this.taskRepository.findLastTask(data.projectId).then(lastTask=>{
-          task.setSuccessorId(-1);
-          return this.taskRepository.findFirstTask(data.projectId).then(firstTask=>{
-            if(!firstTask){
-              // TODO: to też przenieść do klasy, która zarządza kolejnościa
-              task.setPosition(Position.HEAD);
-            }
-            return this.insertTask(task).then(insertedTask=>{
-              const insertedId = insertedTask.getId();
-              result.insertedTask = insertedTask;
-              const promises = [];
-              // TODO: sprawdzić, czy to index jest ok
-              promises.concat(this.insertSubtasks(task, insertedId));
-              promises.concat(this.insertTasksLabels(task, insertedId));
-              data.task = insertedTask; // TODO: sprawdzić, czy działa, ewentualnie zmienić miejsce
-              // TODO: sprawdzić, czy to będzie dobrze działać
-              promises.push(this.createKanbanTask(data).then(kanbanTaskResult=>{
-                result.insertedKanbanTask = kanbanTaskResult.insertedKanbanTask;
-                result.updatedKanbanTasks = kanbanTaskResult.updatedKanbanTask;
-              }));
+    // TODO: to nie powinno być publiczne. Wymyślić jakiś sposób, aby to zmienić
+    public  insert(task: Task, beforeTask:Task, currentContainerId: number): Promise<Task[]>{
+      return this.orderController.insert(task, beforeTask, currentContainerId);
+    }
 
-              if(lastTask){
-                  // TODO: przenieść to do jakieś specjalnej metody, która zarządza kolejnością
-                  lastTask.setSuccessorId(insertedId);
-                  promises.push(this.updateTask(lastTask));
-                  result.updatedTasks.push(lastTask);
-              }
-              // TODO: przetestować, czy wykonanie ostaniego zdania
-              return Promise.all(promises).then(()=>{
-                return Promise.resolve(result);
-              });
-            })
-          })
+    public createTask(data: InsertTaskData): Promise<InsertTaskResult>{
+        return this.insertTask(data.task).then(insertedTask=>{
+          return this.insertTaskProperties(data, insertedTask);
         });
+    }
+
+    private insertTaskProperties(data:InsertTaskData, insertedTask: Task): Promise<InsertTaskResult>{
+      const result = new InsertTaskResult();
+
+      result.insertedTask = insertedTask;
+      const promises = [
+        this.insertSubtasks(data.task, insertedTask.getId()),
+        this.insertTasksLabels(data.task, insertedTask.getId()),
+        this.createKanbanTask(data).then(kanbanTaskResult=>{
+          result.insertedKanbanTask = kanbanTaskResult.insertedKanbanTask;
+          result.updatedKanbanTasks = kanbanTaskResult.updatedKanbanTask;
+          return Promise.resolve(null);
+        }),
+        this.insert(insertedTask, null, insertedTask.getContainerId()).then(updatedTasks=>{
+          result.updatedTasks = updatedTasks;
+          return Promise.resolve(null);
+        })
+      ];
+
+      return Promise.all(promises).then(()=>{
+        return Promise.resolve(result)
+      });
     }
 
     private insertTask(task:Task){
       // TODO: tutaj chyba powinno być wstawianie kanbanów
       return this.taskRepository.insertTask(task).then(insertedId=>{
-        return this.taskRepository.findTaskById(insertedId);
+        return this.taskRepository.findById(insertedId);
       });
     }
 
@@ -192,22 +191,37 @@ export class TaskStore{
         return this.kanbanStore.createKanbanTask(data);
     }
 
-    public updateTask(task:Task):Promise<Task>{
-        // TODO: tutaj chyba nie trzeba aktualizować tego oddzielnie
-        return this.taskRepository.updateTask(task).then(result=>{
+    public update(task:Task):Promise<Task>{
+        return this.taskRepository.update(task).then(result=>{
             return Promise.resolve(task);
         });
     }
 
-    public removeTask(taskId:number):Promise<void>{
-      // TODO: w tym miejscu będzie trzeba zrobić ustawianie kolejności. Będzie trzeba utworzyć jakiś wspólny iterfejs, aby nie powtarzać kodu
-      const promises = [];
-      promises.push(this.subtaskStore.removeSubtaskFromTask(taskId));
-      promises.push(this.labelStore.removeTaskLabels(taskId));
-      promises.push(this.kanbanStore.removeKanbanTask(taskId)); // TODO: sprawdzić, czy id jest ok
-      return Promise.all(promises).then(()=>{
-        return this.taskRepository.removeTask(taskId);
-      });
+    public removeTask(taskId:number):Promise<Task[]>{
+      return this.taskRepository.findById(taskId).then(task=>{
+        let updatedItems = [];
+        const promises = [
+          this.subtaskStore.removeSubtaskFromTask(taskId),
+          this.labelStore.removeTaskLabels(taskId),
+          this.kanbanStore.removeKanbanTask(taskId),
+          this.remove(task).then(tasks=>{
+            updatedItems = tasks;
+            return Promise.resolve(null);
+          })
+        ];
+
+        return Promise.all(promises).then(()=>{
+          return this.taskRepository.removeTask(taskId).then(()=>{
+            console.log(updatedItems);;
+            return Promise.resolve(updatedItems);
+          })
+        });
+      })
+    }
+
+    // TODO: to nie powinno być publiczne. Znaleźć jakiś spsoób, żeby to zmienić
+    public remove(task:Task):Promise<Task[]>{
+      return this.orderController.remove(task);
     }
 
     public changeStatus(task:Task, status:Status):Promise<Task[]>{
@@ -226,10 +240,19 @@ export class TaskStore{
 
         const promises = [];
         toUpdate.forEach(task=>{
-          promises.push(this.updateTask(task));
+          promises.push(this.update(task));
         })
 
         return Promise.all(promises);
       });
     }
+
+    public move(previousItem: Task, currentItem: Task): Promise<Task[]> {
+      return this.orderController.move(previousItem, currentItem);
+    }
+
+    public changeContainer(item: any, currentTask: Task): Promise<Task[]> {
+      return this.orderController.changeContainer(item, currentTask);
+    }
+
 }

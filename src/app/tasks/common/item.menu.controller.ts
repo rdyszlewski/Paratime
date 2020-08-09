@@ -53,14 +53,20 @@ export class ItemMenuController{
     private removeTask(task:Task):void{
       // TODO: sprawdzi, czy aktualizują się odpowiednie elementy. Można skorzystać
       // TODO: tą część będzie trzeba przenieść w inne miejsce, tak, żeby nie było trzeba powtarzać kodu dla innych elementów
-      const tasksToUpdate = this.orderController.removeItem(task, this.model.getTasks());
-      this.updateTasks(tasksToUpdate).then(()=>{
-        DataService.getStoreManager().getTaskStore().removeTask(task.getId()).then(()=>{
 
-          this.model.removeTask(this.model.getTaskWithOpenMenu());
-            this.removeEvent.emit(task.getId());
-        });
-      })
+      // const tasksToUpdate = this.orderController.removeItem(task, this.model.getTasks());
+      // this.updateTasks(tasksToUpdate).then(()=>{
+      //   DataService.getStoreManager().getTaskStore().removeTask(task.getId()).then(()=>{
+
+      //     this.model.removeTask(this.model.getTaskWithOpenMenu());
+      //       this.removeEvent.emit(task.getId());
+      //   });
+      // })
+      DataService.getStoreManager().getTaskStore().removeTask(task.getId()).then(updatedTasks=>{
+        this.model.removeTask(task);
+        this.model.updateTasks(updatedTasks);
+        this.removeEvent.emit(task.getId());
+      });
     }
 
     // TODO: oprznieść to w inne miejsce, tak, żeby wszystkie elementy które mają kolejnośc korzystały z tego samego kodu
@@ -68,7 +74,7 @@ export class ItemMenuController{
     // TODO: napisać i wykorzystać metodę z bazy danych
     const promises = [];
     tasks.forEach(task=>{
-      promises.push(DataService.getStoreManager().getTaskStore().updateTask(task));
+      promises.push(DataService.getStoreManager().getTaskStore().update(task));
     });
     return Promise.all(promises);
   }

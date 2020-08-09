@@ -11,7 +11,7 @@ export class TaskItemController{
     }
 
     private updateTask(task:Task){
-        DataService.getStoreManager().getTaskStore().updateTask(task);
+        DataService.getStoreManager().getTaskStore().update(task);
     }
 
     public isTaskDone(task:Task):boolean{
@@ -19,10 +19,10 @@ export class TaskItemController{
           return true;
         } else {
           // TODO: pomyśleć jeszcze nad tym
-          return false; 
+          return false;
         }
       }
-    
+
       public setTaskStatus(task:Task, checked:boolean){
         // TODO: opracować zmianę na wszystkie stany
         if(checked){
@@ -32,10 +32,10 @@ export class TaskItemController{
         }
         this.updateTask(task);
       }
-    
+
       // TODO: zmienić tę nazwę
       public checkBoxClick(event: MouseEvent){
         event.stopPropagation();
       }
-    
+
 }
