@@ -5,7 +5,8 @@ import { LabelStore } from './store/label_store';
 import { IDataSource } from './source';
 import { StageStore } from './store/stage_store';
 import { PomodoroStore } from './store/pomodoro_store';
-import { KanbanStore } from './store/kanban_store';
+import { KanbanTaskStore } from './store/kanban.task.store';
+import { KanbanColumnStore } from './store/kanban.column.store';
 
 export class StoreManager{
 
@@ -15,18 +16,21 @@ export class StoreManager{
     private labelStore: LabelStore;
     private stageStore: StageStore;
     private pomodoroStore: PomodoroStore;
-    private kanbanStore: KanbanStore;
+    private kanbanTaskStore: KanbanTaskStore;
+    private kanbanColumnStore: KanbanColumnStore;
 
     constructor(dataSource: IDataSource){
         this.labelStore = new LabelStore(dataSource.getLabelRepository(), dataSource.getTaskLabelsRepository());
         this.subtaskStore = new SubtaskStore(dataSource.getSubtaskRepository());
         this.stageStore = new StageStore(dataSource.getStageRepository());
-        this.kanbanStore = new KanbanStore(dataSource.getKanbanColumnsRepository(), dataSource.getKanbanTasksRepository());
-        this.taskStore = new TaskStore(dataSource.getTaskRepository(), this.subtaskStore, this.labelStore, dataSource.getProjectRepository(), this.stageStore, this.kanbanStore);
+        this.kanbanTaskStore = new KanbanTaskStore(dataSource.getKanbanTasksRepository(), dataSource.getKanbanColumnsRepository());
+        this.kanbanColumnStore = new KanbanColumnStore(dataSource.getKanbanColumnsRepository(), this.kanbanTaskStore)
+        this.taskStore = new TaskStore(dataSource.getTaskRepository(), this.subtaskStore, this.labelStore, dataSource.getProjectRepository(), this.stageStore, this.kanbanTaskStore);
         // TODO: uważać w tym miejscu. Może nastąpić problem z inicjalizacją
-        this.projectStore = new ProjectStore(dataSource.getProjectRepository(), this.taskStore, this.stageStore, this.kanbanStore);
+        this.projectStore = new ProjectStore(dataSource.getProjectRepository(), this.taskStore, this.stageStore, this.kanbanColumnStore);
         this.pomodoroStore = new PomodoroStore(dataSource.getPomodoroRepository());
-        this.kanbanStore.setTaskStore(this.taskStore);
+
+        this.kanbanTaskStore.setTaskStore(this.taskStore);
     }
 
     public getProjectStore():ProjectStore{
@@ -53,7 +57,11 @@ export class StoreManager{
         return this.pomodoroStore;
     }
 
-    public getKanbanStore():KanbanStore{
-        return this.kanbanStore;
+    public getKanbanTaskStore():KanbanTaskStore{
+      return this.kanbanTaskStore;
+    }
+
+    public getKanbanColumnStore(): KanbanColumnStore{
+      return this.kanbanColumnStore;
     }
 }

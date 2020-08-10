@@ -4,7 +4,6 @@ import { SubtaskStore } from './subtask_store';
 import { LabelStore } from './label_store';
 import { IProjectRepository } from '../repositories/project_repository';
 import { StageStore } from './stage_store';
-import { KanbanStore } from './kanban_store';
 import { Subtask } from 'app/models/subtask';
 import { LabelsTask } from '../models';
 import { InsertTaskData } from '../models/insert.task.data';
@@ -15,6 +14,7 @@ import { Status } from 'app/models/status';
 import { OrderValues } from 'app/common/valuse';
 import { IOrderableStore } from './orderable.store';
 import { StoreOrderController } from '../order/order.controller';
+import { KanbanTaskStore } from './kanban.task.store';
 
 
 // TODO: przydałyby się do tego wszystkiego transakcje.
@@ -25,19 +25,19 @@ export class TaskStore implements IOrderableStore<Task>{
     private labelStore: LabelStore;
     private projectRepository: IProjectRepository;
     private stageStore: StageStore;
-    private kanbanStore: KanbanStore;
+    private kanbanTaskStore: KanbanTaskStore;
 
     private orderController: StoreOrderController<Task>;
 
     constructor(taskRepository: ITaskRepository, subtaskStore: SubtaskStore, labelStore:LabelStore, projectRepository:IProjectRepository, stageStore:StageStore,
-        kanbanStore: KanbanStore){
+        kanbanTaskStore: KanbanTaskStore){
         this.taskRepository = taskRepository;
         this.subtaskStore = subtaskStore;
         this.labelStore = labelStore;
         // TODO: przemyśleć, czy na pewno tak to powinno wyglądać
         this.projectRepository = projectRepository;
         this.stageStore = stageStore;
-        this.kanbanStore = kanbanStore;
+        this.kanbanTaskStore = kanbanTaskStore;
 
         this.orderController = new StoreOrderController(taskRepository);
     }
@@ -138,9 +138,13 @@ export class TaskStore implements IOrderableStore<Task>{
 
     private insertTaskProperties(data:InsertTaskData, insertedTask: Task): Promise<InsertTaskResult>{
       const result = new InsertTaskResult();
-
+      console.log("insertTaskProperties");
+      console.log(data);
+      console.log(insertedTask);
       result.insertedTask = insertedTask;
+      data.task = insertedTask; // TODO: wyjście tymczasowe
       const promises = [
+        // TODO: sprawdzić, czy data.task ma sens. Prawdopodobnie nie ma
         this.insertSubtasks(data.task, insertedTask.getId()),
         this.insertTasksLabels(data.task, insertedTask.getId()),
         this.createKanbanTask(data).then(kanbanTaskResult=>{
@@ -188,7 +192,7 @@ export class TaskStore implements IOrderableStore<Task>{
     }
 
     private createKanbanTask(data: InsertTaskData): Promise<InsertKanbanTaskResult>{
-        return this.kanbanStore.createKanbanTask(data);
+        return this.kanbanTaskStore.create(data);
     }
 
     public update(task:Task):Promise<Task>{
@@ -203,7 +207,7 @@ export class TaskStore implements IOrderableStore<Task>{
         const promises = [
           this.subtaskStore.removeSubtaskFromTask(taskId),
           this.labelStore.removeTaskLabels(taskId),
-          this.kanbanStore.removeKanbanTask(taskId),
+          this.kanbanTaskStore.removeTask(taskId),
           this.remove(task).then(tasks=>{
             updatedItems = tasks;
             return Promise.resolve(null);
@@ -251,8 +255,8 @@ export class TaskStore implements IOrderableStore<Task>{
       return this.orderController.move(previousItem, currentItem);
     }
 
-    public changeContainer(item: any, currentTask: Task): Promise<Task[]> {
-      return this.orderController.changeContainer(item, currentTask);
+    public changeContainer(item: any, currentTask: Task, currentContainerId: number): Promise<Task[]> {
+      return this.orderController.changeContainer(item, currentTask, currentContainerId);
     }
 
 }

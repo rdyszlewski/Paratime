@@ -2,24 +2,23 @@ import { Project } from 'app/models/project';
 import { IProjectRepository } from '../repositories/project_repository';
 import { TaskStore } from './task_store';
 import { StageStore } from './stage_store';
-import { KanbanStore } from './kanban_store';
 import { KanbanColumn } from 'app/models/kanban';
-import { promise } from 'protractor';
 import { Task } from 'app/models/task';
 import { InsertTaskData } from '../models/insert.task.data';
+import { KanbanColumnStore } from './kanban.column.store';
 
 export class ProjectStore{
 
     private projectRepository: IProjectRepository;
     private taskStore: TaskStore;
     private stageStore: StageStore;
-    private kanbanStore: KanbanStore;
+    private kanbanColumnStore: KanbanColumnStore;
 
-    constructor(projectRepository: IProjectRepository, taskStore: TaskStore, stageStore: StageStore, kanbanStore: KanbanStore){
+    constructor(projectRepository: IProjectRepository, taskStore: TaskStore, stageStore: StageStore, kanbanColumnStore: KanbanColumnStore){
         this.projectRepository = projectRepository;
         this.taskStore = taskStore;
         this.stageStore = stageStore;
-        this.kanbanStore = kanbanStore;
+        this.kanbanColumnStore = kanbanColumnStore;
     }
 
     // TODO: postarać się, żeby potrzebne elementy były wstrzykiwane
@@ -39,7 +38,7 @@ export class ProjectStore{
     // column.setName("-X-DEFAULT-X-");
     column.setDefault(true);
     column.setProjectId(insertedId);
-    return this.kanbanStore.createColumn(column);
+    return this.kanbanColumnStore.create(column);
   }
 
   private createFirstTask(projectId: number, column: KanbanColumn){

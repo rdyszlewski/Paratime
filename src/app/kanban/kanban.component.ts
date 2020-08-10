@@ -46,8 +46,9 @@ export class KanbanComponent implements OnInit {
     this.model.clearColumns();
     this.model.setProject(project);
     // TPDP: przyjrzeć się temu. Pomyśleć, jak to można dobrze zrobić
-    DataService.getStoreManager().getKanbanStore().getColumnsByProject(project.getId()).then(columns=>{
+    DataService.getStoreManager().getKanbanColumnStore().getByProject(project.getId()).then(columns=>{
       // TODO: dodać metodę, która od razu doda wszystkie potrzebne elementy
+      console.log(columns);
       columns.forEach(column=>{
         this.model.addColumn(column);
       })
@@ -91,7 +92,7 @@ export class KanbanComponent implements OnInit {
   private updateKanbanTasks(toUpdate: any[]) {
     const promises = [];
     toUpdate.forEach(task => {
-      promises.push(DataService.getStoreManager().getKanbanStore().updateKanbanTask(task));
+      promises.push(DataService.getStoreManager().getKanbanTaskStore().update(task));
     });
     Promise.all(promises).then(() => {
     });
@@ -108,7 +109,7 @@ export class KanbanComponent implements OnInit {
      kanbanColumn.setName(this.model.getColumnName());
      kanbanColumn.setPrevColumnId(this.model.getLastColumn().getId());
 
-     DataService.getStoreManager().getKanbanStore().createColumn(kanbanColumn).then(insertedColumn=>{
+     DataService.getStoreManager().getKanbanColumnStore().create(kanbanColumn).then(insertedColumn=>{
         this.model.addColumn(insertedColumn);
      });
   }

@@ -62,8 +62,7 @@ export class StoreOrderController<T extends OrderableItem> {
   }
 
 
-  public changeContainer(item: T, currentItem: T): Promise<T[]> {
-    const currentContainerId = currentItem.getContainerId();
+  public changeContainer(item: T, currentItem: T, currentContainerId: number): Promise<T[]> {
     item.setContainerId(currentContainerId);
 
     const promises = [

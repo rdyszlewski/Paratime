@@ -24,8 +24,8 @@ export class LocalKanbanTasksRepository implements IKanbanTasksRepository{
         return this.table.where("columnId").equals(columnId).toArray();
     }
 
-    public findLast(columnId: number): Promise<KanbanTask> {
-        return this.orderRepository.findLast(columnId);
+    public findLast(columnId: number, exceptItem:number): Promise<KanbanTask> {
+        return this.orderRepository.findLast(columnId, exceptItem);
     }
 
     public findFirst(columnId: number): Promise<KanbanTask> {
