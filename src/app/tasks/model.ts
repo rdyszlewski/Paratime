@@ -1,16 +1,16 @@
 import { Task } from 'app/models/task';
 import { Project } from 'app/models/project';
-import { FilteredList } from 'app/common/filter/filtered_list';
-import { OrderedList } from 'app/common/order/ordered.list';
 import { TaskType } from './task.type';
+import { TasksList } from 'app/common/lists/tasks.list';
 
 export class TasksModel{
 
     private project: Project = new Project();
-    private filteredList: FilteredList<Task> = new FilteredList();
+    // private filteredList: FilteredList<Task> = new FilteredList();
     private taskWithOpenMenu: Task;
     // TODO: przemysleć to
-    private tasks: OrderedList<Task> = new OrderedList();
+    // private tasks: OrderedList<Task> = new OrderedList();
+    private tasks: TasksList<Task> = new TasksList()
     private taskType: TaskType = TaskType.ACTIVE;
 
 
@@ -26,20 +26,14 @@ export class TasksModel{
 
     public setTasks(tasks:Task[]){
         this.tasks.setItems(tasks);
-        this.updateFilteredList();
     }
 
     public setProject(project:Project){
         this.project = project;
     }
 
-    // TODO: może zmienić tę motodę
-    private updateFilteredList(){
-      this.filteredList.setSource(this.tasks.getItems());
-    }
-
     public getTasks():Task[]{
-        return this.filteredList.getElements();
+        return this.tasks.getItems();
     }
 
     public addTask(task:Task){
@@ -51,20 +45,15 @@ export class TasksModel{
       this.tasks.updateItems(tasks);
     }
 
-    public refresh(){
-      this.filteredList.refresh();
-    }
-
     public filterTasks(filter:string):void{
-        this.filteredList.filter(filter);
+        this.tasks.filter(filter);
     }
 
     public removeTask(task:Task){
 
         this.project.removeTask(task);
         this.tasks.removeItem(task);
-        // this.updateFilteredList();
-        this.refresh();
+
     }
 
     public getTaskWithOpenMenu():Task{
@@ -80,8 +69,7 @@ export class TasksModel{
     }
 
     public getTaskByIndex(index: number): Task{
-        const task = this.filteredList.getElements()[index];
-        return task;
+        return this.tasks.getItemByIndex(index);
     }
 
     public setTaskType(taskType: TaskType){

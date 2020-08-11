@@ -1,18 +1,18 @@
 import { KanbanColumn, KanbanTask } from 'app/models/kanban';
 import { Project } from 'app/models/project';
-import { TaskItemOrderer } from 'app/common/order/orderer';
+import { TasksList } from 'app/common/lists/tasks.list';
 
 export class KanbanModel{
     // TODO: do tej klasy powinniśmy jeszcze dodać
 
     private defaultColumn: KanbanColumn = new KanbanColumn();
     private columns: KanbanColumn[] = [];
+    private tasks: Map<number, TasksList<KanbanTask>> = new Map();
     private project: Project;
     private columnName: string;
 
     private newTaskName: string;
     private columnAddingOpen: KanbanColumn;
-    private taskOrderer: TaskItemOrderer<KanbanTask> = new TaskItemOrderer();
     // private columns: Map<string, Task[]> = new Map();
 
     constructor(){
@@ -43,19 +43,34 @@ export class KanbanModel{
         this.project = project;
     }
 
+    public getTasks(column: KanbanColumn){
+      const tasks = this.tasks.get(column.getId());
+      if(tasks){
+        return tasks.getItems();
+      }
+      return [];
+    }
+
+    public updateTasks(tasks: KanbanTask[], columnId: number){
+      this.tasks.get(columnId).updateItems(tasks);
+    }
+
+    public getTaskByIndex(index:number, columnId:number){
+      return this.tasks.get(columnId).getItemByIndex(index);
+    }
+
     public addColumn(kanbanColumn: KanbanColumn){
-        // TODO: w tym miejscu zrobić sortowanie kolumn
-        // TODO: sortowanie zadań, później gdzieś to przełożyć
-        const sortedTasks = this.taskOrderer.getSortedItems(kanbanColumn.getKanbanTasks());
-        kanbanColumn.setKanbanTasks(sortedTasks);
         if(kanbanColumn.isDefault()){
-            this.defaultColumn = kanbanColumn;
-        } else {
-            this.columns.push(kanbanColumn);
+              this.defaultColumn = kanbanColumn;
+          } else {
+              this.columns.push(kanbanColumn);
         }
+        this.tasks.set(kanbanColumn.getId(), new TasksList());
+        this.tasks.get(kanbanColumn.getId()).setItems(kanbanColumn.getKanbanTasks());
     }
 
     public getColumnsNames():string[]{
+      // TODO: przyjrzeć się temu
         const names = [];
         this.columns.forEach(column=>{
             if(column.getId()){

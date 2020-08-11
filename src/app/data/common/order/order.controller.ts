@@ -1,6 +1,6 @@
 import { OrderableItem, Position } from 'app/models/orderable.item';
 import { IOrderableRepository } from '../repositories/orderable.repository';
-
+import { OrderValues } from 'app/common/valuse';
 
 export class StoreOrderController<T extends OrderableItem> {
 
@@ -10,42 +10,44 @@ export class StoreOrderController<T extends OrderableItem> {
     this.repository = repository;
   }
 
-  public move(previousItem: T, currentItem: T): Promise<T[]> {
-    const isPrevSuccessorCurrent = previousItem.getSuccessorId() == currentItem.getId();
-    const firstItem = isPrevSuccessorCurrent? previousItem : currentItem;
-    const secondItem = isPrevSuccessorCurrent? currentItem: previousItem;
-
-    return this.getPreviousItems(firstItem, secondItem).then(previousItems=>{
-      const prevFirst = previousItems[0];
-      const prevSecond = previousItems[1];
-
-      const secondItemSuccessor = secondItem.getSuccessorId();
-      secondItem.setSuccessorId(firstItem.getId());
-      secondItem.setPosition(firstItem.getPosition());
-
-      const toUpdate = [];
-      toUpdate.push(secondItem);
-
-      if(firstItem != prevSecond){
-        firstItem.setPosition(Position.NORMAL);
-        toUpdate.push(firstItem);
-      } else {
-        prevSecond.setPosition(Position.NORMAL);
-      }
-
-      if(prevFirst){
-        prevFirst.setSuccessorId(secondItem.getId());
-        toUpdate.push(prevFirst);
-      }
-
-      if(prevSecond){
-        prevSecond.setSuccessorId(secondItemSuccessor);
-        toUpdate.push(prevSecond);
-      }
-
-      return this.updateItems(toUpdate);
-    })
+  public move(previousItem: T, currentItem: T, moveUp:boolean): Promise<T[]> {
+    return this.remove(previousItem).then(updatedItems1=>{
+      const updatedCurrentItem = updatedItems1.filter(x=>x.getId()==currentItem.getId());
+      let newCurrentItem = updatedCurrentItem.length>0? updatedCurrentItem[0]: currentItem;
+      return this.insertItemToList(previousItem, newCurrentItem, moveUp).then(updatedItems2=>{
+        const result = this.joinItemsToUpdate(updatedItems1, updatedItems2);
+        return Promise.resolve(result);
+      });
+    });
   }
+
+  private insertItemToList(previousItem: T, currentItem: T, moveUp:boolean){
+    let beforeItemPromise:Promise<T>;
+    if(moveUp){
+      beforeItemPromise = Promise.resolve(currentItem);
+    } else {
+      beforeItemPromise = this.repository.findById(currentItem.getSuccessorId());
+    }
+    return beforeItemPromise.then(beforeItem=>{
+      return this.insert(previousItem, beforeItem, previousItem.getContainerId());
+    });
+  }
+
+  private joinItemsToUpdate(items1: T[], items2:T[]){
+    const used = new Set<number>();
+    const toUpdate = [];
+    items2.forEach(item=>{
+      toUpdate.push(item);
+      used.add(item.getId());
+    });
+    items1.forEach(item=>{
+      if(!used.has(item.getId())){
+        toUpdate.push(item);
+      };
+    });
+    return toUpdate;
+  }
+
 
   private updateItems(items:T[]):Promise<T[]>{
     const promises: Promise<number>[] = items.map(item => this.repository.update(item))
@@ -54,47 +56,35 @@ export class StoreOrderController<T extends OrderableItem> {
     });
   }
 
-  private getPreviousItems(firstItem: T, secondItem: T):Promise<T[]>{
-    const promises = [];
-    promises.push(this.repository.findBySuccessor(firstItem.getId()));
-    promises.push(this.repository.findBySuccessor(secondItem.getId()));
-    return Promise.all(promises);
-  }
-
-
   public changeContainer(item: T, currentItem: T, currentContainerId: number): Promise<T[]> {
     item.setContainerId(currentContainerId);
-
-    const promises = [
-      this.remove(item),
-      this.insert(item, currentItem, currentContainerId),
-      this.updateItems([item])
-    ]
-
-    return Promise.all(promises).then(results=>{
-      const updatedItems = [];
-      updatedItems.push.apply(updatedItems, results[0]);
-      updatedItems.push.apply(updatedItems, results[1]);
-      updatedItems.push.apply(updatedItems, results[2]);
-      return Promise.resolve(updatedItems);
-    });
+    let updated = [];
+    return this.remove(item).then(updatedTasks=>{
+      updated = updated.concat(updatedTasks);
+      return this.insert(item, currentItem, currentContainerId).then(updatedTasks=>{
+        updated= updated.concat(updatedTasks);
+        return this.updateItems([item]).then(updatedTasks=>{
+          updated = updated.concat(updatedTasks);
+          return Promise.resolve(updated);
+        })
+      })
+    })
   }
 
   public insert(item: T, currentItem: T, currentContainerId: number): Promise<T[]> {
-    const toUpdatePromise = currentItem?
+    return currentItem?
       this.insertItemBefore(item, currentItem):
       this.insertItemToEnd(item, currentContainerId);
-    return toUpdatePromise.then(items=>{
-      return this.updateItems(items);
-    });
   }
 
   private insertItemBefore(item: T, currentItem: T):Promise<T[]>{
+    // TODO: refaktoryzacja
     const toUpdate = [];
     item.setSuccessorId(currentItem.getId());
     return this.repository.findBySuccessor(currentItem.getId()).then(prevCurrent=>{
       if(prevCurrent){
         prevCurrent.setSuccessorId(item.getId());
+        item.setPosition(Position.NORMAL);
         toUpdate.push(prevCurrent);
       }
       toUpdate.push(item);
@@ -104,7 +94,6 @@ export class StoreOrderController<T extends OrderableItem> {
         item.setPosition(Position.HEAD);
         toUpdate.push(currentItem);
       }
-
       return this.updateItems(toUpdate);
     });
   }
@@ -114,12 +103,14 @@ export class StoreOrderController<T extends OrderableItem> {
     return this.repository.findLast(containerId, item.getId()).then(lastItem=>{
       if(lastItem){
         lastItem.setSuccessorId(item.getId());
+        item.setPosition(Position.NORMAL);
         toUpdate.push(lastItem);
-      } else {
+      } else { // first element
         item.setPosition(Position.HEAD);
-        toUpdate.push(item);
       }
-      return Promise.resolve(toUpdate);
+      item.setSuccessorId(OrderValues.DEFAULT_ORDER);
+      toUpdate.push(item);
+      return this.updateItems(toUpdate);
     });
   }
 

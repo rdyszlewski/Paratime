@@ -17,18 +17,17 @@ export class KanbanColumnStore{
     public getById(columnId: number): Promise<KanbanColumn>{
       return this.kanbanColumnsRepository.findColumnById(columnId).then(column=>{
         // return this.fillKanbanColumn(column);
-        return null;
+        return this.kanbanTaskStore.getByColumn(column.getId()).then(tasks=>{
+          column.setKanbanTasks(tasks);
+          return Promise.resolve(column);
+        });
       });
     }
 
     public getByProject(projectId: number): Promise<KanbanColumn[]>{
       return this.kanbanColumnsRepository.findColumnsByProject(projectId).then(columns=>{
-        console.log("getByProject");
-        console.log(columns);
         const tasksPromise = columns.map(column=>this.kanbanTaskStore.getByColumn(column.getId()).then(tasks=>{
           column.setKanbanTasks(tasks);
-          console.log(column);
-          console.log(tasks);
           return Promise.resolve(column);
         }));
 

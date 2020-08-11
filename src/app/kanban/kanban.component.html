@@ -11,45 +11,45 @@
                     {{column.getName()}}
                 </div>
                 <div class="column-content"  id="{{getModel().getColumnIdText(column)}}"
-                cdkDropList #column.getId().toString()="cdkDropList" 
+                cdkDropList #column.getId().toString()="cdkDropList"
                 [cdkDropListData]="column.getKanbanTasks()"
                 [cdkDropListConnectedTo]="getModel().getColumnsNames()"
                 (cdkDropListDropped)="drop($event)">
-                    <div cdkDrag *ngFor="let kanbanTask of column.getKanbanTasks()"
+                    <div cdkDrag *ngFor="let kanbanTask of getModel().getTasks(column)"
                     class="task-list-item list-item block transparent-border">
                         <ng-container [ngTemplateOutlet]="task_item", [ngTemplateOutletContext]="{$implicit:kanbanTask.getTask()}"></ng-container>
                     </div>
                     <ng-container [ngTemplateOutlet]='new_task' [ngTemplateOutletContext]="{$implicit:column}"></ng-container>
-                </div>       
+                </div>
             </div>
         </div>
-        
+
         <div class="default-column-container">
             <div class="column" id="default-column"
             *ngIf="isDefaultColumnOpen()">
                 <div class="column-header">
                     <span class="column-name">{{getModel().getDefaultColumn().getName()}}</span>
                     <button (click)="toggleOpenDefautlColumn()">></button>
-                    
+
                 </div>
                 <div class="column-content" id='{{getModel().getColumnIdText(getModel().getDefaultColumn())}}'
-                cdkDropList #getModel().getDefaultColumn().getId().toString()="cdkDropList" 
+                cdkDropList #getModel().getDefaultColumn().getId().toString()="cdkDropList"
                 [cdkDropListData]="getModel().getDefaultColumn().getKanbanTasks()"
                 [cdkDropListConnectedTo]="getModel().getColumnsNames()"
                 (cdkDropListDropped)="drop($event)">
-                    <div cdkDrag *ngFor="let kanbanTask of getModel().getDefaultColumn().getKanbanTasks()"
+                    <div cdkDrag *ngFor="let kanbanTask of getModel().getTasks(getModel().getDefaultColumn())"
                     class="task-list-item list-item block transparent-border">
                         <ng-container [ngTemplateOutlet]="task_item" [ngTemplateOutletContext]="{$implicit:kanbanTask.getTask()}"></ng-container>
-                    </div> 
+                    </div>
                     <ng-container [ngTemplateOutlet]='new_task' [ngTemplateOutletContext]="{$implicit:getModel().getDefaultColumn()}"></ng-container>
                 </div>
-                        
+
             </div>
             <div class="default-column-sidebar" *ngIf="!isDefaultColumnOpen()">
                 <button (click)="toggleOpenDefautlColumn()"><</button>
             </div>
         </div>
-        
+
     </div>
     <button (click)="closeView()"> Zamknij</button>
 </div>
@@ -72,7 +72,7 @@
             <div class="list-item-value">{{task.getName()}}</div>
         </div>
         <ng-container [ngTemplateOutlet]="task_labels" [ngTemplateOutletContext]="{$implicit:task}"></ng-container>
-        <ng-container [ngTemplateOutlet]="task_details" [ngTemplateOutletContext]="{$implicit:task}"></ng-container> 
+        <ng-container [ngTemplateOutlet]="task_details" [ngTemplateOutletContext]="{$implicit:task}"></ng-container>
     </div>
     <ng-container [ngTemplateOutlet]="item_options" [ngTemplateOutletContext]="{$implicit:task}"></ng-container>
 </ng-template>
@@ -107,7 +107,7 @@
         </div>
 
         <div *ngIf="task.getPriority()!=null" class="task-priority-icon info-icon">
-            {{getInfo().getPriorityText(task)}} 
+            {{getInfo().getPriorityText(task)}}
         </div>
 
         <div *ngIf="task.getSubtasks().length != 0" class="info-icon task-subtask"
@@ -115,7 +115,7 @@
             {{task.getNumberOfSubtaskWithStatus(status.ENDED)}} / {{task.getSubtasks().length}}
         </div>
     </div>
-   
+
 </ng-template>
 
 <ng-template #item_options let-task>

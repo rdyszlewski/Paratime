@@ -13,7 +13,6 @@ import { TaskAddingController } from './adding/task.adding.controller';
 import { TaskFilteringController } from './filtering/task.filtering.controller';
 import {CdkDragDrop, moveItemInArray, transferArrayItem} from "@angular/cdk/drag-drop"
 import { DataService } from 'app/data.service';
-import { OrderController } from 'app/common/order/order.controller';
 import { AppService } from 'app/services/app/app.service';
 import { TaskType } from './task.type';
 
@@ -37,8 +36,6 @@ export class TasksComponent implements OnInit {
   private menuController: ItemMenuController;
   private addingController: TaskAddingController;
   private filteringController: TaskFilteringController;
-
-  private orderController:OrderController<Task> = new OrderController();
 
   constructor(public dialog:MatDialog, private appService: AppService) {
     this.model = new TasksModel();
@@ -91,7 +88,6 @@ export class TasksComponent implements OnInit {
     if(event.previousContainer === event.container){
       this.changeTasksOrder(event.previousIndex, event.currentIndex);
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
-
     } else {
       transferArrayItem(event.previousContainer.data, event.container.data, event.previousIndex, event.currentIndex);
     }
@@ -101,7 +97,7 @@ export class TasksComponent implements OnInit {
     // TODO: tutaj chyba powinny być chyba filtrowane
     const previousTask = this.model.getTasks()[previousIndex];
     const currentTask = this.model.getTasks()[currentIndex];
-    DataService.getStoreManager().getTaskStore().move(previousTask, currentTask).then(updatedTask=>{
+    DataService.getStoreManager().getTaskStore().move(previousTask, currentTask, previousIndex> currentIndex).then(updatedTask=>{
       this.updateTasksInView(updatedTask);
     });
   }

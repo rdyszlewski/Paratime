@@ -15,6 +15,7 @@ import { OrderValues } from 'app/common/valuse';
 import { IOrderableStore } from './orderable.store';
 import { StoreOrderController } from '../order/order.controller';
 import { KanbanTaskStore } from './kanban.task.store';
+import { ItemMenuController } from 'app/tasks/common/item.menu.controller';
 
 
 // TODO: przydałyby się do tego wszystkiego transakcje.
@@ -138,9 +139,6 @@ export class TaskStore implements IOrderableStore<Task>{
 
     private insertTaskProperties(data:InsertTaskData, insertedTask: Task): Promise<InsertTaskResult>{
       const result = new InsertTaskResult();
-      console.log("insertTaskProperties");
-      console.log(data);
-      console.log(insertedTask);
       result.insertedTask = insertedTask;
       data.task = insertedTask; // TODO: wyjście tymczasowe
       const promises = [
@@ -216,7 +214,6 @@ export class TaskStore implements IOrderableStore<Task>{
 
         return Promise.all(promises).then(()=>{
           return this.taskRepository.removeTask(taskId).then(()=>{
-            console.log(updatedItems);;
             return Promise.resolve(updatedItems);
           })
         });
@@ -229,30 +226,22 @@ export class TaskStore implements IOrderableStore<Task>{
     }
 
     public changeStatus(task:Task, status:Status):Promise<Task[]>{
-      const toUpdate = [];
+      let updated = new Set<Task>();
       task.setStatus(status);
-      task.setPosition(Position.HEAD);
-      task.setSuccessorId(OrderValues.DEFAULT_ORDER);
-      return this.taskRepository.findFirstTaskWithStatus(task.getProjectID(), status).then(firstTask=>{
-        if(firstTask){
-          firstTask.setPosition(Position.NORMAL);
-          task.setSuccessorId(firstTask.getId());
-          toUpdate.push(firstTask);
-        }
-      }).then(()=>{
-        toUpdate.push(task);
-
-        const promises = [];
-        toUpdate.forEach(task=>{
-          promises.push(this.update(task));
+      updated.add(task);
+      return this.orderController.remove(task).then(updatedItems=>{
+        updatedItems.forEach(x=>updated.add(x));
+        return this.taskRepository.findFirstTaskWithStatus(task.getProjectID(), status).then(firstTask=>{
+          return this.orderController.insert(task, firstTask, task.getContainerId()).then(updatedItems=>{
+            updatedItems.forEach(x=>updated.add(x));
+            return Promise.resolve(Array.from(updated));
+          })
         })
-
-        return Promise.all(promises);
       });
     }
 
-    public move(previousItem: Task, currentItem: Task): Promise<Task[]> {
-      return this.orderController.move(previousItem, currentItem);
+    public move(previousItem: Task, currentItem: Task, moveUp: boolean): Promise<Task[]> {
+      return this.orderController.move(previousItem, currentItem, moveUp);
     }
 
     public changeContainer(item: any, currentTask: Task, currentContainerId: number): Promise<Task[]> {

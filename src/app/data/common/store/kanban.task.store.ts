@@ -4,7 +4,6 @@ import { KanbanTask, KanbanColumn } from 'app/models/kanban';
 import { TaskStore } from './task_store';
 import { InsertKanbanTaskResult } from '../models/insert.kanban.task.result';
 import { InsertTaskData } from '../models/insert.task.data';
-import { Position } from 'app/models/orderable.item';
 import { IKanbanColumnsRepository } from '../repositories/kanban_columns_repository';
 import { StoreOrderController } from '../order/order.controller';
 
@@ -117,8 +116,8 @@ export class KanbanTaskStore implements IOrderableStore<KanbanTask>{
   });
   }
 
-  public move(previousItem: KanbanTask, currentItem: KanbanTask): Promise<KanbanTask[]> {
-    return this.orderController.move(previousItem, currentItem);
+  public move(previousItem: KanbanTask, currentItem: KanbanTask, moveUp:boolean): Promise<KanbanTask[]> {
+    return this.orderController.move(previousItem, currentItem, moveUp);
   }
 
   public changeContainer(item: any, currentTask: KanbanTask, currentContainerId: number): Promise<KanbanTask[]> {

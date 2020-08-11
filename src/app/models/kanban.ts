@@ -1,5 +1,6 @@
 import { Task } from './task';
 import { OrderableItem } from './orderable.item';
+import { IFilterable } from 'app/common/filter/filterable';
 
 export class KanbanColumn{
 
@@ -74,7 +75,7 @@ export class KanbanColumn{
 
 }
 
-export class KanbanTask extends OrderableItem{
+export class KanbanTask extends OrderableItem implements IFilterable{
 
     private taskId:number;
     private columnId: number;
@@ -87,6 +88,13 @@ export class KanbanTask extends OrderableItem{
     public setTaskId(taskId: number){
         this.taskId = taskId;
     }
+
+    public getName():string{
+      if(this.task){
+        return this.task.getName();
+      }
+    }
+
 
     public getColumnId():number{
         return this.columnId;
