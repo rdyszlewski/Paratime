@@ -11,6 +11,7 @@ import { ProjectsFilteringController } from './filtering/projects.filtering.cont
 import { ProjectAddingController } from './adding/projects.adding.controller';
 import { ProjectsRemovingController } from './removing/projects.removing.controller';
 import { ProjectsLoader } from './common/projects.loader';
+import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 
 
 @Component({
@@ -69,9 +70,8 @@ export class ProjectsComponent implements OnInit {
   // loading projects from database
   private loadProjects(){
     ProjectsLoader.loadProjectsFromStore().then(projects=>{
-      projects.forEach(project=>{
-        this.model.addProject(project);
-      });
+      console.log(projects);
+      this.model.setProjects(projects);
     });
   }
 
@@ -94,10 +94,6 @@ export class ProjectsComponent implements OnInit {
 // click events
 
   public onProjectClick(project:Project){
-    // DataService.getStoreManager().getProjectStore().getProjectById(project.getId()).then(loadedProject=>{
-    //   this.loadEvent.emit(loadedProject);
-    // });
-    // this.model.setSelectedProject(project);
     this.loadEvent.emit(project);
   }
 
@@ -140,4 +136,22 @@ export class ProjectsComponent implements OnInit {
     // TODO: przerobić sposób przekazywania projektu podczas zdarzenia menu
     this.kanbanEvent.emit(this.model.getProjectWithOpenMenu());
   }
+
+  public onDrop(event:CdkDragDrop<string[]>){
+    if(event.previousContainer === event.container){
+      this.changeTasksOrder(event.previousIndex, event.currentIndex);
+      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+    } else {
+      transferArrayItem(event.previousContainer.data, event.container.data, event.previousIndex, event.currentIndex);
+    }
+  }
+
+  private changeTasksOrder(previousIndex: number, currentIndex:number){
+    const previousTask = this.model.getProjectByIndex(previousIndex);
+    const currentTask = this.model.getProjectByIndex(currentIndex);
+    DataService.getStoreManager().getProjectStore().move(previousTask, currentTask, previousIndex > currentIndex).then(updatedProjects=>{
+      this.model.updateProjects(updatedProjects);
+    });
+  }
+
 }

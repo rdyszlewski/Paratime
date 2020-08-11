@@ -1,19 +1,22 @@
 import { IProjectRepository } from '../../common/repositories/project_repository';
 import { Project } from 'app/models/project';
+import { OrderRepository } from 'app/data/common/repositories/orderable.repository';
 
 export class LocalProjectRepository implements IProjectRepository{
 
     private table: Dexie.Table<Project, number>;
+    private orderRepository: OrderRepository<Project>;
 
     constructor(table: Dexie.Table<Project, number>){
         this.table = table;;
+        this.orderRepository = new OrderRepository(table, null);
     }
 
     public findAllProjects(): Promise<Project[]> {
         return this.table.toArray();
     }
 
-    public findProjectById(id: number): Promise<Project> {
+    public findById(id: number): Promise<Project> {
         // return this.table.where('id').equals(id).first();
         return this.table.get(id);
     }
@@ -36,7 +39,7 @@ export class LocalProjectRepository implements IProjectRepository{
         return this.table.add(projectToSave);
     }
 
-    public updateProject(project: Project): Promise<number> {
+    public update(project: Project): Promise<number> {
         let projectToUpdate = this.getProjectCopyReadyToSave(project);
         return this.table.update(project.getId(), projectToUpdate);
     }
@@ -52,7 +55,22 @@ export class LocalProjectRepository implements IProjectRepository{
         }
         newProject.setStartDate(project.getStartDate());
         newProject.setEndDate(project.getEndDate());
+        newProject.setSuccessorId(project.getSuccessorId());
+        newProject.setPosition(project.getPosition());
 
         return newProject;
+    }
+
+    public findBySuccessor(successorId: number): Promise<Project> {
+      return this.orderRepository.findBySuccessor(successorId);
+    }
+
+    public findFirst(containerId: number): Promise<Project> {
+      return this.orderRepository.findFirst(null);
+    }
+
+    public findLast(containerId: number, exceptItem: number): Promise<Project> {
+      // TODO: tutaj może powinien być inny interfejs
+      return this.orderRepository.findLast(null, exceptItem);
     }
 }

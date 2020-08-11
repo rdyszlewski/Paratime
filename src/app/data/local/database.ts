@@ -39,7 +39,7 @@ export class LocalDatabase extends Dexie{
         this.version(this.dbVersion).stores({
             tasks: '++id, name, description, important, date, endDate, plannedTime, status, progress, projectID, priority, projectStageID, successor, position',
             subtasks: '++id, name, status, taskId',
-            projects: '++id, name, description, startDate, endDate, status, type',
+            projects: '++id, name, description, startDate, endDate, status, type, successor, position',
             labels: '++id, name',
             task_labels: '[taskId+labelId], taskId, labelId',
             stages: "++id, name, description, endDate, status, projectID",

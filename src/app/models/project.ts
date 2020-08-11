@@ -3,126 +3,126 @@ import { Task } from './task';
 import { ProjectType } from './project_type';
 import { IFilterable } from 'app/common/filter/filterable';
 import { Stage } from './stage';
+import { OrderableItem } from './orderable.item';
 
-export class Project implements IFilterable{
-    
-    private id: number;
-    private name: string = null;
-    private description: string = null;
-    private startDate: Date = null;
-    private endDate:Date = null;
-    private status: Status = null;
-    private tasks: Task[] = [];
-    private type: ProjectType = null;
-    private stages: Stage[] = [];
+export class Project extends OrderableItem implements IFilterable{
 
-    constructor(name=null, description=null, status=null, type=null){
-        this.name = name;
-        this.description = description;
-        this.status = status;
-        this.type = type;
-    }
+  private name: string = null;
+  private description: string = null;
+  private startDate: Date = null;
+  private endDate:Date = null;
+  private status: Status = null;
+  private tasks: Task[] = [];
+  private type: ProjectType = null;
+  private stages: Stage[] = [];
 
-    public getId(){
-        return this.id;
-    }
+  constructor(name=null, description=null, status=null, type=null){
+    super();
+    this.name = name;
+    this.description = description;
+    this.status = status;
+    this.type = type;
+  }
 
-    public setId(id:number){
-        this.id = id;
-    }
+  public getName(){
+      return this.name;
+  }
 
-    public getName(){
-        return this.name;
-    }
+  public setName(name: string){
+      this.name = name;
+  }
 
-    public setName(name: string){
-        this.name = name;
-    }
+  public getDescription(){
+      return this.description;
+  }
 
-    public getDescription(){
-        return this.description;
-    }
+  public setDescription(description:string){
+      this.description = description;
+  }
 
-    public setDescription(description:string){
-        this.description = description;
-    }
+  public getStartDate():Date{
+      return this.startDate;
+  }
 
-    public getStartDate():Date{
-        return this.startDate;
-    }
+  public setStartDate(date: Date){
+      this.startDate = date;
+  }
 
-    public setStartDate(date: Date){
-        this.startDate = date;
-    }
+  public getEndDate(){
+      return this.endDate;
+  }
 
-    public getEndDate(){
-        return this.endDate;
-    }
+  public setEndDate(date: Date){
+      this.endDate = date;
+  }
 
-    public setEndDate(date: Date){
-        this.endDate = date;
-    }
+  public getStatus(){
+      return this.status;
+  }
 
-    public getStatus(){
-        return this.status;
-    }
+  public setStatus(status: Status){
+      this.status = status;
+  }
 
-    public setStatus(status: Status){
-        this.status = status;
-    }
+  public addTask(task:Task){
+      this.tasks.push(task);
+  }
 
-    public addTask(task:Task){
-        this.tasks.push(task);
-    }
+  public removeTask(task: Task){
+      let index = this.tasks.indexOf(task);
+      if(index >= 0){
+          this.tasks.splice(index, 1);
+      }
+  }
 
-    public removeTask(task: Task){
-        let index = this.tasks.indexOf(task);
-        if(index >= 0){
-            this.tasks.splice(index, 1);
-        }
-    }
+  private getTaskIndex(task:Task){
+      for(let i =0; i < this.tasks.length; i++){
+          if(this.tasks[i].getId() === task.getId()){
+              return i;
+          }
+      }
+      return -1;
+  }
 
-    private getTaskIndex(task:Task){
-        for(let i =0; i < this.tasks.length; i++){
-            if(this.tasks[i].getId() === task.getId()){
-                return i;
-            }
-        }
-        return -1;
-    }
+  public setTasks(tasks: Task[]){
+      this.tasks = tasks;
+  }
 
-    public setTasks(tasks: Task[]){
-        this.tasks = tasks;
-    }
+  public getType(){
+      return this.type;
+  }
 
-    public getType(){
-        return this.type;
-    }
+  public setType(type: ProjectType){
+    this.type = type;
+  }
 
-    public setType(type: ProjectType){
-        this.type = type;
-    }
+  public getTasks():Task[]{
+    return this.tasks;
+  }
 
-    public getTasks():Task[]{
-        return this.tasks;
-    }
+  public getStages():Stage[]{
+    return this.stages;
+  }
 
-    public getStages():Stage[]{
-        return this.stages;
-    }
+  public setStages(stages:Stage[]){
+    this.stages = stages;
+  }
 
-    public setStages(stages:Stage[]){
-        this.stages = stages;
-    }
+  public addStage(stage:Stage){
+    this.stages.push(stage);
+  }
 
-    public addStage(stage:Stage){
-        this.stages.push(stage);
-    }
+  public removeStage(stage:Stage){
+    const index = this.stages.indexOf(stage);
+    if(index >= 0){
+        this.stages.splice(index, 1);
+      }
+  }
 
-    public removeStage(stage:Stage){
-        const index = this.stages.indexOf(stage);
-        if(index >= 0){
-            this.stages.splice(index, 1);
-        }
-    }   
+  public getContainerId(): number {
+    return null;
+  }
+  public setContainerId(id: number): void {
+    return;
+  }
 }

@@ -46,19 +46,19 @@ export class ProjectAddingController{
     public saveProject(){
         const project = new Project();
         project.setName(this.model.getNewProjectName());
-        DataService.getStoreManager().getProjectStore().createProject(project).then(insertedProject=>{
-            this.listModel.addProject(insertedProject);
-            this.closeAddingNewProject();
-            ScrollBarHelper.moveToBottom(this.PROJECTS_LIST);
-            this.listModel.setSelectedProject(insertedProject);
-            this.loadEvent.emit(insertedProject);
+        DataService.getStoreManager().getProjectStore().createProject(project).then(result=>{
+          this.listModel.addProject(result.insertedProject);
+          this.listModel.updateProjects(result.updatedProjects);
+          this.loadEvent.emit(result.insertedProject);
         });
+        // TODO: można wstawić jakąś zaślepkę, która będzie chowana dopiero po wstawieniu zadania
+        this.closeAddingNewProject();
     }
 
     public handleAddingNewProjectKeyUp(event:KeyboardEvent){
-        EditInputHandler.handleKeyEvent(event, 
+        EditInputHandler.handleKeyEvent(event,
             ()=>this.addNewProject(),
             ()=>this.closeAddingNewProject()
         );
     }
-}   
+}

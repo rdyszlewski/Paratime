@@ -72,7 +72,7 @@ export class TaskStore implements IOrderableStore<Task>{
             }).then(() => {
                 // TODO: zrobić pobieranie projektu. Chyba nie przyniosło to oczekiwanego rezultatu
                 if(task.getProjectID()!=null){
-                    return this.projectRepository.findProjectById(task.getProjectID()).then(project=>{
+                    return this.projectRepository.findById(task.getProjectID()).then(project=>{
                         task.setProject(project);
                         // TODO: w tym miejscu można ustawić odpowiedni etap, pobierając go z projektu
                         return Promise.resolve(task);
@@ -223,6 +223,10 @@ export class TaskStore implements IOrderableStore<Task>{
     // TODO: to nie powinno być publiczne. Znaleźć jakiś spsoób, żeby to zmienić
     public remove(task:Task):Promise<Task[]>{
       return this.orderController.remove(task);
+    }
+
+    public removeTasksByProject(projectId: number){
+      return this.taskRepository.removeTasksByProject(projectId);
     }
 
     public changeStatus(task:Task, status:Status):Promise<Task[]>{

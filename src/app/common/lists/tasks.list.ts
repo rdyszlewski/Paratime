@@ -7,12 +7,12 @@ import { OrderableItem } from 'app/models/orderable.item';
 
 export class TasksList<T extends IFilterable & OrderableItem > implements IOrderableList, IFilterableList{
 
-  private items: T[];
+  private items: T[] = [];
   private itemFilter: Filter<T>;
   private orderer: TaskItemOrderer<T>;
   private containerId: number;
 
-  constructor(containerId: number = -1){
+  constructor(containerId: number = null){
     this.itemFilter = new Filter();
     this.orderer = new TaskItemOrderer();
     this.containerId = containerId;

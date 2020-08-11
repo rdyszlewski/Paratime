@@ -52,7 +52,7 @@ export class KanbanModel{
       this.tasks.get(columnId).updateItems(tasks);
     }
 
-    public removeTasks(task: KanbanTask, columnId: number){
+    public removeTask(task: KanbanTask, columnId: number){
       this.tasks.get(columnId).removeItem(task);
     }
 

@@ -28,13 +28,15 @@ export class ProjectsRemovingController{
     private removeProject(){
         let project = this.listModel.getProjectWithOpenMenu();
         const id = project.getId();
-        DataService.getStoreManager().getProjectStore().removeProject(id).then(()=>{
-            this.listModel.removeProject(project);
-            if(this.listModel.isSelectedProjectId(id)){
-            // send event to main component, that close tasks view for removed project
-            this.removeEvent.emit();
-            }
-            this.listModel.setProjectWithOpenMenu(null);
+        DataService.getStoreManager().getProjectStore().removeProject(id).then(updatedProjects=>{
+          this.listModel.updateProjects(updatedProjects);
+          this.removeEvent.emit();
+            // this.listModel.removeProject(project);
+            // if(this.listModel.isSelectedProjectId(id)){
+            // // send event to main component, that close tasks view for removed project
+            // this.removeEvent.emit();
+            // }
+            // this.listModel.setProjectWithOpenMenu(null);
         });
     }
 
@@ -42,5 +44,5 @@ export class ProjectsRemovingController{
         const message = "Czy na pewno usunąć projekt?";
         return DialogHelper.openDialog(message, this.dialog);
     }
-    
+
 }

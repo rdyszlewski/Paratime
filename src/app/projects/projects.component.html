@@ -1,7 +1,7 @@
 
 <div class="app-panel shadow">
     <!-- <h3 class="panel-header">Projekty</h3> -->
-    
+
     <!-- TODO: ustawić odpowiednio styl do filtra -->
     <div class="filter-controls">
       <input class="project-filter filter border" placeholder="Wyszukaj projekt" autocomplete="off"
@@ -12,12 +12,12 @@
     <div class="filter-container" *ngIf="getState().isFilteringOpen()">
       <ng-container [ngTemplateOutlet]="filter_container"></ng-container>
     </div>
-  
-    <div id="special-lists-container" class="transparent-border expansion-list"> 
+
+    <div id="special-lists-container" class="transparent-border expansion-list">
       <div [ngTemplateOutlet]="special_lists"></div>
     </div>
-    
-    <div id="projects-container" 
+
+    <div id="projects-container"
       [ngClass]="{
         'projects-container': getState().isProjectsListOpen(),
         'hidden-list': !getState().isProjectsListOpen(),
@@ -49,7 +49,7 @@
 
   <div class="filter-group">
     <label class="filter-label">Stan</label>
-    <select class="filter-value" 
+    <select class="filter-value"
     [ngModel]="getFiltering().getModel().getStatus()" (ngModelChange)="getFiltering().getModel().setStatus($event)">
       <option [ngValue]="null" >Wszystkie</option>
       <option [ngValue]="status.STARTED">Aktywne</option>
@@ -58,10 +58,10 @@
       <option [ngValue]="status.CANCELED">Zakończone</option>
     </select>
   </div>
-  
+
   <div class="filter-group">
     <label class="filter-label">Typ</label>
-    <select class="filter-value" 
+    <select class="filter-value"
     [ngModel]="getFiltering().getModel().getProjectType()" (ngModelChange)="getFiltering().getModel().setProjectType($event)">
       <option [ngValue]="null">Wszystkie</option>
       <option [ngValue]="type.SMALL">Małe</option>
@@ -87,7 +87,7 @@
     <div [ngClass]="{'selected-list-item': false,
                   'project': true,
                   'list-item':true,
-                  'transparent-border':true}" 
+                  'transparent-border':true}"
                   (click)='onImportantListClick()'>
       <div class="list-item-value">Ważne</div>
     </div>
@@ -95,7 +95,7 @@
     <div [ngClass]="{'selected-list-item': false,
                   'project': true,
                   'list-item':true,
-                  'transparent-border':true}" 
+                  'transparent-border':true}"
                   (click)='onTodayListClick()'>
       <div class="list-item-value">Dzisiaj</div>
     </div>
@@ -109,15 +109,20 @@
   </div>
   <!-- TODO: zrobić globalny styl do listy oraz do jej elementów-->
 
-    <div id="projects-list"  class="list border" *ngIf="getState().isProjectsListOpen()">
-      <div *ngFor='let project of getModel().getProjects()'>
+    <div id="projects-list"  class="list border"
+    *ngIf="getState().isProjectsListOpen()"
+    cdkDropList
+    #projectList="cdkDropList"
+    [cdkDropListData]="getModel().getProjects()"
+    (cdkDropListDropped)="onDrop($event)">
+      <div *ngFor='let project of getModel().getProjects()' cdkDrag>
         <ng-container [ngTemplateOutlet]="project_item" [ngTemplateOutletContext]="{$implicit:project}"></ng-container>
       </div>
       <div *ngIf="getState().isAddingOpen()" >
         <ng-container [ngTemplateOutlet]="new_project"></ng-container>
       </div>
     </div>
-    <button class="button border" (click)='getAdding().onCreateProjectClick()' 
+    <button class="button border" (click)='getAdding().onCreateProjectClick()'
       *ngIf="!getState().isAddingOpen() && getState().isProjectsListOpen()">
       Dodaj projekt
     </button>
@@ -128,15 +133,16 @@
   <div [ngClass]="{'selected-list-item': getModel().isSelectedProject(project),
                     'project': true,
                     'list-item':true,
-                    'transparent-border':true}" 
-                    (click)='onProjectClick(project)'>
-          <div class="list-item-value">{{project.getName()}}</div>
-          <div class="list-item-options" 
-            (click)='onProjectMenuClick($event, project)'
-            [matMenuTriggerFor]="menu">
-            ...
-          </div>
-        </div>     
+                    'transparent-border':true}"
+                    (click)='onProjectClick(project)'
+                    >
+    <div class="list-item-value">{{project.getName()}}</div>
+    <div class="list-item-options"
+      (click)='onProjectMenuClick($event, project)'
+      [matMenuTriggerFor]="menu">
+      ...
+    </div>
+  </div>
 </ng-template>
 
 <ng-template #new_project>
@@ -144,7 +150,7 @@
         (keyup)="getAdding().handleAddingNewProjectKeyUp($event)"
         [ngModel]="getAdding().getModel().getNewProjectName()" (ngModelChange)="getAdding().getModel().setNewProjectName($event)">
         <div class="buttons-container">
-            <button class="button small-button insert-button" id="save-subtask-button" 
+            <button class="button small-button insert-button" id="save-subtask-button"
             (click)="getAdding().addNewProject()">Zapisz</button>
             <button class="button small-button insert-button" id="cancel-subtask-button"
             (click)="getAdding().closeAddingNewProject()">Anuluj</button>

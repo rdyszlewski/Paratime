@@ -23,10 +23,17 @@ export class OrderRepository<T extends OrderableItem>{
   }
 
   public findFirst(containerId: number): Promise<T>{
-    return this.table.where({"position":Position.HEAD, [this.containerColumn]:containerId}).first();
+    if(containerId){
+      return this.table.where({"position":Position.HEAD, [this.containerColumn]:containerId}).first();
+    }
+    return this.table.where({"position":Position.HEAD}).first();
+
   }
 
   public findLast(containerId: number, exceptItem: number = -1): Promise<T>{
-    return this.table.where({"successor":-1, [this.containerColumn]: containerId,}).and(x=>x["id"]!=exceptItem).first()
+    if(containerId){
+      return this.table.where({"successor":-1, [this.containerColumn]: containerId,}).and(x=>x["id"]!=exceptItem).first()
+    }
+    return this.table.where({"successor":-1}).and(x=>x["id"]!=exceptItem).first();
   }
 }

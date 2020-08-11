@@ -1,4 +1,10 @@
-import { Component, OnInit, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  ViewChild,
+  ElementRef,
+  AfterViewInit,
+} from '@angular/core';
 import { LocalDatabase } from 'app/data/local/database';
 import { ProjectDetailsComponent } from 'app/project-details/project-details.component';
 import { TaskDetailsComponent } from 'app/task-details/task-details.component';
@@ -18,10 +24,9 @@ import { AppService, TasksMode } from 'app/services/app/app.service';
 @Component({
   selector: 'app-main',
   templateUrl: './main.component.html',
-  styleUrls: ['./main.component.css']
+  styleUrls: ['./main.component.css'],
 })
 export class MainComponent implements OnInit, AfterViewInit {
-
   public taskMode = TasksMode;
 
   // TODO: usprawnić zarządzanie widokami
@@ -62,11 +67,9 @@ export class MainComponent implements OnInit, AfterViewInit {
   @ViewChild('workDetailsSpace') workDetailsSpace: ElementRef;
   @ViewChild('sidebarSpace') sidebarSpace: ElementRef;
 
-  public pomodoroTime:string;
+  public pomodoroTime: string;
 
-  private currentProject: Project;
-
-  constructor(private appService: AppService,public snakBar: MatSnackBar) { }
+  constructor(private appService: AppService, public snakBar: MatSnackBar) {}
 
   ngAfterViewInit(): void {
     this.setOriginalWidth();
@@ -75,17 +78,16 @@ export class MainComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     // this.deleteDatabase();
     // this.configureDexie();
-
   }
 
-  private deleteDatabase(){
+  private deleteDatabase() {
     var database = new LocalDatabase();
-    database.delete().then(()=>{
-      console.log("Usunięto bazę danych");
-    })
+    database.delete().then(() => {
+      console.log('Usunięto bazę danych');
+    });
   }
 
-  public openProjectDetails(project){
+  public openProjectDetails(project) {
     this.projectDetailsComponent.setProject(project);
     this.projectsDetailsOpen = true;
     this.tasksDetailsOpen = false;
@@ -95,22 +97,22 @@ export class MainComponent implements OnInit, AfterViewInit {
 
   // TODO: wymyślić jakiś sprytniejszy plan wstawiania szerokości
   // TODO: może nazwać jakoś poszczególne stany, i przygotować odgórnie ustawienia
-  private setWidthOnProjectViewOpen(){
+  private setWidthOnProjectViewOpen() {
     this.setWidth(this.workSpace, 20);
     this.setWidth(this.listSpace, 20);
     this.setWidth(this.listDetailsSpace, 60);
   }
 
-  private setWidth(element: ElementRef, width){
-    element.nativeElement.style.minWidth = width + "%";
+  private setWidth(element: ElementRef, width) {
+    element.nativeElement.style.minWidth = width + '%';
   }
 
-  closeProjectDetails(){
+  closeProjectDetails() {
     this.projectsDetailsOpen = false;
     this.setOriginalWidth();
   }
 
-  public openTaskDetails(task:Task){
+  public openTaskDetails(task: Task) {
     this.taskDetailsComponent.setTask(task);
     this.tasksDetailsOpen = true;
     this.projectsDetailsOpen = false;
@@ -118,25 +120,25 @@ export class MainComponent implements OnInit, AfterViewInit {
     this.setWidthOnTaskViewOpen();
   }
 
-  private setWidthOnTaskViewOpen(){
+  private setWidthOnTaskViewOpen() {
     this.setWidth(this.workSpace, 30);
     this.setWidth(this.listSpace, 15);
     this.setWidth(this.workDetailsSpace, 55);
   }
 
-  public closeTaskDetails(){
+  public closeTaskDetails() {
     this.tasksDetailsOpen = false;
     this.taskDetailsComponent.setTask(new Task()); //clearing fields
 
     this.setOriginalWidth();
   }
 
-  private setOriginalWidth(){
+  private setOriginalWidth() {
     this.setWidth(this.listSpace, 30);
     this.setWidth(this.workSpace, 70);
   }
 
-  public onCreateProject(project:Project){
+  public onCreateProject(project: Project) {
     // TODO: alternatywą będzie ponowne wyszukanie wszystkim projektów
     // TODO: nie można tego robić w ten sposób, ponieważ przy aktualizacji dodaje do listy
     this.projectsComponent.addProject(project);
@@ -144,35 +146,35 @@ export class MainComponent implements OnInit, AfterViewInit {
     this.setOriginalWidth();
     this.projectsComponent.selectProject(project);
 
-    this.openSnackBar("Pomyślnie utworzono nowy projekt");
+    this.openSnackBar('Pomyślnie utworzono nowy projekt');
   }
 
-  public openLabelsManager(){
+  public openLabelsManager() {
     this.labelsOpen = true;
   }
 
-  public closeLabelsManager(){
+  public closeLabelsManager() {
     this.labelsOpen = false;
   }
 
-  public onLabelsUpdate(){
+  public onLabelsUpdate() {
     this.taskDetailsComponent.getLabels().loadLabels();
   }
 
-  public onUpdateProject(project:Project){
+  public onUpdateProject(project: Project) {
     this.projectsComponent.updateProject(project);
   }
 
-  public onCreateTask(task:Task){
+  public onCreateTask(task: Task) {
     this.tasksDetailsOpen = false;
     this.setOriginalWidth();
 
     this.tasksComponent.addTask(task);
   }
 
-  public onRemoveTask(taskId: number){
-    if(this.tasksDetailsOpen){
-      if(this.taskDetailsComponent.getModel().getTask().getId()==taskId){
+  public onRemoveTask(taskId: number) {
+    if (this.tasksDetailsOpen) {
+      if (this.taskDetailsComponent.getModel().getTask().getId() == taskId) {
         // TODO: może lepiej zrobić jakąś metodę close i open
         this.tasksDetailsOpen = false;
         this.setOriginalWidth();
@@ -180,30 +182,30 @@ export class MainComponent implements OnInit, AfterViewInit {
     }
   }
 
-  public onRemoveSelectedProject(project:Project){
+  public onRemoveSelectedProject(project: Project) {
     this.projectsDetailsOpen = false;
     this.tasksDetailsOpen = false;
     this.setOriginalWidth();
     this.tasksComponent.openProject(null); //hide tasks panel
   }
 
-  public openSnackBar(message:string){
+  public openSnackBar(message: string) {
     this.snakBar.open(message, null, {
       duration: 2000,
     });
   }
 
-  public closeStageDetails(){
+  public closeStageDetails() {
     this.stageDetailsOpen = false;
     this.projectsOpen = true;
     this.tasksOpen = true;
   }
 
-  public onUpdateStage(stage: Stage){
+  public onUpdateStage(stage: Stage) {
     // TODO: coś tutaj dopisać
   }
 
-  public onEditProjectStage(stage:Stage){
+  public onEditProjectStage(stage: Stage) {
     // TODO: zrobić lepsze zarządzanie otwartymi oknami
     this.stageDetailsOpen = true;
     this.projectsOpen = false;
@@ -212,35 +214,36 @@ export class MainComponent implements OnInit, AfterViewInit {
     this.stageDetailsComponent.setStage(stage);
   }
 
-  public togglePomodoroOpen(){
+  public togglePomodoroOpen() {
     this.pomodoroOpen = !this.pomodoroOpen;
   }
 
-  public setPomodoroTime(time:string){
+  public setPomodoroTime(time: string) {
     this.pomodoroTime = time;
   }
 
-  public onSpecialListCLick(listType: SpecialList){
+  public onSpecialListCLick(listType: SpecialList) {
     this.tasksComponent.getSpecialList().setSpecialList(listType);
   }
 
-  public addTaskToPomodoro(task:Task):void{
+  public addTaskToPomodoro(task: Task): void {
     this.pomodoroComponent.addTaskToPomodoro(task);
   }
 
-
-
-  public closeKanban(){
+  public closeKanban() {
     this.kanbanOpen = false;
     this.tasksOpen = true;
   }
 
-  public openProject(project: Project, taskMode: TasksMode){
-    let currentProject = project ? project : this.appService.getCurrentProject();
-    let currentTaskMode = taskMode != null ? taskMode : this.appService.getTasksMode();
+  public openProject(project: Project, taskMode: TasksMode) {
+    let currentProject = project
+      ? project
+      : this.appService.getCurrentProject();
+    let currentTaskMode =
+      taskMode != null ? taskMode : this.appService.getTasksMode();
     this.appService.setCurrentProject(currentProject);
     this.appService.setTasksMode(currentTaskMode);
-    switch(currentTaskMode){
+    switch (currentTaskMode) {
       case TasksMode.LIST:
         this.openTaskListMode(currentProject);
         break;
@@ -250,13 +253,13 @@ export class MainComponent implements OnInit, AfterViewInit {
     }
   }
 
-  private openTaskListMode(project:Project){
+  private openTaskListMode(project: Project) {
     this.kanbanOpen = false;
     this.tasksOpen = true;
     this.tasksComponent.openProject(project);
   }
 
-  private openKanbanMode(project:Project){
+  private openKanbanMode(project: Project) {
     this.kanbanOpen = true;
     this.tasksOpen = false;
 

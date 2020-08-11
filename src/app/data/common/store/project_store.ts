@@ -6,32 +6,47 @@ import { KanbanColumn } from 'app/models/kanban';
 import { Task } from 'app/models/task';
 import { InsertTaskData } from '../models/insert.task.data';
 import { KanbanColumnStore } from './kanban.column.store';
+import { IOrderableStore } from './orderable.store';
+import { StoreOrderController } from '../order/order.controller';
+import { InsertProjectResult } from '../models/insert.project.result';
 
-export class ProjectStore{
+export class ProjectStore implements IOrderableStore<Project> {
+  private projectRepository: IProjectRepository;
+  private taskStore: TaskStore;
+  private stageStore: StageStore;
+  private kanbanColumnStore: KanbanColumnStore;
+  private orderController: StoreOrderController<Project>;
 
-    private projectRepository: IProjectRepository;
-    private taskStore: TaskStore;
-    private stageStore: StageStore;
-    private kanbanColumnStore: KanbanColumnStore;
+  constructor(
+    projectRepository: IProjectRepository,
+    taskStore: TaskStore,
+    stageStore: StageStore,
+    kanbanColumnStore: KanbanColumnStore
+  ) {
+    this.projectRepository = projectRepository;
+    this.taskStore = taskStore;
+    this.stageStore = stageStore;
+    this.kanbanColumnStore = kanbanColumnStore;
+    this.orderController = new StoreOrderController(projectRepository);
+  }
 
-    constructor(projectRepository: IProjectRepository, taskStore: TaskStore, stageStore: StageStore, kanbanColumnStore: KanbanColumnStore){
-        this.projectRepository = projectRepository;
-        this.taskStore = taskStore;
-        this.stageStore = stageStore;
-        this.kanbanColumnStore = kanbanColumnStore;
-    }
-
-    // TODO: postarać się, żeby potrzebne elementy były wstrzykiwane
-
-    public createProject(project:Project): Promise<Project>{
-      return this.projectRepository.insertProject(project).then(insertedId=>{
-        return this.createKanbanColumn(insertedId).then(column=>{
-          return this.getProjectById(insertedId);
+  public createProject(project: Project): Promise<InsertProjectResult> {
+    return this.projectRepository.insertProject(project).then((insertedId) => {
+      return this.createKanbanColumn(insertedId).then((column) => {
+        return this.getProjectById(insertedId).then((project) => {
+          return this.orderController
+            .insert(project, null, null)
+            .then((updatedProjects) => {
+              const result = new InsertProjectResult();
+              result.insertedProject = project;
+              result.updatedProjects = updatedProjects;
+              result.insertedKanbanColumn = column;
+              return Promise.resolve(result);
+            });
         });
       });
-    }
-
-    private
+    });
+  }
 
   private createKanbanColumn(insertedId: number) {
     const column = new KanbanColumn();
@@ -41,71 +56,96 @@ export class ProjectStore{
     return this.kanbanColumnStore.create(column);
   }
 
-  private createFirstTask(projectId: number, column: KanbanColumn){
-    const task = new Task();
-    task.setProjectID(projectId);
-
-    const data = new InsertTaskData(task, column, projectId);
-    return this.taskStore.createTask(data);
+  public updateProject(project: Project): Promise<Project> {
+    return this.projectRepository.update(project).then((result) => {
+      return Promise.resolve(project);
+    });
   }
 
-    public updateProject(project:Project):Promise<Project>{
-        return this.projectRepository.updateProject(project).then(result=>{
-            return Promise.resolve(project);
+  public removeProject(projectId: number): Promise<Project[]> {
+    const promises = [
+      this.taskStore.removeTasksByProject(projectId),
+      this.kanbanColumnStore.removeByProject(projectId),
+      this.stageStore.removeStagesFromProject(projectId)
+    ];
+    return Promise.all(promises).then(()=>{
+      return this.projectRepository.findById(projectId).then(project=>{
+        return this.projectRepository.removeProject(projectId).then(()=>{
+          return this.orderController.remove(project);
         });
-    }
+      })
+    });
+    // return this.taskStore.getTasksByProject(projectId).then(tasks=>{
+    //     let promises = [];
+    //     tasks.forEach(task=>{
+    //         let promise = this.taskStore.removeTask(task.getId());
+    //         promises.push(promise);
+    //     });
+    //     promises.push(this.stageStore.removeStagesFromProject(projectId));
+    //     return Promise.all(promises);
+    // }).then(()=>{
+    //     return this.projectRepository.removeProject(projectId);
+    // });
+  }
 
-    public removeProject(projectId: number): Promise<void>{
-        return this.taskStore.getTasksByProject(projectId).then(tasks=>{
-            let promises = [];
-            tasks.forEach(task=>{
-                let promise = this.taskStore.removeTask(task.getId());
-                promises.push(promise);
-            });
-            promises.push(this.stageStore.removeStagesFromProject(projectId));
-            return Promise.all(promises);
+  private removeAllTaskFromProject(projectId: number): Promise<void | any> {
+    return this.taskStore.getTasksByProject(projectId).then((tasks) => {
+      let promises = [];
+      tasks.forEach((task) => {
+        let promise = this.taskStore.removeTask(task.getId());
+        promises.push(promise);
+      });
+      return Promise.all(promises);
+    });
+  }
 
-        }).then(()=>{
-            return this.projectRepository.removeProject(projectId);
+  public getProjectById(id: number): Promise<Project> {
+    return this.projectRepository.findById(id).then((project) => {
+      if (project) {
+        return this.fillProject(project);
+      } else {
+        return Promise.resolve(null);
+      }
+    });
+  }
+
+  private fillProject(project: Project): Promise<Project> {
+    return this.taskStore.getTasksByProject(project.getId()).then((tasks) => {
+      project.setTasks(tasks);
+      return this.stageStore
+        .getStagesByProject(project.getId())
+        .then((stages) => {
+          project.setStages(stages);
+          return Promise.resolve(project);
         });
-    }
+    });
+  }
 
-    private removeAllTaskFromProject(projectId: number):Promise<void|any>{
-        return this.taskStore.getTasksByProject(projectId).then(tasks=>{
-            let promises = [];
-            tasks.forEach(task=>{
-                let promise = this.taskStore.removeTask(task.getId());
-                promises.push(promise);
-            });
-            return Promise.all(promises);
-        });
-    }
+  public getProjectsByName(name: string): Promise<Project[]> {
+    return this.projectRepository.findProjectsByName(name);
+  }
 
-    public getProjectById(id: number): Promise<Project>{
-        return this.projectRepository.findProjectById(id).then(project=>{
-            if(project){
-                return this.fillProject(project);
-            } else {
-                return Promise.resolve(null);
-            }
-        });
-    }
+  public getAllProjects(): Promise<Project[]> {
+    return this.projectRepository.findAllProjects();
+  }
 
-    private fillProject(project:Project):Promise<Project>{
-        return this.taskStore.getTasksByProject(project.getId()).then(tasks=>{
-            project.setTasks(tasks);
-            return this.stageStore.getStagesByProject(project.getId()).then(stages=>{
-                project.setStages(stages);
-                return Promise.resolve(project);
-            });
-        });
-    }
+  public move(
+    previousItem: Project,
+    currentItem: Project,
+    moveUp: boolean
+  ): Promise<Project[]> {
+    return this.orderController.move(previousItem, currentItem, moveUp);
+  }
 
-    public getProjectsByName(name:string): Promise<Project[]>{
-        return this.projectRepository.findProjectsByName(name);
-    }
-
-    public getAllProjects():Promise<Project[]>{
-        return this.projectRepository.findAllProjects();
-    }
+  public changeContainer(
+    item: any,
+    currentTask: Project,
+    currentContainerId: number
+  ): Promise<Project[]> {
+    return this.orderController.changeContainer(
+      item,
+      currentTask,
+      currentContainerId
+    );
+  }
 }

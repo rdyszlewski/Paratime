@@ -4,12 +4,14 @@ import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/dr
 import { Task } from 'app/models/task';
 import { Project } from 'app/models/project';
 import { DataService } from 'app/data.service';
-import { KanbanColumn} from 'app/models/kanban';
+import { KanbanColumn, KanbanTask} from 'app/models/kanban';
 import { FocusHelper } from 'app/common/view_helper';
 import { TaskItemInfo } from 'app/tasks/common/task.item.info';
 import { Status } from 'app/models/status';
 import { InsertTaskData } from 'app/data/common/models/insert.task.data';
 import { InsertTaskResult } from 'app/data/common/models/insert.task.result';
+import { DialogHelper } from 'app/common/dialog';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-kanban',
@@ -27,7 +29,7 @@ export class KanbanComponent implements OnInit {
 
   public status = Status;
 
-  constructor() { }
+  constructor(private dialog: MatDialog) { }
 
   ngOnInit(): void {
   }
@@ -77,15 +79,8 @@ export class KanbanComponent implements OnInit {
       const previousTask = previousColumn.getKanbanTasks()[previousIndex];
       const currentTask = currentColumn.getKanbanTasks()[currentIndex];
       DataService.getStoreManager().getKanbanTaskStore().changeContainer(previousTask, currentTask, currentColumn.getId()).then(updatedTask=>{
-        console.log("Zaktualizowane ");
-        console.log(updatedTask);
-        // TODO: spróbować to zrobić w kodzie listy
-
         this.model.updateTasks(updatedTask, previousColumn.getId());
         this.model.updateTasks(updatedTask, currentColumn.getId());
-        // this.model.removeTasks(previousTask, previousColumn.getId());
-        // this.model.insertTask(previousTask, currentColumn.getId());
-
       });
   }
 
@@ -142,7 +137,22 @@ export class KanbanComponent implements OnInit {
     return task;
   }
 
+  public onRemoveTask(task:KanbanTask){
+    const message = "Czy na pewno usunąć zadanie?";
+    DialogHelper.openDialog(message, this.dialog).subscribe(result=>{
+      if(result){
+        this.removeTask(task);
+      }
+    });
+  }
 
+  private removeTask(task: KanbanTask): void{
+    DataService.getStoreManager().getKanbanTaskStore().removeTask(task.getId()).then(updatedTasks=>{
+      this.model.removeTask(task, task.getColumnId());
+      this.model.updateTasks(updatedTasks, task.getColumnId());
+      // TODO: wysłać event o usunięciu zadania
+    });
+  }
 
   public closeAddingNewTask(){
       this.model.setColumnAddingOpen(null);

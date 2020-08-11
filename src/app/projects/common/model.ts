@@ -1,41 +1,39 @@
 import { Project } from 'app/models/project';
-import { FilteredList } from 'app/common/filter/filtered_list';
+import { TasksList } from 'app/common/lists/tasks.list';
 
 export class ProjectsModel{
 
-    private projects: Project[] = [];
-    private filteredList: FilteredList<Project> = new FilteredList();
+    // private projects: Project[] = [];
+    private projects: TasksList<Project> = new TasksList();
     private selectedProject: Project = null;
     private projectWithOpenMenu: Project = null;
 
     public setProjects(projects:Project[]){
-        this.projects = projects;
-        this.filteredList.setSource(this.projects);
+        this.projects.setItems(projects);
     }
 
     public getProjects(){
-        return this.filteredList.getElements();
+        return this.projects.getItems();
+    }
+
+    public getProjectByIndex(index: number): Project{
+      return this.projects.getItemByIndex(index);
     }
 
     public addProject(project:Project){
-        this.projects.push(project);
-        this.updateFilteredList();
+        return this.projects.addItem(project);
     }
 
     public removeProject(project:Project){
-        const index = this.projects.indexOf(project);
-        if(index >=0){
-            this.projects.splice(index, 1);
-            this.updateFilteredList();
-        }
+        this.projects.removeItem(project);
     }
 
-    private updateFilteredList(){
-        this.filteredList.setSource(this.projects);
+    public updateProjects(projects: Project[]){
+      this.projects.updateItems(projects);
     }
 
     public filterProject(filter:string){
-        this.filteredList.filter(filter);
+        this.projects.filter(filter);
     }
 
     public getSelectedProject():Project{
@@ -52,17 +50,15 @@ export class ProjectsModel{
     public isSelectedProjectId(id: number) {
         return this.getSelectedProject() != null && id == this.getSelectedProject().getId();
     }
-    
+
 
     public setSelectedProject(project:Project) {
         this.selectedProject = project;
     }
 
     public updateProject(project:Project){
-        const projectToUpdate = this.projects.find(x=>x.getId()==project.getId());
-        if(projectToUpdate){
-            projectToUpdate.setName(project.getName());
-        }
+      // TODO: sprawdzić, czy to będzie potrzebne
+      this.projects.updateItems([project]);
     }
 
     public getProjectWithOpenMenu():Project{
