@@ -1,10 +1,10 @@
-import { Component, OnInit, Output, EventEmitter, ɵsetCurrentInjector, ComponentFactoryResolver } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter} from '@angular/core';
 import { KanbanModel } from './kanban.model';
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { Task } from 'app/models/task';
 import { Project } from 'app/models/project';
 import { DataService } from 'app/data.service';
-import { KanbanColumn, KanbanTask } from 'app/models/kanban';
+import { KanbanColumn} from 'app/models/kanban';
 import { FocusHelper } from 'app/common/view_helper';
 import { TaskItemInfo } from 'app/tasks/common/task.item.info';
 import { Status } from 'app/models/status';
@@ -61,28 +61,31 @@ export class KanbanComponent implements OnInit {
   }
 
   private changeTasksOrder(column: string, previousIndex: number, currentIndex: number){
+    console
     const currentColumn = this.model.getColumnById(Number.parseInt(column));
-    // const previousTask = currentColumn.getKanbanTasks()[previousIndex];
     const previousTask = this.model.getTaskByIndex(previousIndex, currentColumn.getId());
     const currentTask = this.model.getTaskByIndex(currentIndex, currentColumn.getId());
     DataService.getStoreManager().getKanbanTaskStore().move(previousTask, currentTask, previousIndex>currentIndex).then(updatedTask=>{
-      // TODO: aktualizacja zadań w kolumnach
-      // console.log(updatedTask);
-      // this.model.updateTasks(updatedTask, currentColumn.getId());
+      this.model.updateTasks(updatedTask, currentColumn.getId());
     });
-
-
   }
 
   private moveTaskToColumn(previousColumnId: string, currentColumnId:string, previousIndex: number, currentIndex: number){
+      console.log("MoveTaskToColumn");
       const previousColumn = this.model.getColumnById(Number.parseInt(previousColumnId));
       const currentColumn = this.model.getColumnById(Number.parseInt(currentColumnId));
       const previousTask = previousColumn.getKanbanTasks()[previousIndex];
       const currentTask = currentColumn.getKanbanTasks()[currentIndex];
       DataService.getStoreManager().getKanbanTaskStore().changeContainer(previousTask, currentTask, currentColumn.getId()).then(updatedTask=>{
-        // TODO: aktualizacja zadań w kolumnach
-        // this.model.updateTasks(updatedTask, previousColumn.getId());
-        // this.model.updateTasks(updatedTask, currentColumn.getId());
+        console.log("Zaktualizowane ");
+        console.log(updatedTask);
+        // TODO: spróbować to zrobić w kodzie listy
+
+        this.model.updateTasks(updatedTask, previousColumn.getId());
+        this.model.updateTasks(updatedTask, currentColumn.getId());
+        // this.model.removeTasks(previousTask, previousColumn.getId());
+        // this.model.insertTask(previousTask, currentColumn.getId());
+
       });
   }
 

@@ -3,8 +3,6 @@ import { Project } from 'app/models/project';
 import { TasksList } from 'app/common/lists/tasks.list';
 
 export class KanbanModel{
-    // TODO: do tej klasy powinniśmy jeszcze dodać
-
     private defaultColumn: KanbanColumn = new KanbanColumn();
     private columns: KanbanColumn[] = [];
     private tasks: Map<number, TasksList<KanbanTask>> = new Map();
@@ -13,7 +11,6 @@ export class KanbanModel{
 
     private newTaskName: string;
     private columnAddingOpen: KanbanColumn;
-    // private columns: Map<string, Task[]> = new Map();
 
     constructor(){
 
@@ -55,6 +52,14 @@ export class KanbanModel{
       this.tasks.get(columnId).updateItems(tasks);
     }
 
+    public removeTasks(task: KanbanTask, columnId: number){
+      this.tasks.get(columnId).removeItem(task);
+    }
+
+    public insertTask(task: KanbanTask, columnId: number){
+      this.tasks.get(columnId).addItem(task);
+    }
+
     public getTaskByIndex(index:number, columnId:number){
       return this.tasks.get(columnId).getItemByIndex(index);
     }
@@ -65,24 +70,24 @@ export class KanbanModel{
           } else {
               this.columns.push(kanbanColumn);
         }
-        this.tasks.set(kanbanColumn.getId(), new TasksList());
+        this.tasks.set(kanbanColumn.getId(), new TasksList(kanbanColumn.getId()));
         this.tasks.get(kanbanColumn.getId()).setItems(kanbanColumn.getKanbanTasks());
     }
 
     public getColumnsNames():string[]{
-      // TODO: przyjrzeć się temu
-        const names = [];
-        this.columns.forEach(column=>{
-            if(column.getId()){
-                names.push(column.getId().toString());
-            }
-        });
-        //-X-DEFAULT-X-"
-        // names.push("Nieprzypisane");
-        if(this.getDefaultColumn().getId()){
-            names.push(this.defaultColumn.getId().toString());
-        }
-        return names;
+      // TODO: może nazwy tabel do łączenia tabel nie są dobrym pomysłem
+      const names = [];
+      this.columns.forEach(column=>{
+          if(column.getId()){
+              names.push(column.getId().toString());
+          }
+      });
+      //-X-DEFAULT-X-"
+      // names.push("Nieprzypisane");
+      if(this.getDefaultColumn().getId()){
+          names.push(this.defaultColumn.getId().toString());
+      }
+      return names;
     }
 
     public getLastColumn():KanbanColumn{

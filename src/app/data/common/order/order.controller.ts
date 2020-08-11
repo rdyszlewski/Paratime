@@ -33,21 +33,20 @@ export class StoreOrderController<T extends OrderableItem> {
     });
   }
 
-  private joinItemsToUpdate(items1: T[], items2:T[]){
+  private joinItemsToUpdate(...items: Array<T[]>){
     const used = new Set<number>();
     const toUpdate = [];
-    items2.forEach(item=>{
-      toUpdate.push(item);
-      used.add(item.getId());
-    });
-    items1.forEach(item=>{
-      if(!used.has(item.getId())){
-        toUpdate.push(item);
-      };
+
+    items.reverse().forEach(itemsToUpdate=>{
+      itemsToUpdate.reverse().forEach(item=>{
+        if(!used.has(item.getId())){
+          toUpdate.push(item);
+          used.add(item.getId());
+        }
+      });
     });
     return toUpdate;
   }
-
 
   private updateItems(items:T[]):Promise<T[]>{
     const promises: Promise<number>[] = items.map(item => this.repository.update(item))
@@ -58,14 +57,11 @@ export class StoreOrderController<T extends OrderableItem> {
 
   public changeContainer(item: T, currentItem: T, currentContainerId: number): Promise<T[]> {
     item.setContainerId(currentContainerId);
-    let updated = [];
-    return this.remove(item).then(updatedTasks=>{
-      updated = updated.concat(updatedTasks);
-      return this.insert(item, currentItem, currentContainerId).then(updatedTasks=>{
-        updated= updated.concat(updatedTasks);
-        return this.updateItems([item]).then(updatedTasks=>{
-          updated = updated.concat(updatedTasks);
-          return Promise.resolve(updated);
+    return this.remove(item).then(updatedTasks1=>{
+      return this.insert(item, currentItem, currentContainerId).then(updatedTasks2=>{
+        return this.updateItems([item]).then(updatedTasks3=>{
+          const toUpdate = this.joinItemsToUpdate(updatedTasks1, updatedTasks2, updatedTasks3);
+          return Promise.resolve(toUpdate);
         })
       })
     })

@@ -12,7 +12,7 @@
                 </div>
                 <div class="column-content"  id="{{getModel().getColumnIdText(column)}}"
                 cdkDropList #column.getId().toString()="cdkDropList"
-                [cdkDropListData]="column.getKanbanTasks()"
+                [cdkDropListData]="getModel().getTasks(column)"
                 [cdkDropListConnectedTo]="getModel().getColumnsNames()"
                 (cdkDropListDropped)="drop($event)">
                     <div cdkDrag *ngFor="let kanbanTask of getModel().getTasks(column)"
@@ -34,7 +34,7 @@
                 </div>
                 <div class="column-content" id='{{getModel().getColumnIdText(getModel().getDefaultColumn())}}'
                 cdkDropList #getModel().getDefaultColumn().getId().toString()="cdkDropList"
-                [cdkDropListData]="getModel().getDefaultColumn().getKanbanTasks()"
+                [cdkDropListData]="getModel().getTasks(getModel().getDefaultColumn())"
                 [cdkDropListConnectedTo]="getModel().getColumnsNames()"
                 (cdkDropListDropped)="drop($event)">
                     <div cdkDrag *ngFor="let kanbanTask of getModel().getTasks(getModel().getDefaultColumn())"

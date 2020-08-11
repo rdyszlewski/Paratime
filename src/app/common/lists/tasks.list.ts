@@ -4,25 +4,28 @@ import { Filter } from '../filter/filter';
 import { IFilterable } from '../filter/filterable';
 import { TaskItemOrderer } from '../order/orderer';
 import { OrderableItem } from 'app/models/orderable.item';
-import { ɵCompiler_compileModuleSync__POST_R3__ } from '@angular/core';
 
 export class TasksList<T extends IFilterable & OrderableItem > implements IOrderableList, IFilterableList{
 
   private items: T[];
   private itemFilter: Filter<T>;
   private orderer: TaskItemOrderer<T>;
+  private containerId: number;
 
-  constructor(){
+  constructor(containerId: number = -1){
     this.itemFilter = new Filter();
     this.orderer = new TaskItemOrderer();
+    this.containerId = containerId;
   }
 
   public setItems(items:T[]): void{
-    console.log("setItems");
-    console.log(items);
     this.items = items;
     this.order();
     this.refresh();
+  }
+
+  public setContainerId(containerId: number){
+    this.containerId = containerId;
   }
 
   public filter(value: string): void {
@@ -41,37 +44,50 @@ export class TasksList<T extends IFilterable & OrderableItem > implements IOrder
     return this.getItems()[index];
   }
 
-  public addItem(item:T):void{
+  public addItem(item:T, refresh:boolean = true):void{
     this.items.push(item);
-    this.refresh();
+    if(refresh){
+      this.refresh();
+    }
   }
 
   private refresh(){
-    console.log("Odświeżanie");
     this.order();
     this.itemFilter.filter(null, this.items);
   }
 
   public updateItems(itemsToUpdate: T[]){
-    console.log("Aktualizacja");
     itemsToUpdate.forEach(item=>{
-      const index = this.items.findIndex(x=>x.getId()==item.getId());
+    const index = this.items.findIndex(x=>x.getId()==item.getId());
       if(index>=0){
-        // const currentItem = this.items[index];
-        // currentItem.setContainerId(item.getContainerId());
-        // currentItem.setPosition(item.getPosition());
-        // currentItem.setSuccessorId(item.getSuccessorId());
-        this.items[index] = item;
+        const currentItem = this.items[index];
+        // when the item is moved we remove it from container
+        if(item.getContainerId() != this.containerId){
+          this.removeItem(currentItem, false);
+        } else {
+          currentItem.setContainerId(item.getContainerId());
+          currentItem.setPosition(item.getPosition());
+          currentItem.setSuccessorId(item.getSuccessorId());
+        }
+      } else {
+        // where the item does not exist and have correct containers id we add it to container
+        if(item.getContainerId() == this.containerId){
+          this.addItem(item, false);
+        }
       }
     });
     this.refresh();
   }
 
-  public removeItem(item: T){
+  public removeItem(item: T, refresh: boolean = true){
     const index = this.items.findIndex(x=>x.getId() == item.getId());
-      if(index >= 0){
-          this.items.splice(index, 1);
-      }
+    if(index >= 0){
+        this.items.splice(index, 1);
+        if(refresh){
+          this.refresh();
+        }
+    }
+
   }
 
 }

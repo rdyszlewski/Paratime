@@ -71,8 +71,6 @@ export class KanbanTaskStore implements IOrderableStore<KanbanTask>{
     });
   }
 
-  // TODO: wstawić zmianę kolejności
-
   public create(data: InsertTaskData): Promise<InsertKanbanTaskResult>{
     const result: InsertKanbanTaskResult = new InsertKanbanTaskResult();
     return this.prepareKanbanColumn(data).then(column=>{
@@ -120,7 +118,7 @@ export class KanbanTaskStore implements IOrderableStore<KanbanTask>{
     return this.orderController.move(previousItem, currentItem, moveUp);
   }
 
-  public changeContainer(item: any, currentTask: KanbanTask, currentContainerId: number): Promise<KanbanTask[]> {
+  public changeContainer(item: KanbanTask, currentTask: KanbanTask, currentContainerId: number): Promise<KanbanTask[]> {
     return this.orderController.changeContainer(item, currentTask, currentContainerId);
   }
 }

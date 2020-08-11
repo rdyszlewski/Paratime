@@ -6,11 +6,8 @@ import { TasksList } from 'app/common/lists/tasks.list';
 export class TasksModel{
 
     private project: Project = new Project();
-    // private filteredList: FilteredList<Task> = new FilteredList();
     private taskWithOpenMenu: Task;
-    // TODO: przemysleć to
-    // private tasks: OrderedList<Task> = new OrderedList();
-    private tasks: TasksList<Task> = new TasksList()
+    private tasks: TasksList<Task> = new TasksList();
     private taskType: TaskType = TaskType.ACTIVE;
 
 
@@ -25,6 +22,9 @@ export class TasksModel{
     }
 
     public setTasks(tasks:Task[]){
+        if(tasks.length>0){
+          this.tasks.setContainerId(tasks[0].getContainerId());
+        }
         this.tasks.setItems(tasks);
     }
 
