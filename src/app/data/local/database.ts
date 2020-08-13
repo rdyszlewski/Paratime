@@ -1,5 +1,4 @@
-
-import Dexie from 'dexie'
+import Dexie from 'dexie';
 import { Task } from 'app/models/task';
 import { Subtask } from 'app/models/subtask';
 import { Project } from 'app/models/project';
@@ -9,103 +8,104 @@ import { Stage } from 'app/models/stage';
 import { PomodoroHistory } from 'app/models/pomodoro.history';
 import { KanbanColumn, KanbanTask } from 'app/models/kanban';
 
+export class LocalDatabase extends Dexie {
+  private dbVersion = 1;
 
-export class LocalDatabase extends Dexie{
+  private tasksTable: Dexie.Table<Task, number>;
+  private subtasksTable: Dexie.Table<Subtask, number>;
+  private projectsTable: Dexie.Table<Project, number>;
+  private labelsTable: Dexie.Table<Label, number>;
+  private taskTagsTable: Dexie.Table<LabelsTask, number>;
+  private stagesTable: Dexie.Table<Stage, number>;
+  private pomodoroTable: Dexie.Table<PomodoroHistory, number>;
+  private kanbanColumnsTable: Dexie.Table<KanbanColumn, number>;
+  private kanbanTasksTable: Dexie.Table<KanbanTask, number>;
 
-    private dbVersion = 1;
+  constructor() {
+    super('Database');
+    this.createTables();
+  }
 
-    private tasksTable: Dexie.Table<Task, number>;
-    private subtasksTable: Dexie.Table<Subtask, number>;
-    private projectsTable: Dexie.Table<Project, number>;
-    private labelsTable: Dexie.Table<Label, number>;
-    private taskTagsTable: Dexie.Table<LabelsTask, number>;
-    private stagesTable: Dexie.Table<Stage, number>;
-    private pomodoroTable: Dexie.Table<PomodoroHistory, number>;
-    private kanbanColumnsTable: Dexie.Table<KanbanColumn, number>;
-    private kanbanTasksTable: Dexie.Table<KanbanTask, number>;
+  private createTables() {
+    this.createSchama();
+    this.initTables();
+    this.mapToClasses();
+  }
 
-    constructor(){
-        super("Database");
-        this.createTables();
-    }
+  private createSchama() {
+    this.version(this.dbVersion).stores({
+      tasks:
+        '++id, name, description, important, date, endDate, plannedTime, status, progress, projectID, priority, projectStageID, successor, position',
+      subtasks: '++id, name, status, taskId, successor, position',
+      projects:
+        '++id, name, description, startDate, endDate, status, type, successor, position',
+      labels: '++id, name',
+      task_labels: '[taskId+labelId], taskId, labelId',
+      stages:
+        '++id, name, description, endDate, status, projectID, successor, position',
+      pomodoro: '++id, taskId, projectId, time, date',
+      kanban_columns: '++id, projectId, name, default, successor, position',
+      kanban_tasks: '++id, taskId, columnId, successor, position',
+    });
+  }
 
-    private createTables(){
-        this.createSchama();
-        this.initTables();
-        this.mapToClasses();
-    }
+  private initTables() {
+    this.tasksTable = this.table('tasks');
+    this.subtasksTable = this.table('subtasks');
+    this.projectsTable = this.table('projects');
+    this.labelsTable = this.table('labels');
+    this.taskTagsTable = this.table('task_labels');
+    this.stagesTable = this.table('stages');
+    this.pomodoroTable = this.table('pomodoro');
+    this.kanbanColumnsTable = this.table('kanban_columns');
+    this.kanbanTasksTable = this.table('kanban_tasks');
+  }
 
-    private createSchama() {
-        this.version(this.dbVersion).stores({
-            tasks: '++id, name, description, important, date, endDate, plannedTime, status, progress, projectID, priority, projectStageID, successor, position',
-            subtasks: '++id, name, status, taskId, successor, position',
-            projects: '++id, name, description, startDate, endDate, status, type, successor, position',
-            labels: '++id, name',
-            task_labels: '[taskId+labelId], taskId, labelId',
-            stages: "++id, name, description, endDate, status, projectID",
-            pomodoro: "++id, taskId, projectId, time, date",
-            kanban_columns: "++id, projectId, name, default, successor, position",
-            kanban_tasks: "++id, taskId, columnId, successor, position"
-        });
-    }
+  private mapToClasses() {
+    this.projectsTable.mapToClass(Project);
+    this.tasksTable.mapToClass(Task);
+    this.subtasksTable.mapToClass(Subtask);
+    this.labelsTable.mapToClass(Label);
+    this.taskTagsTable.mapToClass(LabelsTask);
+    this.stagesTable.mapToClass(Stage);
+    this.pomodoroTable.mapToClass(PomodoroHistory);
+    this.kanbanColumnsTable.mapToClass(KanbanColumn);
+    this.kanbanTasksTable.mapToClass(KanbanTask);
+  }
 
-    private initTables() {
-        this.tasksTable = this.table('tasks');
-        this.subtasksTable = this.table('subtasks');
-        this.projectsTable = this.table('projects');
-        this.labelsTable = this.table('labels');
-        this.taskTagsTable = this.table('task_labels');
-        this.stagesTable = this.table('stages');
-        this.pomodoroTable = this.table("pomodoro");
-        this.kanbanColumnsTable = this.table("kanban_columns");
-        this.kanbanTasksTable = this.table("kanban_tasks");
-    }
+  public getTasksTable() {
+    return this.tasksTable;
+  }
 
-    private mapToClasses() {
-        this.projectsTable.mapToClass(Project);
-        this.tasksTable.mapToClass(Task);
-        this.subtasksTable.mapToClass(Subtask);
-        this.labelsTable.mapToClass(Label);
-        this.taskTagsTable.mapToClass(LabelsTask);
-        this.stagesTable.mapToClass(Stage);
-        this.pomodoroTable.mapToClass(PomodoroHistory);
-        this.kanbanColumnsTable.mapToClass(KanbanColumn);
-        this.kanbanTasksTable.mapToClass(KanbanTask);
-    }
+  public getSubtasksTable() {
+    return this.subtasksTable;
+  }
 
-    public getTasksTable(){
-        return this.tasksTable;
-    }
+  public getProjectsTable() {
+    return this.projectsTable;
+  }
 
-    public getSubtasksTable(){
-        return this.subtasksTable;
-    }
+  public getLabelsTable() {
+    return this.labelsTable;
+  }
 
-    public getProjectsTable(){
-        return this.projectsTable;
-    }
+  public getTaskLabelsTable() {
+    return this.taskTagsTable;
+  }
 
-    public getLabelsTable(){
-        return this.labelsTable;
-    }
+  public getStagesTable() {
+    return this.stagesTable;
+  }
 
-    public getTaskLabelsTable(){
-        return this.taskTagsTable;
-    }
+  public getPomodoroTable() {
+    return this.pomodoroTable;
+  }
 
-    public getStagesTable(){
-        return this.stagesTable;
-    }
+  public getKanbanColumnsTable() {
+    return this.kanbanColumnsTable;
+  }
 
-    public getPomodoroTable(){
-        return this.pomodoroTable;
-    }
-
-    public getKanbanColumnsTable(){
-        return this.kanbanColumnsTable;
-    }
-
-    public getKanbanTasksTable(){
-        return this.kanbanTasksTable;
-    }
+  public getKanbanTasksTable() {
+    return this.kanbanTasksTable;
+  }
 }

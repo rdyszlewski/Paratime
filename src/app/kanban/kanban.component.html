@@ -39,12 +39,11 @@
                 [ngTemplateOutletContext]="{ $implicit: kanbanTask.getTask() }"
               ></ng-container>
             </div>
-
           </div>
           <ng-container
-          [ngTemplateOutlet]="new_task"
-          [ngTemplateOutletContext]="{ $implicit: column }"
-        ></ng-container>
+            [ngTemplateOutlet]="new_task"
+            [ngTemplateOutletContext]="{ $implicit: column }"
+          ></ng-container>
         </div>
       </ng-container>
     </div>
@@ -89,8 +88,6 @@
             </div>
           </div>
         </div>
-
-
 
         <ng-container
           [ngTemplateOutlet]="new_task"

@@ -1,10 +1,11 @@
 import { Stage } from 'app/models/stage';
+import { IOrderableRepository } from './orderable.repository';
 
-export interface IProjectStageRepository{
-    findStageById(id:number):Promise<Stage>;
-    findStageByProject(projectId:number):Promise<Stage[]>;
-    findStageByName(name:string):Promise<Stage[]>;
-    insertStage(stage:Stage):Promise<number>;
-    updateStage(stage:Stage):Promise<number>;
-    removeStage(id:number):Promise<void>;
+export interface IProjectStageRepository extends IOrderableRepository<Stage> {
+  findById(id: number): Promise<Stage>;
+  findByProject(projectId: number): Promise<Stage[]>;
+  findByName(name: string): Promise<Stage[]>;
+  insertStage(stage: Stage): Promise<number>;
+  update(stage: Stage): Promise<number>;
+  remove(id: number): Promise<void>;
 }

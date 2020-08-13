@@ -5,63 +5,69 @@ import { DataService } from 'app/data.service';
 import { FocusHelper } from 'app/common/view_helper';
 import { EditInputHandler } from 'app/common/edit_input_handler';
 import { EventEmitter } from '@angular/core';
+import { ProjectDetails } from '../model/model';
 
-export class ProjectStagesController{
-    
-    private STAGE_NAME_INPUT = '#new-stage-name';
+export class ProjectStagesController {
+  private STAGE_NAME_INPUT = '#new-stage-name';
 
-    private editEvent: EventEmitter<Stage> = new EventEmitter();
-    private model: ProjectStageModel = new ProjectStageModel();
-    private project: Project;
+  private editEvent: EventEmitter<Stage> = new EventEmitter();
+  private stageModel: ProjectStageModel = new ProjectStageModel();
+  private model: ProjectDetails;
+  private project: Project;
 
-    constructor(editEvent:EventEmitter<Stage>){
-        this.editEvent = editEvent;
-    }
+  constructor(editEvent: EventEmitter<Stage>, model: ProjectDetails) {
+    this.editEvent = editEvent;
+    this.model = model;
+  }
 
-    public setProject(project: Project){
-        this.project = project;
-    }
+  public setProject(project: Project) {
+    this.project = project;
+  }
 
-    public getModel(): ProjectStageModel{
-        return this.model;
-    }
+  public getModel(): ProjectStageModel {
+    return this.stageModel;
+  }
 
-    public addNewStage(){
-        const stage = new Stage();
-        stage.setName(this.model.getNewStageName());
-        stage.setProject(this.project);
-        this.saveStage(stage);
-    }
-  
-    private saveStage(stage:Stage){
-      DataService.getStoreManager().getStageStore().createStage(stage).then(insertedStage=>{
-        this.project.addStage(insertedStage);
+  public addNewStage() {
+    const stage = new Stage();
+    stage.setName(this.stageModel.getNewStageName());
+    stage.setProject(this.project);
+    this.saveStage(stage);
+  }
+
+  private saveStage(stage: Stage) {
+    DataService.getStoreManager()
+      .getStageStore()
+      .createStage(stage)
+      .then((updatedStages) => {
+        this.model.updateStages(updatedStages);
         this.closeAddingNewStage();
       });
-    }
-    
-    public closeAddingNewStage(){
-        this.model.closeAddingStage();
-    }
-  
-    public onCreateStageClick(){
-      this.model.openAddingStage();
-      this.model.setNewStageName("");
-      FocusHelper.focus(this.STAGE_NAME_INPUT);
-    }
+  }
 
-    public handleAddingNewStageKeyUp(event:KeyboardEvent){
-        EditInputHandler.handleKeyEvent(event, 
-          ()=>this.addNewStage(),
-          ()=>this.closeAddingNewStage()
-        );
-    }
+  public closeAddingNewStage() {
+    this.stageModel.closeAddingStage();
+  }
 
-    public onStageMenuClick(event: MouseEvent, stage:Stage){
-        // TODO: przeanalizować co to miało robić
-    }
+  public onCreateStageClick() {
+    this.stageModel.openAddingStage();
+    this.stageModel.setNewStageName('');
+    FocusHelper.focus(this.STAGE_NAME_INPUT);
+  }
 
-    public onEditStage(stage:Stage){
-        this.editEvent.emit(stage);
-      }
+  public handleAddingNewStageKeyUp(event: KeyboardEvent) {
+    EditInputHandler.handleKeyEvent(
+      event,
+      () => this.addNewStage(),
+      () => this.closeAddingNewStage()
+    );
+  }
+
+  public onStageMenuClick(event: MouseEvent, stage: Stage) {
+    // TODO: przeanalizować co to miało robić
+  }
+
+  public onEditStage(stage: Stage) {
+    this.editEvent.emit(stage);
+  }
 }
