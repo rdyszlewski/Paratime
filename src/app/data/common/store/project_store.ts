@@ -3,8 +3,6 @@ import { IProjectRepository } from '../repositories/project_repository';
 import { TaskStore } from './task_store';
 import { StageStore } from './stage_store';
 import { KanbanColumn } from 'app/models/kanban';
-import { Task } from 'app/models/task';
-import { InsertTaskData } from '../models/insert.task.data';
 import { KanbanColumnStore } from './kanban.column.store';
 import { IOrderableStore } from './orderable.store';
 import { StoreOrderController } from '../order/order.controller';
@@ -32,7 +30,7 @@ export class ProjectStore implements IOrderableStore<Project> {
 
   public createProject(project: Project): Promise<InsertProjectResult> {
     return this.projectRepository.insertProject(project).then((insertedId) => {
-      return this.createKanbanColumn(insertedId).then((column) => {
+      return this.createKanbanColumn(insertedId).then((updatedColumns) => {
         return this.getProjectById(insertedId).then((project) => {
           return this.orderController
             .insert(project, null, null)
@@ -40,7 +38,8 @@ export class ProjectStore implements IOrderableStore<Project> {
               const result = new InsertProjectResult();
               result.insertedProject = project;
               result.updatedProjects = updatedProjects;
-              result.insertedKanbanColumn = column;
+              // TODO: przemyśleć jak to tutaj będzie wyglądało
+              // result.insertedKanbanColumn = column;
               return Promise.resolve(result);
             });
         });
@@ -75,17 +74,6 @@ export class ProjectStore implements IOrderableStore<Project> {
         });
       })
     });
-    // return this.taskStore.getTasksByProject(projectId).then(tasks=>{
-    //     let promises = [];
-    //     tasks.forEach(task=>{
-    //         let promise = this.taskStore.removeTask(task.getId());
-    //         promises.push(promise);
-    //     });
-    //     promises.push(this.stageStore.removeStagesFromProject(projectId));
-    //     return Promise.all(promises);
-    // }).then(()=>{
-    //     return this.projectRepository.removeProject(projectId);
-    // });
   }
 
   private removeAllTaskFromProject(projectId: number): Promise<void | any> {

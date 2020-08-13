@@ -2,133 +2,150 @@ import { KanbanColumn, KanbanTask } from 'app/models/kanban';
 import { Project } from 'app/models/project';
 import { TasksList } from 'app/common/lists/tasks.list';
 
-export class KanbanModel{
-    private defaultColumn: KanbanColumn = new KanbanColumn();
-    private columns: KanbanColumn[] = [];
-    private tasks: Map<number, TasksList<KanbanTask>> = new Map();
-    private project: Project;
-    private columnName: string;
+export class KanbanModel {
+  // TODO: możliwe, że będzie trzeba zmienić listę, poniewa tutaj chyba nie będzie się sortowało
+  private columns: TasksList<KanbanColumn> = new TasksList();
+  private tasks: Map<number, TasksList<KanbanTask>> = new Map();
+  private project: Project;
+  private columnName: string;
 
-    private newTaskName: string;
-    private columnAddingOpen: KanbanColumn;
+  private newTaskName: string;
+  private columnAddingOpen: KanbanColumn;
 
-    constructor(){
+  constructor() {}
 
+  public getColumns(): KanbanColumn[] {
+    return this.columns.getItems();
+    // return this.columns.getItems().filter(x=>!x.isDefault());
+  }
+
+  public getDefaultColumn(): KanbanColumn {
+    return this.columns.getItems().filter((x) => x.isDefault())[0];
+  }
+
+  public getColumnName(): string {
+    return this.columnName;
+  }
+
+  public getColumnByIndex(index: number): KanbanColumn {
+    return this.getColumns()[index];
+  }
+
+  public setColumnName(name: string) {
+    this.columnName = name;
+  }
+
+  public setColumns(columns: KanbanColumn[]) {
+    console.log(columns);
+    this.columns.setItems(columns);
+    // TODO: ten sposób możę być bardziej wymagający
+  }
+
+  public getColumnById(columnId: number): KanbanColumn {
+    return this.columns.getItems().find((x) => x.getId() == columnId);
+  }
+
+  public getProject(): Project {
+    return this.project;
+  }
+
+  public setProject(project: Project) {
+    if (project) {
+      this.columns.setContainerId(project.getId());
     }
+    this.project = project;
+  }
 
-    public getColumns(): KanbanColumn[]{
-        return this.columns;
+  public updateColumns(columns: KanbanColumn[]) {
+    this.columns.updateItems(columns);
+  }
+
+  public getTasks(column: KanbanColumn) {
+    const tasks = this.tasks.get(column.getId());
+    if (tasks) {
+      return tasks.getItems();
     }
+    return [];
+  }
 
-    public getDefaultColumn(): KanbanColumn{
-        return this.defaultColumn;
-    }
+  public updateTasks(tasks: KanbanTask[], columnId: number) {
+    const column = this.tasks.get(columnId);
+    column.updateItems(tasks);
+  }
 
-    public getColumnName():string{
-        return this.columnName;
-    }
+  public addTask(task:KanbanTask):void{
+    this.tasks.get(task.getColumnId()).addItem(task);
+  }
 
-    public setColumnName(name:string){
-        this.columnName = name;
-    }
+  public removeTask(task: KanbanTask, columnId: number) {
+    this.tasks.get(columnId).removeItem(task);
+  }
 
-    public getProject():Project{
-        return this.project;
-    }
+  public insertTask(task: KanbanTask, columnId: number) {
+    this.tasks.get(columnId).addItem(task);
+  }
 
-    public setProject(project: Project){
-        this.project = project;
-    }
+  public getTaskByIndex(index: number, columnId: number) {
+    const column = this.tasks.get(columnId);
+    return column.getItemByIndex(index);
+  }
 
-    public getTasks(column: KanbanColumn){
-      const tasks = this.tasks.get(column.getId());
-      if(tasks){
-        return tasks.getItems();
+  public addColumn(kanbanColumn: KanbanColumn) {
+    this.columns.addItem(kanbanColumn);
+
+    this.tasks.set(kanbanColumn.getId(), new TasksList(kanbanColumn.getId()));
+    this.tasks
+      .get(kanbanColumn.getId())
+      .setItems(kanbanColumn.getKanbanTasks());
+  }
+
+  public setTasks(kanbanColumns: KanbanColumn[]) {
+    kanbanColumns.forEach((column) => {
+      this.tasks.set(column.getId(), new TasksList(column.getId()));
+      this.tasks.get(column.getId()).setItems(column.getKanbanTasks());
+    });
+  }
+
+  public getColumnsNames(): string[] {
+    const names = [];
+    this.columns.getItems().forEach((item) => {
+      if (item.getId()) {
+        names.push(item.getId().toString());
       }
-      return [];
-    }
+    });
+    //-X-DEFAULT-X-"
+    // names.push("Nieprzypisane");
+    // if (this.getDefaultColumn().getId()) {
+    //   names.push(this.defaultColumn.getId().toString());
+    // }
+    return names;
+  }
 
-    public updateTasks(tasks: KanbanTask[], columnId: number){
-      this.tasks.get(columnId).updateItems(tasks);
+  public getColumnIdText(column: KanbanColumn) {
+    if (column.getId()) {
+      return column.getId().toString();
     }
+    return null;
+  }
 
-    public removeTask(task: KanbanTask, columnId: number){
-      this.tasks.get(columnId).removeItem(task);
-    }
+  public getNewTaskName(): string {
+    return this.newTaskName;
+  }
 
-    public insertTask(task: KanbanTask, columnId: number){
-      this.tasks.get(columnId).addItem(task);
-    }
+  public setNewTaskName(name: string): void {
+    this.newTaskName = name;
+  }
 
-    public getTaskByIndex(index:number, columnId:number){
-      return this.tasks.get(columnId).getItemByIndex(index);
-    }
+  public getColumnAddingOpen(): KanbanColumn {
+    return this.columnAddingOpen;
+  }
 
-    public addColumn(kanbanColumn: KanbanColumn){
-        if(kanbanColumn.isDefault()){
-              this.defaultColumn = kanbanColumn;
-          } else {
-              this.columns.push(kanbanColumn);
-        }
-        this.tasks.set(kanbanColumn.getId(), new TasksList(kanbanColumn.getId()));
-        this.tasks.get(kanbanColumn.getId()).setItems(kanbanColumn.getKanbanTasks());
-    }
+  public setColumnAddingOpen(column: KanbanColumn): void {
+    this.columnAddingOpen = column;
+  }
 
-    public getColumnsNames():string[]{
-      // TODO: może nazwy tabel do łączenia tabel nie są dobrym pomysłem
-      const names = [];
-      this.columns.forEach(column=>{
-          if(column.getId()){
-              names.push(column.getId().toString());
-          }
-      });
-      //-X-DEFAULT-X-"
-      // names.push("Nieprzypisane");
-      if(this.getDefaultColumn().getId()){
-          names.push(this.defaultColumn.getId().toString());
-      }
-      return names;
-    }
-
-    public getLastColumn():KanbanColumn{
-        if(this.columns.length == 0){
-            return this.defaultColumn;
-        }
-        return this.columns[this.columns.length-1];
-    }
-
-    public clearColumns(){
-        this.columns = [];
-        this.defaultColumn = new KanbanColumn();
-    }
-
-    public getColumnById(id:number){
-        if(id == this.defaultColumn.getId()){
-            return this.defaultColumn;
-        }
-        return this.columns.find(x=>x.getId()==id);
-    }
-
-    public getColumnIdText(column:KanbanColumn){
-        if(column.getId()){
-            return column.getId().toString();
-        }
-        return null;
-    }
-
-    public getNewTaskName():string{
-        return this.newTaskName;
-    }
-
-    public setNewTaskName(name:string):void{
-        this.newTaskName = name;
-    }
-
-    public getColumnAddingOpen():KanbanColumn{
-        return this.columnAddingOpen;
-    }
-
-    public setColumnAddingOpen(column: KanbanColumn):void{
-        this.columnAddingOpen = column;
-    }
+  public reset() {
+    this.columns.clear();
+    this.tasks.clear();
+  }
 }

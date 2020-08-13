@@ -3,80 +3,79 @@ import { Project } from 'app/models/project';
 import { TaskType } from './task.type';
 import { TasksList } from 'app/common/lists/tasks.list';
 
-export class TasksModel{
+export class TasksModel {
+  private project: Project = new Project();
+  private taskWithOpenMenu: Task;
+  private tasks: TasksList<Task> = new TasksList();
+  private taskType: TaskType = TaskType.ACTIVE;
 
-    private project: Project = new Project();
-    private taskWithOpenMenu: Task;
-    private tasks: TasksList<Task> = new TasksList();
-    private taskType: TaskType = TaskType.ACTIVE;
+  public getProject() {
+    return this.project;
+  }
 
-
-    public getProject(){
-        return this.project;
+  public getProjectName() {
+    if (this.project) {
+      return this.project.getName();
     }
+  }
 
-    public getProjectName(){
-        if(this.project){
-            return this.project.getName();
-        }
+  public setTasks(tasks: Task[]) {
+    if (tasks.length > 0) {
+      this.tasks.setContainerId(tasks[0].getContainerId());
     }
+    this.tasks.setItems(tasks);
+  }
 
-    public setTasks(tasks:Task[]){
-        if(tasks.length>0){
-          this.tasks.setContainerId(tasks[0].getContainerId());
-        }
-        this.tasks.setItems(tasks);
+  public setProject(project: Project) {
+    this.project = project;
+    if (project) {
+      this.tasks.setContainerId(project.getId());
     }
+  }
 
-    public setProject(project:Project){
-        this.project = project;
-    }
+  public getTasks(): Task[] {
+    return this.tasks.getItems();
+  }
 
-    public getTasks():Task[]{
-        return this.tasks.getItems();
-    }
+  public addTask(task: Task) {
+    this.project.addTask(task);
+    this.tasks.addItem(task);
+  }
 
-    public addTask(task:Task){
-        this.project.addTask(task);
-        this.tasks.addItem(task);
-    }
+  public updateTasks(tasks: Task[]) {
+    this.tasks.updateItems(tasks);
+  }
 
-    public updateTasks(tasks:Task[]){
-      this.tasks.updateItems(tasks);
-    }
+  public filterTasks(filter: string): void {
+    this.tasks.filter(filter);
+  }
 
-    public filterTasks(filter:string):void{
-        this.tasks.filter(filter);
-    }
+  public removeTask(task: Task) {
+    this.project.removeTask(task);
+    this.tasks.removeItem(task);
+  }
 
-    public removeTask(task:Task){
+  public getTaskWithOpenMenu(): Task {
+    return this.taskWithOpenMenu;
+  }
 
-        this.project.removeTask(task);
-        this.tasks.removeItem(task);
+  public setTaskWithOpenMenu(task: Task) {
+    this.taskWithOpenMenu = task;
+  }
 
-    }
+  public isOpen(): boolean {
+    return this.project != null;
+  }
 
-    public getTaskWithOpenMenu():Task{
-        return this.taskWithOpenMenu;
-    }
+  public getTaskByIndex(index: number): Task {
+    return this.tasks.getItemByIndex(index);
+  }
 
-    public setTaskWithOpenMenu(task:Task){
-        this.taskWithOpenMenu = task;
-    }
+  public setTaskType(taskType: TaskType) {
+    this.taskType = taskType;
+  }
 
-    public isOpen():boolean{
-        return this.project != null;
-    }
-
-    public getTaskByIndex(index: number): Task{
-        return this.tasks.getItemByIndex(index);
-    }
-
-    public setTaskType(taskType: TaskType){
-      this.taskType = taskType;
-    }
-
-    public isActiveTaskType(){
-      return this.taskType == TaskType.ACTIVE;
-    }
+  public isActiveTaskType() {
+    return this.taskType == TaskType.ACTIVE;
+  }
 }

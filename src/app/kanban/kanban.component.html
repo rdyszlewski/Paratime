@@ -1,136 +1,236 @@
-<div class="kanban-view shadow app-panel"
-*ngIf="isOpen()">
-    <input class="add-column-input" autocomplete="off"
-    [ngModel]="getModel().getColumnName()" (ngModelChange)="getModel().setColumnName($event)">
-    <button class="add-column-button" (click)="addColumn()">Dodaj kolumnę</button>
-    <div class="columns-container">
-        <div class="kanban-columns">
-            <div class="column"
-            *ngFor="let column of getModel().getColumns()">
-                <div class="column-header">
-                    {{column.getName()}}
-                </div>
-                <div class="column-content"  id="{{getModel().getColumnIdText(column)}}"
-                cdkDropList #column.getId().toString()="cdkDropList"
-                [cdkDropListData]="getModel().getTasks(column)"
-                [cdkDropListConnectedTo]="getModel().getColumnsNames()"
-                (cdkDropListDropped)="drop($event)">
-                    <div cdkDrag *ngFor="let kanbanTask of getModel().getTasks(column)"
-                    class="task-list-item list-item block transparent-border">
-                        <ng-container [ngTemplateOutlet]="task_item", [ngTemplateOutletContext]="{$implicit:kanbanTask.getTask()}"></ng-container>
-                    </div>
-                    <ng-container [ngTemplateOutlet]='new_task' [ngTemplateOutletContext]="{$implicit:column}"></ng-container>
-                </div>
+<div class="kanban-view shadow app-panel" *ngIf="isOpen()">
+  <input
+    class="add-column-input"
+    autocomplete="off"
+    [ngModel]="getModel().getColumnName()"
+    (ngModelChange)="getModel().setColumnName($event)"
+  />
+  <button class="add-column-button" (click)="addColumn()">Dodaj kolumnę</button>
+  <div class="columns-container">
+    <div
+      class="kanban-columns"
+      cdkDropList
+      #columnsList="cdkDropList"
+      [cdkDropListData]="getModel().getColumns()"
+      (cdkDropListDropped)="columnDrop($event)"
+      cdkDropListOrientation="horizontal"
+    >
+      <ng-container *ngFor="let column of getModel().getColumns()">
+        <div class="column" cdkDrag [hidden]="column.isDefault()">
+          <div class="column-header">
+            {{ column.getName() }}
+          </div>
+          <div
+            class="column-content"
+            id="{{ getModel().getColumnIdText(column) }}"
+            cdkDropList
+            #column.getId().toString()="cdkDropList"
+            [cdkDropListData]="getModel().getTasks(column)"
+            [cdkDropListConnectedTo]="getModel().getColumnsNames()"
+            (cdkDropListDropped)="drop($event)"
+          >
+            <div
+              cdkDrag
+              *ngFor="let kanbanTask of getModel().getTasks(column)"
+              class="task-list-item list-item block transparent-border"
+            >
+              <ng-container
+                [ngTemplateOutlet]="task_item"
+                [ngTemplateOutletContext]="{ $implicit: kanbanTask.getTask() }"
+              ></ng-container>
             </div>
+
+          </div>
+          <ng-container
+          [ngTemplateOutlet]="new_task"
+          [ngTemplateOutletContext]="{ $implicit: column }"
+        ></ng-container>
         </div>
-
-        <div class="default-column-container">
-            <div class="column" id="default-column"
-            *ngIf="isDefaultColumnOpen()">
-                <div class="column-header">
-                    <span class="column-name">{{getModel().getDefaultColumn().getName()}}</span>
-                    <button (click)="toggleOpenDefautlColumn()">></button>
-
-                </div>
-                <div class="column-content" id='{{getModel().getColumnIdText(getModel().getDefaultColumn())}}'
-                cdkDropList #getModel().getDefaultColumn().getId().toString()="cdkDropList"
-                [cdkDropListData]="getModel().getTasks(getModel().getDefaultColumn())"
-                [cdkDropListConnectedTo]="getModel().getColumnsNames()"
-                (cdkDropListDropped)="drop($event)">
-                    <div cdkDrag *ngFor="let kanbanTask of getModel().getTasks(getModel().getDefaultColumn())"
-                    class="task-list-item list-item block transparent-border">
-                        <ng-container [ngTemplateOutlet]="task_item" [ngTemplateOutletContext]="{$implicit:kanbanTask.getTask()}"></ng-container>
-                    </div>
-                    <ng-container [ngTemplateOutlet]='new_task' [ngTemplateOutletContext]="{$implicit:getModel().getDefaultColumn()}"></ng-container>
-                </div>
-
-            </div>
-            <div class="default-column-sidebar" *ngIf="!isDefaultColumnOpen()">
-                <button (click)="toggleOpenDefautlColumn()"><</button>
-            </div>
-        </div>
-
+      </ng-container>
     </div>
-    <button (click)="closeView()"> Zamknij</button>
+
+    <div class="default-column-container">
+      <div
+        class="column"
+        id="default-column"
+        *ngIf="isDefaultColumnOpen() && getModel().getDefaultColumn()"
+      >
+        <div class="column-x">
+          <div class="column-header">
+            <span class="column-name">{{
+              getModel().getDefaultColumn().getName()
+            }}</span>
+            <button (click)="toggleOpenDefautlColumn()">></button>
+          </div>
+          <div
+            class="column-content"
+            id="{{ getModel().getColumnIdText(getModel().getDefaultColumn()) }}"
+            cdkDropList
+            #getModel().getDefaultColumn().getId().toString()="cdkDropList"
+            [cdkDropListData]="
+              getModel().getTasks(getModel().getDefaultColumn())
+            "
+            [cdkDropListConnectedTo]="getModel().getColumnsNames()"
+            (cdkDropListDropped)="drop($event)"
+          >
+            <div
+              cdkDrag
+              *ngFor="
+                let kanbanTask of getModel().getTasks(
+                  getModel().getDefaultColumn()
+                )
+              "
+              class="task-list-item list-item block transparent-border"
+            >
+              <ng-container
+                [ngTemplateOutlet]="task_item"
+                [ngTemplateOutletContext]="{ $implicit: kanbanTask.getTask() }"
+              ></ng-container>
+            </div>
+          </div>
+        </div>
+
+
+
+        <ng-container
+          [ngTemplateOutlet]="new_task"
+          [ngTemplateOutletContext]="{
+            $implicit: getModel().getDefaultColumn()
+          }"
+        ></ng-container>
+      </div>
+      <div class="default-column-sidebar" *ngIf="!isDefaultColumnOpen()">
+        <button (click)="toggleOpenDefautlColumn()"><</button>
+      </div>
+    </div>
+  </div>
+  <button (click)="closeView()">Zamknij</button>
 </div>
 
 <ng-template #new_kanban_task let-column>
-    <input type="text" class="form-control" id="new_task_input_{{column.getId()}}" autocomplete="off"
+  <input
+    type="text"
+    class="form-control"
+    id="new_task_input_{{ column.getId() }}"
+    autocomplete="off"
     (keyup)="handleAddingKeyUp($event)"
-    [ngModel]="getModel().getNewTaskName()" (ngModelChange)="getModel().setNewTaskName($event)">
-    <div class="buttons-container">
-        <button class="button small-button insert-button" id="save-kanban-task-button"
-        (click)="addNewTask(column)">Zapisz</button>
-        <button class="button small-button insert-button" id="cancel-kanban-task-button"
-        (click)="closeAddingNewTask()">Anuluj</button>
-    </div>
+    [ngModel]="getModel().getNewTaskName()"
+    (ngModelChange)="getModel().setNewTaskName($event)"
+  />
+  <div class="buttons-container">
+    <button
+      class="button small-button insert-button"
+      id="save-kanban-task-button"
+      (click)="addNewTask(column)"
+    >
+      Zapisz
+    </button>
+    <button
+      class="button small-button insert-button"
+      id="cancel-kanban-task-button"
+      (click)="closeAddingNewTask()"
+    >
+      Anuluj
+    </button>
+  </div>
 </ng-template>
 
 <ng-template #task_item let-task>
-    <div class="task-main">
-        <div class="list-item-top">
-            <div class="list-item-value">{{task.getName()}}</div>
-        </div>
-        <ng-container [ngTemplateOutlet]="task_labels" [ngTemplateOutletContext]="{$implicit:task}"></ng-container>
-        <ng-container [ngTemplateOutlet]="task_details" [ngTemplateOutletContext]="{$implicit:task}"></ng-container>
+  <div class="task-main">
+    <div class="list-item-top">
+      <div class="list-item-value">{{ task.getName() }}</div>
     </div>
-    <ng-container [ngTemplateOutlet]="item_options" [ngTemplateOutletContext]="{$implicit:task}"></ng-container>
+    <ng-container
+      [ngTemplateOutlet]="task_labels"
+      [ngTemplateOutletContext]="{ $implicit: task }"
+    ></ng-container>
+    <ng-container
+      [ngTemplateOutlet]="task_details"
+      [ngTemplateOutletContext]="{ $implicit: task }"
+    ></ng-container>
+  </div>
+  <ng-container
+    [ngTemplateOutlet]="item_options"
+    [ngTemplateOutletContext]="{ $implicit: task }"
+  ></ng-container>
 </ng-template>
 
 <ng-template #new_task let-column>
-    <div class="add-task-container">
-        <div *ngIf="getModel().getColumnAddingOpen()==column">
-            <ng-container [ngTemplateOutlet]="new_kanban_task" [ngTemplateOutletContext]="{$implicit:column}"></ng-container>
-        </div>
-        <button class="column-add-button"
-        *ngIf="getModel().getColumnAddingOpen() != column"
-        (click)="onAddKanbanTaskClick(column)">
-            Dodaj zadanie
-        </button>
+  <div class="add-task-container">
+    <div *ngIf="getModel().getColumnAddingOpen() == column">
+      <ng-container
+        [ngTemplateOutlet]="new_kanban_task"
+        [ngTemplateOutletContext]="{ $implicit: column }"
+      ></ng-container>
     </div>
+    <button
+      class="column-add-button"
+      *ngIf="getModel().getColumnAddingOpen() != column"
+      (click)="onAddKanbanTaskClick(column)"
+    >
+      Dodaj zadanie
+    </button>
+  </div>
 </ng-template>
 
 <ng-template #task_labels let-task>
-    <div *ngFor="let label of task.getLabels()" class="label-item border">
-        {{label.getName()}}
-      </div>
+  <div *ngFor="let label of task.getLabels()" class="label-item border">
+    {{ label.getName() }}
+  </div>
 </ng-template>
 
 <ng-template #task_details let-task>
-    <div class="task-detauls-container">
-        <div *ngIf='task.getDescription()!=null' class="task-description-icon info-icon"
-            tooltip ="{{task.getDescription()}}" autoplacement="true" placement="bottom">
-        </div>
+  <div class="task-detauls-container">
+    <div
+      *ngIf="task.getDescription() != null"
+      class="task-description-icon info-icon"
+      tooltip="{{ task.getDescription() }}"
+      autoplacement="true"
+      placement="bottom"
+    ></div>
 
-        <div *ngIf="task.getEndDate()!=null" class="task-enddate-icon info-icon"
-            tooltip="{{getInfo().getEndDateText(task)}}" autoplacement="true" placement="bottom">
-        </div>
+    <div
+      *ngIf="task.getEndDate() != null"
+      class="task-enddate-icon info-icon"
+      tooltip="{{ getInfo().getEndDateText(task) }}"
+      autoplacement="true"
+      placement="bottom"
+    ></div>
 
-        <div *ngIf="task.getPriority()!=null" class="task-priority-icon info-icon">
-            {{getInfo().getPriorityText(task)}}
-        </div>
-
-        <div *ngIf="task.getSubtasks().length != 0" class="info-icon task-subtask"
-            tooltip="{{getInfo().getSubtasksList(task)}}" autoplacement="true" placement="bottom">
-            {{task.getNumberOfSubtaskWithStatus(status.ENDED)}} / {{task.getSubtasks().length}}
-        </div>
+    <div
+      *ngIf="task.getPriority() != null"
+      class="task-priority-icon info-icon"
+    >
+      {{ getInfo().getPriorityText(task) }}
     </div>
 
+    <div
+      *ngIf="task.getSubtasks().length != 0"
+      class="info-icon task-subtask"
+      tooltip="{{ getInfo().getSubtasksList(task) }}"
+      autoplacement="true"
+      placement="bottom"
+    >
+      {{ task.getNumberOfSubtaskWithStatus(status.ENDED) }} /
+      {{ task.getSubtasks().length }}
+    </div>
+  </div>
 </ng-template>
 
 <ng-template #item_options let-task>
-    <div class="list-item-options"
-        (click)="null"
-        [matMenuTriggerFor]="task_menu">
-        <mat-menu #task_menu="matMenu">
-            <button mat-menu-item (click)="null">
-                Edytuj
-            </button>
-            <button mat-menu-item (click)="null">
-                Usuń
-            </button>
-        </mat-menu>
-        ...
-    </div>
+  <div
+    class="list-item-options"
+    (click)="(null)"
+    [matMenuTriggerFor]="task_menu"
+  >
+    <mat-menu #task_menu="matMenu">
+      <button mat-menu-item (click)="(null)">
+        Edytuj
+      </button>
+      <button mat-menu-item (click)="(null)">
+        Usuń
+      </button>
+    </mat-menu>
+    ...
+  </div>
 </ng-template>
-

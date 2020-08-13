@@ -44,7 +44,7 @@ export class LocalDatabase extends Dexie{
             task_labels: '[taskId+labelId], taskId, labelId',
             stages: "++id, name, description, endDate, status, projectID",
             pomodoro: "++id, taskId, projectId, time, date",
-            kanban_columns: "++id, projectId, name, default, prevColumnId, nextColumnId",
+            kanban_columns: "++id, projectId, name, default, successor, position",
             kanban_tasks: "++id, taskId, columnId, successor, position"
         });
     }

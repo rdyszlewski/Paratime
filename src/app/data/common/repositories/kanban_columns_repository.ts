@@ -1,12 +1,13 @@
 import { KanbanComponent } from 'app/kanban/kanban.component';
 import { KanbanColumn as KanbanColumn } from 'app/models/kanban';
+import { IOrderableRepository } from './orderable.repository';
 
-export interface IKanbanColumnsRepository{
-    findColumnById(id: number): Promise<KanbanColumn>;
-    findColumnsByProject(projectId: number):Promise<KanbanColumn[]>;
+export interface IKanbanColumnsRepository extends IOrderableRepository<KanbanColumn>{
+    findById(id: number): Promise<KanbanColumn>;
+    findByProject(projectId: number):Promise<KanbanColumn[]>;
     findDefaultColumn(projectId:number): Promise<KanbanColumn>;
-    insertColumn(column: KanbanColumn):Promise<number>;
-    updateColumn(column: KanbanColumn):Promise<number>;
-    removeColumn(columnId: number): Promise<void>;
-    removeColumnsByProject(projectId: number): Promise<void>;
+    insert(column: KanbanColumn):Promise<number>;
+    update(column: KanbanColumn):Promise<number>;
+    remove(columnId: number): Promise<void>;
+    removeByProject(projectId: number): Promise<void>;
 }

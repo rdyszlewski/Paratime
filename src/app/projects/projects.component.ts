@@ -70,7 +70,6 @@ export class ProjectsComponent implements OnInit {
   // loading projects from database
   private loadProjects(){
     ProjectsLoader.loadProjectsFromStore().then(projects=>{
-      console.log(projects);
       this.model.setProjects(projects);
     });
   }

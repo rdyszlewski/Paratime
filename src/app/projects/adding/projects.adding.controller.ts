@@ -47,7 +47,7 @@ export class ProjectAddingController{
         const project = new Project();
         project.setName(this.model.getNewProjectName());
         DataService.getStoreManager().getProjectStore().createProject(project).then(result=>{
-          this.listModel.addProject(result.insertedProject);
+          // this.listModel.addProject(result.insertedProject);
           this.listModel.updateProjects(result.updatedProjects);
           this.loadEvent.emit(result.insertedProject);
         });

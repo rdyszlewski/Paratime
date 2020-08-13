@@ -97,13 +97,9 @@ export class TasksComponent implements OnInit {
     // TODO: tutaj chyba powinny być chyba filtrowane
     const previousTask = this.model.getTasks()[previousIndex];
     const currentTask = this.model.getTasks()[currentIndex];
-    DataService.getStoreManager().getTaskStore().move(previousTask, currentTask, previousIndex> currentIndex).then(updatedTask=>{
-      this.updateTasksInView(updatedTask);
+    DataService.getStoreManager().getTaskStore().move(previousTask, currentTask, previousIndex> currentIndex).then(updatedTasks=>{
+      this.model.updateTasks(updatedTasks);
     });
-  }
-
-  private updateTasksInView(tasks:Task[]){
-    this.model.updateTasks(tasks);
   }
 
   public openProject(project:Project):void{
