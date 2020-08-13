@@ -6,16 +6,18 @@ import { LabelEditingController } from './editing/label.editing.controller';
 import { LabelAddingController } from './adding/label.adding.controller';
 import { LabelViewState } from './common/label_view_state';
 import { LabelRemovingController } from './removing/label.removing.controller';
+import {
+  CdkDragDrop,
+  moveItemInArray,
+  transferArrayItem,
+} from '@angular/cdk/drag-drop';
 
 @Component({
   selector: 'app-labels',
   templateUrl: './labels.component.html',
-  styleUrls: ['./labels.component.css']
+  styleUrls: ['./labels.component.css'],
 })
 export class LabelsComponent implements OnInit {
-
-  
-
   @Output() closeEvent: EventEmitter<null> = new EventEmitter();
   @Output() updateEvent: EventEmitter<null> = new EventEmitter();
 
@@ -26,41 +28,73 @@ export class LabelsComponent implements OnInit {
   private addingManager: LabelAddingController;
   private removingManager: LabelRemovingController;
 
-  constructor(public dialog:MatDialog) { 
-   
-  }
+  constructor(public dialog: MatDialog) {}
 
   ngOnInit(): void {
-    this.editingManager = new LabelEditingController(this.state, this.updateEvent);
-    this.addingManager = new LabelAddingController(this.state, this.model, this.updateEvent);
-    this.removingManager = new LabelRemovingController(this.model, this.dialog, this.updateEvent);
+    this.editingManager = new LabelEditingController(
+      this.state,
+      this.updateEvent
+    );
+    this.addingManager = new LabelAddingController(this.state, this.model, this.updateEvent );
+    this.removingManager = new LabelRemovingController(this.model, this.dialog, this.updateEvent
+    );
     this.loadLabels();
   }
 
-  public getEditing(){
+  public getEditing() {
     return this.editingManager;
   }
 
-  public getAdding(){
+  public getAdding() {
     return this.addingManager;
   }
 
-  public getRemoving(){
+  public getRemoving() {
     return this.removingManager;
   }
 
-  private loadLabels(){
-    DataService.getStoreManager().getLabelStore().getAllLabel().then(labels=>{
-      this.model.setLabels(labels);
-    });
+  private loadLabels() {
+    DataService.getStoreManager()
+      .getLabelStore()
+      .getAllLabel()
+      .then((labels) => {
+        this.model.setLabels(labels);
+      });
   }
-  
-  public closeView(){
+
+  public closeView() {
     this.closeEvent.emit();
   }
 
-  
+  public onDrop(event: CdkDragDrop<string[]>) {
+    if (event.previousContainer === event.container) {
+      this.changeLabelsOrder(event.previousIndex, event.currentIndex);
+      moveItemInArray(
+        event.container.data,
+        event.previousIndex,
+        event.currentIndex
+      );
+    } else {
+      transferArrayItem(
+        event.previousContainer.data,
+        event.container.data,
+        event.previousIndex,
+        event.currentIndex
+      );
+    }
+  }
 
-  
+  private changeLabelsOrder(previousIndex: number, currentIndex: number) {
+    if (previousIndex == currentIndex) {
+      return;
+    }
+    const previousLabel = this.model.getLabelByIndex(previousIndex);
+    const currentlabel = this.model.getLabelByIndex(currentIndex);
+    DataService.getStoreManager()
+      .getLabelStore()
+      .move(previousLabel, currentlabel, previousIndex > currentIndex)
+      .then((updatedLabels) => {
+        this.model.updateLabels(updatedLabels);
+      });
+  }
 }
-

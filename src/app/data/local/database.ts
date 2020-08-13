@@ -39,7 +39,7 @@ export class LocalDatabase extends Dexie {
       subtasks: '++id, name, status, taskId, successor, position',
       projects:
         '++id, name, description, startDate, endDate, status, type, successor, position',
-      labels: '++id, name',
+      labels: '++id, name, successor, position',
       task_labels: '[taskId+labelId], taskId, labelId',
       stages:
         '++id, name, description, endDate, status, projectID, successor, position',

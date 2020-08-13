@@ -1,61 +1,118 @@
 <div class="app-panel shadow">
-    <div class="tool-panel">
-        <h3 class="panel-header">Etykiety</h3>
-        <button class="close-button" (click)="closeView()">X</button>
-        </div>
-    <input id="project-filter" class="filter border" autocomplete="off"
-        (input)='model.filterLabels($event.target.value)'
-        placeholder="Wyszukaj etykietę">
-    <ng-container *ngTemplateOutlet="labels_list"></ng-container>
+  <div class="tool-panel">
+    <h3 class="panel-header">Etykiety</h3>
+    <button class="close-button" (click)="closeView()">X</button>
+  </div>
+  <input
+    id="project-filter"
+    class="filter border"
+    autocomplete="off"
+    (input)="model.filterLabels($event.target.value)"
+    placeholder="Wyszukaj etykietę"
+  />
+  <ng-container *ngTemplateOutlet="labels_list"></ng-container>
 </div>
 
 <ng-template #labels_list>
-    <div class="list border" id="labels-list" >
-        <div *ngFor="let label of model.getLabels()" class="list-item small-list-item transparent-border">
-            <ng-container [ngTemplateOutlet]='label_item' [ngTemplateOutletContext]="{$implicit:label}"></ng-container>
-            <ng-container [ngTemplateOutlet]="label_edit" [ngTemplateOutletContext]="{$implicit:label}"></ng-container>
-        </div>
+  <div
+    class="list border"
+    id="labels-list"
+    cdkDropList
+    #labelsList="cdkDropList"
+    [cdkDropListData]="model.getLabels()"
+    (cdkDropListDropped)="onDrop($event)"
+  >
+    <div
+      *ngFor="let label of model.getLabels()"
+      class="list-item small-list-item transparent-border"
+      cdkDrag
+    >
+      <ng-container
+        [ngTemplateOutlet]="label_item"
+        [ngTemplateOutletContext]="{ $implicit: label }"
+      ></ng-container>
+      <ng-container
+        [ngTemplateOutlet]="label_edit"
+        [ngTemplateOutletContext]="{ $implicit: label }"
+      ></ng-container>
     </div>
-    <div [ngTemplateOutlet]="new_label"></div>
+  </div>
+  <div [ngTemplateOutlet]="new_label"></div>
 </ng-template>
 
 <ng-template #label_item let-label>
-    <!-- TODO: można sprawdzić, czy ten if powinien być w tym miejscu, czy można go dać gdzieś indziej, żeby nie obliaczało pustego elementu -->
-    <div class="label-name"
-        *ngIf="!getEditing().isEditingOpen(label)">{{label.getName()}}</div>
-</ng-template>
-    
-<ng-template #label_edit let-label>
-    <input class="label-name" [value]="label.getName()" [id]="'label-name-input-' + label.getId()"
-        autocomplete="off"
-        *ngIf="getEditing().isEditingOpen(label)"
-        [ngModel] = "getEditing().getModel().getEditingLabelName()" (ngModelChange)="getEditing().getModel().setEditingLabelName($event)"
-        (keyup)="getEditing().handleKeysOnEditLabel($event, label)">
-    <div class="label-item-buttons">
-        <button class="list-item-options edit-button small-item-button" (click)="getEditing().openEditingLabel(label)"
-            *ngIf="!getEditing().isEditingOpen(label)"></button>
-        <button class="list-item-options remove-button small-item-button" (click)="getRemoving().onRemoveLabel(label)"
-            *ngIf="!getEditing().isEditingOpen(label)"></button> 
-    </div>
-    
-    <div class="list-item-options accept-button small-accept-button" (click)="getEditing().acceptEditingLabel(label)"
-        *ngIf="getEditing().isEditingOpen(label)">
-    </div>
+  <!-- TODO: można sprawdzić, czy ten if powinien być w tym miejscu, czy można go dać gdzieś indziej, żeby nie obliaczało pustego elementu -->
+  <div class="label-name" *ngIf="!getEditing().isEditingOpen(label)">
+    {{ label.getName() }}
+  </div>
 </ng-template>
 
-<ng-template #new_label >
-    <input type="text" class="form-control" id="label" autocomplete="off"
+<ng-template #label_edit let-label>
+  <input
+    class="label-name"
+    [value]="label.getName()"
+    [id]="'label-name-input-' + label.getId()"
+    autocomplete="off"
+    *ngIf="getEditing().isEditingOpen(label)"
+    [ngModel]="getEditing().getModel().getEditingLabelName()"
+    (ngModelChange)="getEditing().getModel().setEditingLabelName($event)"
+    (keyup)="getEditing().handleKeysOnEditLabel($event, label)"
+  />
+  <div class="label-item-buttons">
+    <button
+      class="list-item-options edit-button small-item-button"
+      (click)="getEditing().openEditingLabel(label)"
+      *ngIf="!getEditing().isEditingOpen(label)"
+    ></button>
+    <button
+      class="list-item-options remove-button small-item-button"
+      (click)="getRemoving().onRemoveLabel(label)"
+      *ngIf="!getEditing().isEditingOpen(label)"
+    ></button>
+  </div>
+
+  <div
+    class="list-item-options accept-button small-accept-button"
+    (click)="getEditing().acceptEditingLabel(label)"
+    *ngIf="getEditing().isEditingOpen(label)"
+  ></div>
+</ng-template>
+
+<ng-template #new_label>
+  <input
+    type="text"
+    class="form-control"
+    id="label"
+    autocomplete="off"
     [hidden]="!getAdding().isAddingOpen()"
-    [ngModel]="getAdding().getModel().getNewLabelName()" (ngModelChange)="getAdding().getModel().setNewLabelName($event)"
-    (keyup)="getAdding().handleKeysOnNewLabelInput($event)">
-    <div class="buttons-container">
-        <button class="button small-button insert-button" id="add-label-button" [hidden]="getAdding().isAddingOpen()"
-        (click)="getAdding().openAddingNewLabel()">
-            Dodaj
-        </button>
-        <button class="button small-button insert-button" id="save-label-button" [hidden]="!getAdding().isAddingOpen()"
-        (click)="getAdding().addNewLabel()">Zapisz</button>
-        <button class="button small-button insert-button" id="cancel-label-button" [hidden]="!getAdding().isAddingOpen()"
-        (click)="getAdding().cancelAddingLabel()">Anuluj</button>
-    </div>
+    [ngModel]="getAdding().getModel().getNewLabelName()"
+    (ngModelChange)="getAdding().getModel().setNewLabelName($event)"
+    (keyup)="getAdding().handleKeysOnNewLabelInput($event)"
+  />
+  <div class="buttons-container">
+    <button
+      class="button small-button insert-button"
+      id="add-label-button"
+      [hidden]="getAdding().isAddingOpen()"
+      (click)="getAdding().openAddingNewLabel()"
+    >
+      Dodaj
+    </button>
+    <button
+      class="button small-button insert-button"
+      id="save-label-button"
+      [hidden]="!getAdding().isAddingOpen()"
+      (click)="getAdding().addNewLabel()"
+    >
+      Zapisz
+    </button>
+    <button
+      class="button small-button insert-button"
+      id="cancel-label-button"
+      [hidden]="!getAdding().isAddingOpen()"
+      (click)="getAdding().cancelAddingLabel()"
+    >
+      Anuluj
+    </button>
+  </div>
 </ng-template>
