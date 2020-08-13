@@ -39,6 +39,10 @@ export class TasksList<T extends IFilterable & OrderableItem>
     return this.itemFilter.getFilteredItems();
   }
 
+  public getAllItems(){
+    return this.items;
+  }
+
   public getItemByIndex(index: number): T {
     return this.getItems()[index];
   }

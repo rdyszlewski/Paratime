@@ -1,10 +1,11 @@
 import { Subtask } from 'app/models/subtask';
+import { IOrderableRepository } from './orderable.repository';
 
-export interface ISubtaskRepository{
-    findSubtaskById(id: number):Promise<Subtask>;
-    findSubtasksByTask(taskId:number):Promise<Subtask[]>;
-    insertSubtask(subtask:Subtask):Promise<number>;
-    updateSubtask(subtask:Subtask):Promise<number>;
-    removeSubtask(id: number):Promise<void>;
-    bulkRemoveSubtasks(ids: number[]):Promise<void>;
+export interface ISubtaskRepository extends IOrderableRepository<Subtask>{
+    findById(id: number):Promise<Subtask>;
+    findByTask(taskId:number):Promise<Subtask[]>;
+    insert(subtask:Subtask):Promise<number>;
+    update(subtask:Subtask):Promise<number>;
+    remove(id: number):Promise<void>;
+    bulkRemove(ids: number[]):Promise<void>;
 }

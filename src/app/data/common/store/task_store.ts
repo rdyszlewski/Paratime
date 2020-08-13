@@ -9,13 +9,11 @@ import { LabelsTask } from '../models';
 import { InsertTaskData } from '../models/insert.task.data';
 import { InsertTaskResult } from '../models/insert.task.result';
 import { InsertKanbanTaskResult } from '../models/insert.kanban.task.result';
-import { Position } from 'app/models/orderable.item';
 import { Status } from 'app/models/status';
-import { OrderValues } from 'app/common/valuse';
 import { IOrderableStore } from './orderable.store';
 import { StoreOrderController } from '../order/order.controller';
 import { KanbanTaskStore } from './kanban.task.store';
-import { ItemMenuController } from 'app/tasks/common/item.menu.controller';
+import { promise } from 'protractor';
 
 
 // TODO: przydałyby się do tego wszystkiego transakcje.
@@ -106,12 +104,18 @@ export class TaskStore implements IOrderableStore<Task>{
     }
 
     public getActiveTasks(projectId: number):Promise<Task[]>{
-      return this.taskRepository.findTasksExceptStatus(projectId,Status.ENDED);
+      return this.taskRepository.findTasksExceptStatus(projectId,Status.ENDED).then(tasks=>{
+        const promises = tasks.map(task=>this.setTaskData(task));
+        return Promise.all(promises);
+      });
     }
 
     public getFinishedTasks(projectId: number): Promise<Task[]>{
       // TODO: zastanowić się, czy anulowane zadania nalęzy zaliczać do aktywnych
-      return this.taskRepository.findTasksByStatus(projectId, Status.ENDED);
+      return this.taskRepository.findTasksByStatus(projectId, Status.ENDED).then(tasks=>{
+        const promises = tasks.map(task=>this.setTaskData(task));
+        return Promise.all(promises);
+      });
     }
 
     public getTasksByDate(date:Date):Promise<Task[]>{
@@ -172,8 +176,8 @@ export class TaskStore implements IOrderableStore<Task>{
         const promises: Promise<Subtask>[] = [];
         task.getSubtasks().forEach(subtask => {
             subtask.setTaskId(insertedId);
-            let subtaskPromise = this.subtaskStore.createSubtask(subtask).then(subtask => {
-                return Promise.resolve(subtask);
+            let subtaskPromise = this.subtaskStore.createSubtask(subtask).then(result => {
+                return Promise.resolve(result.insertedSubtask);
             });
             promises.push(subtaskPromise);
         });

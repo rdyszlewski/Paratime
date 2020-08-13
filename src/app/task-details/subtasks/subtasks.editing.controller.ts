@@ -5,18 +5,24 @@ import { Subtask } from 'app/models/subtask';
 import { Task } from 'app/models/task';
 import { DataService } from 'app/data.service';
 import { EditInputHandler } from 'app/common/edit_input_handler';
+import { TaskDetails } from '../model/model';
 
 export class SubtasksController{
-    
+
     private SUBTASK_NAME_ID = '#subtask-input';
     private SUBTASK_ITEM_ID = '#subtask-name-input_';
     private LIST_DETAILS_FORM = "#list-details-form";
 
-    private model: SubtasksEditingModel = new SubtasksEditingModel();
+    private editingModel: SubtasksEditingModel = new SubtasksEditingModel();
     private task: Task;
+    private model: TaskDetails;
+
+    constructor(model: TaskDetails){
+      this.model = model;
+    }
 
     public getModel():SubtasksEditingModel{
-        return this.model;
+        return this.editingModel;
     }
 
     public setTask(task:Task){
@@ -24,48 +30,39 @@ export class SubtasksController{
     }
 
     public openAddingSubtask(){
-        this.model.openAddingSubtask();
+        this.editingModel.openAddingSubtask();
         FocusHelper.focus(this.SUBTASK_NAME_ID);
         ScrollBarHelper.moveToBottom(this.LIST_DETAILS_FORM);
     }
 
     public closeAddingSubtask(){
-        this.model.setNewSubtaskName("");
-        this.model.closeAddingSubtask();
+        this.editingModel.setNewSubtaskName("");
+        this.editingModel.closeAddingSubtask();
     }
-    
+
     public addNewSubtask(){
         // TODO: określenie pozycji
-        const subtask = new Subtask(this.model.getNewSubtaskName(), Status.STARTED);
+        const subtask = new Subtask(this.editingModel.getNewSubtaskName(), Status.STARTED);
         subtask.setTaskId(this.task.getId());
-        const lastSubtask = this.getLastSubtask();
-        if(lastSubtask){
-            subtask.setPreviousSubtask(lastSubtask.getId());
-        }
         this.saveNewSubtask(subtask);
         this.closeAddingSubtask();
         ScrollBarHelper.moveToBottom(this.LIST_DETAILS_FORM);
     }
 
-    private getLastSubtask(){
-        // TODO: być może lepiej będzie zrobić to przez pobieranie z bazy
-        return this.task.getSubtasks()[this.task.getSubtasks().length-1];
-    }
-
     private saveNewSubtask(subtask: Subtask) {
-        DataService.getStoreManager().getSubtaskStore().createSubtask(subtask).then(insertedSubtask => {
-            this.task.addSubtask(insertedSubtask);
+        DataService.getStoreManager().getSubtaskStore().createSubtask(subtask).then(result => {
+            this.model.updateSubtasks(result.updatedSubstask);
         });
     }
 
     public openEditingSubtask(subtask:Subtask){
-        this.model.setEditingSubtaskName(subtask.getName());
-        this.model.openEditingSubtask(subtask);
+        this.editingModel.setEditingSubtaskName(subtask.getName());
+        this.editingModel.openEditingSubtask(subtask);
         FocusHelper.focus(this.getSubtaskItemId(subtask));
     }
 
     public closeEditingSubtask(){
-        this.model.closeEditingSubtask();
+        this.editingModel.closeEditingSubtask();
     }
 
     private getSubtaskItemId(subtask: Subtask):string{
@@ -73,7 +70,7 @@ export class SubtasksController{
     }
 
     public acceptEditingSubtask(subtask:Subtask){
-        subtask.setName(this.model.getEditingSubtaskName());
+        subtask.setName(this.editingModel.getEditingSubtaskName());
         this.updateSubtask(subtask);
     }
 
@@ -84,8 +81,8 @@ export class SubtasksController{
     }
 
     public removeSubtask(subtask:Subtask){
-        DataService.getStoreManager().getSubtaskStore().removeSubtask(subtask.getId()).then(()=>{
-            this.task.removeSubtask(subtask);
+        DataService.getStoreManager().getSubtaskStore().removeSubtask(subtask.getId()).then(updatedSubtasks=>{
+            this.model.updateSubtasks(updatedSubtasks);
         });
     }
 
@@ -98,17 +95,17 @@ export class SubtasksController{
             subtask.setStatus(Status.STARTED);
             break;
         }
-    }  
+    }
 
     public handleKeysOnNewSubtaskInput(event:KeyboardEvent){
-        EditInputHandler.handleKeyEvent(event, 
+        EditInputHandler.handleKeyEvent(event,
             ()=>this.addNewSubtask(),
             ()=>this.closeAddingSubtask()
         );
     }
 
       public handleKeysOnEditSubtask(event:KeyboardEvent, subtask:Subtask){
-        EditInputHandler.handleKeyEvent(event, 
+        EditInputHandler.handleKeyEvent(event,
             ()=>this.acceptEditingSubtask(subtask),
             ()=>this.closeEditingSubtask()
         );

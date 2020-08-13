@@ -38,7 +38,7 @@ export class LocalDatabase extends Dexie{
     private createSchama() {
         this.version(this.dbVersion).stores({
             tasks: '++id, name, description, important, date, endDate, plannedTime, status, progress, projectID, priority, projectStageID, successor, position',
-            subtasks: '++id, name, status, taskId',
+            subtasks: '++id, name, status, taskId, successor, position',
             projects: '++id, name, description, startDate, endDate, status, type, successor, position',
             labels: '++id, name',
             task_labels: '[taskId+labelId], taskId, labelId',

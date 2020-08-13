@@ -1,82 +1,44 @@
 import { Task } from 'app/models/task';
-import { Project } from 'app/models/project';
-import { Stage } from 'app/models/stage';
 import { Subtask } from 'app/models/subtask';
+import { TasksList } from 'app/common/lists/tasks.list';
 
-export class TaskDetails{
-    private task: Task = new Task();
-    private projects: Project[] = [];
-   
-    private stages: Stage[] = [];
+export class TaskDetails {
+  private task: Task = new Task();
+  private subtasks: TasksList<Subtask> = new TasksList();
+  // TODO: spróbować do odzdielnego pliku, w którym będą elementy potrzebne do wyświetlenia formularza
 
-    
-    public getTask():Task{
-        return this.task;
-    }
+  public setSubtasks(subtasks: Subtask[]) {
+    this.subtasks.setItems(subtasks);
+  }
 
-    public setTask(task:Task){
-        // TODO: w tym miejscu posortować podzadania
-        this.task = task;
-        this.task.setSubtasks(this.getSortedSubtasks(this.task.getSubtasks()));
-    }
+  public updateSubtasks(subtasks: Subtask[]) {
+    this.subtasks.updateItems(subtasks);
+    this.task.setSubtasks(this.subtasks.getAllItems());
+  }
 
-    private getSortedSubtasks(elements: Subtask[]):Subtask[]{
-        const result = [];
-        if(elements.length == 0){
-            return result;
-        }
-        let currentTask = this.findFirstSubtask(elements);
-        while(currentTask != null){
-            currentTask = this.findSubtaskByPrevious(currentTask.getId(), elements);
-        }
-        return result;
-    }
+  public getFilteredSubtasks() {
+    return this.subtasks.getItems();
+  }
 
-    private findFirstSubtask(elements: Subtask[]):Subtask{
-        return elements.find(subtask=>subtask.getPreviousSubtask() == -1);
-    }
+  public getAllSubtasks() {
+    return this.subtasks.getAllItems();
+  }
 
-    private findSubtaskByPrevious(prevId: number, elements:Subtask[]):Subtask{
-        return elements.find(subtask=>subtask.getPreviousSubtask() == prevId);
-    }
+  public setTask(task: Task) {
+    this.task = task;
+    this.subtasks.setContainerId(task.getId());
+    this.subtasks.setItems(task.getSubtasks());
+  }
 
+  public getTask(): Task {
+    return this.task;
+  }
 
-    public getProjects():Project[]{
-        return this.projects;
-    }
+  public toggleTaskImportance() {
+    this.task.setImportant(!this.task.isImportant());
+  }
 
-    public setProjects(projects: Project[]){
-        this.projects = projects;
-    }
-
-
-    public getStages():Stage[]{
-        return this.stages;
-    }
-
-    public setStages(stages:Stage[]){
-        this.stages = stages;
-    }
-
-   public setProject(id:number){
-        for(let i =0; i<this.projects.length; i++){
-            const project = this.projects[i];
-            if(project.getId()==id){
-                return project;
-            }
-        }
-        return null;
-   }
-
-   public toggleTaskImportance(){
-       this.task.setImportant(!this.task.isImportant());
-   }
-
-   public getSubtaskByIndex(index:number){
-    return this.task.getSubtasks()[index];
-   }
-
-   public getSubtaskByOrderPrev(subtask: Subtask):Subtask{
-       return this.task.getSubtasks().find(x=>x.getPreviousSubtask()==subtask.getId());
-   }
+  public getSubtaskByIndex(index: number) {
+    return this.subtasks.getItemByIndex(index);
+  }
 }

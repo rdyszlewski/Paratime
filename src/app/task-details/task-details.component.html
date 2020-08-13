@@ -7,13 +7,13 @@
         <h3 class="panel-header">{{getModel().getTask().getName()}}</h3>
         <button class="close-button" (click)="closeView()">X</button>
         </div>
-    
+
     <form class="form" id="list-details-form"
         (keydown.enter)="$event.preventDefault()">
 
         <mat-expansion-panel class="form-group" [expanded]="true">
             <mat-expansion-panel-header class="form-group-header">
-                Główne 
+                Główne
             </mat-expansion-panel-header>
             <ng-container [ngTemplateOutlet]="main_group"></ng-container>
         </mat-expansion-panel>
@@ -44,7 +44,7 @@
                 Kroki ({{getFinishedSubtasks(getModel().getTask())}} / {{getModel().getTask().getSubtasks().length}})
             </mat-expansion-panel-header>
             <ng-container [ngTemplateOutlet]="task_subtasks_group"></ng-container>
-        </mat-expansion-panel> 
+        </mat-expansion-panel>
     </form>
 </div>
 
@@ -78,7 +78,7 @@
     <ng-container [ngTemplateOutlet]="task_planned_time"></ng-container>
 </ng-template>
 
-<ng-template #task_name_group> 
+<ng-template #task_name_group>
     <div class="form-container">
         <input type="text" class="form-control" id="task-name" name='name' autocomplete="off" placeholder="Nazwa"
             [ngModel]='getModel().getTask().getName()' (ngModelChange)="getModel().getTask().setName($event)"
@@ -134,7 +134,7 @@
             [ngModel]='getModel().getTask().getDate()' (ngModelChange)="getModel().getTask().setDate($event)"
             (dateChange)="updateTask()">
             <mat-datepicker-toggle [for]="datePicker" class="datepicker"></mat-datepicker-toggle>
-            <mat-datepicker #datePicker></mat-datepicker>      
+            <mat-datepicker #datePicker></mat-datepicker>
         </div>
     </div>
 </ng-template>
@@ -159,9 +159,9 @@
             (dateChange)="updateTask()">
             <mat-datepicker-toggle [for]="endDatePicker" class="datepicker"></mat-datepicker-toggle>
             <mat-datepicker #endDatePicker></mat-datepicker>
-        </div>  
+        </div>
     </div>
-    
+
 </ng-template>
 
 <ng-template #task_planned_time>
@@ -180,7 +180,7 @@
             [ngModel]="getModel().getTask().getProjectStageID()" (ngModelChange)="getModel().getTask().setProjectStageID($event)"
             (change)="updateTask()">
             <option [ngValue]="null"></option>
-            <option *ngFor="let stage of getModel().getStages()" [ngValue]="stage.getId()">{{stage.getName()}}</option>
+            <option *ngFor="let stage of getView().stages" [ngValue]="stage.getId()">{{stage.getName()}}</option>
         </select>
     </div>
 </ng-template>
@@ -194,7 +194,7 @@
             <span class="remove-label" (click)="getLabels().removeLabel(label)"></span>
         </div>
     </div>
-    <button class="form-control button small-button" id="task-labels" name="labels" 
+    <button class="form-control button small-button" id="task-labels" name="labels"
     [matMenuTriggerFor]="appMenu" (menuClosed)="getLabels().cancelChoosingLabels()"
     (menuOpened)="getLabels().openChoosingLabels()">
         Dodaj
@@ -207,15 +207,15 @@
     <div class="list border"  id="subtask-list"
     cdkDropList
     #subtaskList="cdkDropList"
-    [cdkDropListData]="getModel().getTask().getSubtasks()"
+    [cdkDropListData]="getModel().getFilteredSubtasks()"
     (cdkDropListDropped)="onDrop($event)">
-        <div *ngFor="let subtask of getModel().getTask().getSubtasks()" class="list-item small-list-item transparent-border" cdkDrag>
+        <div *ngFor="let subtask of getModel().getFilteredSubtasks()" class="list-item small-list-item transparent-border" cdkDrag>
             <ng-container [ngTemplateOutlet]="subtask_item" [ngTemplateOutletContext]="{$implicit:subtask}"></ng-container>
             <ng-container [ngTemplateOutlet]="subtask_edit" [ngTemplateOutletContext]="{$implicit:subtask}"></ng-container>
         </div>
         <ng-container [ngTemplateOutlet]="new_subtask"></ng-container>
     </div>
-    
+
 </ng-template>
 
 <ng-template #subtask_item let-subtask>
@@ -243,9 +243,9 @@
         <div class="list-item-options remove-button small-accept-button" (click)='getSubtask().removeSubtask(subtask)'
         *ngIf="!getSubtask().getModel().isEditingSubtask(subtask)"></div>
     </div>
-    
+
     <div class='list-item-options accept-button small-accept-button' (click)="getSubtask().acceptEditingSubtask(subtask)"
-    *ngIf="getSubtask().getModel().isEditingSubtask(subtask)"></div>  
+    *ngIf="getSubtask().getModel().isEditingSubtask(subtask)"></div>
 </ng-template>
 
 <ng-template #new_subtask>

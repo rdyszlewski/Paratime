@@ -1,56 +1,53 @@
 import { Status } from './status';
+import { OrderableItem } from './orderable.item';
 
-export class Subtask{
-    
-    private id: number;
-    private name: string = null;
-    private status: Status = null;
-    private taskId: number = null;
+export class Subtask extends OrderableItem {
+  private name: string = null;
+  private status: Status = null;
+  private taskId: number = null;
 
-    private previousSubtask: number = -1;
+  constructor(name = null, status = null) {
+    super();
+    this.name = name;
+    this.status = status;
+  }
 
-    constructor(name=null, status=null){
-        this.name = name;
-        this.status = status;
-    }
+  public getId() {
+    return this.id;
+  }
 
-    public getId(){
-        return this.id;
-    }
+  public setId(id: number) {
+    this.id = id;
+  }
 
-    public setId(id: number){
-        this.id = id;
-    }
+  public getName() {
+    return this.name;
+  }
 
-    public getName(){
-        return this.name;
-    }
+  public setName(name: string) {
+    this.name = name;
+  }
 
-    public setName(name:string){
-        this.name = name;
-    }
+  public getStatus() {
+    return this.status;
+  }
 
-    public getStatus(){
-        return this.status;
-    }
+  public setStatus(status: Status) {
+    this.status = status;
+  }
 
-    public setStatus(status:Status){
-        this.status = status;
-    }
+  public getTaksId() {
+    return this.taskId;
+  }
 
-    public getTaksId(){
-        return this.taskId;
-    }
+  public setTaskId(id: number) {
+    this.taskId = id;
+  }
 
-    public setTaskId(id: number){
-        this.taskId = id;
-    }
-       
-    public getPreviousSubtask():number{
-        return this.previousSubtask;
-    }
-
-    public setPreviousSubtask(subtaskId: number){
-        this.previousSubtask = subtaskId;
-    }
+  public getContainerId(): number {
+    return this.getTaksId();
+  }
+  public setContainerId(id: number): void {
+    this.setTaskId(id);
+  }
 }

@@ -10,8 +10,12 @@ import { TaskValidator } from './model/validator';
 import { TaskChangeDetector } from './model/change.detector';
 import { SubtasksController } from './subtasks/subtasks.editing.controller';
 import { TaskLabelsController } from './labels/task.labels.controller';
-import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
-import { Subtask } from 'app/models/subtask';
+import {
+  CdkDragDrop,
+  moveItemInArray,
+  transferArrayItem,
+} from '@angular/cdk/drag-drop';
+import { TaskDetailsView } from './subtask.view';
 
 @Component({
   selector: 'app-task-details',
@@ -19,7 +23,6 @@ import { Subtask } from 'app/models/subtask';
   styleUrls: ['./task-details.component.css'],
 })
 export class TaskDetailsComponent implements OnInit {
-
   private TASK_NAME_ID = '#task-name';
 
   @Output() closeEvent: EventEmitter<null> = new EventEmitter();
@@ -30,160 +33,143 @@ export class TaskDetailsComponent implements OnInit {
   public priority = Priority;
 
   private model: TaskDetails;
+  private view: TaskDetailsView;
   private state: TaskViewState;
   private validator: TaskValidator;
   private changeDetector: TaskChangeDetector;
   private subtaskController: SubtasksController;
   private labelsController: TaskLabelsController;
 
-
-  constructor() { }
+  constructor() {}
 
   ngOnInit(): void {
     this.model = new TaskDetails();
     this.state = new TaskViewState(this.model);
     this.validator = new TaskValidator(this.model);
     this.changeDetector = new TaskChangeDetector(this.model);
-    this.subtaskController = new SubtasksController();
+    this.subtaskController = new SubtasksController(this.model);
     this.labelsController = new TaskLabelsController(this.model);
-    this.init();
+    this.view = new TaskDetailsView();
   }
 
-  public getModel():TaskDetails{
+  public getModel(): TaskDetails {
     return this.model;
   }
 
-  public getState():TaskViewState{
+  public getView():TaskDetailsView{
+    return this.view;
+  }
+
+  public getState(): TaskViewState {
     return this.state;
   }
 
-  public getValidator():TaskValidator{
+  public getValidator(): TaskValidator {
     return this.validator;
   }
 
-  public getChangeDetector():TaskChangeDetector{
+  public getChangeDetector(): TaskChangeDetector {
     return this.changeDetector;
   }
 
-  public getSubtask():SubtasksController{
+  public getSubtask(): SubtasksController {
     return this.subtaskController;
   }
 
-  public getLabels():TaskLabelsController{
+  public getLabels(): TaskLabelsController {
     return this.labelsController;
   }
 
-  private init(){
-    this.loadProjects();
-    this.loadStages();
-  }
 
-  // TODO: zorientować się, czy to jest potrzebne
-  private loadProjects() {
-    DataService.getStoreManager().getProjectStore().getAllProjects().then(projects => {
-      this.model.setProjects(projects);
-    });
-  }
-
-  public loadStages(){
-    if(this.model.getTask().getProjectID()){
-      DataService.getStoreManager().getStageStore().getStagesByProject(this.model.getTask().getProjectID()).then(stages=>{
-        this.model.setStages(stages);
-      });
-    }
-  }
-
-  public setTask(task:Task){
-    if(task){
+  public setTask(task: Task) {
+    if (task) {
       this.model.setTask(task);
-      this.init();
+      this.view.init(task.getProjectID());
       this.subtaskController.setTask(task);
       FocusHelper.focus(this.TASK_NAME_ID);
     }
   }
 
-  public updateTask(){
-    if(this.validator.isValid()){
-      DataService.getStoreManager().getTaskStore().update(this.model.getTask()).then(()=>{});
+  public updateTask() {
+    if (this.validator.isValid()) {
+      DataService.getStoreManager()
+        .getTaskStore()
+        .update(this.model.getTask())
+        .then(() => {});
     }
   }
 
-  public closeView(){
+  public closeView() {
     this.closeEvent.emit();
   }
 
-  public openLabelsManager(){
+  public openLabelsManager() {
     this.openLabelsEvent.emit();
   }
 
-  // return amount of subtask with status ENDED
-  public getFinishedSubtasks(task:Task){
-    let finishedSubtask = task.getSubtasks().filter(x=>x.getStatus()==Status.ENDED);
+  // return amount of subtask with status FINISHED
+  public getFinishedSubtasks(task: Task) {
+    let finishedSubtask = task
+      .getSubtasks()
+      .filter((x) => x.getStatus() == Status.ENDED);
     return finishedSubtask.length;
   }
 
-  public toggleTaskImportance(){
+  public toggleTaskImportance() {
     this.model.toggleTaskImportance();
     this.updateTask();
   }
 
-  public onDrop(event: CdkDragDrop<any[]>){
-    if(event.previousContainer === event.container){
-      this.replaceSubtaskOrder(event.previousIndex, event.currentIndex);
-      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+  public onDrop(event: CdkDragDrop<any[]>) {
+    if (event.previousContainer === event.container) {
+      this.changeSubtasksOrder(event.previousIndex, event.currentIndex);
+      moveItemInArray(
+        event.container.data,
+        event.previousIndex,
+        event.currentIndex
+      );
     } else {
-      transferArrayItem(event.previousContainer.data, event.container.data, event.previousIndex, event.currentIndex);
+      transferArrayItem(
+        event.previousContainer.data,
+        event.container.data,
+        event.previousIndex,
+        event.currentIndex
+      );
     }
   }
 
   // TODO: przenieść to w jakieś inne miejsce. Połączyć ze zmianą kolejności w zadaniach
-  private replaceSubtaskOrder(previousIndex: number, currentIndex: number){
-    // TODO: spróbować połączyć to z sortowaniem zadań
-    const subtask1 = this.model.getSubtaskByIndex(previousIndex);
-    const subtask2 = this.model.getSubtaskByIndex(currentIndex);
-    const nextSubtask1 = this.model.getSubtaskByOrderPrev(subtask1);
-    const nextSubtask2 = this.model.getSubtaskByOrderPrev(subtask2);
-
-    if(nextSubtask1){
-      nextSubtask1.setPreviousSubtask(subtask2.getId());
-      this.updateSubtask(nextSubtask1);
+  private changeSubtasksOrder(previousIndex: number, currentIndex: number) {
+    if (previousIndex == currentIndex) {
+      return;
     }
-    if(nextSubtask2){
-      nextSubtask2.setPreviousSubtask(subtask1.getId());
-      this.updateSubtask(nextSubtask2);
-    }
-    const temp = subtask1.getPreviousSubtask();
-    subtask1.setPreviousSubtask(subtask2.getPreviousSubtask());
-    subtask2.setPreviousSubtask(temp);
-
-    this.updateSubtask(subtask1);
-    this.updateSubtask(subtask2);
+    const previousTask = this.model.getSubtaskByIndex(previousIndex);
+    const currentTask = this.model.getSubtaskByIndex(currentIndex);
+    DataService.getStoreManager()
+      .getSubtaskStore()
+      .move(previousTask, currentTask, previousIndex > currentIndex)
+      .then((updatedSubtasks) => {
+        this.model.updateSubtasks(updatedSubtasks);
+      });
   }
-
-  private updateSubtask(subtask:Subtask){
-    DataService.getStoreManager().getSubtaskStore().updateSubtask(subtask).then(updatedSubtask=>{
-
-    });
-  }
-
   // TODO: przerzucić to gdzieś
-  public timeChange(time: string){
-    const values = time.split(":");
+  public timeChange(time: string) {
+    const values = time.split(':');
     const hours = Number.parseInt(values[0]);
     const minutes = Number.parseInt(values[1]);
     this.model.getTask().setTime(this.getTimeValue(hours, minutes));
     this.updateTask();
   }
 
-  private getTimeValue(hour: number, minutes: number){
+  private getTimeValue(hour: number, minutes: number) {
     return hour * 60 + minutes;
   }
 
-  public getTime():string{
+  public getTime(): string {
     const value = this.model.getTask().getTime();
     let hours;
     let minutes;
-    if(value){
+    if (value) {
       hours = Math.floor(value / 60);
       minutes = value % 60;
     } else {
@@ -192,6 +178,6 @@ export class TaskDetailsComponent implements OnInit {
       minutes = 0;
       // TODO: zrobić obsługe braku czasu w timepicker
     }
-    return hours.toString() + ":" + minutes.toString();
+    return hours.toString() + ':' + minutes.toString();
   }
 }
