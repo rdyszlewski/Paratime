@@ -46,7 +46,9 @@
             </app-tasks>
 
             <app-kanban id="kanban" [hidden]="!kanbanOpen"
-                (closeEvent)="closeKanban()">
+                (closeEvent)="closeKanban()"
+                (pomodoroEvent)="addTaskToPomodoro($event)"
+                (detailsEvent)="openTaskDetails($event)">
             </app-kanban>
         </div>
 

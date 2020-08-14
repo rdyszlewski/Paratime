@@ -64,7 +64,7 @@ export class TasksModel {
   }
 
   public isOpen(): boolean {
-    return this.project != null;
+    return this.project != null && this.project.getId() >= 0;
   }
 
   public getTaskByIndex(index: number): Task {

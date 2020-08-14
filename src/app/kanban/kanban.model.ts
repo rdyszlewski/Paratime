@@ -1,6 +1,8 @@
 import { KanbanColumn, KanbanTask } from 'app/models/kanban';
 import { Project } from 'app/models/project';
 import { TasksList } from 'app/common/lists/tasks.list';
+import { FocusHelper } from 'app/common/view_helper';
+import { validateVerticalPosition } from '@angular/cdk/overlay';
 
 export class KanbanModel {
   // TODO: możliwe, że będzie trzeba zmienić listę, poniewa tutaj chyba nie będzie się sortowało
@@ -8,9 +10,11 @@ export class KanbanModel {
   private tasks: Map<number, TasksList<KanbanTask>> = new Map();
   private project: Project;
   private columnName: string;
-
   private newTaskName: string;
-  private columnAddingOpen: KanbanColumn;
+  private columnAddingOpen:boolean = false;
+  private addingTaskOpen: KanbanColumn;
+  private columnNameValid:boolean = true;
+  private editedColumn: KanbanColumn;
 
   constructor() {}
 
@@ -136,16 +140,46 @@ export class KanbanModel {
     this.newTaskName = name;
   }
 
-  public getColumnAddingOpen(): KanbanColumn {
-    return this.columnAddingOpen;
-  }
-
-  public setColumnAddingOpen(column: KanbanColumn): void {
-    this.columnAddingOpen = column;
-  }
-
   public reset() {
     this.columns.clear();
     this.tasks.clear();
+  }
+
+  public isAddingOpen():boolean{
+    return this.columnAddingOpen;
+  }
+
+  public openAddingColumn(){
+    console.log("Otworzyć bramy");
+    this.columnAddingOpen = true;
+    FocusHelper.focus("#new-column-input");
+  }
+
+  public closeAdddingColumn(){
+    this.columnAddingOpen = false;
+  }
+
+  public getAddingTaskOpen():KanbanColumn{
+    return this.addingTaskOpen;
+  }
+
+  public setAddingTaskOpen(column:KanbanColumn){
+    this.addingTaskOpen = column;
+  }
+
+  public isColumnNameValid():boolean{
+    return this.columnNameValid;
+  }
+
+  public setColumnNameValid(valid:boolean){
+    this.columnNameValid = valid;
+  }
+
+  public getEditedColumn():KanbanColumn{
+    return this.editedColumn;
+  }
+
+  public setEditedColumn(column:KanbanColumn){
+    this.editedColumn = column;
   }
 }

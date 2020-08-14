@@ -149,6 +149,10 @@ html, body{
     visibility: visible;
 }
 
+.column-header:hover .list-item-options{
+  visibility: visible;
+}
+
 .list-item-value{
     margin-top: auto;
     margin-bottom: auto;
@@ -430,7 +434,7 @@ html, body{
 }
 
 .task-subtask{
-    width: auto;   
+    width: auto;
 }
 
 .task-menu-button{

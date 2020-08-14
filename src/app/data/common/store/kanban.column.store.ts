@@ -63,7 +63,7 @@ export class KanbanColumnStore implements IOrderableStore<KanbanColumn> {
     });
   }
 
-  private update(column: KanbanColumn): Promise<KanbanColumn> {
+  public  update(column: KanbanColumn): Promise<KanbanColumn> {
     return this.kanbanColumnsRepository.update(column).then((updatedId) => {
       return Promise.resolve(column);
     });

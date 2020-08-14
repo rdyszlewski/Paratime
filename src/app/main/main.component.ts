@@ -227,6 +227,7 @@ export class MainComponent implements OnInit, AfterViewInit {
   }
 
   public addTaskToPomodoro(task: Task): void {
+    console.log("Dodawanie zadania do pomodoro");
     this.pomodoroComponent.addTaskToPomodoro(task);
   }
 

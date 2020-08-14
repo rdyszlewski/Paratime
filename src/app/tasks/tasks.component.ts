@@ -103,6 +103,9 @@ export class TasksComponent implements OnInit {
   }
 
   public openProject(project:Project):void{
+    if(!project || project.getId() <0){
+      return;
+    }
     this.appService.setCurrentProject(project);
     this.model.setProject(project);
     this.loadTasks(TaskType.ACTIVE, project);
