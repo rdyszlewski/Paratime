@@ -6,8 +6,9 @@ import { IFilterable } from 'app/common/filter/filterable';
 import { Priority } from './priority';
 import { Stage } from './stage';
 import { OrderableItem } from './orderable.item';
+import { ITaskItem } from './task.item';
 
-export class Task extends OrderableItem implements IFilterable{
+export class Task extends OrderableItem implements IFilterable, ITaskItem{
 
     // TODO: przejrzeć wszystkie zmienne i zobaczyć, czy wszystko jest ok
 

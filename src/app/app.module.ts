@@ -35,6 +35,8 @@ import { KanbanComponent } from './kanban/kanban.component' ;
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { WidgetsModule } from './widgets/widgets.module';
+import { ListsContainerComponent } from './lists-container/lists-container.component';
+import { TasksContainerComponent } from './tasks-container/tasks-container.component';
 
 @NgModule({
   declarations: [
@@ -50,6 +52,8 @@ import { WidgetsModule } from './widgets/widgets.module';
     PomodoroComponent,
     PomodoroStatisticsComponent,
     KanbanComponent,
+    ListsContainerComponent,
+    TasksContainerComponent,
   ],
   imports: [
     BrowserModule,

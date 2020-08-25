@@ -13,9 +13,8 @@ export interface ITaskRepository extends IOrderableRepository<Task>{
     findTasksByStatus(projectId: number, status:Status):Promise<Task[]>;
     findTasksExceptStatus(projectId:number, status:Status):Promise<Task[]>;
     findImportantTasks():Promise<Task[]>;
-    findFirst(projectId: number):Promise<Task>;
-    findLast(projectId: number):Promise<Task>;
     findFirstTaskWithStatus(projectId, status:Status): Promise<Task>;
+    findLastTaskWithStatus(projectId, status: Status, exceptItem: number): Promise<Task>;
     insertTask(task:Task):Promise<number>;
     update(task:Task):Promise<number>;
     removeTask(id:number):Promise<void>;

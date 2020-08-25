@@ -1,8 +1,10 @@
 import { Task } from './task';
 import { OrderableItem } from './orderable.item';
 import { IFilterable } from 'app/common/filter/filterable';
+import { ITaskItem } from './task.item';
+import { ITaskContainer } from './task.container';
 
-export class KanbanColumn extends OrderableItem {
+export class KanbanColumn extends OrderableItem implements ITaskContainer{
   // TODO: przetestować, czy nie będzie to sprawiało problemów
   private projectId: number;
   private name: string;
@@ -61,7 +63,8 @@ export class KanbanColumn extends OrderableItem {
   }
 }
 
-export class KanbanTask extends OrderableItem implements IFilterable {
+export class KanbanTask extends OrderableItem implements IFilterable, ITaskItem{
+
   private taskId: number;
   private columnId: number;
   private task: Task;
@@ -77,6 +80,12 @@ export class KanbanTask extends OrderableItem implements IFilterable {
   public getName(): string {
     if (this.task) {
       return this.task.getName();
+    }
+  }
+
+  public setName(name: string): void {
+    if(this.task){
+      this.task.setName(name);
     }
   }
 

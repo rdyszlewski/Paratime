@@ -1,5 +1,4 @@
 <div class="tasks-view shadow app-panel" *ngIf="getModel().isOpen()">
-  <h3 class="panel-header">{{ getModel().getProjectName() }}</h3>
   <div class="filter-controls">
     <input
       id="task-filter"
@@ -34,7 +33,7 @@
     <div
       *ngFor="let task of getModel().getTasks()"
       class="task-list-item list-item block transparent-border"
-      (click)="getMenu().onEditTask(task)"
+      (click)="openDetails(task)"
       cdkDrag
     >
       <ng-container
@@ -222,23 +221,19 @@
 <ng-template #item_options let-task>
   <div
     class="list-item-options"
-    (click)="getMenu().onTaskMenuClick($event, task)"
+    (click)="menuClick($event, task)"
     [matMenuTriggerFor]="menu"
   >
     <mat-menu #menu="matMenu">
-      <button mat-menu-item (click)="getMenu().onEditTask(task)">
+      <button mat-menu-item (click)="openDetails(task)">
         Edytuj
       </button>
-      <button mat-menu-item (click)="getMenu().onRemoveTask(task)">
+      <button mat-menu-item (click)="removeTask(task)">
         Usuń
       </button>
 
-      <button mat-menu-item (click)="getMenu().finishTask(task)">
+      <button mat-menu-item (click)="finishTask(task)">
         Zakończ zadanie
-      </button>
-
-      <button mat-menu-item (click)="getMenu().addTaskToPomodoro(task)">
-        Dodaj do Pomodoro
       </button>
     </mat-menu>
     ...

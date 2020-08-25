@@ -14,19 +14,23 @@
 }
 
 #projects{
-    
+
 }
 
 #project-details{
-    
+
 }
 
 #tasks{
-    
+
 }
 
 #task-details{
-    
+
+}
+
+#work-space{
+  width: 100%;
 }
 
 #pomodoro{
@@ -49,10 +53,10 @@
 .toolbar{
     display: flex;
     align-self: flex-end;
-   
+
     margin-left: auto;
     margin-right:0;
-    
+
 }
 
 .toolbar-button{

@@ -1,0 +1,23 @@
+<div class="tasks-container">
+  <div class="project-title">
+    <span class="project-name">{{getProjectName()}}</span>
+    <span class="mode-buttons">
+      <button class="toolbar-button" (click)="changeTaskMode(taskMode.LIST)">Lista</button>
+    <button class="toolbar-button" (click)="changeTaskMode(taskMode.KANBAN)">Kanban</button>
+    </span>
+  </div>
+
+  <div class="tasks-container">
+    <!-- TODO: dokończyć i pododawać wszystko -->
+    <app-tasks class="task-list"
+      [hidden]="mode!=taskMode.LIST"
+      (detailsEvent)="openDetails($event)"
+      (removeEvent)="removeTask($event)"
+      >
+    </app-tasks>
+    <app-kanban class="task-list"
+      [hidden]="mode!=taskMode.KANBAN"
+      (detailsEvent)="openDetails($event)">
+    </app-kanban>
+  </div>
+</div>

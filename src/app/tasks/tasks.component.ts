@@ -8,124 +8,154 @@ import { MatDialog } from '@angular/material/dialog';
 import { TaskItemInfo } from './common/task.item.info';
 import { TaskItemController } from './common/task.item.controller';
 import { SpecialListTaks as SpecialListTask } from './common/special.list';
-import { ItemMenuController } from './common/item.menu.controller';
-import { TaskAddingController } from './adding/task.adding.controller';
 import { TaskFilteringController } from './filtering/task.filtering.controller';
-import {CdkDragDrop, moveItemInArray, transferArrayItem} from "@angular/cdk/drag-drop"
+import {
+  CdkDragDrop,
+  moveItemInArray,
+  transferArrayItem,
+} from '@angular/cdk/drag-drop';
 import { DataService } from 'app/data.service';
 import { AppService } from 'app/services/app/app.service';
 import { TaskType } from './task.type';
+import { ITaskList } from 'app/tasks-container/task.list';
+import { ITaskContainer } from 'app/models/task.container';
+import { TaskAddingController } from './adding/task.adding.controller';
+import { TaskOrderController } from './controllers/order.controller';
+import { DialogHelper } from 'app/common/dialog';
 
 @Component({
   selector: 'app-tasks',
   templateUrl: './tasks.component.html',
-  styleUrls: ['./tasks.component.css']
+  styleUrls: ['./tasks.component.css'],
 })
-export class TasksComponent implements OnInit {
-
+export class TasksComponent implements OnInit, ITaskList {
   @Output() detailsEvent: EventEmitter<Task> = new EventEmitter();
   @Output() removeEvent: EventEmitter<number> = new EventEmitter();
-  @Output() pomodoroEvent: EventEmitter<Task> = new EventEmitter();
+
   public status = Status;
   public taskType = TaskType;
 
   private model: TasksModel;
-  private itemInfo: TaskItemInfo;
-  private itemController: TaskItemController;
-  private specialListsController: SpecialListTask;
-  private menuController: ItemMenuController;
+  private itemInfo: TaskItemInfo; // TODO: przerobić metody dostepowe
+  private itemController: TaskItemController; // TODO: tutaj będzie trzeba zmienić nazwę
+  private specialListsController: SpecialListTask; // TODO: to na razie zostawimy
   private addingController: TaskAddingController;
   private filteringController: TaskFilteringController;
 
-  constructor(public dialog:MatDialog, private appService: AppService) {
+  constructor(public dialog: MatDialog, private appService: AppService) {
     this.model = new TasksModel();
     this.itemInfo = new TaskItemInfo();
     this.itemController = new TaskItemController();
     this.specialListsController = new SpecialListTask(this.model);
-    this.menuController = new ItemMenuController(this.model, this.detailsEvent, this.removeEvent, this.pomodoroEvent, this.dialog);
     this.addingController = new TaskAddingController(this.model);
     this.filteringController = new TaskFilteringController(this.model);
   }
 
-  public getModel(){
+  ngOnInit(): void {}
+
+  public getModel() {
     return this.model;
   }
 
-  public getInfo(){
+  public getInfo() {
     return this.itemInfo;
   }
 
-  public getItem(){
+  public getItem() {
     return this.itemController;
   }
 
-  public getSpecialList(){
+  public getSpecialList() {
     return this.specialListsController;
   }
 
-  public getMenu(){
-    return this.menuController;
-  }
-
-  public getAdding(){
+  public getAdding() {
     return this.addingController;
   }
 
-  public getFiltering(){
+  public getFiltering() {
     return this.filteringController;
   }
 
-  ngOnInit(): void {
-  }
-
-  public addTask(task:Task){
-    if(task.getProjectID()==this.model.getProject().getId()){
-      this.model.addTask(task);
-    }
-  }
-
-  onDrop(event:CdkDragDrop<string[]>){
-    if(event.previousContainer === event.container){
-      this.changeTasksOrder(event.previousIndex, event.currentIndex);
-      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
-    } else {
-      transferArrayItem(event.previousContainer.data, event.container.data, event.previousIndex, event.currentIndex);
-    }
-  }
-
-  private changeTasksOrder(previousIndex: number, currentIndex: number){
-    // TODO: tutaj chyba powinny być chyba filtrowane
-    const previousTask = this.model.getTasks()[previousIndex];
-    const currentTask = this.model.getTasks()[currentIndex];
-    DataService.getStoreManager().getTaskStore().move(previousTask, currentTask, previousIndex> currentIndex).then(updatedTasks=>{
-      this.model.updateTasks(updatedTasks);
-    });
-  }
-
-  public openProject(project:Project):void{
-    if(!project || project.getId() <0){
+  public openProject(project: Project): void {
+    if (!project || project.getId() < 0) {
       return;
     }
-    this.appService.setCurrentProject(project);
     this.model.setProject(project);
     this.loadTasks(TaskType.ACTIVE, project);
   }
 
-  public loadTasks(taskType: TaskType, project=null){
-    const currentProject = project? project : this.appService.getCurrentProject();
-    this.loadProjectTasks(currentProject, taskType).then(tasks=>{
+  // TODO: to jest wykorzystywane w momencie pokazywania aktywnych i zakończonych zadań
+  public loadTasks(taskType: TaskType, project = null) {
+    const currentProject = project
+      ? project
+      : this.appService.getCurrentProject();
+    this.loadProjectTasks(currentProject, taskType).then((tasks) => {
+      console.log(tasks);
       this.model.setTasks(tasks);
       this.model.setTaskType(taskType);
     });
   }
 
-  private loadProjectTasks(project: Project, taskType: TaskType){
-    switch(taskType){
+  private loadProjectTasks(project: Project, taskType: TaskType) {
+    console.log('loadProjectsTasks');
+    switch (taskType) {
       case TaskType.ACTIVE:
-        return DataService.getStoreManager().getTaskStore().getActiveTasks(project.getId());
+        return DataService.getStoreManager()
+          .getTaskStore()
+          .getActiveTasks(project.getId());
       case TaskType.FINISHED:
-        return DataService.getStoreManager().getTaskStore().getFinishedTasks(project.getId());
+        return DataService.getStoreManager()
+          .getTaskStore()
+          .getFinishedTasks(project.getId());
     }
   }
-}
 
+  public addTask(task: Task, container: ITaskContainer = null) {
+    if (task.getProjectID() == this.model.getProject().getId()) {
+      this.model.addTask(task);
+    }
+  }
+
+  public onDrop(event: CdkDragDrop<string[]>) {
+    TaskOrderController.onDrop(event, this.model.getTasks());
+  }
+
+  // MENU
+  public menuClick(mouseEvent: MouseEvent, task: Task) {
+    mouseEvent.stopPropagation();
+  }
+
+  public removeTask(task: Task): void {
+    const message = 'Czy na pewno usunąć zadanie?';
+    DialogHelper.openDialog(message, this.dialog).subscribe((result) => {
+      if (result) {
+        this.removeTaskTaskFromStore(task);
+      }
+    });
+  }
+
+  private removeTaskTaskFromStore(task: Task): void {
+    DataService.getStoreManager()
+      .getTaskStore()
+      .removeTask(task.getId())
+      .then((updatedTasks) => {
+        this.model.removeTask(task);
+        this.model.updateTasks(updatedTasks);
+        this.removeEvent.emit(task.getId());
+    });
+  }
+
+  public openDetails(task: Task): void {
+    this.detailsEvent.emit(task);
+  }
+
+  public finishTask(task:Task){
+    DataService.getStoreManager().getTaskStore().changeStatus(task, Status.ENDED).then(updatedTasks=>{
+      // this.model.removeTask(task);
+      console.log("Updated task");
+      console.log(updatedTasks);
+      this.model.updateTasks(updatedTasks);
+    });
+  }
+}

@@ -13,6 +13,9 @@ import { Status } from 'app/models/status';
 import { IOrderableStore } from './orderable.store';
 import { StoreOrderController } from '../order/order.controller';
 import { KanbanTaskStore } from './kanban.task.store';
+import { Position } from 'app/models/orderable.item';
+import { first } from 'rxjs/operators';
+import { StatusStoreOrderController } from '../order/status.order.controller';
 
 // TODO: przydałyby się do tego wszystkiego transakcje.
 export class TaskStore implements IOrderableStore<Task> {
@@ -41,7 +44,7 @@ export class TaskStore implements IOrderableStore<Task> {
     this.stageStore = stageStore;
     this.kanbanTaskStore = kanbanTaskStore;
 
-    this.orderController = new StoreOrderController(taskRepository);
+    this.orderController = new StatusStoreOrderController(taskRepository);
   }
 
   public getById(id: number): Promise<Task> {
@@ -269,22 +272,34 @@ export class TaskStore implements IOrderableStore<Task> {
 
   public changeStatus(task: Task, status: Status): Promise<Task[]> {
     let updated = new Set<Task>();
-    task.setStatus(status);
+    // inserting to start
+
     updated.add(task);
     return this.orderController.remove(task).then((updatedItems) => {
+      console.log("Zaktualizowane ");
+      console.log(updatedItems);
       updatedItems.forEach((x) => updated.add(x));
+      console.log(updated);
+
       return this.taskRepository
         .findFirstTaskWithStatus(task.getProjectID(), status)
         .then((firstTask) => {
+          console.log("First task");
+          console.log(firstTask);
+          task.setStatus(status);
+          task.setPosition(Position.HEAD);
           return this.orderController
             .insert(task, firstTask, task.getContainerId())
             .then((updatedItems) => {
+              console.log("changeStatus");
+              console.log(updatedItems);
               updatedItems.forEach((x) => updated.add(x));
               return Promise.resolve(Array.from(updated));
             });
         });
     });
   }
+
 
   public move(
     previousItem: Task,

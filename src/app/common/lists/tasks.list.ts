@@ -19,7 +19,7 @@ export class TasksList<T extends IFilterable & OrderableItem>
   }
 
   public setItems(items: T[]): void {
-    this.items = items;
+    this.items = items? items: [];
     this.refresh();
   }
 

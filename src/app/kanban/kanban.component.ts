@@ -2,8 +2,6 @@ import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { KanbanModel } from './kanban.model';
 import {
   CdkDragDrop,
-  moveItemInArray,
-  transferArrayItem,
 } from '@angular/cdk/drag-drop';
 import { Task } from 'app/models/task';
 import { Project } from 'app/models/project';
@@ -12,23 +10,31 @@ import { KanbanColumn, KanbanTask } from 'app/models/kanban';
 import { FocusHelper } from 'app/common/view_helper';
 import { TaskItemInfo } from 'app/tasks/common/task.item.info';
 import { Status } from 'app/models/status';
-import { InsertTaskData } from 'app/data/common/models/insert.task.data';
-import { DialogHelper } from 'app/common/dialog';
 import { MatDialog } from '@angular/material/dialog';
 import { AppService } from 'app/services/app/app.service';
 import { EditInputHandler } from 'app/common/edit_input_handler';
+import { ITaskList as ITaskList } from 'app/tasks-container/task.list';
+import { KanbanTaskOrderController, KanbanColumnOrderController } from './controllers/order.controller';
+import { KanbanTaskController } from './controllers/task.controller';
+import { KanbanColumnController } from './controllers/column.controller';
+
+
 
 @Component({
   selector: 'app-kanban',
   templateUrl: './kanban.component.html',
   styleUrls: ['./kanban.component.css'],
 })
-export class KanbanComponent implements OnInit {
+export class KanbanComponent implements OnInit, ITaskList {
+  // TODO: refaktoryzacja
   // TODO: zrobić rozdzielenie kolumn i zadań (chyba)
   @Output() closeEvent: EventEmitter<null> = new EventEmitter();
   @Output() pomodoroEvent: EventEmitter<Task> = new EventEmitter();
   @Output() detailsEvent: EventEmitter<Task> = new EventEmitter();
   @Output() removeEvent: EventEmitter<Task> = new EventEmitter();
+
+  private taskController: KanbanTaskController;
+  private columnController: KanbanColumnController;
 
   private model: KanbanModel = new KanbanModel();
   private info: TaskItemInfo = new TaskItemInfo();
@@ -38,7 +44,10 @@ export class KanbanComponent implements OnInit {
 
   constructor(private dialog: MatDialog, private appService: AppService) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.taskController = new KanbanTaskController(this.model, this.dialog, this.removeEvent);
+    this.columnController = new KanbanColumnController(this.model, this.dialog);
+  }
 
   public getModel() {
     return this.model;
@@ -53,6 +62,10 @@ export class KanbanComponent implements OnInit {
       return;
     }
     this.model.setProject(project);
+    this.loadTasks(project);
+  }
+
+  private loadTasks(project: Project) {
     DataService.getStoreManager()
       .getKanbanColumnStore()
       .getByProject(project.getId())
@@ -62,122 +75,12 @@ export class KanbanComponent implements OnInit {
       });
   }
 
-  public drop(event: CdkDragDrop<Task[]>) {
-    if (event.previousContainer === event.container) {
-      this.changeTasksOrder(
-        event.container.id,
-        event.previousIndex,
-        event.currentIndex
-      );
-      moveItemInArray(
-        event.container.data,
-        event.previousIndex,
-        event.currentIndex
-      );
-    } else {
-      this.moveTaskToColumn(
-        event.previousContainer.id,
-        event.container.id,
-        event.previousIndex,
-        event.currentIndex
-      );
-      transferArrayItem(
-        event.previousContainer.data,
-        event.container.data,
-        event.previousIndex,
-        event.currentIndex
-      );
-    }
-  }
-
-  private changeTasksOrder(
-    column: string,
-    previousIndex: number,
-    currentIndex: number
-  ) {
-    const currentColumn = this.model.getColumnById(Number.parseInt(column));
-    const previousTask = this.model.getTaskByIndex(
-      previousIndex,
-      currentColumn.getId()
-    );
-    const currentTask = this.model.getTaskByIndex(
-      currentIndex,
-      currentColumn.getId()
-    );
-    DataService.getStoreManager()
-      .getKanbanTaskStore()
-      .move(previousTask, currentTask, previousIndex > currentIndex)
-      .then((updatedTask) => {
-        this.model.updateTasks(updatedTask, currentColumn.getId());
-      });
-  }
-
-  private moveTaskToColumn(
-    previousColumnId: string,
-    currentColumnId: string,
-    previousIndex: number,
-    currentIndex: number
-  ) {
-    const previousColumn = this.model.getColumnById(
-      Number.parseInt(previousColumnId)
-    );
-    const currentColumn = this.model.getColumnById(
-      Number.parseInt(currentColumnId)
-    );
-    const previousTask = this.model.getTaskByIndex(
-      previousIndex,
-      previousColumn.getId()
-    );
-    let currentTask = this.model.getTaskByIndex(
-      currentIndex,
-      currentColumn.getId()
-    );
-    if (previousTask == currentTask) {
-      currentTask = null;
-    }
-
-    DataService.getStoreManager()
-      .getKanbanTaskStore()
-      .changeContainer(previousTask, currentTask, currentColumn.getId())
-      .then((updatedTask) => {
-        this.model.updateTasks(updatedTask, currentColumn.getId());
-        this.model.updateTasks(updatedTask, previousColumn.getId());
-      });
+  public taskDrop(event: CdkDragDrop<Task[]>) {
+    KanbanTaskOrderController.drop(event, this.model);
   }
 
   public columnDrop(event: CdkDragDrop<Task[]>) {
-    if (event.previousContainer === event.container) {
-      this.changeColumnsOrder(event.previousIndex, event.currentIndex);
-      moveItemInArray(
-        event.container.data,
-        event.previousIndex,
-        event.currentIndex
-      );
-    } else {
-      transferArrayItem(
-        event.previousContainer.data,
-        event.container.data,
-        event.previousIndex,
-        event.currentIndex
-      );
-    }
-  }
-
-  private changeColumnsOrder(previousIndex: number, currentIndex: number) {
-    if (previousIndex == currentIndex) {
-      return;
-    }
-    const previousColumn = this.model.getColumnByIndex(previousIndex);
-    const currentColumn = this.model.getColumnByIndex(currentIndex);
-    if (previousColumn.isDefault() || currentColumn.isDefault()) {
-      return;
-    }
-    DataService.getStoreManager()
-      .getKanbanColumnStore()
-      .move(previousColumn, currentColumn, previousIndex > currentIndex)
-      .then((updatedColumns) => {
-        this.model.updateColumns(updatedColumns);
-      });
+   KanbanColumnOrderController.drop(event, this.model);
   }
 
   public closeView() {
@@ -185,26 +88,7 @@ export class KanbanComponent implements OnInit {
   }
 
   public addColumn() {
-    console.log(this.model.getColumnName());
-    const columnName = this.model.getColumnName();
-    if (!columnName || columnName == '') {
-      this.model.setColumnNameValid(false);
-      FocusHelper.focus('#new-column-input');
-      return;
-    }
-    const kanbanColumn = new KanbanColumn();
-    kanbanColumn.setDefault(false);
-    kanbanColumn.setProjectId(this.model.getProject().getId());
-    kanbanColumn.setName(this.model.getColumnName());
-
-    DataService.getStoreManager()
-      .getKanbanColumnStore()
-      .create(kanbanColumn)
-      .then((result) => {
-        this.model.updateColumns(result.updatedColumns);
-        this.model.setColumnNameValid(true);
-        this.model.closeAdddingColumn();
-      });
+   this.columnController.addColumn();
   }
 
   public isOpen(): boolean {
@@ -220,46 +104,13 @@ export class KanbanComponent implements OnInit {
   }
 
   // TODO: całe dodwanie przenieść w inne miejsce
-  public addNewTask(column: KanbanColumn) {
-    const task = this.prepareTaskToInsert();
-    const data = new InsertTaskData(
-      task,
-      column,
-      this.model.getProject().getId()
-    );
-
-    DataService.getStoreManager()
-      .getTaskStore()
-      .createTask(data)
-      .then((result) => {
-        this.model.updateTasks(result.updatedKanbanTasks, data.column.getId());
-      });
+  public addTask(column: KanbanColumn) {
+    this.taskController.addTask(column);
     this.closeAddingNewTask();
   }
 
-  private prepareTaskToInsert() {
-    const task = new Task(this.model.getNewTaskName());
-    task.setProject(this.model.getProject());
-    return task;
-  }
-
-  public onRemoveTask(task: KanbanTask) {
-    const message = 'Czy na pewno usunąć zadanie?';
-    DialogHelper.openDialog(message, this.dialog).subscribe((result) => {
-      if (result) {
-        this.removeTask(task);
-      }
-    });
-  }
-
-  private removeTask(task: KanbanTask): void {
-    DataService.getStoreManager()
-      .getKanbanTaskStore()
-      .removeTask(task.getId())
-      .then((updatedTasks) => {
-        this.model.updateTasks(updatedTasks, task.getColumnId());
-        this.removeEvent.emit(task.getTask());
-      });
+  public  removeTask(task: KanbanTask): void {
+    this.taskController.removeTask(task);
   }
 
   public closeAddingNewTask() {
@@ -280,19 +131,9 @@ export class KanbanComponent implements OnInit {
     return '#new_task_input_' + column.getId();
   }
 
-  public onTaskEdit(task: KanbanTask) {
+  public openDetails(task: KanbanTask) {
     console.log('OnTaskEdit');
     this.detailsEvent.emit(task.getTask());
-  }
-
-  public onTaskDelete(task: KanbanTask) {
-    // TODO: można przenieść
-    const message = 'Czy na pewno usunąć zadanie?';
-    DialogHelper.openDialog(message, this.dialog).subscribe((result) => {
-      if (result) {
-        this.removeTask(task);
-      }
-    });
   }
 
   public setCurrentTask(task: KanbanTask) {
@@ -313,12 +154,7 @@ export class KanbanComponent implements OnInit {
   }
 
   public finishTask(task: KanbanTask): void {
-    DataService.getStoreManager()
-      .getTaskStore()
-      .changeStatus(task.getTask(), Status.ENDED)
-      .then((updatedTasks) => {
-        // tutaj nie robimy nic. Zostawiamy zakończone zadania na liście
-      });
+    this.taskController.finishTask(task);
   }
 
   public addToPomodoro(task: KanbanTask): void {
@@ -336,7 +172,7 @@ export class KanbanComponent implements OnInit {
   public handleAddingNewTask(event: KeyboardEvent) {
     EditInputHandler.handleKeyEvent(
       event,
-      () => this.addNewTask(this.model.getAddingTaskOpen()),
+      () => this.addTask(this.model.getAddingTaskOpen()),
       () => this.closeAddingNewTask()
     );
   }
@@ -350,10 +186,7 @@ export class KanbanComponent implements OnInit {
   }
 
   public updateColumnName() {
-    this.model.getEditedColumn().setName(this.model.getColumnName());
-    DataService.getStoreManager()
-      .getKanbanColumnStore()
-      .update(this.model.getEditedColumn());
+    this.columnController.updateColumnName();
     this.closeEditingColumnName();
   }
 
@@ -368,21 +201,6 @@ export class KanbanComponent implements OnInit {
   }
 
   public onColumnRemove(column: KanbanColumn) {
-    const message = 'Czy na pewno usunąć kolumnę?';
-    DialogHelper.openDialog(message, this.dialog).subscribe((result) => {
-      if (result) {
-        this.removeColumn(column);
-      }
-    });
-  }
-
-  private removeColumn(column: KanbanColumn) {
-    // TODO: zastanowić się, czy przenieść wszystkie zadania do nieprzypisanych, czy usunąć
-    DataService.getStoreManager()
-      .getKanbanColumnStore()
-      .remove(column.getId())
-      .then((updatedColumns) => {
-        this.model.updateColumns(updatedColumns);
-      });
+    this.columnController.removeColumn(column);
   }
 }

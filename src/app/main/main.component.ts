@@ -10,16 +10,14 @@ import { ProjectDetailsComponent } from 'app/project-details/project-details.com
 import { TaskDetailsComponent } from 'app/task-details/task-details.component';
 import { Project } from 'app/models/project';
 import { ProjectsComponent } from 'app/projects/projects.component';
-import { TasksComponent } from 'app/tasks/tasks.component';
 import { Task } from 'app/models/task';
-import * as $ from 'jquery';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { StageDetailsComponent } from 'app/stage-details/stage-details.component';
 import { Stage } from 'app/models/stage';
 import { SpecialList } from 'app/projects/common/special_list';
 import { PomodoroComponent } from 'app/pomodoro/pomodoro.component';
-import { KanbanComponent } from 'app/kanban/kanban.component';
 import { AppService, TasksMode } from 'app/services/app/app.service';
+import { TasksContainerComponent } from 'app/tasks-container/tasks-container.component';
 
 @Component({
   selector: 'app-main',
@@ -40,17 +38,14 @@ export class MainComponent implements OnInit, AfterViewInit {
   @ViewChild(ProjectsComponent)
   private projectsComponent: ProjectsComponent;
 
-  @ViewChild(TasksComponent)
-  private tasksComponent: TasksComponent;
-
   @ViewChild(StageDetailsComponent)
   private stageDetailsComponent: StageDetailsComponent;
 
   @ViewChild(PomodoroComponent)
   private pomodoroComponent: PomodoroComponent;
 
-  @ViewChild(KanbanComponent)
-  private kanbanComponent: KanbanComponent;
+  @ViewChild(TasksContainerComponent)
+  private tasksContainer: TasksContainerComponent;
 
   public projectsOpen = true;
   public projectsDetailsOpen = false;
@@ -63,7 +58,6 @@ export class MainComponent implements OnInit, AfterViewInit {
 
   @ViewChild('listSpace') listSpace: ElementRef;
   @ViewChild('listDetailsSpace') listDetailsSpace: ElementRef;
-  @ViewChild('workSpace') workSpace: ElementRef;
   @ViewChild('workDetailsSpace') workDetailsSpace: ElementRef;
   @ViewChild('sidebarSpace') sidebarSpace: ElementRef;
 
@@ -98,7 +92,6 @@ export class MainComponent implements OnInit, AfterViewInit {
   // TODO: wymyślić jakiś sprytniejszy plan wstawiania szerokości
   // TODO: może nazwać jakoś poszczególne stany, i przygotować odgórnie ustawienia
   private setWidthOnProjectViewOpen() {
-    this.setWidth(this.workSpace, 20);
     this.setWidth(this.listSpace, 20);
     this.setWidth(this.listDetailsSpace, 60);
   }
@@ -121,7 +114,6 @@ export class MainComponent implements OnInit, AfterViewInit {
   }
 
   private setWidthOnTaskViewOpen() {
-    this.setWidth(this.workSpace, 30);
     this.setWidth(this.listSpace, 15);
     this.setWidth(this.workDetailsSpace, 55);
   }
@@ -135,7 +127,6 @@ export class MainComponent implements OnInit, AfterViewInit {
 
   private setOriginalWidth() {
     this.setWidth(this.listSpace, 30);
-    this.setWidth(this.workSpace, 70);
   }
 
   public onCreateProject(project: Project) {
@@ -169,7 +160,9 @@ export class MainComponent implements OnInit, AfterViewInit {
     this.tasksDetailsOpen = false;
     this.setOriginalWidth();
 
-    this.tasksComponent.addTask(task);
+    // TODO: dorobić metodę dodawania metody
+
+    // this.tasksComponent.addTask(task);
   }
 
   public onRemoveTask(taskId: number) {
@@ -186,7 +179,8 @@ export class MainComponent implements OnInit, AfterViewInit {
     this.projectsDetailsOpen = false;
     this.tasksDetailsOpen = false;
     this.setOriginalWidth();
-    this.tasksComponent.openProject(null); //hide tasks panel
+    // TODO: sprawdzić, czy to będzie odpowiednie
+    this.tasksContainer.openProject(null);
   }
 
   public openSnackBar(message: string) {
@@ -223,7 +217,8 @@ export class MainComponent implements OnInit, AfterViewInit {
   }
 
   public onSpecialListCLick(listType: SpecialList) {
-    this.tasksComponent.getSpecialList().setSpecialList(listType);
+    // TODO: zrobić wyświetlanie list specjalnych
+    // this.tasksComponent.getSpecialList().setSpecialList(listType);
   }
 
   public addTaskToPomodoro(task: Task): void {
@@ -236,34 +231,7 @@ export class MainComponent implements OnInit, AfterViewInit {
     this.tasksOpen = true;
   }
 
-  public openProject(project: Project, taskMode: TasksMode) {
-    let currentProject = project
-      ? project
-      : this.appService.getCurrentProject();
-    let currentTaskMode =
-      taskMode != null ? taskMode : this.appService.getTasksMode();
-    this.appService.setCurrentProject(currentProject);
-    this.appService.setTasksMode(currentTaskMode);
-    switch (currentTaskMode) {
-      case TasksMode.LIST:
-        this.openTaskListMode(currentProject);
-        break;
-      case TasksMode.KANBAN:
-        this.openKanbanMode(currentProject);
-        break;
-    }
-  }
-
-  private openTaskListMode(project: Project) {
-    this.kanbanOpen = false;
-    this.tasksOpen = true;
-    this.tasksComponent.openProject(project);
-  }
-
-  private openKanbanMode(project: Project) {
-    this.kanbanOpen = true;
-    this.tasksOpen = false;
-
-    this.kanbanComponent.openProject(project);
+  public openProject(project: Project) {
+    this.tasksContainer.openProject(project);
   }
 }

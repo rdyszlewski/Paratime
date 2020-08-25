@@ -2,7 +2,6 @@ import { KanbanColumn, KanbanTask } from 'app/models/kanban';
 import { Project } from 'app/models/project';
 import { TasksList } from 'app/common/lists/tasks.list';
 import { FocusHelper } from 'app/common/view_helper';
-import { validateVerticalPosition } from '@angular/cdk/overlay';
 
 export class KanbanModel {
   // TODO: możliwe, że będzie trzeba zmienić listę, poniewa tutaj chyba nie będzie się sortowało
@@ -95,7 +94,7 @@ export class KanbanModel {
   }
 
   public addColumn(kanbanColumn: KanbanColumn) {
-    this.columns.addItem(kanbanColumn);
+    // this.columns.addItem(kanbanColumn);
 
     this.tasks.set(kanbanColumn.getId(), new TasksList(kanbanColumn.getId()));
     this.tasks

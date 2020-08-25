@@ -1,9 +1,5 @@
 <div class="main">
     <div class="top-actionbar">
-        <div class="work-modes-switch">
-            <button class="button toolbar-button" (click)="openProject(null,taskMode.LIST)">Lista</button>
-            <button class="button toolbar-button" (click)="openProject(null,taskMode.KANBAN)">Tablica</button>
-        </div>
         <div class="toolbar">
             <div class="timer">{{pomodoroTime}}</div>
             <button class="button toolbar-button" (click)="togglePomodoroOpen()">Licznik</button>
@@ -16,10 +12,10 @@
         <div #listSpace>
             <app-projects id="projects" [hidden]="!projectsOpen"
                 (editEvent)='openProjectDetails($event)'
-                (loadEvent)="openProject($event, null)"
+                (loadEvent)="openProject($event)"
                 (removeEvent)="onRemoveSelectedProject($event)"
                 (listEvent)="onSpecialListCLick($event)"
-                (kanbanEvent)="openProject($event, taskMode.KANBAN)">
+                (kanbanEvent)="openProject($event)">
 
             </app-projects>
         </div>
@@ -38,19 +34,9 @@
             </app-stage-details>
         </div>
 
-        <div #workSpace>
-            <app-tasks id='tasks' [hidden]='!tasksOpen'
-                (detailsEvent)="openTaskDetails($event)"
-                (removeEvent)="onRemoveTask($event)"
-                (pomodoroEvent)="addTaskToPomodoro($event)">
-            </app-tasks>
+        <app-tasks-container id="work-space">
 
-            <app-kanban id="kanban" [hidden]="!kanbanOpen"
-                (closeEvent)="closeKanban()"
-                (pomodoroEvent)="addTaskToPomodoro($event)"
-                (detailsEvent)="openTaskDetails($event)">
-            </app-kanban>
-        </div>
+        </app-tasks-container>
 
         <div #workDetailsSpace>
             <app-task-details id="task-details" [hidden]='!tasksDetailsOpen'
