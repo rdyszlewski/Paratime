@@ -1,0 +1,16 @@
+#side-container{
+  display: flex;
+}
+
+.side-button{
+  width: 30px;
+  height: 30px;
+}
+
+#side-space{
+  position: fixed;
+  right: 40px;
+  z-index: 2;
+  background: white;
+  height: 100%;
+}

@@ -5,13 +5,14 @@ import { DataService } from 'app/data.service';
 import { MatDialog } from '@angular/material/dialog';
 import { Status } from 'app/models/status';
 import { ProjectType } from 'app/models/project_type';
-import { SpecialList } from './common/special_list';
 import { ProjectsViewState } from './common/state';
 import { ProjectsFilteringController } from './filtering/projects.filtering.controller';
 import { ProjectAddingController } from './adding/projects.adding.controller';
 import { ProjectsRemovingController } from './removing/projects.removing.controller';
 import { ProjectsLoader } from './common/projects.loader';
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
+import { EventBus } from 'eventbus-ts';
+import { ProjectLoadEvent, ProjectEditEvent } from './events/project.event';
 
 
 @Component({
@@ -20,12 +21,6 @@ import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/dr
   styleUrls: ['./projects.component.css']
 })
 export class ProjectsComponent implements OnInit {
-
-  @Output() editEvent: EventEmitter<Project> = new EventEmitter();
-  @Output() loadEvent: EventEmitter<Project> = new EventEmitter();
-  @Output() removeEvent: EventEmitter<Project> = new EventEmitter();
-  @Output() listEvent: EventEmitter<SpecialList> = new EventEmitter();
-  @Output() kanbanEvent: EventEmitter<Project> = new EventEmitter();
 
   private model: ProjectsModel;
   private state: ProjectsViewState;
@@ -42,8 +37,8 @@ export class ProjectsComponent implements OnInit {
     this.model = new ProjectsModel();
     this.state = new ProjectsViewState();
     this.filteringController = new ProjectsFilteringController(this.model);
-    this.addingController = new ProjectAddingController(this.state, this.model, this.loadEvent);
-    this.removingController = new ProjectsRemovingController(this.model, this.removeEvent, this.dialog);
+    this.addingController = new ProjectAddingController(this.state, this.model);
+    this.removingController = new ProjectsRemovingController(this.model, this.dialog);
     this.loadProjects();
   }
 
@@ -93,7 +88,8 @@ export class ProjectsComponent implements OnInit {
 // click events
 
   public onProjectClick(project:Project){
-    this.loadEvent.emit(project);
+    // this.loadEvent.emit(project);
+    EventBus.getDefault().post(new ProjectLoadEvent(project));
   }
 
   public onProjectMenuClick(event:MouseEvent, project:Project){
@@ -105,35 +101,15 @@ export class ProjectsComponent implements OnInit {
 
   public onEditProject(){
     DataService.getStoreManager().getProjectStore().getProjectById(this.model.getProjectWithOpenMenu().getId()).then(loadedProject=>{
-      this.editEvent.emit(loadedProject);
+      // this.editEvent.emit(loadedProject);
+      EventBus.getDefault().post(new ProjectEditEvent(loadedProject));
       this.model.setSelectedProject(this.model.getProjectWithOpenMenu());
     });
   }
 
-
-  // LISTY SPECJALNE
-
-  public onImportantListClick(){
-    this.listEvent.emit(SpecialList.IMPORTANT);
-  }
-
-  public onTodayListClick(){
-    this.listEvent.emit(SpecialList.TODAY);
-  }
-
-  public toggleSpecialListOpen(event:MouseEvent){
-    this.state.toggleSpecialListOpen();
-    event.stopPropagation();
-  }
-
-  public toggleProjectsListOpen(event: MouseEvent){
-    this.state.toggleProjectsListOpen();
-    event.stopPropagation();
-  }
-
   public openKanban(){
     // TODO: przerobić sposób przekazywania projektu podczas zdarzenia menu
-    this.kanbanEvent.emit(this.model.getProjectWithOpenMenu());
+    // this.kanbanEvent.emit(this.model.getProjectWithOpenMenu());
   }
 
   public onDrop(event:CdkDragDrop<string[]>){
@@ -152,5 +128,4 @@ export class ProjectsComponent implements OnInit {
       this.model.updateProjects(updatedProjects);
     });
   }
-
 }

@@ -1,15 +1,7 @@
 <div class="main">
-    <div class="top-actionbar">
-        <div class="toolbar">
-            <div class="timer">{{pomodoroTime}}</div>
-            <button class="button toolbar-button" (click)="togglePomodoroOpen()">Licznik</button>
-            <button class="button toolbar-button" (click)="openLabelsManager()">Etykiety</button>
-        </div>
-    </div>
-
     <div class="app-content">
 
-        <div #listSpace>
+        <!-- <div #listSpace>
             <app-projects id="projects" [hidden]="!projectsOpen"
                 (editEvent)='openProjectDetails($event)'
                 (loadEvent)="openProject($event)"
@@ -18,7 +10,9 @@
                 (kanbanEvent)="openProject($event)">
 
             </app-projects>
-        </div>
+        </div> -->
+
+        <app-lists-container id="list-space"></app-lists-container>
 
         <div #listDetailsSpace>
             <app-project-details id='projects-details' [hidden]='!projectsDetailsOpen'
@@ -46,7 +40,8 @@
             </app-task-details>
         </div>
 
-        <div #sidebarSpace>
+        <app-side-container></app-side-container>
+        <!-- <div #sidebarSpace>
             <app-labels id="labels" [hidden]="!labelsOpen"
                 (closeEvent)="closeLabelsManager()"
                 (updateEvent)="onLabelsUpdate()">
@@ -55,7 +50,7 @@
             <app-pomodoro id="pomodoro" [hidden]="!pomodoroOpen"
                 (tickEvent)="setPomodoroTime($event)">
             </app-pomodoro>
-        </div>
+        </div> -->
 
     </div>
 

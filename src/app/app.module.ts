@@ -37,6 +37,8 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { WidgetsModule } from './widgets/widgets.module';
 import { ListsContainerComponent } from './lists-container/lists-container.component';
 import { TasksContainerComponent } from './tasks-container/tasks-container.component';
+import { SideContainerComponent } from './side-container/side-container.component';
+import { SpecialListsComponent } from './special-lists/special-lists.component';
 
 @NgModule({
   declarations: [
@@ -54,6 +56,8 @@ import { TasksContainerComponent } from './tasks-container/tasks-container.compo
     KanbanComponent,
     ListsContainerComponent,
     TasksContainerComponent,
+    SideContainerComponent,
+    SpecialListsComponent,
   ],
   imports: [
     BrowserModule,

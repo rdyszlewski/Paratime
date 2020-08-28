@@ -1,0 +1,10 @@
+<div id="side-container">
+  <div id="side-space">
+    <app-labels [hidden]="currentMode != mode.LABELS"></app-labels>
+    <app-pomodoro [hidden]="currentMode != mode.POMODORO"></app-pomodoro>
+  </div>
+  <div id="side-buttons">
+    <button class="side-button" (click)="changeMode(mode.POMODORO)">P</button>
+    <button class="side-button" (click)="changeMode(mode.LABELS)">E</button>
+  </div>
+</div>

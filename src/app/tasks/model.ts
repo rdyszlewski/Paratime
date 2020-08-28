@@ -64,7 +64,9 @@ export class TasksModel {
   }
 
   public isOpen(): boolean {
-    return this.project != null && this.project.getId() >= 0;
+    return this.project != null &&
+    (this.project.getId() >= 0 && this.project.getId() == 987); // 987 value for special lists
+    // TODO: przenieść wartość do stałej
   }
 
   public getTaskByIndex(index: number): Task {

@@ -13,10 +13,6 @@
       <ng-container [ngTemplateOutlet]="filter_container"></ng-container>
     </div>
 
-    <div id="special-lists-container" class="transparent-border expansion-list">
-      <div [ngTemplateOutlet]="special_lists"></div>
-    </div>
-
     <div id="projects-container"
       [ngClass]="{
         'projects-container': getState().isProjectsListOpen(),
@@ -76,41 +72,12 @@
   </div>
 </ng-template>
 
-<ng-template #special_lists>
-  <div class="expansion-list-header" (click)="toggleSpecialListOpen($event)">
-    <span class="list-header-name">Listy</span>
-    <div class="filter-button expansion-icon" (click)="toggleSpecialListOpen($event)"></div>
-  </div>
-  <div id="special-list" class="list border" *ngIf="getState().isSpecialListOpen()">
-
-    <!-- TODO: zrobić sposób zaznaczania specjalnych list -->
-    <div [ngClass]="{'selected-list-item': false,
-                  'project': true,
-                  'list-item':true,
-                  'transparent-border':true}"
-                  (click)='onImportantListClick()'>
-      <div class="list-item-value">Ważne</div>
-    </div>
-
-    <div [ngClass]="{'selected-list-item': false,
-                  'project': true,
-                  'list-item':true,
-                  'transparent-border':true}"
-                  (click)='onTodayListClick()'>
-      <div class="list-item-value">Dzisiaj</div>
-    </div>
-  </div>
-</ng-template>
 
 <ng-template #project_lists_container>
-  <div class="expansion-list-header" (click)="toggleProjectsListOpen($event)">
-    <span class="list-header-name">Projekty</span>
-    <div class="filter-button expansion-icon" (click)="toggleProjectsListOpen($event)"></div>
-  </div>
+
   <!-- TODO: zrobić globalny styl do listy oraz do jej elementów-->
 
     <div id="projects-list"  class="list border"
-    *ngIf="getState().isProjectsListOpen()"
     cdkDropList
     #projectList="cdkDropList"
     [cdkDropListData]="getModel().getProjects()"

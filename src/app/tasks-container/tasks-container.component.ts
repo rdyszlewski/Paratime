@@ -6,6 +6,7 @@ import { ITaskList } from './task.list';
 import { TasksComponent } from 'app/tasks/tasks.component';
 import { KanbanComponent } from 'app/kanban/kanban.component';
 import { ThrowStmt } from '@angular/compiler';
+import { EventBus, Subscribe } from 'eventbus-ts';
 
 @Component({
   selector: 'app-tasks-container',
@@ -32,7 +33,9 @@ export class TasksContainerComponent implements OnInit, AfterViewInit {
 
   }
 
-  constructor(private appService: AppService) { }
+  constructor(private appService: AppService) {
+    EventBus.getDefault().register(this);
+   }
 
   ngAfterViewInit(): void {
     this.changeTaskMode(this._mode);
@@ -87,6 +90,10 @@ export class TasksContainerComponent implements OnInit, AfterViewInit {
     // TODO: dokończyć to
   }
 
-
+  @Subscribe("ProjectLoadEvent")
+  public onProjectLoad(project:Project){
+    console.log("Otworzono projekt");
+    this._currentList.openProject(project);
+  }
 
 }

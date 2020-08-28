@@ -7,7 +7,7 @@ import { TasksModel } from './model';
 import { MatDialog } from '@angular/material/dialog';
 import { TaskItemInfo } from './common/task.item.info';
 import { TaskItemController } from './common/task.item.controller';
-import { SpecialListTaks as SpecialListTask } from './common/special.list';
+import { SpecialListTasks as SpecialListTask } from './common/special.list';
 import { TaskFilteringController } from './filtering/task.filtering.controller';
 import {
   CdkDragDrop,
@@ -22,6 +22,8 @@ import { ITaskContainer } from 'app/models/task.container';
 import { TaskAddingController } from './adding/task.adding.controller';
 import { TaskOrderController } from './controllers/order.controller';
 import { DialogHelper } from 'app/common/dialog';
+import { Subscribe, EventBus } from 'eventbus-ts';
+import { SpecialList } from 'app/projects/common/special_list';
 
 @Component({
   selector: 'app-tasks',
@@ -49,6 +51,8 @@ export class TasksComponent implements OnInit, ITaskList {
     this.specialListsController = new SpecialListTask(this.model);
     this.addingController = new TaskAddingController(this.model);
     this.filteringController = new TaskFilteringController(this.model);
+
+    EventBus.getDefault().register(this);
   }
 
   ngOnInit(): void {}
@@ -157,5 +161,11 @@ export class TasksComponent implements OnInit, ITaskList {
       console.log(updatedTasks);
       this.model.updateTasks(updatedTasks);
     });
+  }
+
+  // TODO: to może zostać przeniesione do ListsContainer. Trzeba będzie pobrać zadania i je ustawić
+  @Subscribe("SpecialListEvent")
+  public onSpecialListLoad(type: SpecialList){
+    this.specialListsController.setSpecialList(type)
   }
 }

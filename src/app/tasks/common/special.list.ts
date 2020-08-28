@@ -3,7 +3,7 @@ import { DataService } from 'app/data.service';
 import { Project } from 'app/models/project';
 import { TasksModel } from '../model';
 
-export class SpecialListTaks{
+export class SpecialListTasks{
 
     private IMPORTANT_NAME = "Ważne";
     private TODAY_NAME = "Dzisiaj";
@@ -24,21 +24,25 @@ export class SpecialListTaks{
             break;
         }
       }
-    
+
       private loadImportantTasks(){
         DataService.getStoreManager().getTaskStore().getImportantTasks().then(tasks=>{
           let project = new Project(this.IMPORTANT_NAME);
+          project.setId(987); // TODO: przenieść do stałej
           project.setTasks(tasks);
           this.model.setProject(project);
+          this.model.setTasks(tasks);
           // TODO: sprawdzić to, czy wszysto jest ok
         });
       }
-    
+
       private loadTodayTasks(){
         DataService.getStoreManager().getTaskStore().getTasksByDate(new Date()).then(tasks=>{
           let project = new Project(this.TODAY_NAME);
           project.setTasks(tasks);
+          project.setId(987); // TODo: przenieść do stałej
           this.model.setProject(project);
+          this.model.setTasks(tasks);
         });
       }
 }

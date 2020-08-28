@@ -6,22 +6,22 @@ import { EditInputHandler } from 'app/common/edit_input_handler';
 import { Project } from 'app/models/project';
 import { ProjectsModel } from '../common/model';
 import { EventEmitter } from '@angular/core';
+import { EventBus } from 'eventbus-ts';
+import { ProjectLoadEvent } from '../events/project.event';
 
 export class ProjectAddingController{
 
     private PROJECTS_LIST = "#projects-list";
     private PROJECT_NAME_INPUT = '#new-project-name';
 
-    private loadEvent: EventEmitter<Project>;
 
     private model: ProjectsAddingModel = new ProjectsAddingModel();
     private state: ProjectsViewState;
     private listModel: ProjectsModel;
 
-    constructor(state: ProjectsViewState, listModel: ProjectsModel, loadEvent: EventEmitter<Project>){
+    constructor(state: ProjectsViewState, listModel: ProjectsModel){
         this.state = state;
         this.listModel = listModel;
-        this.loadEvent = loadEvent;
     }
 
     public getModel():ProjectsAddingModel{
@@ -49,7 +49,8 @@ export class ProjectAddingController{
         DataService.getStoreManager().getProjectStore().createProject(project).then(result=>{
           // this.listModel.addProject(result.insertedProject);
           this.listModel.updateProjects(result.updatedProjects);
-          this.loadEvent.emit(result.insertedProject);
+
+          EventBus.getDefault().post(new ProjectLoadEvent(result.insertedProject));
         });
         // TODO: można wstawić jakąś zaślepkę, która będzie chowana dopiero po wstawieniu zadania
         this.closeAddingNewProject();

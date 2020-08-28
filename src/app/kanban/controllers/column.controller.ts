@@ -13,7 +13,6 @@ export class KanbanColumnController{
   constructor(model: KanbanModel, dialog: MatDialog){
     this.model = model;
     this.dialog = dialog;
-
   }
 
   // ADDING

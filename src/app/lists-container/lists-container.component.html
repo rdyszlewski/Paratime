@@ -1,1 +1,11 @@
-<p>lists-container works!</p>
+<div id="lists-container">
+  <div id="list-side">
+    <button class="side-button" (click)="openLists(type.SPECIAL)">S</button>
+    <button class="side-button" (click)="openLists(type.PROJECTS)">P</button>
+  </div>
+
+  <div class="list-space">
+    <app-projects id="projects" [hidden]="listType!=type.PROJECTS"></app-projects>
+    <app-special-lists id="special-lists" [hidden]="listType!=type.SPECIAL"></app-special-lists>
+  </div>
+</div>
