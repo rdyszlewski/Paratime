@@ -82,7 +82,10 @@ export class TasksComponent implements OnInit, ITaskList {
   }
 
   public openProject(project: Project): void {
+    console.log("Otrzymano projekt");
     if (!project || project.getId() < 0) {
+      console.log("Nieodpowiedni projekt");
+      console.log(project);
       return;
     }
     this.model.setProject(project);
@@ -98,6 +101,7 @@ export class TasksComponent implements OnInit, ITaskList {
       console.log(tasks);
       this.model.setTasks(tasks);
       this.model.setTaskType(taskType);
+      this.model.isOpen
     });
   }
 

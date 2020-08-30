@@ -1,58 +1,47 @@
 <div class="main">
-    <div class="app-content">
+  <!-- <app-top-bar id="top-bar"></app-top-bar> -->
+  <!-- in case of adding new tabs, change last element style in styles.css. mat-tab-label-0-x -->
+  <div id="top-bar">
+    <mat-tab-group id="top-bar-tabs" headerPosition="below" md-center-tabs="true">
+      <mat-tab label="Zadania" id="tasks-tab" class="first-tab">
+        <ng-container [ngTemplateOutlet]="tasks"></ng-container>
+      </mat-tab>
+      <mat-tab label="Podsumowanie">Podsumowanie</mat-tab>
+      <mat-tab label="Ustawienia">Ustawienia</mat-tab>
+    </mat-tab-group>
+  </div>
+</div>
 
-        <!-- <div #listSpace>
-            <app-projects id="projects" [hidden]="!projectsOpen"
-                (editEvent)='openProjectDetails($event)'
-                (loadEvent)="openProject($event)"
-                (removeEvent)="onRemoveSelectedProject($event)"
-                (listEvent)="onSpecialListCLick($event)"
-                (kanbanEvent)="openProject($event)">
+<ng-template #tasks>
+  <div class="fle">
 
-            </app-projects>
-        </div> -->
+    <app-lists-container id="list-space"></app-lists-container>
 
-        <app-lists-container id="list-space"></app-lists-container>
+    <div #listDetailsSpace>
+        <app-project-details id='projects-details' [hidden]='!projectsDetailsOpen'
+            (closeEvent)='closeProjectDetails()'
+            (saveEvent)='onCreateProject($event)'
+            (updateEvent)="onUpdateProject($event)"
+            (editStageEvent)="onEditProjectStage($event)">
+        </app-project-details>
 
-        <div #listDetailsSpace>
-            <app-project-details id='projects-details' [hidden]='!projectsDetailsOpen'
-                (closeEvent)='closeProjectDetails()'
-                (saveEvent)='onCreateProject($event)'
-                (updateEvent)="onUpdateProject($event)"
-                (editStageEvent)="onEditProjectStage($event)">
-            </app-project-details>
-
-            <app-stage-details id="stage-details" [hidden]="!stageDetailsOpen"
-                (closeEvent)="closeStageDetails()"
-                (updateEvent)="onUpdateStage($event)">
-            </app-stage-details>
-        </div>
-
-        <app-tasks-container id="work-space">
-
-        </app-tasks-container>
-
-        <div #workDetailsSpace>
-            <app-task-details id="task-details" [hidden]='!tasksDetailsOpen'
-                (closeEvent)="closeTaskDetails()"
-                (saveEvent)="onCreateTask($event)"
-                (openLabelsEvent)="openLabelsManager()">
-            </app-task-details>
-        </div>
-
-        <app-side-container></app-side-container>
-        <!-- <div #sidebarSpace>
-            <app-labels id="labels" [hidden]="!labelsOpen"
-                (closeEvent)="closeLabelsManager()"
-                (updateEvent)="onLabelsUpdate()">
-            </app-labels>
-
-            <app-pomodoro id="pomodoro" [hidden]="!pomodoroOpen"
-                (tickEvent)="setPomodoroTime($event)">
-            </app-pomodoro>
-        </div> -->
-
+        <app-stage-details id="stage-details" [hidden]="!stageDetailsOpen"
+            (closeEvent)="closeStageDetails()"
+            (updateEvent)="onUpdateStage($event)">
+        </app-stage-details>
     </div>
 
-</div>
+    <app-tasks-container id="work-space"></app-tasks-container>
+
+    <div #workDetailsSpace>
+        <app-task-details id="task-details" [hidden]='!tasksDetailsOpen'
+            (closeEvent)="closeTaskDetails()"
+            (saveEvent)="onCreateTask($event)"
+            (openLabelsEvent)="openLabelsManager()">
+        </app-task-details>
+    </div>
+
+    <app-side-container></app-side-container>
+  </div>
+</ng-template>
 

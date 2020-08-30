@@ -2,6 +2,7 @@ import { SpecialList } from 'app/projects/common/special_list';
 import { DataService } from 'app/data.service';
 import { Project } from 'app/models/project';
 import { TasksModel } from '../model';
+import { Values } from 'app/common/values';
 
 export class SpecialListTasks{
 
@@ -28,7 +29,7 @@ export class SpecialListTasks{
       private loadImportantTasks(){
         DataService.getStoreManager().getTaskStore().getImportantTasks().then(tasks=>{
           let project = new Project(this.IMPORTANT_NAME);
-          project.setId(987); // TODO: przenieść do stałej
+          project.setId(Values.SPECIAL_LIST_ID); // TODO: przenieść do stałej
           project.setTasks(tasks);
           this.model.setProject(project);
           this.model.setTasks(tasks);
@@ -40,7 +41,7 @@ export class SpecialListTasks{
         DataService.getStoreManager().getTaskStore().getTasksByDate(new Date()).then(tasks=>{
           let project = new Project(this.TODAY_NAME);
           project.setTasks(tasks);
-          project.setId(987); // TODo: przenieść do stałej
+          project.setId(Values.SPECIAL_LIST_ID); // TODo: przenieść do stałej
           this.model.setProject(project);
           this.model.setTasks(tasks);
         });

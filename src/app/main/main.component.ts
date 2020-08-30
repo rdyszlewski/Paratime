@@ -97,7 +97,7 @@ export class MainComponent implements OnInit, AfterViewInit {
   }
 
   private setWidth(element: ElementRef, width) {
-    element.nativeElement.style.minWidth = width + '%';
+    // element.nativeElement.style.minWidth = width + '%';
   }
 
   closeProjectDetails() {

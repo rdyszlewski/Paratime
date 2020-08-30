@@ -2,6 +2,7 @@ import { Task } from 'app/models/task';
 import { Project } from 'app/models/project';
 import { TaskType } from './task.type';
 import { TasksList } from 'app/common/lists/tasks.list';
+import { Values } from 'app/common/values';
 
 export class TasksModel {
   private project: Project = new Project();
@@ -65,8 +66,7 @@ export class TasksModel {
 
   public isOpen(): boolean {
     return this.project != null &&
-    (this.project.getId() >= 0 && this.project.getId() == 987); // 987 value for special lists
-    // TODO: przenieść wartość do stałej
+    (this.project.getId() >= 0 || this.project.getId() == Values.SPECIAL_LIST_ID);
   }
 
   public getTaskByIndex(index: number): Task {

@@ -76,3 +76,35 @@
     margin-bottom: auto;
     margin-right: 10px;
 }
+
+#top-bar{
+  width: 100%;
+  height: 100%;
+  display: flex;
+}
+
+#top-bar-tabs{
+  width: 100%;
+}
+
+#tasks-tab{
+  display: flex;
+}
+
+.fle{
+  display: flex;
+  height: 100%;
+}
+
+
+#top-bar-tabs{
+  height: 100%;
+}
+
+.first-tab{
+  margin-left: auto;
+}
+
+.last-tab{
+  margin-right: auto;
+}

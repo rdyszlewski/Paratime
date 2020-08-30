@@ -39,6 +39,7 @@ import { ListsContainerComponent } from './lists-container/lists-container.compo
 import { TasksContainerComponent } from './tasks-container/tasks-container.component';
 import { SideContainerComponent } from './side-container/side-container.component';
 import { SpecialListsComponent } from './special-lists/special-lists.component';
+import { TopBarComponent } from './top-bar/top-bar.component';
 
 @NgModule({
   declarations: [
@@ -58,6 +59,7 @@ import { SpecialListsComponent } from './special-lists/special-lists.component';
     TasksContainerComponent,
     SideContainerComponent,
     SpecialListsComponent,
+    TopBarComponent,
   ],
   imports: [
     BrowserModule,
@@ -83,7 +85,8 @@ import { SpecialListsComponent } from './special-lists/special-lists.component';
     MatInputModule,
     MatCheckboxModule,
     NgbModule,
-    WidgetsModule
+    WidgetsModule,
+    MatTabsModule
   ],
   entryComponents:[
     DialogComponent
@@ -93,8 +96,8 @@ import { SpecialListsComponent } from './special-lists/special-lists.component';
   ],
   bootstrap: [AppComponent]
 })
-export class AppModule { 
-  
+export class AppModule {
+
   constructor(){
 
   }

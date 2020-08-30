@@ -467,3 +467,18 @@ html, body{
 .task-detauls-container{
     display: flex;
 }
+
+/* TABS */
+
+.mat-tab-body-wrapper{
+  height: 100% !important;
+}
+
+/* TODO: zmienić w przypadku dodania nowych tabel */
+#mat-tab-label-0-0{
+  margin-left: auto;
+}
+
+#mat-tab-label-0-2{
+  margin-right: auto;
+}
