@@ -3,9 +3,9 @@ import { NgModule } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { TasksComponent } from './tasks/tasks.component';
+import { TasksComponent } from './tasks-container/tasks/tasks.component';
 import { MainComponent } from './main/main.component';
-import { ProjectsComponent } from './projects/projects.component';
+import { ProjectsComponent } from './lists-container/projects/projects.component';
 import { TaskDetailsComponent } from './task-details/task-details.component';
 import { ProjectDetailsComponent } from './project-details/project-details.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -18,28 +18,28 @@ import {MatInputModule} from '@angular/material/input';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import { FormsModule } from '@angular/forms';
 import {MatExpansionModule} from '@angular/material/expansion';
-import { LabelsComponent } from './labels/labels.component';
+import { LabelsComponent } from './side-container/labels/labels.component';
 import { TooltipModule } from 'ng2-tooltip-directive';
 import { MatDialogModule } from '@angular/material/dialog';
-import { DialogComponent } from './dialog/dialog.component';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import { StageDetailsComponent } from './stage-details/stage-details.component';
-import { PomodoroComponent } from './pomodoro/pomodoro.component';
 import {DragDropModule} from "@angular/cdk/drag-drop";
 import { PomodoroStatisticsComponent } from './pomodoro-statistics/pomodoro-statistics.component';
 import {MatTabsModule} from '@angular/material/tabs';
 import { MatTableModule} from "@angular/material/table";
 import {MatSortModule} from "@angular/material/sort";
 import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
-import { KanbanComponent } from './kanban/kanban.component' ;
+import { KanbanComponent } from './tasks-container/kanban/kanban.component' ;
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { WidgetsModule } from './widgets/widgets.module';
 import { ListsContainerComponent } from './lists-container/lists-container.component';
 import { TasksContainerComponent } from './tasks-container/tasks-container.component';
 import { SideContainerComponent } from './side-container/side-container.component';
-import { SpecialListsComponent } from './special-lists/special-lists.component';
 import { TopBarComponent } from './top-bar/top-bar.component';
+import { DialogComponent } from './widgets/dialog/dialog.component';
+import { PomodoroComponent } from './side-container/pomodoro/pomodoro.component';
+import { SpecialListsComponent } from './lists-container/special-lists/special-lists.component';
 
 @NgModule({
   declarations: [

@@ -1,7 +1,7 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { StageDetailsModel } from './model';
-import { Status } from 'app/models/status';
-import { Stage } from 'app/models/stage';
+import { Status } from 'app/data/models/status';
+import { Stage } from 'app/data/models/stage';
 import { DataService } from 'app/data.service';
 
 @Component({

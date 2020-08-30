@@ -1,7 +1,7 @@
 import { ITaskRepository } from '../../common/repositories/task_repository';
-import { Task } from 'app/models/task';
-import { Position } from 'app/models/orderable.item';
-import { Status } from 'app/models/status';
+import { Task } from 'app/data/models/task';
+import { Position } from 'app/data/models/orderable.item';
+import { Status } from 'app/data/models/status';
 import { OrderRepository } from 'app/data/common/repositories/orderable.repository';
 
 export class LocalTaskRepository implements ITaskRepository{

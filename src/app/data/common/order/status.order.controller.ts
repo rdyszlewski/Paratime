@@ -1,4 +1,4 @@
-import { Task } from 'app/models/task';
+import { Task } from 'app/data/models/task';
 import { StoreOrderController } from './order.controller';
 import { ITaskRepository } from '../repositories/task_repository';
 

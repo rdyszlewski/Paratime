@@ -1,5 +1,5 @@
 import { ProjectDetails } from './model';
-import { Project } from 'app/models/project';
+import { Project } from 'app/data/models/project';
 
 export class ProjectChangeDetector{
 

@@ -1,4 +1,4 @@
-import { PomodoroHistory } from 'app/models/pomodoro.history';
+import { PomodoroHistory } from 'app/data/models/pomodoro.history';
 
 export interface IPomodoroRepository{
     findById(id:number):Promise<PomodoroHistory>;

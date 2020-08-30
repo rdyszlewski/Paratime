@@ -1,5 +1,5 @@
 import { ISubtaskRepository } from '../repositories/subtask_repository';
-import { Subtask } from 'app/models/subtask';
+import { Subtask } from 'app/data/models/subtask';
 import { IOrderableStore } from './orderable.store';
 import { StoreOrderController } from '../order/order.controller';
 import { InsertSubtaskResult } from '../models/insert.subtask.result';

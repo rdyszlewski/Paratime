@@ -1,4 +1,4 @@
-import { OrderableItem } from 'app/models/orderable.item';
+import { OrderableItem } from 'app/data/models/orderable.item';
 
 export interface IOrderableStore<T extends OrderableItem>{
   move(previousItem: T, currentItem: T, moveUp:boolean):Promise<T[]>;

@@ -1,6 +1,6 @@
 import { ITaskLabelsRepository } from '../repositories/task_labels_repository';
 import { ILabelRepository } from '../repositories/label_repository';
-import { Label } from 'app/models/label';
+import { Label } from 'app/data/models/label';
 import { LabelsTask } from '../models';
 import { IOrderableStore } from './orderable.store';
 import { StoreOrderController } from '../order/order.controller';

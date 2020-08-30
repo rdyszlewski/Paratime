@@ -1,5 +1,5 @@
 import { ILabelRepository } from '../../common/repositories/label_repository';
-import { Label } from 'app/models/label';
+import { Label } from 'app/data/models/label';
 import { OrderRepository } from 'app/data/common/repositories/orderable.repository';
 
 export class LocalLabelRepository implements ILabelRepository{

@@ -1,8 +1,8 @@
-import { Project } from 'app/models/project';
+import { Project } from 'app/data/models/project';
 import { IProjectRepository } from '../repositories/project_repository';
 import { TaskStore } from './task_store';
 import { StageStore } from './stage_store';
-import { KanbanColumn } from 'app/models/kanban';
+import { KanbanColumn } from 'app/data/models/kanban';
 import { KanbanColumnStore } from './kanban.column.store';
 import { IOrderableStore } from './orderable.store';
 import { StoreOrderController } from '../order/order.controller';

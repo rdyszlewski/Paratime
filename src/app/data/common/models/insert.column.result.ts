@@ -1,4 +1,4 @@
-import { KanbanColumn } from 'app/models/kanban';
+import { KanbanColumn } from 'app/data/models/kanban';
 
 export class InsertColumnResult{
 

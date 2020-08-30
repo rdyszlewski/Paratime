@@ -1,6 +1,6 @@
-import { Task } from 'app/models/task';
-import { Project } from 'app/models/project';
-import { KanbanColumn } from 'app/models/kanban';
+import { Task } from 'app/data/models/task';
+import { Project } from 'app/data/models/project';
+import { KanbanColumn } from 'app/data/models/kanban';
 
 export class InsertProjectResult{
 

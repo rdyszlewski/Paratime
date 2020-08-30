@@ -1,12 +1,12 @@
 import Dexie from 'dexie';
-import { Task } from 'app/models/task';
-import { Subtask } from 'app/models/subtask';
-import { Project } from 'app/models/project';
-import { Label } from 'app/models/label';
+import { Task } from 'app/data/models/task';
+import { Subtask } from 'app/data/models/subtask';
+import { Project } from 'app/data/models/project';
+import { Label } from 'app/data/models/label';
 import { LabelsTask } from '../common/models';
-import { Stage } from 'app/models/stage';
-import { PomodoroHistory } from 'app/models/pomodoro.history';
-import { KanbanColumn, KanbanTask } from 'app/models/kanban';
+import { Stage } from 'app/data/models/stage';
+import { PomodoroHistory } from 'app/data/models/pomodoro.history';
+import { KanbanColumn, KanbanTask } from 'app/data/models/kanban';
 
 export class LocalDatabase extends Dexie {
   private dbVersion = 1;

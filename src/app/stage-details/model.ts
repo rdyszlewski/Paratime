@@ -1,4 +1,4 @@
-import { Stage } from 'app/models/stage';
+import { Stage } from 'app/data/models/stage';
 
 export class StageDetailsModel{
 
@@ -16,7 +16,7 @@ export class StageDetailsModel{
         newStage.setName(stage.getName());
         newStage.setDescription(stage.getDescription());
         newStage.setEndDate(stage.getEndDate());
-        
+
         return newStage;
     }
 

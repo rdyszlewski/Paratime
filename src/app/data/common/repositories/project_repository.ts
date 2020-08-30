@@ -1,4 +1,4 @@
-import { Project } from 'app/models/project';
+import { Project } from 'app/data/models/project';
 import { IOrderableRepository } from './orderable.repository';
 
 export interface IProjectRepository extends IOrderableRepository<Project>{

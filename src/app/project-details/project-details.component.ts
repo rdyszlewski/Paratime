@@ -1,10 +1,10 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
-import { Project } from 'app/models/project';
-import { ProjectType } from 'app/models/project_type';
-import { Status } from 'app/models/status';
+import { Project } from 'app/data/models/project';
+import { ProjectType } from 'app/data/models/project_type';
+import { Status } from 'app/data/models/status';
 import { DataService } from 'app/data.service';
 import { ProjectDetails } from './model/model';
-import { Stage } from 'app/models/stage';
+import { Stage } from 'app/data/models/stage';
 import { ProjectDetailsState } from './model/state';
 import { ProjectChangeDetector } from './model/change.detector';
 import { ProjectValidator } from './model/validator';

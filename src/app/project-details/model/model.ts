@@ -1,6 +1,6 @@
-import { Project } from 'app/models/project';
-import { Stage } from 'app/models/stage';
-import { Status } from 'app/models/status';
+import { Project } from 'app/data/models/project';
+import { Stage } from 'app/data/models/stage';
+import { Status } from 'app/data/models/status';
 import { TasksList } from 'app/common/lists/tasks.list';
 
 export class ProjectDetails {

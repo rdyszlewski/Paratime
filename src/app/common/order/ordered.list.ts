@@ -1,5 +1,5 @@
 import { TaskItemOrderer } from './orderer';
-import { OrderableItem } from 'app/models/orderable.item';
+import { OrderableItem } from 'app/data/models/orderable.item';
 
 export class OrderedList<T extends OrderableItem>{
 

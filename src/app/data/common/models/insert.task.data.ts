@@ -1,5 +1,5 @@
-import { Task } from 'app/models/task';
-import { KanbanColumn } from 'app/models/kanban';
+import { Task } from 'app/data/models/task';
+import { KanbanColumn } from 'app/data/models/kanban';
 import { NumberFormatStyle } from '@angular/common';
 
 export class InsertTaskData{

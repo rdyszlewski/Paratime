@@ -1,11 +1,11 @@
-import { Label } from 'app/models/label';
+import { Label } from 'app/data/models/label';
 import { TaskDetails } from '../model/model';
 
 export class TaskLabelsModel{
 
     private model: TaskDetails;
     private labels: Label[] = [];
-    
+
     constructor(model:TaskDetails){
         this.model = model;
     }
@@ -29,7 +29,7 @@ export class TaskLabelsModel{
             toRemove.push(label);
           }
         });
-    
+
         toRemove.forEach(label=>{
           this.model.getTask().removeLabel(label);
         });

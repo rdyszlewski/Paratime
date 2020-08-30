@@ -1,5 +1,5 @@
-import { Task } from 'app/models/task';
-import { Status } from 'app/models/status';
+import { Task } from 'app/data/models/task';
+import { Status } from 'app/data/models/status';
 import { IOrderableRepository } from './orderable.repository';
 
 export interface ITaskRepository extends IOrderableRepository<Task>{

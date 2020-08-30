@@ -1,10 +1,10 @@
 import { MatDialog } from '@angular/material/dialog';
-import { DialogComponent } from 'app/dialog/dialog.component';
+import { DialogComponent } from 'app/widgets/dialog/dialog.component';
 
 export class DialogHelper{
 
     public static openDialog(message:string, dialog:MatDialog){
-        const dialogRef = dialog.open(DialogComponent, 
+        const dialogRef = dialog.open(DialogComponent,
             {width:"350px", data: message});
           return dialogRef.afterClosed();
     }

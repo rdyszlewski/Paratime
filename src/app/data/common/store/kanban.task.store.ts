@@ -1,6 +1,6 @@
 import { IKanbanTasksRepository } from '../repositories/kanban_tasks_repository';
 import { IOrderableStore } from './orderable.store';
-import { KanbanTask, KanbanColumn } from 'app/models/kanban';
+import { KanbanTask, KanbanColumn } from 'app/data/models/kanban';
 import { TaskStore } from './task_store';
 import { InsertKanbanTaskResult } from '../models/insert.kanban.task.result';
 import { InsertTaskData } from '../models/insert.task.data';

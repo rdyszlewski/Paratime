@@ -1,5 +1,5 @@
 import { IKanbanColumnsRepository } from 'app/data/common/repositories/kanban_columns_repository';
-import { KanbanColumn } from 'app/models/kanban';
+import { KanbanColumn } from 'app/data/models/kanban';
 import { OrderRepository } from 'app/data/common/repositories/orderable.repository';
 
 export class LocalKanbanColumnsRepository implements IKanbanColumnsRepository{

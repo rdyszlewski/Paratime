@@ -1,5 +1,5 @@
-import { Task } from 'app/models/task';
-import { KanbanTask } from 'app/models/kanban';
+import { Task } from 'app/data/models/task';
+import { KanbanTask } from 'app/data/models/kanban';
 
 export class InsertTaskResult{
 

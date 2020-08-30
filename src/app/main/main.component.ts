@@ -8,16 +8,16 @@ import {
 import { LocalDatabase } from 'app/data/local/database';
 import { ProjectDetailsComponent } from 'app/project-details/project-details.component';
 import { TaskDetailsComponent } from 'app/task-details/task-details.component';
-import { Project } from 'app/models/project';
-import { ProjectsComponent } from 'app/projects/projects.component';
-import { Task } from 'app/models/task';
+import { Project } from 'app/data/models/project';
+import { ProjectsComponent } from 'app/lists-container/projects/projects.component';
+import { Task } from 'app/data/models/task';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { StageDetailsComponent } from 'app/stage-details/stage-details.component';
-import { Stage } from 'app/models/stage';
-import { SpecialList } from 'app/projects/common/special_list';
-import { PomodoroComponent } from 'app/pomodoro/pomodoro.component';
+import { Stage } from 'app/data/models/stage';
+import { SpecialList } from 'app/lists-container/projects/common/special_list';
 import { AppService, TasksMode } from 'app/services/app/app.service';
 import { TasksContainerComponent } from 'app/tasks-container/tasks-container.component';
+import { PomodoroComponent } from 'app/side-container/pomodoro/pomodoro.component';
 
 @Component({
   selector: 'app-main',

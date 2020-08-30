@@ -1,4 +1,4 @@
-import { Subtask } from 'app/models/subtask';
+import { Subtask } from 'app/data/models/subtask';
 
 export class InsertSubtaskResult {
   private _insertedSubtask: Subtask;

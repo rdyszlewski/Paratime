@@ -1,4 +1,4 @@
-import { Subtask } from 'app/models/subtask';
+import { Subtask } from 'app/data/models/subtask';
 import { IOrderableRepository } from './orderable.repository';
 
 export interface ISubtaskRepository extends IOrderableRepository<Subtask>{

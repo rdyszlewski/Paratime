@@ -1,5 +1,5 @@
 import { IProjectRepository } from '../../common/repositories/project_repository';
-import { Project } from 'app/models/project';
+import { Project } from 'app/data/models/project';
 import { OrderRepository } from 'app/data/common/repositories/orderable.repository';
 
 export class LocalProjectRepository implements IProjectRepository{

@@ -1,5 +1,5 @@
 import { IKanbanTasksRepository } from 'app/data/common/repositories/kanban_tasks_repository';
-import { KanbanTask } from 'app/models/kanban';
+import { KanbanTask } from 'app/data/models/kanban';
 import { OrderRepository } from 'app/data/common/repositories/orderable.repository';
 
 export class LocalKanbanTasksRepository implements IKanbanTasksRepository{

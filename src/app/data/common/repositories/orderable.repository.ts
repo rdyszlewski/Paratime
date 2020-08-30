@@ -1,4 +1,4 @@
-import { OrderableItem, Position } from 'app/models/orderable.item';
+import { OrderableItem, Position } from 'app/data/models/orderable.item';
 import { isNgTemplate } from '@angular/compiler';
 
 export interface IOrderableRepository<T extends OrderableItem>{

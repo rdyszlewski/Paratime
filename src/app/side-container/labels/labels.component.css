@@ -1,0 +1,51 @@
+
+@import '../../../styles.css';
+
+
+
+#labels-container{
+    height: 100%;
+}
+
+.label-name{
+    width: 100%;
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+/* TODO: zrobić styl wspólny dla wszystkich ikon */
+.label-icon{
+    width: 20px;
+    height: 20px;
+    margin-left: 5px;
+    margin-top: auto;
+    margin-right: auto;
+    border-radius: 4px;
+}
+
+.label-icon:hover{
+    cursor: pointer;
+}
+
+.edit-label{
+    /* TODO: wstawić ikonę */
+    background-color: bisque;
+}
+
+.remove-label{
+    /* TODO: wstawić ikonę */
+    background-color: brown;
+}
+
+.buttons-container{
+    float: right;
+}
+
+.label-item-buttons{
+    display: flex;
+    visibility: collapse;
+}
+
+.label-item:hover .label-item-buttons{
+    visibility: visible;
+}

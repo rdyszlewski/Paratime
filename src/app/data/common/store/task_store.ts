@@ -1,19 +1,19 @@
 import { ITaskRepository } from '../repositories/task_repository';
-import { Task } from 'app/models/task';
+import { Task } from 'app/data/models/task';
 import { SubtaskStore } from './subtask_store';
 import { LabelStore } from './label_store';
 import { IProjectRepository } from '../repositories/project_repository';
 import { StageStore } from './stage_store';
-import { Subtask } from 'app/models/subtask';
+import { Subtask } from 'app/data/models/subtask';
 import { LabelsTask } from '../models';
 import { InsertTaskData } from '../models/insert.task.data';
 import { InsertTaskResult } from '../models/insert.task.result';
 import { InsertKanbanTaskResult } from '../models/insert.kanban.task.result';
-import { Status } from 'app/models/status';
+import { Status } from 'app/data/models/status';
 import { IOrderableStore } from './orderable.store';
 import { StoreOrderController } from '../order/order.controller';
 import { KanbanTaskStore } from './kanban.task.store';
-import { Position } from 'app/models/orderable.item';
+import { Position } from 'app/data/models/orderable.item';
 import { first } from 'rxjs/operators';
 import { StatusStoreOrderController } from '../order/status.order.controller';
 

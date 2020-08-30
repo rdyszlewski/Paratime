@@ -1,4 +1,4 @@
-import { KanbanTask } from 'app/models/kanban';
+import { KanbanTask } from 'app/data/models/kanban';
 import { IOrderableRepository } from './orderable.repository';
 
 export interface IKanbanTasksRepository extends IOrderableRepository<KanbanTask>{

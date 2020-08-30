@@ -1,4 +1,4 @@
-import { Label } from 'app/models/label';
+import { Label } from 'app/data/models/label';
 import { IOrderableRepository } from './orderable.repository';
 
 export interface ILabelRepository extends IOrderableRepository<Label>{

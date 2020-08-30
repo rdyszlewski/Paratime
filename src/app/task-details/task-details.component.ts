@@ -1,10 +1,10 @@
 import { Component, OnInit, EventEmitter, Output } from '@angular/core';
-import { Status } from 'app/models/status';
+import { Status } from 'app/data/models/status';
 import { TaskDetails } from './model/model';
-import { Task } from 'app/models/task';
+import { Task } from 'app/data/models/task';
 import { DataService } from 'app/data.service';
 import { FocusHelper } from 'app/common/view_helper';
-import { Priority } from 'app/models/priority';
+import { Priority } from 'app/data/models/priority';
 import { TaskViewState } from './model/state';
 import { TaskValidator } from './model/validator';
 import { TaskChangeDetector } from './model/change.detector';

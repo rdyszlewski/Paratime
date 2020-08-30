@@ -1,4 +1,4 @@
-import { OrderableItem, Position } from 'app/models/orderable.item';
+import { OrderableItem, Position } from 'app/data/models/orderable.item';
 import { IOrderableRepository } from '../repositories/orderable.repository';
 import { OrderValues } from 'app/common/values';
 

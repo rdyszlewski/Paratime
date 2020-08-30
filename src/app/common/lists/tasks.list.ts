@@ -3,7 +3,7 @@ import { IFilterableList } from '../filter/filterable.list';
 import { Filter } from '../filter/filter';
 import { IFilterable } from '../filter/filterable';
 import { TaskItemOrderer } from '../order/orderer';
-import { OrderableItem } from 'app/models/orderable.item';
+import { OrderableItem } from 'app/data/models/orderable.item';
 
 export class TasksList<T extends IFilterable & OrderableItem>
   implements IOrderableList, IFilterableList {

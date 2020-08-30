@@ -1,5 +1,5 @@
 import { ISubtaskRepository } from '../../common/repositories/subtask_repository';
-import { Subtask } from 'app/models/subtask';
+import { Subtask } from 'app/data/models/subtask';
 import { OrderRepository } from 'app/data/common/repositories/orderable.repository';
 
 export class LocalSubtaskRepository implements ISubtaskRepository{

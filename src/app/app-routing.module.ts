@@ -1,15 +1,15 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { TasksComponent } from './tasks/tasks.component';
-import { ProjectsComponent } from './projects/projects.component';
+import { TasksComponent } from './tasks-container/tasks/tasks.component';
+import { ProjectsComponent } from './lists-container/projects/projects.component';
 import { MainComponent } from './main/main.component';
 import { ProjectDetailsComponent } from './project-details/project-details.component';
 import { TaskDetailsComponent } from './task-details/task-details.component';
-import { LabelsComponent } from './labels/labels.component';
+import { LabelsComponent } from './side-container/labels/labels.component';
 import { StageDetailsComponent } from './stage-details/stage-details.component';
-import { PomodoroComponent } from './pomodoro/pomodoro.component';
 import { PomodoroStatisticsComponent } from './pomodoro-statistics/pomodoro-statistics.component';
-import { KanbanComponent } from './kanban/kanban.component';
+import { KanbanComponent } from './tasks-container/kanban/kanban.component';
+import { PomodoroComponent } from './side-container/pomodoro/pomodoro.component';
 
 
 const routes: Routes = [

@@ -1,5 +1,5 @@
 import { IPomodoroRepository } from 'app/data/common/repositories/pomodoro_repository';
-import { PomodoroHistory } from 'app/models/pomodoro.history';
+import { PomodoroHistory } from 'app/data/models/pomodoro.history';
 import { takeLast } from 'rxjs/operators';
 
 export class LocalPomodoroRepository implements IPomodoroRepository{

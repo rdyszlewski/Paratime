@@ -1,5 +1,5 @@
 import { IKanbanColumnsRepository } from '../repositories/kanban_columns_repository';
-import { KanbanColumn } from 'app/models/kanban';
+import { KanbanColumn } from 'app/data/models/kanban';
 import { KanbanTaskStore } from './kanban.task.store';
 import { IOrderableStore } from './orderable.store';
 import { StoreOrderController } from '../order/order.controller';

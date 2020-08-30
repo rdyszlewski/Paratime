@@ -1,4 +1,4 @@
-import { KanbanTask } from 'app/models/kanban';
+import { KanbanTask } from 'app/data/models/kanban';
 
 export class InsertKanbanTaskResult{
 

@@ -1,4 +1,4 @@
-import { Task } from 'app/models/task';
+import { Task } from 'app/data/models/task';
 import { EventEmitter } from '@angular/core';
 import { DialogHelper } from '../dialog';
 import { MatDialog } from '@angular/material/dialog';
@@ -43,7 +43,7 @@ export class TaskItemMenuController implements ITaskItemMenuController{
     }
 
     private removeTask(task:Task){
-        
+
     }
 
 }

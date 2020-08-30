@@ -1,5 +1,5 @@
 import { IProjectStageRepository } from 'app/data/common/repositories/stage_repository';
-import { Stage } from 'app/models/stage';
+import { Stage } from 'app/data/models/stage';
 import { OrderRepository } from 'app/data/common/repositories/orderable.repository';
 
 export class LocalProjectStageRepository implements IProjectStageRepository {

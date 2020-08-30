@@ -1,4 +1,4 @@
-import { Stage } from 'app/models/stage';
+import { Stage } from 'app/data/models/stage';
 import { IOrderableRepository } from './orderable.repository';
 
 export interface IProjectStageRepository extends IOrderableRepository<Stage> {
