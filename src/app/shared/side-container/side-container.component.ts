@@ -1,5 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { MAT_HAMMER_OPTIONS } from '@angular/material/core';
+import { PomodoroComponent } from 'app/pomodoro/pomodoro/pomodoro.component';
+import { TimeService } from 'app/core/services/time/time.service';
 
 export enum Mode{
   POMODORO,
@@ -11,7 +13,10 @@ export enum Mode{
   templateUrl: './side-container.component.html',
   styleUrls: ['./side-container.component.css']
 })
-export class SideContainerComponent implements OnInit {
+export class SideContainerComponent implements OnInit, AfterViewInit {
+
+  @ViewChild(PomodoroComponent)
+  private pomodoroComponent: PomodoroComponent;
 
   public mode = Mode;
 
@@ -20,9 +25,14 @@ export class SideContainerComponent implements OnInit {
     return this._currentMode;
   }
 
-  constructor() { }
+  constructor(private timeService: TimeService) {
+
+  }
+  ngAfterViewInit(): void {
+    this.pomodoroComponent.addTickCallback("tick", (time)=>this.tickPomodoro(time));  }
 
   ngOnInit(): void {
+
   }
 
   public changeMode(mode: Mode){
@@ -31,6 +41,11 @@ export class SideContainerComponent implements OnInit {
     } else {
       this._currentMode = mode;
     }
+  }
+
+  private tickPomodoro(time: string){
+    console.log(time);
+    this.timeService.setTime(time);
   }
 
 }

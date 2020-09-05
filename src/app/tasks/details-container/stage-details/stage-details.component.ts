@@ -1,8 +1,11 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit} from '@angular/core';
 import { StageDetailsModel } from './model';
 import { Status } from 'app/database/data/models/status';
 import { Stage } from 'app/database/data/models/stage';
 import { DataService } from 'app/data.service';
+import { EventBus } from 'eventbus-ts';
+import { StageUpdateEvent } from './events/update.event';
+import { StageDetailsCloseEvent } from './events/close.event';
 
 @Component({
   selector: 'app-stage-details',
@@ -10,9 +13,6 @@ import { DataService } from 'app/data.service';
   styleUrls: ['./stage-details.component.css']
 })
 export class StageDetailsComponent implements OnInit {
-
-  @Output() closeEvent: EventEmitter<null> = new EventEmitter();
-  @Output() updateEvent: EventEmitter<Stage> = new EventEmitter();
 
   public status = Status;
   public model: StageDetailsModel = new StageDetailsModel();
@@ -30,13 +30,13 @@ export class StageDetailsComponent implements OnInit {
   public updateStage(){
     if(this.model.isValid()){
       DataService.getStoreManager().getStageStore().updateStage(this.model.getStage()).then(updatedStage=>{
-        this.updateEvent.emit(updatedStage);
+        EventBus.getDefault().post(new StageUpdateEvent(updatedStage));
       });
     }
   }
 
   public closeView(){
-    this.closeEvent.emit();
+    EventBus.getDefault().post(new StageDetailsCloseEvent(null));
   }
 
 }

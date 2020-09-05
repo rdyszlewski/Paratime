@@ -1,10 +1,11 @@
 import { State } from './state';
-import { interval, timer } from 'rxjs';
+import { interval} from 'rxjs';
 import { takeWhile } from 'rxjs/operators';
 import { PomodoroSetting } from './settings';
-import { EventEmitter } from '@angular/core';
-import { DataService } from 'app/data.service';
 import { PomodoroHistory } from 'app/database/data/models/pomodoro.history';
+
+export type TickCallback = (time: string)=>void;
+export type EndCallback = (history: PomodoroHistory)=>void;
 
 // TODO: zrobić refaktoryzację całej klasy
 export class PomodoroTimer{
@@ -23,15 +24,25 @@ export class PomodoroTimer{
     private currentInterval = 1;
     private currentStep = 0;
 
-    private timeEmitter: EventEmitter<string>;
-    private endEmitter: EventEmitter<PomodoroHistory>;
+    private tickCallbacks: Map<string, TickCallback> = new Map();
+    private endCallbacks: Map<string, EndCallback> = new Map();
 
-    public setTimeEmitter(emitter:EventEmitter<string>) {
-        this.timeEmitter = emitter;
+
+    public addTickCallback(name: string,callback: TickCallback){
+      console.log("Ustawiono tyknięcie");
+      this.tickCallbacks.set(name, callback);
     }
 
-    public setEndEmitter(emitter:EventEmitter<PomodoroHistory>){
-        this.endEmitter = emitter;
+    public addEndCallback(name: string, callback: EndCallback){
+      this.endCallbacks.set(name, callback);
+    }
+
+    public removeTickCallback(name:string){
+      this.tickCallbacks.delete(name);
+    }
+
+    public removeEndCallback(name:string){
+      this.endCallbacks.delete(name);
     }
 
     public setSettings(settings: PomodoroSetting){
@@ -62,9 +73,16 @@ export class PomodoroTimer{
             this.time = 0;
             this.timerRunning = false;
             this.stateFinished = true;
-        } else if(this.timeEmitter){
-            this.timeEmitter.emit(this.getTimeText());
+        } else {
+          this.runTickCallbacks(this.getTimeText());
         }
+    }
+
+    private runTickCallbacks(time: string){
+      for (let [name, callback] of this.tickCallbacks) {
+        console.log(time);
+        callback(time);
+      }
     }
 
     public isTimerRunning():boolean{
@@ -149,8 +167,9 @@ export class PomodoroTimer{
 
     public setNextState(){
         // TODO: w tym miejscu prawdopodobnie powinno być zapisywanie czasu
-        this.saveStatistics();
 
+
+        this.runEndCallbacks();
         const state = this.getNextState();
         this.currentState = state;
         this.currentStep++;
@@ -159,7 +178,13 @@ export class PomodoroTimer{
         }
     }
 
-    private saveStatistics(){
+    private runEndCallbacks(){
+      for (let [name, callback] of this.endCallbacks) {
+        callback(this.getStatistics());
+      }
+    }
+
+    private getStatistics(){
         // TODO: robić zapisywanie czasu rzeczywistego
         // TODO: prześledzić to wszystko
         const time = this.stateTime - 1;
@@ -167,7 +192,7 @@ export class PomodoroTimer{
         const entry = new PomodoroHistory();
         entry.setTime(time);
         entry.setDate(new Date());
-        this.endEmitter.emit(entry);
+        return entry;
     }
 
 

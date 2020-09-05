@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit} from '@angular/core';
 import { Project } from 'app/database/data/models/project';
 import { ProjectType } from 'app/database/data/models/project_type';
 import { Status } from 'app/database/data/models/status';
@@ -15,6 +15,9 @@ import {
   transferArrayItem,
 } from '@angular/cdk/drag-drop';
 import { DateFormatter } from 'app/shared/common/date_formatter';
+import { EventBus } from 'eventbus-ts';
+import { ProjectUpdateEvent } from './events/update.event';
+import { ProjectDetailsCloseEvent } from './events/close.event';
 
 @Component({
   selector: 'app-project-details',
@@ -22,10 +25,6 @@ import { DateFormatter } from 'app/shared/common/date_formatter';
   styleUrls: ['./project-details.component.css'],
 })
 export class ProjectDetailsComponent implements OnInit {
-  @Output() closeEvent: EventEmitter<null> = new EventEmitter();
-  @Output() saveEvent: EventEmitter<Project> = new EventEmitter();
-  @Output() updateEvent: EventEmitter<Project> = new EventEmitter();
-  @Output() editStageEvent: EventEmitter<Stage> = new EventEmitter();
 
   private model: ProjectDetails;
   private state: ProjectDetailsState;
@@ -43,7 +42,6 @@ export class ProjectDetailsComponent implements OnInit {
     this.changeDetector = new ProjectChangeDetector(this.model);
     this.validator = new ProjectValidator(this.model);
     this.stageController = new ProjectStagesController(
-      this.editStageEvent,
       this.model
     );
   }
@@ -83,7 +81,7 @@ export class ProjectDetailsComponent implements OnInit {
       .getProjectStore()
       .updateProject(this.model.getProject())
       .then(() => {
-        this.updateEvent.emit(this.model.getProject());
+        EventBus.getDefault().post(new ProjectUpdateEvent(this.model.getProject()));
       });
   }
 
@@ -97,7 +95,7 @@ export class ProjectDetailsComponent implements OnInit {
   }
 
   public closeView() {
-    this.closeEvent.emit();
+    EventBus.getDefault().post(new ProjectDetailsCloseEvent(null));
   }
 
   public onDrop(event: CdkDragDrop<string[]>) {

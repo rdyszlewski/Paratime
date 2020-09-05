@@ -2,22 +2,20 @@ import { Label } from 'app/database/data/models/label';
 import { MatDialog } from '@angular/material/dialog';
 import { DataService } from 'app/data.service';
 import { LabelsModel } from '../common/list.model';
-import { EventEmitter } from '@angular/core';
 import { DialogHelper } from 'app/shared/common/dialog';
+import { EventBus } from 'eventbus-ts';
+import { LabelsUpdateEvent } from '../events/update.event';
 
 export class LabelRemovingController {
   private dialog: MatDialog;
   private listModel: LabelsModel;
-  private updateEvent: EventEmitter<null>;
 
   constructor(
     listModel: LabelsModel,
-    dialog: MatDialog,
-    updateEvent: EventEmitter<null>
+    dialog: MatDialog
   ) {
     this.listModel = listModel;
     this.dialog = dialog;
-    this.updateEvent = updateEvent;
   }
 
   public onRemoveLabel(label: Label) {
@@ -35,7 +33,7 @@ export class LabelRemovingController {
       .removeLabel(label.getId())
       .then((updatedLabels) => {
         this.listModel.updateLabels(updatedLabels);
-        this.updateEvent.emit();
+        EventBus.getDefault().post(new LabelsUpdateEvent(null));
       });
   }
 }

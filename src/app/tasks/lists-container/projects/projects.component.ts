@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ProjectsModel } from './common/model';
 import { Project } from 'app/database/data/models/project';
 import { DataService } from 'app/data.service';

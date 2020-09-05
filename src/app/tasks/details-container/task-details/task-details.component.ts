@@ -1,4 +1,4 @@
-import { Component, OnInit, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit} from '@angular/core';
 import { Status } from 'app/database/data/models/status';
 import { TaskDetails } from './model/model';
 import { Task } from 'app/database/data/models/task';
@@ -16,6 +16,9 @@ import {
 } from '@angular/cdk/drag-drop';
 import { TaskDetailsView } from './subtask.view';
 import { FocusHelper } from 'app/shared/common/view_helper';
+import { EventBus } from 'eventbus-ts';
+import { TaskDetailsCloseEvent } from './events/close.event';
+import { OpenLabelsManagerEvent } from './events/open.labels.event';
 
 @Component({
   selector: 'app-task-details',
@@ -24,10 +27,6 @@ import { FocusHelper } from 'app/shared/common/view_helper';
 })
 export class TaskDetailsComponent implements OnInit {
   private TASK_NAME_ID = '#task-name';
-
-  @Output() closeEvent: EventEmitter<null> = new EventEmitter();
-  @Output() saveEvent: EventEmitter<Task> = new EventEmitter();
-  @Output() openLabelsEvent: EventEmitter<null> = new EventEmitter();
 
   public status = Status;
   public priority = Priority;
@@ -80,7 +79,6 @@ export class TaskDetailsComponent implements OnInit {
     return this.labelsController;
   }
 
-
   public setTask(task: Task) {
     if (task) {
       this.model.setTask(task);
@@ -100,11 +98,11 @@ export class TaskDetailsComponent implements OnInit {
   }
 
   public closeView() {
-    this.closeEvent.emit();
+    EventBus.getDefault().post(new TaskDetailsCloseEvent(null));
   }
 
   public openLabelsManager() {
-    this.openLabelsEvent.emit();
+    EventBus.getDefault().post(new OpenLabelsManagerEvent(null));
   }
 
   // return amount of subtask with status FINISHED

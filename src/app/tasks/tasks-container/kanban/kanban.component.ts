@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { KanbanModel } from './kanban.model';
 import {
   CdkDragDrop,
@@ -17,6 +17,8 @@ import { TaskItemInfo } from '../tasks/common/task.item.info';
 import { AppService } from 'app/core/services/app/app.service';
 import { FocusHelper } from 'app/shared/common/view_helper';
 import { EditInputHandler } from 'app/shared/common/edit_input_handler';
+import { EventBus } from 'eventbus-ts';
+import { TaskDetailsEvent } from '../events/details.event';
 
 
 
@@ -26,12 +28,6 @@ import { EditInputHandler } from 'app/shared/common/edit_input_handler';
   styleUrls: ['./kanban.component.css'],
 })
 export class KanbanComponent implements OnInit, ITaskList {
-  // TODO: refaktoryzacja
-  // TODO: zrobić rozdzielenie kolumn i zadań (chyba)
-  @Output() closeEvent: EventEmitter<null> = new EventEmitter();
-  @Output() pomodoroEvent: EventEmitter<Task> = new EventEmitter();
-  @Output() detailsEvent: EventEmitter<Task> = new EventEmitter();
-  @Output() removeEvent: EventEmitter<Task> = new EventEmitter();
 
   private taskController: KanbanTaskController;
   private columnController: KanbanColumnController;
@@ -45,7 +41,7 @@ export class KanbanComponent implements OnInit, ITaskList {
   constructor(private dialog: MatDialog, private appService: AppService) {}
 
   ngOnInit(): void {
-    this.taskController = new KanbanTaskController(this.model, this.dialog, this.removeEvent);
+    this.taskController = new KanbanTaskController(this.model, this.dialog);
     this.columnController = new KanbanColumnController(this.model, this.dialog);
   }
 
@@ -81,10 +77,6 @@ export class KanbanComponent implements OnInit, ITaskList {
 
   public columnDrop(event: CdkDragDrop<Task[]>) {
    KanbanColumnOrderController.drop(event, this.model);
-  }
-
-  public closeView() {
-    this.closeEvent.emit();
   }
 
   public addColumn() {
@@ -132,8 +124,7 @@ export class KanbanComponent implements OnInit, ITaskList {
   }
 
   public openDetails(task: KanbanTask) {
-    console.log('OnTaskEdit');
-    this.detailsEvent.emit(task.getTask());
+    EventBus.getDefault().post(new TaskDetailsEvent(task.getTask()));
   }
 
   public setCurrentTask(task: KanbanTask) {
@@ -155,10 +146,6 @@ export class KanbanComponent implements OnInit, ITaskList {
 
   public finishTask(task: KanbanTask): void {
     this.taskController.finishTask(task);
-  }
-
-  public addToPomodoro(task: KanbanTask): void {
-    this.pomodoroEvent.emit(task.getTask());
   }
 
   public handleAddingNewColumn(event: KeyboardEvent) {

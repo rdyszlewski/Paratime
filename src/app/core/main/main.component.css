@@ -108,3 +108,8 @@
 .last-tab{
   margin-right: auto;
 }
+
+#left-info{
+  position: absolute;
+  bottom: 0;
+}

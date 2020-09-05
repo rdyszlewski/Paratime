@@ -1,7 +1,7 @@
 import { Component, OnInit, Output, EventEmitter, Input, HostListener } from '@angular/core';
 import { TimeModel } from './time_model';
 import { TimepickerTriggerDirective } from './directives/timepicker-trigger.directive';
-import { Observable } from 'rxjs';
+
 
 @Component({
   selector: 'para-timepicker',

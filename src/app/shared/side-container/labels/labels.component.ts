@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit} from '@angular/core';
 import { LabelsModel } from './common/list.model';
 import { DataService } from 'app/data.service';
 import { MatDialog } from '@angular/material/dialog';
@@ -18,8 +18,6 @@ import {
   styleUrls: ['./labels.component.css'],
 })
 export class LabelsComponent implements OnInit {
-  @Output() closeEvent: EventEmitter<null> = new EventEmitter();
-  @Output() updateEvent: EventEmitter<null> = new EventEmitter();
 
   public model: LabelsModel = new LabelsModel();
   public state: LabelViewState = new LabelViewState();
@@ -32,12 +30,10 @@ export class LabelsComponent implements OnInit {
 
   ngOnInit(): void {
     this.editingManager = new LabelEditingController(
-      this.state,
-      this.updateEvent
+      this.state
     );
-    this.addingManager = new LabelAddingController(this.state, this.model, this.updateEvent );
-    this.removingManager = new LabelRemovingController(this.model, this.dialog, this.updateEvent
-    );
+    this.addingManager = new LabelAddingController(this.state, this.model );
+    this.removingManager = new LabelRemovingController(this.model, this.dialog);
     this.loadLabels();
   }
 
@@ -60,10 +56,6 @@ export class LabelsComponent implements OnInit {
       .then((labels) => {
         this.model.setLabels(labels);
       });
-  }
-
-  public closeView() {
-    this.closeEvent.emit();
   }
 
   public onDrop(event: CdkDragDrop<string[]>) {

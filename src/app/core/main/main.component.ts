@@ -17,6 +17,7 @@ import { TasksContainerComponent } from 'app/tasks/tasks-container/tasks-contain
 import { SpecialList } from 'app/tasks/lists-container/projects/common/special_list';
 import { TasksMode, AppService } from '../services/app/app.service';
 import { LocalDatabase } from 'app/database/local/database';
+import { TimeService } from '../services/time/time.service';
 
 @Component({
   selector: 'app-main',
@@ -60,10 +61,12 @@ export class MainComponent implements OnInit, AfterViewInit {
 
   public pomodoroTime: string;
 
-  constructor(private appService: AppService, public snakBar: MatSnackBar) {}
+  constructor(private appService: AppService, public snakBar: MatSnackBar, private timeService: TimeService) {}
 
   ngAfterViewInit(): void {
+    console.log("Inicjalizacja tyknięcia");
     this.setOriginalWidth();
+
   }
 
   ngOnInit(): void {
@@ -242,5 +245,16 @@ export class MainComponent implements OnInit, AfterViewInit {
       return this.detailsContainer.isOpen();
     }
     return false;
+  }
+
+  private tickPomodoro(time:string){
+    console.log("Tyknięcie " + time);
+    this.pomodoroTime = time;
+  }
+
+  public getPomodoroTime(){
+    if(this.timeService.getTime()){
+      return this.timeService.getTime();
+    }
   }
 }

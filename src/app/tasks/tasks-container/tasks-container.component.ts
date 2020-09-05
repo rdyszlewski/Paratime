@@ -75,11 +75,12 @@ export class TasksContainerComponent implements OnInit, AfterViewInit {
     this.openProject(this._project);
   }
 
-  public openDetails(task:Task){
+  @Subscribe("TaskDetailsEvent")
+  private openDetails(task:Task){
     this._currentList.openDetails(task);
-    // TODO: dokończyć
   }
 
+  @Subscribe("TaskRemoveEvent")
   public removeTask(task: Task){
     // TODO: dokończyć to
   }

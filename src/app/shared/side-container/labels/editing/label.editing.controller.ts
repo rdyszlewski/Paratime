@@ -1,22 +1,21 @@
 import { Label } from 'app/database/data/models/label';
 import { DataService } from 'app/data.service';
-import { EventEmitter } from '@angular/core';
 import { LabelEditingModel } from './label.editing.model';
 import { LabelViewState } from '../common/label_view_state';
 import { EditInputHandler } from 'app/shared/common/edit_input_handler';
 import { FocusHelper } from 'app/shared/common/view_helper';
+import { EventBus } from 'eventbus-ts';
+import { LabelsUpdateEvent } from '../events/update.event';
 
 export class LabelEditingController{
 
     private LABEL_ITEM_ID = "#label-name-input-";
 
-    private updateEvent:EventEmitter<null>;
     private model: LabelEditingModel = new LabelEditingModel();
     private state: LabelViewState;
 
-    constructor(state: LabelViewState, updateEvent:EventEmitter<null>){
+    constructor(state: LabelViewState){
       this.state = state;
-      this.updateEvent = updateEvent;
     }
 
     public getModel():LabelEditingModel{
@@ -50,7 +49,7 @@ export class LabelEditingController{
     private updateLabel(label: Label) {
         DataService.getStoreManager().getLabelStore().updateLabel(label).then(updatedLabel => {
             this.state.closeEditingLabel();
-            this.updateEvent.emit();
+            EventBus.getDefault().post(new LabelsUpdateEvent(null));
         });
     }
 

@@ -1,10 +1,13 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { PomodoroModel } from './model';
 import { State } from './state';
 import { PomodoroSettingsStore } from './storage/settings.storage';
 import { Task } from 'app/database/data/models/task';
 import { PomodoroHistory } from 'app/database/data/models/pomodoro.history';
 import { DataService } from 'app/data.service';
+import { TickCallback, EndCallback } from './timer';
+
+
 
 @Component({
   selector: 'app-pomodoro',
@@ -13,22 +16,31 @@ import { DataService } from 'app/data.service';
 })
 export class PomodoroComponent implements OnInit {
 
-  @Output() tickEvent: EventEmitter<string> = new EventEmitter();
-  private endEvent: EventEmitter<PomodoroHistory> = new EventEmitter();
-
   public statisticsOpen = false;
   public model: PomodoroModel = new PomodoroModel();
   public state = State;
   constructor() { }
 
   ngOnInit(): void {
-    this.model.getTimer().setTimeEmitter(this.tickEvent);
-
-    this.endEvent.subscribe(entry=>{
-      this.savePomodoroStatistics(entry);
-    });
-    this.model.getTimer().setEndEmitter(this.endEvent);
+    this.addEndCallback("save", (history)=>this.savePomodoroStatistics(history));
   }
+
+  public addTickCallback(name: string, callback: TickCallback){
+    this.model.getTimer().addTickCallback(name, callback);
+  }
+
+  public addEndCallback(name: string, callback: EndCallback){
+    this.model.getTimer().addEndCallback(name, callback);
+  }
+
+  public removeTickCallback(name: string){
+    this.model.getTimer().removeTickCallback(name);
+  }
+
+  public removeEndCallback(name: string){
+    this.model.getTimer().removeEndCallback(name);
+  }
+
 
   // TODO: refaktoryzacja
   public getStatesNumbers(){
@@ -92,6 +104,7 @@ export class PomodoroComponent implements OnInit {
   public savePomodoroStatistics(entry: PomodoroHistory){
     // TODO: zrobić tutaj jakąś magie
     // TODO: zastanowić się, czy chcemy zapisywać wyniki bez przypisanego zadania
+    console.log("Traw zapisywanie wyników Pomodoro");
     if(this.model.getTimer().getState()==State.WORK){
       if(this.model.getCurrentTask()){
         entry.setTaskId(this.model.getCurrentTask().getId());
@@ -103,10 +116,6 @@ export class PomodoroComponent implements OnInit {
 
   public openStatistics(){
     this.statisticsOpen = true;
-  }
-
-  public closeStatistics(){
-    this.statisticsOpen = false;
   }
 
   public isStatisticsEnabled():boolean{

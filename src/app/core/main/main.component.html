@@ -2,11 +2,16 @@
   <!-- <app-top-bar id="top-bar"></app-top-bar> -->
   <!-- in case of adding new tabs, change last element style in styles.css. mat-tab-label-0-x -->
   <div id="top-bar">
+    <div id="left-info">
+      <div id="time">{{getPomodoroTime()}}</div>
+    </div>
     <mat-tab-group id="top-bar-tabs" headerPosition="below" md-center-tabs="true">
       <mat-tab label="Zadania" id="tasks-tab" class="first-tab">
         <ng-container [ngTemplateOutlet]="tasks"></ng-container>
       </mat-tab>
-      <mat-tab label="Podsumowanie">Podsumowanie</mat-tab>
+      <mat-tab label="Podsumowanie">
+        <ng-container [ngTemplateOutlet]="summary"></ng-container>
+      </mat-tab>
       <mat-tab label="Ustawienia">Ustawienia</mat-tab>
     </mat-tab-group>
   </div>
@@ -19,5 +24,9 @@
     <app-details-container [hidden]="!isDetailsOpen()"></app-details-container>
     <app-side-container></app-side-container>
   </div>
+</ng-template>
+
+<ng-template #summary>
+  <app-pomodoro-statistics id="pomodoro-statistics"></app-pomodoro-statistics>
 </ng-template>
 

@@ -4,21 +4,20 @@ import { InsertTaskData } from 'app/database/data/common/models/insert.task.data
 import { DataService } from 'app/data.service';
 import { Task } from 'app/database/data/models/task';
 import { MatDialog } from '@angular/material/dialog';
-import { EventEmitter } from '@angular/core';
 import { Status } from 'app/database/data/models/status';
 import { DialogHelper } from 'app/shared/common/dialog';
+import { EventBus } from 'eventbus-ts';
+import { TaskRemoveEvent } from '../../events/remove.event';
 
 type RemoveCallback = (task: KanbanTask) => void;
 
 export class KanbanTaskController {
   private model: KanbanModel;
   private dialog: MatDialog;
-  private removeEvent: EventEmitter<Task>;
 
-  constructor(model: KanbanModel, dialog: MatDialog, removeEvent: EventEmitter<Task>) {
+  constructor(model: KanbanModel, dialog: MatDialog) {
     this.model = model;
     this.dialog = dialog;
-    this.removeEvent = removeEvent;
   }
 
   // ADDING
@@ -55,13 +54,13 @@ export class KanbanTaskController {
     });
   }
 
-  private removeTaskFromStore(task: KanbanTask): void{
+  private removeTaskFromStore(kanbanTask: KanbanTask): void{
     DataService.getStoreManager()
     .getKanbanTaskStore()
-    .removeTask(task.getId())
+    .removeTask(kanbanTask.getId())
     .then((updatedTasks) => {
-      this.model.updateTasks(updatedTasks, task.getColumnId());
-      this.removeEvent.emit(task.getTask());
+      this.model.updateTasks(updatedTasks, kanbanTask.getColumnId());
+      EventBus.getDefault().post(new TaskRemoveEvent(kanbanTask.getTask()));
     });
   }
 

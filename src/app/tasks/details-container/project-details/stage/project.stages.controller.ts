@@ -2,7 +2,6 @@ import { ProjectStageModel } from './project.stage.model';
 import { Stage } from 'app/database/data/models/stage';
 import { Project } from 'app/database/data/models/project';
 import { DataService } from 'app/data.service';
-import { EventEmitter } from '@angular/core';
 import { ProjectDetails } from '../model/model';
 import { EventBus } from 'eventbus-ts';
 import { StageDetailsEvent } from '../events/stage.details.event';
@@ -12,13 +11,11 @@ import { EditInputHandler } from 'app/shared/common/edit_input_handler';
 export class ProjectStagesController {
   private STAGE_NAME_INPUT = '#new-stage-name';
 
-  private editEvent: EventEmitter<Stage> = new EventEmitter();
   private stageModel: ProjectStageModel = new ProjectStageModel();
   private model: ProjectDetails;
   private project: Project;
 
-  constructor(editEvent: EventEmitter<Stage>, model: ProjectDetails) {
-    this.editEvent = editEvent;
+  constructor(model: ProjectDetails) {
     this.model = model;
   }
 

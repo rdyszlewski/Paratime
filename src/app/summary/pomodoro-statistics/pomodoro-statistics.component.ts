@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, AfterViewInit, ElementRef, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit, ElementRef} from '@angular/core';
 import { TaskDataSource } from './data-source/task.data.source';
 import { MatSort } from '@angular/material/sort';
 import { ProjectDataSource } from './data-source/project.data.source';
@@ -22,7 +22,6 @@ export class PomodoroStatisticsComponent implements AfterViewInit, OnInit {
   @ViewChild('taskInput') taskFilter: ElementRef;
   @ViewChild('projectInput') projectFilter: ElementRef;
 
-  @Output() closeEvent: EventEmitter<null> = new EventEmitter();
 
   constructor() { }
 
@@ -78,9 +77,5 @@ export class PomodoroStatisticsComponent implements AfterViewInit, OnInit {
 
   public tabChanged(tabChangeEvent: MatTabChangeEvent){
     console.log(tabChangeEvent);
-  }
-
-  public closeStatistics(){
-    this.closeEvent.emit();
   }
 }

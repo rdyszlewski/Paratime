@@ -11,13 +11,11 @@
     <!-- TODO: dokończyć i pododawać wszystko -->
     <app-tasks class="task-list"
       [hidden]="mode!=taskMode.LIST"
-      (detailsEvent)="openDetails($event)"
-      (removeEvent)="removeTask($event)"
       >
     </app-tasks>
     <app-kanban class="task-list"
       [hidden]="mode!=taskMode.KANBAN"
-      (detailsEvent)="openDetails($event)">
+      >
     </app-kanban>
   </div>
 </div>

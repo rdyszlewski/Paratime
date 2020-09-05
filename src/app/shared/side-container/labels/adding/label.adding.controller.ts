@@ -2,27 +2,25 @@ import { LabelAddingModel } from './label.adding.model';
 import { LabelViewState } from '../common/label_view_state';
 import { Label } from 'app/database/data/models/label';
 import { DataService } from 'app/data.service';
-import { EventEmitter } from '@angular/core';
 import { LabelsModel } from '../common/list.model';
 import { FocusHelper } from 'app/shared/common/view_helper';
 import { EditInputHandler } from 'app/shared/common/edit_input_handler';
+import { EventBus } from 'eventbus-ts';
+import { LabelsUpdateEvent } from '../events/update.event';
 
 export class LabelAddingController {
   private LABEL_INPUT_ID = '#label';
 
-  private updateEvent: EventEmitter<null>;
   private labelModel: LabelAddingModel = new LabelAddingModel();
   private state: LabelViewState;
   private listModel: LabelsModel;
 
   constructor(
     state: LabelViewState,
-    listModel: LabelsModel,
-    updateEvent: EventEmitter<null>
+    listModel: LabelsModel
   ) {
     this.state = state;
     this.listModel = listModel;
-    this.updateEvent = updateEvent;
   }
 
   public getModel() {
@@ -56,7 +54,7 @@ export class LabelAddingController {
       .then((updatedLabels) => {
         this.listModel.updateLabels(updatedLabels);
         this.cancelAddingLabel();
-        this.updateEvent.emit();
+        EventBus.getDefault().post(new LabelsUpdateEvent(null));
       });
   }
 
