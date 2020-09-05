@@ -24,6 +24,7 @@ import { TaskOrderController } from './controllers/order.controller';
 import { DialogHelper } from 'app/common/dialog';
 import { Subscribe, EventBus } from 'eventbus-ts';
 import { SpecialList } from 'app/lists-container/projects/common/special_list';
+import { TaskDetailsEvent } from './events/details.event';
 
 @Component({
   selector: 'app-tasks',
@@ -155,14 +156,11 @@ export class TasksComponent implements OnInit, ITaskList {
   }
 
   public openDetails(task: Task): void {
-    this.detailsEvent.emit(task);
+    EventBus.getDefault().post(new TaskDetailsEvent(task));
   }
 
   public finishTask(task:Task){
     DataService.getStoreManager().getTaskStore().changeStatus(task, Status.ENDED).then(updatedTasks=>{
-      // this.model.removeTask(task);
-      console.log("Updated task");
-      console.log(updatedTasks);
       this.model.updateTasks(updatedTasks);
     });
   }

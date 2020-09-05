@@ -6,18 +6,17 @@ import {
   AfterViewInit,
 } from '@angular/core';
 import { LocalDatabase } from 'app/data/local/database';
-import { ProjectDetailsComponent } from 'app/project-details/project-details.component';
-import { TaskDetailsComponent } from 'app/task-details/task-details.component';
 import { Project } from 'app/data/models/project';
 import { ProjectsComponent } from 'app/lists-container/projects/projects.component';
 import { Task } from 'app/data/models/task';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { StageDetailsComponent } from 'app/stage-details/stage-details.component';
 import { Stage } from 'app/data/models/stage';
 import { SpecialList } from 'app/lists-container/projects/common/special_list';
 import { AppService, TasksMode } from 'app/services/app/app.service';
 import { TasksContainerComponent } from 'app/tasks-container/tasks-container.component';
 import { PomodoroComponent } from 'app/side-container/pomodoro/pomodoro.component';
+import { ProjectDetailsComponent } from 'app/details-container/project-details/project-details.component';
+import { DetailsContainerComponent } from 'app/details-container/details-container.component';
 
 @Component({
   selector: 'app-main',
@@ -32,20 +31,18 @@ export class MainComponent implements OnInit, AfterViewInit {
   @ViewChild(ProjectDetailsComponent)
   private projectDetailsComponent: ProjectDetailsComponent;
 
-  @ViewChild(TaskDetailsComponent)
-  private taskDetailsComponent: TaskDetailsComponent;
-
   @ViewChild(ProjectsComponent)
   private projectsComponent: ProjectsComponent;
 
-  @ViewChild(StageDetailsComponent)
-  private stageDetailsComponent: StageDetailsComponent;
 
   @ViewChild(PomodoroComponent)
   private pomodoroComponent: PomodoroComponent;
 
   @ViewChild(TasksContainerComponent)
   private tasksContainer: TasksContainerComponent;
+
+  @ViewChild(DetailsContainerComponent)
+  public detailsContainer: DetailsContainerComponent;
 
   public projectsOpen = true;
   public projectsDetailsOpen = false;
@@ -105,8 +102,9 @@ export class MainComponent implements OnInit, AfterViewInit {
     this.setOriginalWidth();
   }
 
+  // TODO: przenieść gdzieś
   public openTaskDetails(task: Task) {
-    this.taskDetailsComponent.setTask(task);
+    // this.taskDetailsComponent.setTask(task);
     this.tasksDetailsOpen = true;
     this.projectsDetailsOpen = false;
 
@@ -118,9 +116,10 @@ export class MainComponent implements OnInit, AfterViewInit {
     this.setWidth(this.workDetailsSpace, 55);
   }
 
+  // TODO: przenieść gdzieś
   public closeTaskDetails() {
     this.tasksDetailsOpen = false;
-    this.taskDetailsComponent.setTask(new Task()); //clearing fields
+    // this.taskDetailsComponent.setTask(new Task()); //clearing fields
 
     this.setOriginalWidth();
   }
@@ -148,8 +147,9 @@ export class MainComponent implements OnInit, AfterViewInit {
     this.labelsOpen = false;
   }
 
+  // TODO: zrobić coś z tym
   public onLabelsUpdate() {
-    this.taskDetailsComponent.getLabels().loadLabels();
+    // this.taskDetailsComponent.getLabels().loadLabels();
   }
 
   public onUpdateProject(project: Project) {
@@ -165,13 +165,14 @@ export class MainComponent implements OnInit, AfterViewInit {
     // this.tasksComponent.addTask(task);
   }
 
+  // TODO: odtworzyć ten warunek
   public onRemoveTask(taskId: number) {
     if (this.tasksDetailsOpen) {
-      if (this.taskDetailsComponent.getModel().getTask().getId() == taskId) {
+      // if (this.taskDetailsComponent.getModel().getTask().getId() == taskId) {
         // TODO: może lepiej zrobić jakąś metodę close i open
         this.tasksDetailsOpen = false;
         this.setOriginalWidth();
-      }
+      // }
     }
   }
 
@@ -205,7 +206,8 @@ export class MainComponent implements OnInit, AfterViewInit {
     this.projectsOpen = false;
     this.tasksOpen = false;
 
-    this.stageDetailsComponent.setStage(stage);
+    // TODO: ustawić to jakoś
+    // this.stageDetailsComponent.setStage(stage);
   }
 
   public togglePomodoroOpen() {
@@ -233,5 +235,12 @@ export class MainComponent implements OnInit, AfterViewInit {
 
   public openProject(project: Project) {
     this.tasksContainer.openProject(project);
+  }
+
+  public isDetailsOpen(){
+    if(this.detailsContainer){
+      return this.detailsContainer.isOpen();
+    }
+    return false;
   }
 }

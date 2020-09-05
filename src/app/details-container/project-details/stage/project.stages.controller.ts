@@ -6,6 +6,8 @@ import { FocusHelper } from 'app/common/view_helper';
 import { EditInputHandler } from 'app/common/edit_input_handler';
 import { EventEmitter } from '@angular/core';
 import { ProjectDetails } from '../model/model';
+import { EventBus } from 'eventbus-ts';
+import { StageDetailsEvent } from '../events/stage.details.event';
 
 export class ProjectStagesController {
   private STAGE_NAME_INPUT = '#new-stage-name';
@@ -68,6 +70,6 @@ export class ProjectStagesController {
   }
 
   public onEditStage(stage: Stage) {
-    this.editEvent.emit(stage);
+    EventBus.getDefault().post(new StageDetailsEvent(stage));
   }
 }

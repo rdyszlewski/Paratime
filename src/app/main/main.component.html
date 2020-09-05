@@ -14,33 +14,9 @@
 
 <ng-template #tasks>
   <div class="fle">
-
     <app-lists-container id="list-space"></app-lists-container>
-
-    <div #listDetailsSpace>
-        <app-project-details id='projects-details' [hidden]='!projectsDetailsOpen'
-            (closeEvent)='closeProjectDetails()'
-            (saveEvent)='onCreateProject($event)'
-            (updateEvent)="onUpdateProject($event)"
-            (editStageEvent)="onEditProjectStage($event)">
-        </app-project-details>
-
-        <app-stage-details id="stage-details" [hidden]="!stageDetailsOpen"
-            (closeEvent)="closeStageDetails()"
-            (updateEvent)="onUpdateStage($event)">
-        </app-stage-details>
-    </div>
-
     <app-tasks-container id="work-space"></app-tasks-container>
-
-    <div #workDetailsSpace>
-        <app-task-details id="task-details" [hidden]='!tasksDetailsOpen'
-            (closeEvent)="closeTaskDetails()"
-            (saveEvent)="onCreateTask($event)"
-            (openLabelsEvent)="openLabelsManager()">
-        </app-task-details>
-    </div>
-
+    <app-details-container [hidden]="!isDetailsOpen()"></app-details-container>
     <app-side-container></app-side-container>
   </div>
 </ng-template>

@@ -1,0 +1,91 @@
+<div class="app-panel shadow">
+  <form class="stage-form">
+    <ng-container [ngTemplateOutlet]="stage_name"></ng-container>
+    <ng-container [ngTemplateOutlet]="stage_description"></ng-container>
+    <ng-container [ngTemplateOutlet]="stage_status"></ng-container>
+    <ng-container [ngTemplateOutlet]="stage_end_date"></ng-container>
+  </form>
+</div>
+
+<ng-template #stage_name>
+  <div class="form-container">
+    <label class="form-label">Nazwa</label>
+    <input
+      type="text"
+      class="form-control"
+      id="stage-name"
+      name="name"
+      autocomplete="off"
+      [ngModel]="model.getStage().getName()"
+      (ngModelChange)="model.getStage().setName($event)"
+      (keyup.enter)="updateStage()"
+      (focusout)="updateStage()"
+    />
+    <div
+      *ngIf="!model.isNameValid() && model.isNameChanged()"
+      class="invalid-feedback"
+    >
+      Nazwa nie może być pusta
+    </div>
+  </div>
+</ng-template>
+
+<ng-template #stage_description>
+  <div class="form-container">
+    <label class="form-label">Opis</label>
+    <textarea
+      class="form-control"
+      id="stage-description"
+      name="description"
+      rows="4"
+      [ngModel]="model.getStage().getDescription()"
+      (ngModelChange)="model.getStage().setDescription($event)"
+      (keyup.enter)="updateStage()"
+      (focusout)="updateStage()"
+    >
+    </textarea>
+  </div>
+</ng-template>
+
+<ng-template #stage_status>
+  <div class="form-container">
+    <label class="form-label">Stan</label>
+    <select
+      class="form-control"
+      id="stage-status"
+      name="status"
+      [ngModel]="model.getStage().getStatus()"
+      (ngModelChange)="model.getStage().setStatus($event)"
+      (change)="updateStage()"
+    >
+      <option [ngValue]="status.STARTED">Aktywny</option>
+      <option [ngValue]="status.ENDED">Zakończony</option>
+      <option [ngValue]="status.CANCELED">Anulowany</option>
+      <option [ngValue]="status.AWAITING">Oczekujący</option>
+    </select>
+  </div>
+</ng-template>
+
+<ng-template #stage_end_date>
+  <div class="form-container">
+    <label class="form-label">Data końcowa</label>
+    <div class="datepicker-container">
+      <input
+        matInput
+        class="form-control"
+        id="stage-end-date"
+        name="end-date"
+        autocomplete="off"
+        [matDatepicker]="endDatePicker"
+        [ngModel]="model.getStage().getEndDate()"
+        (ngModelChange)="model.getStage().setEndDate($event)"
+        (dateChange)="updateStage()"
+      />
+      <mat-datepicker-toggle
+        [for]="endDatePicker"
+        class="datepicker"
+      ></mat-datepicker-toggle>
+      <mat-datepicker #endDatePicker></mat-datepicker>
+    </div>
+  </div>
+</ng-template>

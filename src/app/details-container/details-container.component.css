@@ -1,0 +1,7 @@
+.details{
+  position: absolute;
+  right: 0px;
+  width: 50%;
+  /* TODO: ustawić kolor tła dla wszystkich paneli */
+  background-color: aliceblue;
+}

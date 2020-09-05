@@ -6,8 +6,6 @@ import { AppComponent } from './app.component';
 import { TasksComponent } from './tasks-container/tasks/tasks.component';
 import { MainComponent } from './main/main.component';
 import { ProjectsComponent } from './lists-container/projects/projects.component';
-import { TaskDetailsComponent } from './task-details/task-details.component';
-import { ProjectDetailsComponent } from './project-details/project-details.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {MatMenuModule} from '@angular/material/menu';
 import {MatIconModule} from '@angular/material/icon';
@@ -22,7 +20,6 @@ import { LabelsComponent } from './side-container/labels/labels.component';
 import { TooltipModule } from 'ng2-tooltip-directive';
 import { MatDialogModule } from '@angular/material/dialog';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
-import { StageDetailsComponent } from './stage-details/stage-details.component';
 import {DragDropModule} from "@angular/cdk/drag-drop";
 import { PomodoroStatisticsComponent } from './pomodoro-statistics/pomodoro-statistics.component';
 import {MatTabsModule} from '@angular/material/tabs';
@@ -36,10 +33,13 @@ import { WidgetsModule } from './widgets/widgets.module';
 import { ListsContainerComponent } from './lists-container/lists-container.component';
 import { TasksContainerComponent } from './tasks-container/tasks-container.component';
 import { SideContainerComponent } from './side-container/side-container.component';
-import { TopBarComponent } from './top-bar/top-bar.component';
 import { DialogComponent } from './widgets/dialog/dialog.component';
 import { PomodoroComponent } from './side-container/pomodoro/pomodoro.component';
 import { SpecialListsComponent } from './lists-container/special-lists/special-lists.component';
+import { DetailsContainerComponent } from './details-container/details-container.component';
+import { TaskDetailsComponent } from './details-container/task-details/task-details.component';
+import { StageDetailsComponent } from './details-container/stage-details/stage-details.component';
+import { ProjectDetailsComponent } from './details-container/project-details/project-details.component';
 
 @NgModule({
   declarations: [
@@ -59,7 +59,7 @@ import { SpecialListsComponent } from './lists-container/special-lists/special-l
     TasksContainerComponent,
     SideContainerComponent,
     SpecialListsComponent,
-    TopBarComponent,
+    DetailsContainerComponent,
   ],
   imports: [
     BrowserModule,

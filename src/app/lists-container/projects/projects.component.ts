@@ -102,6 +102,7 @@ export class ProjectsComponent implements OnInit {
   public onEditProject(){
     DataService.getStoreManager().getProjectStore().getProjectById(this.model.getProjectWithOpenMenu().getId()).then(loadedProject=>{
       // this.editEvent.emit(loadedProject);
+      console.log("Jestem tutaj");
       EventBus.getDefault().post(new ProjectEditEvent(loadedProject));
       this.model.setSelectedProject(this.model.getProjectWithOpenMenu());
     });

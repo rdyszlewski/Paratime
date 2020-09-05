@@ -1,0 +1,8 @@
+<div class="app-panel shadow details">
+  <div>
+    <button class="close-button" (click)="closeDetails()">X</button>
+  </div>
+  <app-project-details [hidden]="type != detailsType.PROJECT"></app-project-details>
+  <app-task-details [hidden]="type != detailsType.TASK"></app-task-details>
+  <app-stage-details [hidden]="type != detailsType.STAGE"></app-stage-details>
+</div>
