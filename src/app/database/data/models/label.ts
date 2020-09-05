@@ -1,5 +1,5 @@
-import { IFilterable } from 'app/common/filter/filterable';
 import { OrderableItem } from './orderable.item';
+import { IFilterable } from 'app/shared/common/filter/filterable';
 
 export class Label extends OrderableItem implements IFilterable {
   private name: string = null;

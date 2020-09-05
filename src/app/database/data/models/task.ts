@@ -2,11 +2,11 @@ import { Subtask } from './subtask';
 import { Status } from './status';
 import { Project } from './project';
 import { Label } from './label';
-import { IFilterable } from 'app/common/filter/filterable';
 import { Priority } from './priority';
 import { Stage } from './stage';
 import { OrderableItem } from './orderable.item';
 import { ITaskItem } from './task.item';
+import { IFilterable } from 'app/shared/common/filter/filterable';
 
 export class Task extends OrderableItem implements IFilterable, ITaskItem{
 

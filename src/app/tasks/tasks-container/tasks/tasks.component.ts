@@ -17,12 +17,12 @@ import { TaskType } from './task.type';
 import { ITaskContainer } from 'app/database/data/models/task.container';
 import { TaskAddingController } from './adding/task.adding.controller';
 import { TaskOrderController } from './controllers/order.controller';
-import { DialogHelper } from 'app/common/dialog';
 import { Subscribe, EventBus } from 'eventbus-ts';
 import { TaskDetailsEvent } from './events/details.event';
 import { ITaskList } from '../task.list';
 import { SpecialList } from 'app/tasks/lists-container/projects/common/special_list';
 import { AppService } from 'app/core/services/app/app.service';
+import { DialogHelper } from 'app/shared/common/dialog';
 
 @Component({
   selector: 'app-tasks',

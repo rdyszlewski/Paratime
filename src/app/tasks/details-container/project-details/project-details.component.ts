@@ -9,12 +9,12 @@ import { ProjectDetailsState } from './model/state';
 import { ProjectChangeDetector } from './model/change.detector';
 import { ProjectValidator } from './model/validator';
 import { ProjectStagesController } from './stage/project.stages.controller';
-import { DateFormatter } from 'app/common/date_formatter';
 import {
   CdkDragDrop,
   moveItemInArray,
   transferArrayItem,
 } from '@angular/cdk/drag-drop';
+import { DateFormatter } from 'app/shared/common/date_formatter';
 
 @Component({
   selector: 'app-project-details',

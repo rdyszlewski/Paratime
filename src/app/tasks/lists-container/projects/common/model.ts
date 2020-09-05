@@ -1,5 +1,5 @@
 import { Project } from 'app/database/data/models/project';
-import { TasksList } from 'app/common/lists/tasks.list';
+import { TasksList } from 'app/shared/common/lists/tasks.list';
 
 export class ProjectsModel{
 

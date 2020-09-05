@@ -1,6 +1,5 @@
 import { Label } from 'app/database/data/models/label';
-import { FilteredList } from 'app/common/filter/filtered_list';
-import { TasksList } from 'app/common/lists/tasks.list';
+import { TasksList } from 'app/shared/common/lists/tasks.list';
 
 export class LabelsModel {
   private labels: TasksList<Label> = new TasksList();

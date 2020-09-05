@@ -1,10 +1,10 @@
-import { FocusHelper } from 'app/common/view_helper';
 import { Label } from 'app/database/data/models/label';
 import { DataService } from 'app/data.service';
 import { EventEmitter } from '@angular/core';
-import { EditInputHandler } from 'app/common/edit_input_handler';
 import { LabelEditingModel } from './label.editing.model';
 import { LabelViewState } from '../common/label_view_state';
+import { EditInputHandler } from 'app/shared/common/edit_input_handler';
+import { FocusHelper } from 'app/shared/common/view_helper';
 
 export class LabelEditingController{
 

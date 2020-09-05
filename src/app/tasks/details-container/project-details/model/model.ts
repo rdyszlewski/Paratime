@@ -1,7 +1,6 @@
 import { Project } from 'app/database/data/models/project';
 import { Stage } from 'app/database/data/models/stage';
-import { Status } from 'app/database/data/models/status';
-import { TasksList } from 'app/common/lists/tasks.list';
+import { TasksList } from 'app/shared/common/lists/tasks.list';
 
 export class ProjectDetails {
   private project: Project = new Project();

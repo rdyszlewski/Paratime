@@ -4,9 +4,9 @@ import { InsertTaskData } from 'app/database/data/common/models/insert.task.data
 import { DataService } from 'app/data.service';
 import { Task } from 'app/database/data/models/task';
 import { MatDialog } from '@angular/material/dialog';
-import { DialogHelper } from 'app/common/dialog';
 import { EventEmitter } from '@angular/core';
 import { Status } from 'app/database/data/models/status';
+import { DialogHelper } from 'app/shared/common/dialog';
 
 type RemoveCallback = (task: KanbanTask) => void;
 

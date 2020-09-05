@@ -1,9 +1,9 @@
 import { Status } from './status';
 import { Task } from './task';
 import { ProjectType } from './project_type';
-import { IFilterable } from 'app/common/filter/filterable';
 import { Stage } from './stage';
 import { OrderableItem } from './orderable.item';
+import { IFilterable } from 'app/shared/common/filter/filterable';
 
 export class Project extends OrderableItem implements IFilterable{
 

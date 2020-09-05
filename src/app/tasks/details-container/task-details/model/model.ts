@@ -1,6 +1,6 @@
 import { Task } from 'app/database/data/models/task';
 import { Subtask } from 'app/database/data/models/subtask';
-import { TasksList } from 'app/common/lists/tasks.list';
+import { TasksList } from 'app/shared/common/lists/tasks.list';
 
 export class TaskDetails {
   private task: Task = new Task();

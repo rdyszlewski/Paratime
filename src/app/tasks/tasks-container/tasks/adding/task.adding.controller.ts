@@ -2,10 +2,10 @@ import { Task } from 'app/database/data/models/task';
 import { TasksAddingModel } from './task.adding.model';
 import { TasksModel } from '../model';
 import { DataService } from 'app/data.service';
-import { ScrollBarHelper, FocusHelper } from 'app/common/view_helper';
-import { EditInputHandler } from 'app/common/edit_input_handler';
 import { InsertTaskData } from 'app/database/data/common/models/insert.task.data';
 import { InsertTaskResult } from 'app/database/data/common/models/insert.task.result';
+import { FocusHelper, ScrollBarHelper } from 'app/shared/common/view_helper';
+import { EditInputHandler } from 'app/shared/common/edit_input_handler';
 
 export class TaskAddingController {
   private TASK_LIST = '#tasks-list';

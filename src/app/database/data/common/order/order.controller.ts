@@ -1,6 +1,6 @@
 import { OrderableItem, Position } from 'app/database/data/models/orderable.item';
 import { IOrderableRepository } from '../repositories/orderable.repository';
-import { OrderValues } from 'app/common/values';
+import { OrderValues } from 'app/shared/common/values';
 
 export class StoreOrderController<T extends OrderableItem> {
 

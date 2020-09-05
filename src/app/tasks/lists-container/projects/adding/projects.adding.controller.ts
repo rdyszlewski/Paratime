@@ -1,13 +1,12 @@
-import { FocusHelper, ScrollBarHelper } from 'app/common/view_helper';
 import { DataService } from 'app/data.service';
 import { ProjectsViewState } from '../common/state';
 import { ProjectsAddingModel } from './projects.adding.model';
-import { EditInputHandler } from 'app/common/edit_input_handler';
 import { Project } from 'app/database/data/models/project';
 import { ProjectsModel } from '../common/model';
-import { EventEmitter } from '@angular/core';
 import { EventBus } from 'eventbus-ts';
 import { ProjectLoadEvent } from '../events/project.event';
+import { FocusHelper, ScrollBarHelper } from 'app/shared/common/view_helper';
+import { EditInputHandler } from 'app/shared/common/edit_input_handler';
 
 export class ProjectAddingController{
 

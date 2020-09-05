@@ -1,8 +1,8 @@
 import { Task } from './task';
 import { OrderableItem } from './orderable.item';
-import { IFilterable } from 'app/common/filter/filterable';
 import { ITaskItem } from './task.item';
 import { ITaskContainer } from './task.container';
+import { IFilterable } from 'app/shared/common/filter/filterable';
 
 export class KanbanColumn extends OrderableItem implements ITaskContainer{
   // TODO: przetestować, czy nie będzie to sprawiało problemów

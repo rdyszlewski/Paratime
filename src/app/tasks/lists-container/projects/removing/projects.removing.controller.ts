@@ -1,9 +1,9 @@
 import { DataService } from 'app/data.service';
-import { DialogHelper } from 'app/common/dialog';
 import { MatDialog } from '@angular/material/dialog';
 import { ProjectsModel } from '../common/model';
 import { EventBus, Subscribe } from 'eventbus-ts';
 import { ProjectRemoveEvent } from '../events/project.event';
+import { DialogHelper } from 'app/shared/common/dialog';
 
 export class ProjectsRemovingController{
 

@@ -7,16 +7,16 @@ import { Task } from 'app/database/data/models/task';
 import { Project } from 'app/database/data/models/project';
 import { DataService } from 'app/data.service';
 import { KanbanColumn, KanbanTask } from 'app/database/data/models/kanban';
-import { FocusHelper } from 'app/common/view_helper';
 import { Status } from 'app/database/data/models/status';
 import { MatDialog } from '@angular/material/dialog';
-import { EditInputHandler } from 'app/common/edit_input_handler';
 import { KanbanTaskOrderController, KanbanColumnOrderController } from './controllers/order.controller';
 import { KanbanTaskController } from './controllers/task.controller';
 import { KanbanColumnController } from './controllers/column.controller';
 import { ITaskList } from '../task.list';
 import { TaskItemInfo } from '../tasks/common/task.item.info';
 import { AppService } from 'app/core/services/app/app.service';
+import { FocusHelper } from 'app/shared/common/view_helper';
+import { EditInputHandler } from 'app/shared/common/edit_input_handler';
 
 
 

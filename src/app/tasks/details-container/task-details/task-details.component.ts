@@ -3,7 +3,6 @@ import { Status } from 'app/database/data/models/status';
 import { TaskDetails } from './model/model';
 import { Task } from 'app/database/data/models/task';
 import { DataService } from 'app/data.service';
-import { FocusHelper } from 'app/common/view_helper';
 import { Priority } from 'app/database/data/models/priority';
 import { TaskViewState } from './model/state';
 import { TaskValidator } from './model/validator';
@@ -16,6 +15,7 @@ import {
   transferArrayItem,
 } from '@angular/cdk/drag-drop';
 import { TaskDetailsView } from './subtask.view';
+import { FocusHelper } from 'app/shared/common/view_helper';
 
 @Component({
   selector: 'app-task-details',

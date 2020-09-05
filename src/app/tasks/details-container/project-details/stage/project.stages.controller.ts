@@ -2,12 +2,12 @@ import { ProjectStageModel } from './project.stage.model';
 import { Stage } from 'app/database/data/models/stage';
 import { Project } from 'app/database/data/models/project';
 import { DataService } from 'app/data.service';
-import { FocusHelper } from 'app/common/view_helper';
-import { EditInputHandler } from 'app/common/edit_input_handler';
 import { EventEmitter } from '@angular/core';
 import { ProjectDetails } from '../model/model';
 import { EventBus } from 'eventbus-ts';
 import { StageDetailsEvent } from '../events/stage.details.event';
+import { FocusHelper } from 'app/shared/common/view_helper';
+import { EditInputHandler } from 'app/shared/common/edit_input_handler';
 
 export class ProjectStagesController {
   private STAGE_NAME_INPUT = '#new-stage-name';

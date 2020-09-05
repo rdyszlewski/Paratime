@@ -1,8 +1,8 @@
 import { DataService } from 'app/data.service';
 import { Project } from 'app/database/data/models/project';
 import { TasksModel } from '../model';
-import { Values } from 'app/common/values';
 import { SpecialList } from 'app/tasks/lists-container/projects/common/special_list';
+import { Values } from 'app/shared/common/values';
 
 export class SpecialListTasks{
 

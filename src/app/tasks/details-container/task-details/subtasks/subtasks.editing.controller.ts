@@ -1,11 +1,11 @@
-import { FocusHelper, ScrollBarHelper } from 'app/common/view_helper';
 import { SubtasksEditingModel } from './subtasks.editing.model';
 import { Status } from 'app/database/data/models/status';
 import { Subtask } from 'app/database/data/models/subtask';
 import { Task } from 'app/database/data/models/task';
 import { DataService } from 'app/data.service';
-import { EditInputHandler } from 'app/common/edit_input_handler';
 import { TaskDetails } from '../model/model';
+import { FocusHelper, ScrollBarHelper } from 'app/shared/common/view_helper';
+import { EditInputHandler } from 'app/shared/common/edit_input_handler';
 
 export class SubtasksController{
 
