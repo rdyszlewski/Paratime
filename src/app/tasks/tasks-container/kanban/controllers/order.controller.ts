@@ -3,7 +3,7 @@ import {
   moveItemInArray,
   transferArrayItem,
 } from '@angular/cdk/drag-drop';
-import { Task } from 'app/data/models/task';
+import { Task } from 'app/database/data/models/task';
 import { DataService } from 'app/data.service';
 import { KanbanModel } from '../kanban.model';
 

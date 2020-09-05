@@ -1,6 +1,6 @@
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { DataService } from 'app/data.service';
-import { Task } from 'app/data/models/task';
+import { Task } from 'app/database/data/models/task';
 
 export class TaskOrderController{
 

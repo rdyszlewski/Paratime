@@ -1,6 +1,6 @@
-import { Task } from 'app/data/models/task';
-import { Project } from 'app/data/models/project';
-import { PomodoroHistory } from 'app/data/models/pomodoro.history';
+import { Task } from 'app/database/data/models/task';
+import { Project } from 'app/database/data/models/project';
+import { PomodoroHistory } from 'app/database/data/models/pomodoro.history';
 import { DataService } from 'app/data.service';
 import { take } from 'rxjs/operators';
 import { AppModule } from 'app/app.module';

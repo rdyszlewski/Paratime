@@ -3,20 +3,20 @@ import { KanbanModel } from './kanban.model';
 import {
   CdkDragDrop,
 } from '@angular/cdk/drag-drop';
-import { Task } from 'app/data/models/task';
-import { Project } from 'app/data/models/project';
+import { Task } from 'app/database/data/models/task';
+import { Project } from 'app/database/data/models/project';
 import { DataService } from 'app/data.service';
-import { KanbanColumn, KanbanTask } from 'app/data/models/kanban';
+import { KanbanColumn, KanbanTask } from 'app/database/data/models/kanban';
 import { FocusHelper } from 'app/common/view_helper';
-import { Status } from 'app/data/models/status';
+import { Status } from 'app/database/data/models/status';
 import { MatDialog } from '@angular/material/dialog';
-import { AppService } from 'app/services/app/app.service';
 import { EditInputHandler } from 'app/common/edit_input_handler';
 import { KanbanTaskOrderController, KanbanColumnOrderController } from './controllers/order.controller';
 import { KanbanTaskController } from './controllers/task.controller';
 import { KanbanColumnController } from './controllers/column.controller';
 import { ITaskList } from '../task.list';
 import { TaskItemInfo } from '../tasks/common/task.item.info';
+import { AppService } from 'app/core/services/app/app.service';
 
 
 

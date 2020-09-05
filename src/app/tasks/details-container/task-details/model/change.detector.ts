@@ -1,5 +1,5 @@
 import { TaskDetails } from './model';
-import { Task } from 'app/data/models/task';
+import { Task } from 'app/database/data/models/task';
 
 export class TaskChangeDetector{
 

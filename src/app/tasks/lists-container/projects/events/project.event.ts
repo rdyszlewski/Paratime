@@ -1,6 +1,6 @@
 
 import {EventBus, Subscribe} from "eventbus-ts"
-import { Project } from 'app/data/models/project'
+import { Project } from 'app/database/data/models/project'
 
 export class ProjectEvent extends EventBus.Event<Project>{
 

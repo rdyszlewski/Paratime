@@ -3,7 +3,7 @@ import { DataService } from 'app/data.service';
 import { ProjectsViewState } from '../common/state';
 import { ProjectsAddingModel } from './projects.adding.model';
 import { EditInputHandler } from 'app/common/edit_input_handler';
-import { Project } from 'app/data/models/project';
+import { Project } from 'app/database/data/models/project';
 import { ProjectsModel } from '../common/model';
 import { EventEmitter } from '@angular/core';
 import { EventBus } from 'eventbus-ts';

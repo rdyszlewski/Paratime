@@ -1,4 +1,4 @@
-import { Subtask } from 'app/data/models/subtask';
+import { Subtask } from 'app/database/data/models/subtask';
 
 export class SubtasksEditingModel{
 

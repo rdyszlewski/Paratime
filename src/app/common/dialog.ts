@@ -1,5 +1,5 @@
 import { MatDialog } from '@angular/material/dialog';
-import { DialogComponent } from 'app/widgets/dialog/dialog.component';
+import { DialogComponent } from 'app/ui/widgets/dialog/dialog.component';
 
 export class DialogHelper{
 

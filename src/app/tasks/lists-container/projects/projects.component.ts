@@ -1,10 +1,10 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { ProjectsModel } from './common/model';
-import { Project } from 'app/data/models/project';
+import { Project } from 'app/database/data/models/project';
 import { DataService } from 'app/data.service';
 import { MatDialog } from '@angular/material/dialog';
-import { Status } from 'app/data/models/status';
-import { ProjectType } from 'app/data/models/project_type';
+import { Status } from 'app/database/data/models/status';
+import { ProjectType } from 'app/database/data/models/project_type';
 import { ProjectsViewState } from './common/state';
 import { ProjectsFilteringController } from './filtering/projects.filtering.controller';
 import { ProjectAddingController } from './adding/projects.adding.controller';

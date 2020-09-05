@@ -1,11 +1,11 @@
 import { Component, OnInit, ViewChild, AfterViewInit, AfterContentInit } from '@angular/core';
-import { Project } from 'app/data/models/project';
-import { TasksMode, AppService } from 'app/services/app/app.service';
-import { Task } from 'app/data/models/task';
+import { Project } from 'app/database/data/models/project';
+import { Task } from 'app/database/data/models/task';
 import { ITaskList } from './task.list';
 import { EventBus, Subscribe } from 'eventbus-ts';
 import { TasksComponent } from './tasks/tasks.component';
 import { KanbanComponent } from './kanban/kanban.component';
+import { TasksMode, AppService } from 'app/core/services/app/app.service';
 
 @Component({
   selector: 'app-tasks-container',

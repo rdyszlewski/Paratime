@@ -3,7 +3,6 @@ import { NgModule } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { MainComponent } from './main/main.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {MatMenuModule} from '@angular/material/menu';
 import {MatIconModule} from '@angular/material/icon';
@@ -14,7 +13,6 @@ import {MatInputModule} from '@angular/material/input';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import { FormsModule } from '@angular/forms';
 import {MatExpansionModule} from '@angular/material/expansion';
-import { LabelsComponent } from './side-container/labels/labels.component';
 import { TooltipModule } from 'ng2-tooltip-directive';
 import { MatDialogModule } from '@angular/material/dialog';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
@@ -25,9 +23,6 @@ import {MatSortModule} from "@angular/material/sort";
 import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { WidgetsModule } from './widgets/widgets.module';
-import { SideContainerComponent } from './side-container/side-container.component';
-import { DialogComponent } from './widgets/dialog/dialog.component';
 import { DetailsContainerComponent } from './tasks/details-container/details-container.component';
 import { TaskDetailsComponent } from './tasks/details-container/task-details/task-details.component';
 import { StageDetailsComponent } from './tasks/details-container/stage-details/stage-details.component';
@@ -40,6 +35,11 @@ import { TasksContainerComponent } from './tasks/tasks-container/tasks-container
 import { SpecialListsComponent } from './tasks/lists-container/special-lists/special-lists.component';
 import { TasksComponent } from './tasks/tasks-container/tasks/tasks.component';
 import { ProjectsComponent } from './tasks/lists-container/projects/projects.component';
+import { LabelsComponent } from './shared/side-container/labels/labels.component';
+import { DialogComponent } from './ui/widgets/dialog/dialog.component';
+import { SideContainerComponent } from './shared/side-container/side-container.component';
+import { WidgetsModule } from './ui/widgets/widgets.module';
+import { MainComponent } from './core/main/main.component';
 
 @NgModule({
   declarations: [

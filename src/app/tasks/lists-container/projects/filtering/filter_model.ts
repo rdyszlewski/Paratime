@@ -1,5 +1,5 @@
-import { Status } from 'app/data/models/status';
-import { ProjectType } from 'app/data/models/project_type';
+import { Status } from 'app/database/data/models/status';
+import { ProjectType } from 'app/database/data/models/project_type';
 
 export class ProjectFilterModel{
 

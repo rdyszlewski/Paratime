@@ -1,5 +1,5 @@
-import { Task } from 'app/data/models/task';
-import { Subtask } from 'app/data/models/subtask';
+import { Task } from 'app/database/data/models/task';
+import { Subtask } from 'app/database/data/models/subtask';
 import { TasksList } from 'app/common/lists/tasks.list';
 
 export class TaskDetails {

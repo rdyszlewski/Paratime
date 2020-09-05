@@ -1,8 +1,8 @@
-import { Project } from 'app/data/models/project';
-import { Task } from 'app/data/models/task';
-import { KanbanTask } from 'app/data/models/kanban';
-import { ITaskItem } from 'app/data/models/task.item';
-import { ITaskContainer } from 'app/data/models/task.container';
+import { Project } from 'app/database/data/models/project';
+import { Task } from 'app/database/data/models/task';
+import { KanbanTask } from 'app/database/data/models/kanban';
+import { ITaskItem } from 'app/database/data/models/task.item';
+import { ITaskContainer } from 'app/database/data/models/task.container';
 
 // TODO: dodać jakiś typ do tych elementów i usunąć lub
 export interface ITaskList{

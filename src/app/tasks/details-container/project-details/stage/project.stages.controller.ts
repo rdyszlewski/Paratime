@@ -1,6 +1,6 @@
 import { ProjectStageModel } from './project.stage.model';
-import { Stage } from 'app/data/models/stage';
-import { Project } from 'app/data/models/project';
+import { Stage } from 'app/database/data/models/stage';
+import { Project } from 'app/database/data/models/project';
 import { DataService } from 'app/data.service';
 import { FocusHelper } from 'app/common/view_helper';
 import { EditInputHandler } from 'app/common/edit_input_handler';

@@ -1,8 +1,8 @@
 import { Component, OnInit, EventEmitter, Output } from '@angular/core';
 
-import { Task } from 'app/data/models/task';
-import { Project } from 'app/data/models/project';
-import { Status } from 'app/data/models/status';
+import { Task } from 'app/database/data/models/task';
+import { Project } from 'app/database/data/models/project';
+import { Status } from 'app/database/data/models/status';
 import { TasksModel } from './model';
 import { MatDialog } from '@angular/material/dialog';
 import { TaskItemInfo } from './common/task.item.info';
@@ -11,13 +11,10 @@ import { SpecialListTasks as SpecialListTask } from './common/special.list';
 import { TaskFilteringController } from './filtering/task.filtering.controller';
 import {
   CdkDragDrop,
-  moveItemInArray,
-  transferArrayItem,
 } from '@angular/cdk/drag-drop';
 import { DataService } from 'app/data.service';
-import { AppService } from 'app/services/app/app.service';
 import { TaskType } from './task.type';
-import { ITaskContainer } from 'app/data/models/task.container';
+import { ITaskContainer } from 'app/database/data/models/task.container';
 import { TaskAddingController } from './adding/task.adding.controller';
 import { TaskOrderController } from './controllers/order.controller';
 import { DialogHelper } from 'app/common/dialog';
@@ -25,6 +22,7 @@ import { Subscribe, EventBus } from 'eventbus-ts';
 import { TaskDetailsEvent } from './events/details.event';
 import { ITaskList } from '../task.list';
 import { SpecialList } from 'app/tasks/lists-container/projects/common/special_list';
+import { AppService } from 'app/core/services/app/app.service';
 
 @Component({
   selector: 'app-tasks',

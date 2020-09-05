@@ -1,4 +1,4 @@
-import { Label } from 'app/data/models/label';
+import { Label } from 'app/database/data/models/label';
 
 export class TaskFilteringModel{
 

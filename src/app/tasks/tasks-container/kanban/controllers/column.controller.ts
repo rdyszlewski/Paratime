@@ -1,5 +1,5 @@
 import { FocusHelper } from 'app/common/view_helper';
-import { KanbanColumn } from 'app/data/models/kanban';
+import { KanbanColumn } from 'app/database/data/models/kanban';
 import { DataService } from 'app/data.service';
 import { KanbanModel } from '../kanban.model';
 import { MatDialog } from '@angular/material/dialog';

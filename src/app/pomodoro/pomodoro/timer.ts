@@ -4,7 +4,7 @@ import { takeWhile } from 'rxjs/operators';
 import { PomodoroSetting } from './settings';
 import { EventEmitter } from '@angular/core';
 import { DataService } from 'app/data.service';
-import { PomodoroHistory } from 'app/data/models/pomodoro.history';
+import { PomodoroHistory } from 'app/database/data/models/pomodoro.history';
 
 // TODO: zrobić refaktoryzację całej klasy
 export class PomodoroTimer{

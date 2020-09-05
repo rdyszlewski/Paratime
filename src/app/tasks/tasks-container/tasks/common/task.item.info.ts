@@ -1,5 +1,5 @@
-import { Task } from 'app/data/models/task';
-import { Priority } from 'app/data/models/priority';
+import { Task } from 'app/database/data/models/task';
+import { Priority } from 'app/database/data/models/priority';
 import { DateFormatter } from 'app/common/date_formatter';
 
 export class TaskItemInfo{

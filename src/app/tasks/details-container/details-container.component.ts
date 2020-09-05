@@ -1,11 +1,11 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Subscribe, EventBus } from 'eventbus-ts';
-import { Project } from 'app/data/models/project';
+import { Project } from 'app/database/data/models/project';
 import { ProjectDetailsComponent } from './project-details/project-details.component';
 import { TaskDetailsComponent } from './task-details/task-details.component';
 import { StageDetailsComponent } from './stage-details/stage-details.component';
-import { Task } from 'app/data/models/task';
-import { Stage } from 'app/data/models/stage';
+import { Task } from 'app/database/data/models/task';
+import { Stage } from 'app/database/data/models/stage';
 
 export enum DetailsType{
   PROJECT,

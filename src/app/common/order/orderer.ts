@@ -1,4 +1,4 @@
-import { OrderableItem } from 'app/data/models/orderable.item';
+import { OrderableItem } from 'app/database/data/models/orderable.item';
 
 export class TaskItemOrderer <T extends OrderableItem>{
 

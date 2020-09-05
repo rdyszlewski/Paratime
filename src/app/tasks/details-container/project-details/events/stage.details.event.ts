@@ -1,5 +1,5 @@
 import { EventBus } from 'eventbus-ts';
-import { Stage } from 'app/data/models/stage';
+import { Stage } from 'app/database/data/models/stage';
 
 export class StageDetailsEvent extends EventBus.Event<Stage>{
 

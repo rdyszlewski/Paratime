@@ -2,8 +2,8 @@ import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { PomodoroModel } from './model';
 import { State } from './state';
 import { PomodoroSettingsStore } from './storage/settings.storage';
-import { Task } from 'app/data/models/task';
-import { PomodoroHistory } from 'app/data/models/pomodoro.history';
+import { Task } from 'app/database/data/models/task';
+import { PomodoroHistory } from 'app/database/data/models/pomodoro.history';
 import { DataService } from 'app/data.service';
 
 @Component({

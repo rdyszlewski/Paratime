@@ -1,12 +1,12 @@
 import { KanbanModel } from '../kanban.model';
-import { KanbanColumn, KanbanTask } from 'app/data/models/kanban';
-import { InsertTaskData } from 'app/data/common/models/insert.task.data';
+import { KanbanColumn, KanbanTask } from 'app/database/data/models/kanban';
+import { InsertTaskData } from 'app/database/data/common/models/insert.task.data';
 import { DataService } from 'app/data.service';
-import { Task } from 'app/data/models/task';
+import { Task } from 'app/database/data/models/task';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogHelper } from 'app/common/dialog';
 import { EventEmitter } from '@angular/core';
-import { Status } from 'app/data/models/status';
+import { Status } from 'app/database/data/models/status';
 
 type RemoveCallback = (task: KanbanTask) => void;
 

@@ -1,5 +1,5 @@
-import { Task } from 'app/data/models/task';
-import { Project } from 'app/data/models/project';
+import { Task } from 'app/database/data/models/task';
+import { Project } from 'app/database/data/models/project';
 import { TaskType } from './task.type';
 import { TasksList } from 'app/common/lists/tasks.list';
 import { Values } from 'app/common/values';

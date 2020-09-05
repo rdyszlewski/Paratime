@@ -1,5 +1,5 @@
-import { KanbanColumn, KanbanTask } from 'app/data/models/kanban';
-import { Project } from 'app/data/models/project';
+import { KanbanColumn, KanbanTask } from 'app/database/data/models/kanban';
+import { Project } from 'app/database/data/models/project';
 import { TasksList } from 'app/common/lists/tasks.list';
 import { FocusHelper } from 'app/common/view_helper';
 

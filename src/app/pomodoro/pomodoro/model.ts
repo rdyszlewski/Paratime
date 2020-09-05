@@ -2,7 +2,7 @@ import { State } from './state';
 import { PomodoroSetting } from './settings';
 import { PomodoroTimer } from './timer';
 import { PomodoroSettingsStore } from './storage/settings.storage';
-import { Task } from 'app/data/models/task';
+import { Task } from 'app/database/data/models/task';
 
 export class PomodoroModel{
 

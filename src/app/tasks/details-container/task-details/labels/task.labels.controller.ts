@@ -1,8 +1,8 @@
 import { DataService } from 'app/data.service';
 import { TaskDetails } from '../model/model';
-import { Label } from 'app/data/models/label';
+import { Label } from 'app/database/data/models/label';
 import { TaskLabelsModel } from './task.label.model';
-import { LabelsTask } from 'app/data/common/models';
+import { LabelsTask } from 'app/database/data/common/models';
 
 export class TaskLabelsController{
 
