@@ -3,9 +3,7 @@ import { NgModule } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
-import { TasksComponent } from './tasks-container/tasks/tasks.component';
 import { MainComponent } from './main/main.component';
-import { ProjectsComponent } from './lists-container/projects/projects.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {MatMenuModule} from '@angular/material/menu';
 import {MatIconModule} from '@angular/material/icon';
@@ -21,25 +19,27 @@ import { TooltipModule } from 'ng2-tooltip-directive';
 import { MatDialogModule } from '@angular/material/dialog';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {DragDropModule} from "@angular/cdk/drag-drop";
-import { PomodoroStatisticsComponent } from './pomodoro-statistics/pomodoro-statistics.component';
 import {MatTabsModule} from '@angular/material/tabs';
 import { MatTableModule} from "@angular/material/table";
 import {MatSortModule} from "@angular/material/sort";
 import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
-import { KanbanComponent } from './tasks-container/kanban/kanban.component' ;
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { WidgetsModule } from './widgets/widgets.module';
-import { ListsContainerComponent } from './lists-container/lists-container.component';
-import { TasksContainerComponent } from './tasks-container/tasks-container.component';
 import { SideContainerComponent } from './side-container/side-container.component';
 import { DialogComponent } from './widgets/dialog/dialog.component';
-import { PomodoroComponent } from './side-container/pomodoro/pomodoro.component';
-import { SpecialListsComponent } from './lists-container/special-lists/special-lists.component';
-import { DetailsContainerComponent } from './details-container/details-container.component';
-import { TaskDetailsComponent } from './details-container/task-details/task-details.component';
-import { StageDetailsComponent } from './details-container/stage-details/stage-details.component';
-import { ProjectDetailsComponent } from './details-container/project-details/project-details.component';
+import { DetailsContainerComponent } from './tasks/details-container/details-container.component';
+import { TaskDetailsComponent } from './tasks/details-container/task-details/task-details.component';
+import { StageDetailsComponent } from './tasks/details-container/stage-details/stage-details.component';
+import { ProjectDetailsComponent } from './tasks/details-container/project-details/project-details.component';
+import { PomodoroComponent } from './pomodoro/pomodoro/pomodoro.component';
+import { PomodoroStatisticsComponent } from './summary/pomodoro-statistics/pomodoro-statistics.component';
+import { KanbanComponent } from './tasks/tasks-container/kanban/kanban.component';
+import { ListsContainerComponent } from './tasks/lists-container/lists-container.component';
+import { TasksContainerComponent } from './tasks/tasks-container/tasks-container.component';
+import { SpecialListsComponent } from './tasks/lists-container/special-lists/special-lists.component';
+import { TasksComponent } from './tasks/tasks-container/tasks/tasks.component';
+import { ProjectsComponent } from './tasks/lists-container/projects/projects.component';
 
 @NgModule({
   declarations: [

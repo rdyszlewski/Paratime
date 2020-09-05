@@ -1,5 +1,5 @@
 import { EventBus } from 'eventbus-ts';
-import { SpecialList } from 'app/lists-container/projects/common/special_list';
+import { SpecialList } from '../../projects/common/special_list';
 
 export class SpecialListEvent extends EventBus.Event<SpecialList>{
 

@@ -7,16 +7,16 @@ import {
 } from '@angular/core';
 import { LocalDatabase } from 'app/data/local/database';
 import { Project } from 'app/data/models/project';
-import { ProjectsComponent } from 'app/lists-container/projects/projects.component';
 import { Task } from 'app/data/models/task';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Stage } from 'app/data/models/stage';
-import { SpecialList } from 'app/lists-container/projects/common/special_list';
 import { AppService, TasksMode } from 'app/services/app/app.service';
-import { TasksContainerComponent } from 'app/tasks-container/tasks-container.component';
-import { PomodoroComponent } from 'app/side-container/pomodoro/pomodoro.component';
-import { ProjectDetailsComponent } from 'app/details-container/project-details/project-details.component';
-import { DetailsContainerComponent } from 'app/details-container/details-container.component';
+import { ProjectDetailsComponent } from 'app/tasks/details-container/project-details/project-details.component';
+import { DetailsContainerComponent } from 'app/tasks/details-container/details-container.component';
+import { PomodoroComponent } from 'app/pomodoro/pomodoro/pomodoro.component';
+import { ProjectsComponent } from 'app/tasks/lists-container/projects/projects.component';
+import { TasksContainerComponent } from 'app/tasks/tasks-container/tasks-container.component';
+import { SpecialList } from 'app/tasks/lists-container/projects/common/special_list';
 
 @Component({
   selector: 'app-main',

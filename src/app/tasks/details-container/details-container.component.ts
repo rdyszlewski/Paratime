@@ -1,9 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Subscribe, EventBus } from 'eventbus-ts';
-import { ProjectEditEvent } from 'app/lists-container/projects/events/project.event';
 import { Project } from 'app/data/models/project';
 import { ProjectDetailsComponent } from './project-details/project-details.component';
-import { TaskDetails } from './task-details/model/model';
 import { TaskDetailsComponent } from './task-details/task-details.component';
 import { StageDetailsComponent } from './stage-details/stage-details.component';
 import { Task } from 'app/data/models/task';

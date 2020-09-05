@@ -3,10 +3,9 @@ import { Project } from 'app/data/models/project';
 import { TasksMode, AppService } from 'app/services/app/app.service';
 import { Task } from 'app/data/models/task';
 import { ITaskList } from './task.list';
-import { TasksComponent } from 'app/tasks-container/tasks/tasks.component';
-import { KanbanComponent } from 'app/tasks-container/kanban/kanban.component';
-import { ThrowStmt } from '@angular/compiler';
 import { EventBus, Subscribe } from 'eventbus-ts';
+import { TasksComponent } from './tasks/tasks.component';
+import { KanbanComponent } from './kanban/kanban.component';
 
 @Component({
   selector: 'app-tasks-container',

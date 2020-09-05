@@ -1,4 +1,4 @@
-@import '../../../styles.css';
+@import '../../../../styles.css';
 
 /* TODO: poprzenosić to jakoś  */
 .projects-view{
@@ -84,7 +84,7 @@
 }
 
 .expansion-icon{
-    background-image: url('../../../assets/icons/arrow-down-icon.png');
+    background-image: url('../../../../assets/icons/arrow-down-icon.png');
 }
 
 mat-icon{

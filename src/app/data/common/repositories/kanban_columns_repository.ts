@@ -1,4 +1,3 @@
-import { KanbanComponent } from 'app/tasks-container/kanban/kanban.component';
 import { KanbanColumn as KanbanColumn } from 'app/data/models/kanban';
 import { IOrderableRepository } from './orderable.repository';
 

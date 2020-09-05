@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { SpecialList } from 'app/lists-container/projects/common/special_list';
 import { EventBus } from 'eventbus-ts';
 import { SpecialListEvent } from './events/special.list.event';
+import { SpecialList } from '../projects/common/special_list';
 
 
 @Component({

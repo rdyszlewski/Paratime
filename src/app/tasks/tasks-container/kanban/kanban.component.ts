@@ -8,15 +8,15 @@ import { Project } from 'app/data/models/project';
 import { DataService } from 'app/data.service';
 import { KanbanColumn, KanbanTask } from 'app/data/models/kanban';
 import { FocusHelper } from 'app/common/view_helper';
-import { TaskItemInfo } from 'app/tasks-container/tasks/common/task.item.info';
 import { Status } from 'app/data/models/status';
 import { MatDialog } from '@angular/material/dialog';
 import { AppService } from 'app/services/app/app.service';
 import { EditInputHandler } from 'app/common/edit_input_handler';
-import { ITaskList as ITaskList } from 'app/tasks-container/task.list';
 import { KanbanTaskOrderController, KanbanColumnOrderController } from './controllers/order.controller';
 import { KanbanTaskController } from './controllers/task.controller';
 import { KanbanColumnController } from './controllers/column.controller';
+import { ITaskList } from '../task.list';
+import { TaskItemInfo } from '../tasks/common/task.item.info';
 
 
 
