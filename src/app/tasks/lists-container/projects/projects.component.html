@@ -1,9 +1,7 @@
 
-<div class="app-panel shadow">
-    <!-- <h3 class="panel-header">Projekty</h3> -->
-
-    <!-- TODO: ustawić odpowiednio styl do filtra -->
-    <div class="filter-controls">
+<div class="app-panel shadow list-panel">
+    <h4 class="panel-header">Projekty</h4>
+    <div class="filter-controls controls-center">
       <input class="project-filter filter border" placeholder="Wyszukaj projekt" autocomplete="off"
       (input)='getModel().filterProject($event.target.value)'>
       <div id="project-filter-button" class="button filter-button" (click)="getState().toggleFilteringOpen()"></div>
@@ -77,7 +75,7 @@
 
   <!-- TODO: zrobić globalny styl do listy oraz do jej elementów-->
 
-    <div id="projects-list"  class="list border"
+    <div id="projects-list"  class="list"
     cdkDropList
     #projectList="cdkDropList"
     [cdkDropListData]="getModel().getProjects()"
@@ -89,7 +87,7 @@
         <ng-container [ngTemplateOutlet]="new_project"></ng-container>
       </div>
     </div>
-    <button class="button border" (click)='getAdding().onCreateProjectClick()'
+    <button class="button border controls-center" (click)='getAdding().onCreateProjectClick()'
       *ngIf="!getState().isAddingOpen() && getState().isProjectsListOpen()">
       Dodaj projekt
     </button>
@@ -100,7 +98,7 @@
   <div [ngClass]="{'selected-list-item': getModel().isSelectedProject(project),
                     'project': true,
                     'list-item':true,
-                    'transparent-border':true}"
+                    'border-radius': true}"
                     (click)='onProjectClick(project)'
                     >
     <div class="list-item-value">{{project.getName()}}</div>

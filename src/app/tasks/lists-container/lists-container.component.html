@@ -1,7 +1,22 @@
 <div id="lists-container">
-  <div id="list-side">
-    <button class="side-button" (click)="openLists(type.SPECIAL)">S</button>
-    <button class="side-button" (click)="openLists(type.PROJECTS)">P</button>
+  <div id="list-side-container">
+    <ul class="lists-options">
+      <li [ngClass]="{
+        'active-side-item': listType==type.SPECIAL,
+        'action-item':true
+      }">
+        <div class="badge" *ngIf="listType==type.SPECIAL"></div>
+        <a class="action-label" (click)="openLists(type.SPECIAL)">S</a>
+      </li>
+
+      <li [ngClass]="{
+        'active-side-item': listType==type.PROJECTS,
+        'action-item':true
+      }">
+        <div class="badge" *ngIf="listType==type.PROJECTS"></div>
+        <a class="action-label" (click)="openLists(type.PROJECTS)">P</a>
+      </li>
+    </ul>
   </div>
 
   <div class="list-space">
@@ -9,3 +24,4 @@
     <app-special-lists id="special-lists" [hidden]="listType!=type.SPECIAL"></app-special-lists>
   </div>
 </div>
+

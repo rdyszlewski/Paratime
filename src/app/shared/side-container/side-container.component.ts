@@ -48,4 +48,7 @@ export class SideContainerComponent implements OnInit, AfterViewInit {
     this.timeService.setTime(time);
   }
 
+  public closeSidePanel(){
+    this._currentMode = null;
+  }
 }

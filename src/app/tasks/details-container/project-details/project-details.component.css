@@ -16,21 +16,17 @@
 }
 
 /* TODO: te same style są w tesk-details.component.css. Spróbować przenieść to do styles.css */
-.form-group-header{
-    padding: 5px!important;
-    height: auto!important;
-}
+
 
 .mat-content{
     font-size: medium;
     padding:10px;
 }
 
-.mat-expanded, .mat-content{
-    /* TODO: dopracować to jakoś */
+/* .mat-expanded, .mat-content{
     font-size: small;
     padding: 5px;
-}
+} */
 
 /* TODO: przenieść to do wspólnego stylu. Taki sam styl jest w tasks.components */
 .stage-main{

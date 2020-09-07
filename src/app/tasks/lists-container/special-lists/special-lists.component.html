@@ -1,10 +1,11 @@
-<div class="app-panel shadow">
-
+<div class="app-panel shadow list-panel">
+  <h4 class="panel-header">Listy</h4>
   <!-- TODO: zrobić sposób zaznaczania specjalnych list -->
-  <div [ngClass]="{'selected-list-item': false,
+  <div class="list">
+    <div [ngClass]="{'selected-list-item': false,
                 'project': true,
                 'list-item':true,
-                'transparent-border':true}"
+                'border-radius':true}"
                 (click)='openList(type.IMPORTANT)'>
     <div class="list-item-value">Ważne</div>
   </div>
@@ -12,9 +13,11 @@
   <div [ngClass]="{'selected-list-item': false,
                 'project': true,
                 'list-item':true,
-                'transparent-border':true}"
+                'border-radius':true}"
                 (click)='openList(type.TODAY)'>
     <div class="list-item-value">Dzisiaj</div>
   </div>
+  </div>
+
 
 </div>

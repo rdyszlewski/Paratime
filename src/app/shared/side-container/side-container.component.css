@@ -1,16 +1,18 @@
+@import '../../../styles.css';
+
+
 #side-container{
   display: flex;
 }
 
-.side-button{
-  width: 30px;
-  height: 30px;
-}
-
 #side-space{
-  position: fixed;
-  right: 40px;
+  position: absolute;
+  right: 48px;
   z-index: 2;
   background: white;
   height: 100%;
+}
+
+.side-header{
+  display: flex;
 }

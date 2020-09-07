@@ -1,7 +1,8 @@
 .details{
   position: absolute;
-  right: 0px;
+  right: 48px;
   width: 50%;
+  overflow: auto;
+
   /* TODO: ustawić kolor tła dla wszystkich paneli */
-  background-color: aliceblue;
 }

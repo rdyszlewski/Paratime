@@ -1,10 +1,31 @@
 <div id="side-container">
-  <div id="side-space">
+  <div id="tools-side-container">
+    <ul class="lists-options">
+      <li  [ngClass]="{
+        'active-side-item': currentMode == mode.LABELS,
+        'action-item':true}">
+        <div class="badge" *ngIf="currentMode==mode.LABELS"></div>
+        <a class="action-label" (click)="changeMode(mode.LABELS)">E</a>
+      </li>
+
+      <li  [ngClass]="{
+        'active-side-item': currentMode == mode.POMODORO,
+        'action-item':true}">
+        <div class="badge" *ngIf="currentMode==mode.POMODORO"></div>
+        <a class="action-label" (click)="changeMode(mode.POMODORO)">P</a>
+      </li>
+
+    </ul>
+  </div>
+  <div id="side-space" class="app-panel shadow">
+    <div class="side-header">
+      <h4 class="panel-header" [ngSwitch]="currentMode">
+        <a *ngSwitchCase="mode.LABELS">Etykiety</a>
+        <a *ngSwitchCase="mode.POMODORO">Pomodoro</a>
+      </h4>
+      <button class="side-close-button" *ngIf="currentMode != null" (click)="closeSidePanel()">X</button>
+    </div>
     <app-labels [hidden]="currentMode != mode.LABELS"></app-labels>
     <app-pomodoro [hidden]="currentMode != mode.POMODORO"></app-pomodoro>
-  </div>
-  <div id="side-buttons">
-    <button class="side-button" (click)="changeMode(mode.POMODORO)">P</button>
-    <button class="side-button" (click)="changeMode(mode.LABELS)">E</button>
   </div>
 </div>

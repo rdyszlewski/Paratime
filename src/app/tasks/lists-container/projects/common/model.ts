@@ -9,11 +9,12 @@ export class ProjectsModel{
     private projectWithOpenMenu: Project = null;
 
     public setProjects(projects:Project[]){
+        console.log(projects);
         this.projects.setItems(projects);
     }
 
     public getProjects(){
-        return this.projects.getItems();
+      return this.projects.getItems();
     }
 
     public getProjectByIndex(index: number): Project{

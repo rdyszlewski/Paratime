@@ -73,8 +73,8 @@
 
 
 .project-filter{
+    padding-left: 10px;
     height: 2em;
-    width: 100%;
 }
 
 .mat-menu-item{
