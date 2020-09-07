@@ -42,7 +42,7 @@
             <div
               cdkDrag
               *ngFor="let kanbanTask of getModel().getTasks(column)"
-              class="task-list-item list-item block transparent-border"
+              class="task-list-item list-item block"
             >
               <ng-container
                 [ngTemplateOutlet]="task_item"
@@ -90,7 +90,7 @@
                   getModel().getDefaultColumn()
                 )
               "
-              class="task-list-item list-item block transparent-border"
+              class="task-list-item list-item block"
             >
               <ng-container
                 [ngTemplateOutlet]="task_item"

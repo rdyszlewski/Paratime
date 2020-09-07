@@ -5,3 +5,8 @@
 .mode-buttons{
   float: right;
 }
+
+.toolbar-button{
+  width: 30px;
+  height: 30px;
+}

@@ -72,12 +72,11 @@ export class TasksContainerComponent implements OnInit, AfterViewInit {
         this._currentList = this.kanbanComponent;
         break;
     }
-    this.openProject(this._project);
-  }
-
-  @Subscribe("TaskDetailsEvent")
-  private openDetails(task:Task){
-    this._currentList.openDetails(task);
+    if(this._project){
+      this.openProject(this._project);
+    } else {
+      this.openProject(this.appService.getCurrentProject());
+    }
   }
 
   @Subscribe("TaskRemoveEvent")
@@ -92,6 +91,7 @@ export class TasksContainerComponent implements OnInit, AfterViewInit {
   @Subscribe("ProjectLoadEvent")
   public onProjectLoad(project:Project){
     this._currentList.openProject(project);
+    this.appService.setCurrentProject(project);
   }
 
 }

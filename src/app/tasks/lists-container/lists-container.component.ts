@@ -27,7 +27,11 @@ export class ListsContainerComponent implements OnInit {
 
   public openLists(type: ListType){
     // TODO: otwieranie list
-    this._listType = type;
+    if(this._listType == type){
+      this._listType = null;
+    } else {
+      this._listType = type;
+    }
   }
 
 }

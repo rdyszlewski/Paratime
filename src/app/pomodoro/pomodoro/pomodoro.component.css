@@ -52,6 +52,7 @@
 .timer-panel{
     margin-top: auto;
     margin-bottom: auto;
+    transform: translateY(50%);
 }
 
 .settings-group{

@@ -95,11 +95,6 @@
     font-size: medium;
 }
 
-.mat-expanded, .mat-content{
-    /* TODO: dopracować to jakoś */
-    font-size: small;
-}
-
 .star{
     width: fit-content;
     height: fit-content;

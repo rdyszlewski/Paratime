@@ -203,7 +203,7 @@ html, body{
     margin-top: 5px;
     margin-bottom: 5px;
     height: 1.8em;
-    border-radius: 8px;
+    border-radius: 3px;
 }
 
 .button:hover{
@@ -548,6 +548,10 @@ html, body{
   position: relative;
   margin-bottom: 4px;
   box-sizing: border-box;
+}
+
+.action-item:hover{
+  cursor: pointer;
 }
 
 .action-label{

@@ -54,9 +54,13 @@ export class KanbanComponent implements OnInit, ITaskList {
   }
 
   public openProject(project: Project) {
+    console.log("Ładuję to");
+    console.log(project);
     if(!project || project.getId() < 0){
+      console.log("Niestety się nie udało");
       return;
     }
+    console.log("Jestem tutaj");
     this.model.setProject(project);
     this.loadTasks(project);
   }
@@ -68,6 +72,8 @@ export class KanbanComponent implements OnInit, ITaskList {
       .then((columns) => {
         this.model.setColumns(columns);
         this.model.setTasks(columns);
+        console.log("Kolumny");
+        console.log(columns);
       });
   }
 
