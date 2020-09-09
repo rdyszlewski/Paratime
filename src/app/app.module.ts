@@ -27,7 +27,6 @@ import { DetailsContainerComponent } from './tasks/details-container/details-con
 import { TaskDetailsComponent } from './tasks/details-container/task-details/task-details.component';
 import { StageDetailsComponent } from './tasks/details-container/stage-details/stage-details.component';
 import { ProjectDetailsComponent } from './tasks/details-container/project-details/project-details.component';
-import { PomodoroComponent } from './pomodoro/pomodoro/pomodoro.component';
 import { PomodoroStatisticsComponent } from './summary/pomodoro-statistics/pomodoro-statistics.component';
 import { KanbanComponent } from './tasks/tasks-container/kanban/kanban.component';
 import { ListsContainerComponent } from './tasks/lists-container/lists-container.component';
@@ -40,6 +39,7 @@ import { DialogComponent } from './ui/widgets/dialog/dialog.component';
 import { SideContainerComponent } from './shared/side-container/side-container.component';
 import { WidgetsModule } from './ui/widgets/widgets.module';
 import { MainComponent } from './core/main/main.component';
+import { PomodoroComponent } from './pomodoro/pomodoro/component/pomodoro.component';
 
 @NgModule({
   declarations: [

@@ -1,7 +1,6 @@
 import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
-import { MAT_HAMMER_OPTIONS } from '@angular/material/core';
-import { PomodoroComponent } from 'app/pomodoro/pomodoro/pomodoro.component';
 import { TimeService } from 'app/core/services/time/time.service';
+import { PomodoroComponent } from 'app/pomodoro/pomodoro/component/pomodoro.component';
 
 export enum Mode{
   POMODORO,

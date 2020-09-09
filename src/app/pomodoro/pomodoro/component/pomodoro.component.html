@@ -1,0 +1,96 @@
+<div class="timer-container">
+    <button (click)="toggleSettingsOpen()">Ustawienia</button>
+    <div class="settings" [hidden]="settingsOpen" *ngIf="service.settings, let settings">
+        <div class="settings-group">
+            <label class="settings-label">Czas pracy</label>
+            <input type="number" class="settings-value"
+            [ngModel]="settings.workTime" (ngModelChange)="settings.workTime = $event"
+            (change)="service.updateSettings()">
+        </div>
+        <div class="settings-group">
+            <label class="settings-label">Czas krótkiej przerwy</label>
+            <input type="number" class="settings-value"
+            [ngModel]="settings.shortBreakTime" (ngModelChange)="settings.shortBreakTime = $event"
+            (change)="service.updateSettings()">
+        </div>
+        <div class="settings-group">
+            <label class="settings-label">Czas długiej przerwy</label>
+            <input type="number" class="settings-value"
+            [ngModel]="settings.longBreakTime" (ngModelChange)="settings.longBreakTime =$event"
+            (change)="service.updateSettings()">
+        </div>
+        <div class="settings-group">
+            <label class="settings-label">Interwał</label>
+            <input type="number" class="settings-value"
+            [ngModel]="settings.interval" (ngModelChange)="settings.interval = $event"
+            (change)="service.updateSettings()">
+        </div>currentStep
+    </div>
+
+    <div class="states">
+        <div *ngFor="let stateIndex of getStatesNumbers()"
+        [ngClass]="{
+            'work': isWorkState(stateIndex),
+            'short-break': isShortBreakState(stateIndex),
+            'long-break': isLongBreakState(stateIndex),
+            'current-state': isCurrentState(stateIndex),
+            'state': true
+        }">
+
+        </div>
+    </div>
+
+    <div class="timer-panel" *ngIf="service.getTimerControl(), let control">
+        <div class="current-task"
+            *ngIf="service.task">
+            {{service.task.getName()}}
+        </div>
+        <div class="timer-state" [ngSwitch]="service.getTimerInfo().currentState()">
+            <span *ngSwitchCase="state.WORK"> PRACA </span>
+            <span *ngSwitchCase="state.SHORT_BREAK"> KRÓTKA PRZERWA </span>
+            <span *ngSwitchCase="state.LONG_BREAK"> DŁUGA PRZERWA </span>
+        </div>
+        <div class="timer">{{service.time()}}</div>
+
+        <div id="running-buttons" *ngIf="isRunningState()">
+          <button class="button" (click)="control.stop()">Stop</button>
+          <button class="button" (click)="control.pause()">Pauza</button>
+        </div>
+
+        <div id="stopped-buttons" *ngIf="isStoppedState()">
+          <button class="button" (click)="control.start()" [ngSwitch]="service.getTimerInfo().currentState()">
+            <a *ngSwitchCase="state.WORK">Rozpocznij pracę</a>
+            <a *ngSwitchCase="state.LONG_BREAK">Rozpocznij długą przerwę</a>
+            <a *ngSwitchCase="state.SHORT_BREAK">Rozpocznij krótką przerwę</a>
+          </button>
+          <button class="button" (click)="control.skipState()"
+          *ngIf="isStopBreakState()">Pomiń przerwę</button>
+        </div>
+
+        <div id="paused-buttons" *ngIf="isPausedState()">
+          <button class="button" (click)="control.stop()">Stop</button>
+          <button class="button" (click)="control.continue()">Kontynuuj</button>
+        </div>
+
+        <div id="contine-buttons" *ngIf="isContinueState()">
+          <button class="button" (click)="control.start()" [ngSwitch]="service.getTimerInfo().currentState()">
+            <a *ngSwitchCase="state.WORK">Przerwa</a>
+            <a *ngSwitchDefault>Pracuj</a>
+          </button>
+
+        </div>
+
+        <div id="work-finished-buttons" *ngIf="isWorkFinishedState()">
+          <button class="button" (click)="control.continueState()">
+            Pracuj dalej
+          </button>
+          <button class="button" (click)="control.skipState()">
+              Pomiń przerwę
+          </button>
+          <button class="button" (click)="control.addTime(5)">
+              Dodaj 5 minut
+          </button>
+        </div>
+
+    </div>
+</div>

@@ -11,13 +11,13 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Stage } from 'app/database/data/models/stage';
 import { ProjectDetailsComponent } from 'app/tasks/details-container/project-details/project-details.component';
 import { DetailsContainerComponent } from 'app/tasks/details-container/details-container.component';
-import { PomodoroComponent } from 'app/pomodoro/pomodoro/pomodoro.component';
 import { ProjectsComponent } from 'app/tasks/lists-container/projects/projects.component';
 import { TasksContainerComponent } from 'app/tasks/tasks-container/tasks-container.component';
 import { SpecialList } from 'app/tasks/lists-container/projects/common/special_list';
 import { TasksMode, AppService } from '../services/app/app.service';
 import { LocalDatabase } from 'app/database/local/database';
 import { TimeService } from '../services/time/time.service';
+import { PomodoroComponent } from 'app/pomodoro/pomodoro/component/pomodoro.component';
 
 @Component({
   selector: 'app-main',
