@@ -16,7 +16,6 @@ export class PomodoroSummary{
     this._state = state;
     this._time = time;
   }
-  // TODO: zastanowić się, czy coś jeszcze chcemy zapisywać
 
   public get state(): State {
     return this._state;

@@ -6,7 +6,6 @@ import { takeWhile } from 'rxjs/operators';
 import { StateInfo } from './state.info';
 import { StateInfoCreator } from './state.info.creator';
 import { PomodoroStateSummary } from './summary';
-import { time } from 'console';
 
 export type TimerTickCallback = (time: number)=>void;
 export type TimerEndCallback = (summary: PomodoroStateSummary)=>void;

@@ -2,8 +2,7 @@ import { Task } from 'app/database/data/models/task';
 import { Project } from 'app/database/data/models/project';
 import { PomodoroHistory } from 'app/database/data/models/pomodoro.history';
 import { DataService } from 'app/data.service';
-import { take } from 'rxjs/operators';
-import { AppModule } from 'app/app.module';
+import { createUrlResolverWithoutPackagePrefix } from '@angular/compiler';
 
 export class PomodoroStatisticsModel{
     private tasksEntries: TaskEntry[] = [];
@@ -98,7 +97,10 @@ export class TaskEntryCreator{
     private static prepareMap(history:PomodoroHistory[]):Map<number, PomodoroHistory[]>{
         const map = new Map<number, PomodoroHistory[]>();
         history.forEach(entry=>{
-            const taskId = entry.getTaskId();
+            let taskId = entry.getTaskId();
+            if(!taskId){
+              taskId = -1;
+            }
             if(taskId){
                 if(!map.has(taskId)){
                     map.set(taskId, []);
@@ -113,6 +115,7 @@ export class TaskEntryCreator{
         const result = [];
         const promises = [];
         map.forEach((list, taskId)=>{
+          if(taskId>=0){
             const promise = this.getTask(taskId).then(task=>{
                 if(task){
                     const entry = this.createTaskEntry(task, list);
@@ -120,6 +123,12 @@ export class TaskEntryCreator{
                 }
             });
             promises.push(promise);
+          } else {
+            const task = new Task("Nieprzypisane");
+            const entry = this.createTaskEntry(task, list);
+            result.push(entry);
+          }
+
         });
         return Promise.all(promises).then(()=>{
             return Promise.resolve(result);

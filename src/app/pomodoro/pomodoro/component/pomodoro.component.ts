@@ -5,6 +5,8 @@ import { PomodoroService } from '../pomodoro.service';
 import { PomodoroTickCallback, PomodoroEndCallback } from '../pomodoro.callbacks';
 import { Pomodorotask } from '../model/task';
 import { PomodoroSummary } from '../statistics/summary';
+import { PomodoroSummaryAdapter } from 'app/database/data/models/pomodoro.history';
+import { DataService } from 'app/data.service';
 
 
 
@@ -32,9 +34,14 @@ export class PomodoroComponent implements OnInit {
   }
 
   private saveSummary(summary: PomodoroSummary){
-    console.log("Zapisywanie pomodoro");
-    console.log(summary);
-    // TODO: zrobienie zapisywania
+    if(summary.saveSummary){
+      console.log("Zapisywanie pomodoro");
+      const history = PomodoroSummaryAdapter.createHistory(summary);
+      DataService.getStoreManager().getPomodoroStore().create(history).then(savedSummary=>{
+        console.log(savedSummary);
+      });
+    }
+    // TODO: można zrobić jakiś komunikat
   }
 
   public get time():string{

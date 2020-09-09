@@ -23,10 +23,12 @@ export class TaskDataSource implements DataSource<TaskEntry>{
 
    loadTasks(filter="",sortActive="time", sortDirection="asc"){
        this.loadingSubject.next(true);
-       
+
        // TODO: zrobić, żeby pobierało z określonego miesiąca
        DataService.getStoreManager().getPomodoroStore().getAll().then(results=>{
+         console.log(results);
             TaskEntryCreator.create(results).then(entries=>{
+              console.log(entries);
                 let result = entries.filter(x=>x.getTask().getName().includes(filter));
                 result = TaskDataSorter.sort(sortActive, sortDirection, result);
                 this.tasksSubject.next(result);
@@ -35,6 +37,6 @@ export class TaskDataSource implements DataSource<TaskEntry>{
    }
 
 
-  
-    
+
+
 }
