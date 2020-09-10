@@ -8,7 +8,8 @@ import { ProjectsComponent } from './tasks/lists-container/projects/projects.com
 import { KanbanComponent } from './tasks/tasks-container/kanban/kanban.component';
 import { MainComponent } from './core/main/main.component';
 import { LabelsComponent } from './shared/side-container/labels/labels.component';
-import { PomodoroComponent } from './pomodoro/pomodoro/component/pomodoro.component';
+import { PomodoroComponent } from './shared/side-container/pomodoro/pomodoro.component';
+import { PomodoroSettingsComponent } from './shared/side-container/pomodoro/pomodoro-settings/pomodoro-settings.component';
 
 
 const routes: Routes = [
@@ -20,7 +21,8 @@ const routes: Routes = [
   {path: 'labels', component:LabelsComponent},
   {path: 'pomodoro', component:PomodoroComponent},
   {path: 'pomodoro_statistics', component: PomodoroStatisticsComponent},
-  {path: 'kanban', component: KanbanComponent}
+  {path: 'kanban', component: KanbanComponent},
+  {path: "settings", component: PomodoroSettingsComponent}
 ];
 
 @NgModule({

@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { Task } from 'app/database/data/models/task';
-import { State, TimerState, BreakHelper } from '../timer/state';
-import { PomodoroService } from '../pomodoro.service';
-import { PomodoroTickCallback, PomodoroEndCallback } from '../pomodoro.callbacks';
-import { Pomodorotask } from '../model/task';
-import { PomodoroSummary } from '../statistics/summary';
 import { PomodoroSummaryAdapter } from 'app/database/data/models/pomodoro.history';
 import { DataService } from 'app/data.service';
+import { State, TimerState, BreakHelper } from 'app/pomodoro/pomodoro/timer/state';
+import { PomodoroService } from 'app/pomodoro/pomodoro/pomodoro.service';
+import { PomodoroSummary } from 'app/pomodoro/pomodoro/statistics/summary';
+import { PomodoroTickCallback, PomodoroEndCallback } from 'app/pomodoro/pomodoro/pomodoro.callbacks';
+import { Pomodorotask } from 'app/pomodoro/pomodoro/model/task';
 
 
 

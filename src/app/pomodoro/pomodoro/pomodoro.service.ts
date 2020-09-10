@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import { PomodoroTimer, IPomodoroTimer, ITimerControl, ITimerInfo } from './timer/timer';
 import { IPomodoroTask } from './model/task';
-import { PomodoroSettings } from './settings/settings';
 import { PomodoroStateSummary } from './timer/summary';
 import { IPomodoroCallbacks, PomodoroTickCallback, PomodoroEndCallback } from './pomodoro.callbacks';
 import { SummaryCreator } from './statistics/summary.creator';
-import { PomodoroSettingsStore } from './settings/settings.storage';
 import { SettingsInitializator } from './settings/initializator';
 import { TimerFormatter } from './timer/formatter';
+import { PomodoroSettings } from './settings/settings';
+import { PomodoroSettingsStore } from './settings/settings.storage';
 
 // TODO: to chyba będzie trzeba zmienić, żeby było dostepne wyłączenie w PomodoroModule
 @Injectable({

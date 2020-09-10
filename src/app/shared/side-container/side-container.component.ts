@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { TimeService } from 'app/core/services/time/time.service';
-import { PomodoroComponent } from 'app/pomodoro/pomodoro/component/pomodoro.component';
+import { PomodoroComponent } from './pomodoro/pomodoro.component';
 
 export enum Mode{
   POMODORO,

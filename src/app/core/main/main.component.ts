@@ -17,7 +17,7 @@ import { SpecialList } from 'app/tasks/lists-container/projects/common/special_l
 import { TasksMode, AppService } from '../services/app/app.service';
 import { LocalDatabase } from 'app/database/local/database';
 import { TimeService } from '../services/time/time.service';
-import { PomodoroComponent } from 'app/pomodoro/pomodoro/component/pomodoro.component';
+import { PomodoroComponent } from 'app/shared/side-container/pomodoro/pomodoro.component';
 
 @Component({
   selector: 'app-main',

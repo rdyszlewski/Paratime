@@ -1,31 +1,6 @@
 <div class="timer-container">
     <button (click)="toggleSettingsOpen()">Ustawienia</button>
-    <div class="settings" [hidden]="settingsOpen" *ngIf="service.settings, let settings">
-        <div class="settings-group">
-            <label class="settings-label">Czas pracy</label>
-            <input type="number" class="settings-value"
-            [ngModel]="settings.workTime" (ngModelChange)="settings.workTime = $event"
-            (change)="service.updateSettings()">
-        </div>
-        <div class="settings-group">
-            <label class="settings-label">Czas krótkiej przerwy</label>
-            <input type="number" class="settings-value"
-            [ngModel]="settings.shortBreakTime" (ngModelChange)="settings.shortBreakTime = $event"
-            (change)="service.updateSettings()">
-        </div>
-        <div class="settings-group">
-            <label class="settings-label">Czas długiej przerwy</label>
-            <input type="number" class="settings-value"
-            [ngModel]="settings.longBreakTime" (ngModelChange)="settings.longBreakTime =$event"
-            (change)="service.updateSettings()">
-        </div>
-        <div class="settings-group">
-            <label class="settings-label">Interwał</label>
-            <input type="number" class="settings-value"
-            [ngModel]="settings.interval" (ngModelChange)="settings.interval = $event"
-            (change)="service.updateSettings()">
-        </div>currentStep
-    </div>
+    <app-pomodoro-settings [hidden]="!settingsOpen"></app-pomodoro-settings>
 
     <div class="states">
         <div *ngFor="let stateIndex of getStatesNumbers()"

@@ -23,17 +23,19 @@ export class PomodoroSettings{
   private _interval: number;
   // TODO: tutaj może pojawić się konfilkt
   /// determines, whether after finish current state automatically run next state
-  private _runNextState: StateControl;
+  private _runNextState: StateControl = StateControl.NO;
   /// determines, wheter after finish current state not change state, and countdown extra time
-  private _continueState: StateControl = StateControl.ALL;
+  private _continueState: StateControl = StateControl.NO;
   /// deterimens, wheter save timer result after stop current state
-  private _saveBreakedStage: boolean;
   ///
-  private _allowAddingTime: boolean;
+  private _saveStatistics: SettingsAnswer = SettingsAnswer.YES;
 
-  private _saveStatistics: SettingsAnswer;
+  private _saveStatisticsAfterStop: SettingsAnswer = SettingsAnswer.YES;
 
-  private _saveStatisticsAfterStop: SettingsAnswer;
+  private _saveBreakStage: boolean = true;
+
+  private _allowAddingTime: boolean = true;
+
 
   public get workTime(): number {
     return this._workTime;
@@ -77,11 +79,11 @@ export class PomodoroSettings{
     this._continueState = value;
   }
 
-  public get saveBreakedStage(): boolean {
-    return this._saveBreakedStage;
+  public get saveBreakStage(): boolean {
+    return this._saveBreakStage;
   }
-  public set saveBreakedStage(value: boolean) {
-    this._saveBreakedStage = value;
+  public set saveBreakStage(value: boolean) {
+    this._saveBreakStage = value;
   }
 
   public get allowAddingTime(): boolean {

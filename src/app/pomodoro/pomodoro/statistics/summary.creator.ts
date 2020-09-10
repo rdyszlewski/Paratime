@@ -25,7 +25,7 @@ export class SummaryCreator{
     if(settings.saveStatistics == SettingsAnswer.NO
       || cause == ChangeStateCause.SKIP
       || (cause == ChangeStateCause.STOP && !settings.saveStatisticsAfterStop)
-      || ( BreakHelper.isBreak(state) && !settings.saveBreakedStage )
+      || ( BreakHelper.isBreak(state) && !settings.saveBreakStage )
     ){
       return false;
     }

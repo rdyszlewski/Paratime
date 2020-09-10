@@ -11,7 +11,7 @@ export class SettingsInitializator{
     settings.interval = 3;
     settings.runNextState = StateControl.NO;
     settings.continueState = StateControl.WORK;
-    settings.saveBreakedStage = false;
+    settings.saveBreakStage = false;
     settings.saveStatistics = SettingsAnswer.YES;
     settings.saveStatisticsAfterStop = SettingsAnswer.YES;
 

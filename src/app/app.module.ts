@@ -39,7 +39,8 @@ import { DialogComponent } from './ui/widgets/dialog/dialog.component';
 import { SideContainerComponent } from './shared/side-container/side-container.component';
 import { WidgetsModule } from './ui/widgets/widgets.module';
 import { MainComponent } from './core/main/main.component';
-import { PomodoroComponent } from './pomodoro/pomodoro/component/pomodoro.component';
+import { PomodoroComponent } from './shared/side-container/pomodoro/pomodoro.component';
+import { PomodoroSettingsComponent } from './shared/side-container/pomodoro/pomodoro-settings/pomodoro-settings.component';
 
 @NgModule({
   declarations: [
@@ -60,6 +61,7 @@ import { PomodoroComponent } from './pomodoro/pomodoro/component/pomodoro.compon
     SideContainerComponent,
     SpecialListsComponent,
     DetailsContainerComponent,
+    PomodoroSettingsComponent,
   ],
   imports: [
     BrowserModule,
