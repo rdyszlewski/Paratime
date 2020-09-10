@@ -40,7 +40,7 @@ export interface ITimerInfo{
 }
 
 export interface IPomodoroTimer extends ITimerControl, ITimerCallbacks, ITimerInfo{
-
+  updateSettings(settings: PomodoroSettings);
 }
 
 
@@ -51,7 +51,7 @@ export class PomodoroTimer implements IPomodoroTimer{
   private _stateInfo: StateInfo;
   private _timerState: TimerState = TimerState.STOPED;
 
-  private settings: PomodoroSettings;
+  private _settings: PomodoroSettings;
 
   private _tickCallback: TimerTickCallback;
   private _endCallback: TimerEndCallback;
@@ -73,9 +73,11 @@ export class PomodoroTimer implements IPomodoroTimer{
     this._endCallback = callback;
   }
 
-  private setSettings(settings: PomodoroSettings){
-    this.settings = settings;
-    this._stateInfo = StateInfoCreator.getInitialStateInfo(this.settings);
+
+
+  public setSettings(settings: PomodoroSettings){
+    this._settings = settings;
+    this._stateInfo = StateInfoCreator.getInitialStateInfo(this._settings);
     this.updateTime();
   }
 
@@ -93,6 +95,7 @@ export class PomodoroTimer implements IPomodoroTimer{
   }
 
   private setupState(){
+    // TODO: tutaj nie powinno być też STOP?
     if(this._timerState == TimerState.FINISHED || this._timerState == TimerState.CONTINUATION){
       this.changeState(ChangeStateCause.FINISH);
     }
@@ -148,9 +151,9 @@ export class PomodoroTimer implements IPomodoroTimer{
   }
 
   private finishTicking(){
-    const continueState = this.settings.continueState;
-    const nextState = StateInfoCreator.getNextState(this._stateInfo, this.settings);
-    const runNextState = this.settings.runNextState;
+    const continueState = this._settings.continueState;
+    const nextState = StateInfoCreator.getNextState(this._stateInfo, this._settings);
+    const runNextState = this._settings.runNextState;
     if(this.isAutomaticallyContinueState(continueState, nextState)){
       this._timerState = TimerState.CONTINUATION;
     } else if(this.isAutomaticallyRunNextState(runNextState, nextState)){
@@ -166,7 +169,7 @@ export class PomodoroTimer implements IPomodoroTimer{
       const summary = new PomodoroStateSummary(this._stateInfo.state, this._stateTime, cause);
       this._endCallback(summary);
     }
-    this._stateInfo = StateInfoCreator.getNextStateInfo(this._stateInfo, this.settings);
+    this._stateInfo = StateInfoCreator.getNextStateInfo(this._stateInfo, this._settings);
     this._stateTime = 0;
     this.updateTime();
     if(this._tickCallback){
@@ -197,7 +200,6 @@ export class PomodoroTimer implements IPomodoroTimer{
   }
 
   public continue() {
-    this._timerState = TimerState.TICKING;
     this.start();
   }
 
@@ -252,6 +254,14 @@ export class PomodoroTimer implements IPomodoroTimer{
 
   public time(): number{
     return this._time;
+  }
+
+  public updateSettings(settings: PomodoroSettings){
+    this._settings = settings;
+    if(this._timerState == TimerState.STOPED){
+      console.log("Aktualizacja czasu");
+      this._time = StateInfoCreator.getNextTime(this._stateInfo.state, this._settings);
+    }
   }
 }
 

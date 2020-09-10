@@ -8,6 +8,7 @@ export class PomodoroStateSummary{
   private _finishCause: ChangeStateCause;
 
   constructor(state: State, time: number, cause: ChangeStateCause){
+
     this._state = state;
     this._time = time;
     this._finishCause = cause;

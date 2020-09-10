@@ -15,7 +15,7 @@
         </div>
     </div>
 
-    <div class="timer-panel" *ngIf="service.getTimerControl(), let control">
+    <div class="timer-panel" >
         <div class="current-task"
             *ngIf="service.task">
             {{service.task.getName()}}
@@ -27,42 +27,42 @@
         </div>
         <div class="timer">{{service.time()}}</div>
 
-        <div id="running-buttons" *ngIf="isRunningState()">
-          <button class="button" (click)="control.stop()">Stop</button>
-          <button class="button" (click)="control.pause()">Pauza</button>
+        <div id="running-buttons" class="buttons-container" *ngIf="isRunningState()">
+          <button class="pomodoro-button" (click)="service.stop()">Stop</button>
+          <button class="pomodoro-button" (click)="service.pause()">Pauza</button>
         </div>
 
-        <div id="stopped-buttons" *ngIf="isStoppedState()">
-          <button class="button" (click)="control.start()" [ngSwitch]="service.getTimerInfo().currentState()">
+        <div id="stopped-buttons" class="buttons-container" *ngIf="isStoppedState()">
+          <button class="pomodoro-button" (click)="service.start()" [ngSwitch]="service.getTimerInfo().currentState()">
             <a *ngSwitchCase="state.WORK">Rozpocznij pracę</a>
             <a *ngSwitchCase="state.LONG_BREAK">Rozpocznij długą przerwę</a>
             <a *ngSwitchCase="state.SHORT_BREAK">Rozpocznij krótką przerwę</a>
           </button>
-          <button class="button" (click)="control.skipState()"
+          <button class="pomodoro-button" (click)="service.skipState()"
           *ngIf="isStopBreakState()">Pomiń przerwę</button>
         </div>
 
-        <div id="paused-buttons" *ngIf="isPausedState()">
-          <button class="button" (click)="control.stop()">Stop</button>
-          <button class="button" (click)="control.continue()">Kontynuuj</button>
+        <div id="paused-buttons" class="buttons-container" *ngIf="isPausedState()">
+          <button class="pomodoro-button" (click)="service.stop()">Stop</button>
+          <button class="pomodoro-button" (click)="service.continue()">Kontynuuj</button>
         </div>
 
-        <div id="contine-buttons" *ngIf="isContinueState()">
-          <button class="button" (click)="control.start()" [ngSwitch]="service.getTimerInfo().currentState()">
+        <div id="contine-buttons" class="buttons-container" *ngIf="isContinueState()">
+          <button class="pomodoro-button" (click)="service.start()" [ngSwitch]="service.getTimerInfo().currentState()">
             <a *ngSwitchCase="state.WORK">Przerwa</a>
             <a *ngSwitchDefault>Pracuj</a>
           </button>
 
         </div>
 
-        <div id="work-finished-buttons" *ngIf="isWorkFinishedState()">
-          <button class="button" (click)="control.continueState()">
+        <div id="work-finished-buttons" class="buttons-container" *ngIf="isWorkFinishedState()">
+          <button class="pomodoro-button" (click)="service.continueState()">
             Pracuj dalej
           </button>
-          <button class="button" (click)="control.skipState()">
+          <button class="pomodoro-button" (click)="service.skipState()">
               Pomiń przerwę
           </button>
-          <button class="button" (click)="control.addTime(5)">
+          <button class="pomodoro-buttons" (click)="service.addTime(5)">
               Dodaj 5 minut
           </button>
         </div>

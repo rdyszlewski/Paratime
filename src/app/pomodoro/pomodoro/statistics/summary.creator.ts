@@ -4,6 +4,7 @@ import { PomodoroSettings, SettingsAnswer } from '../settings/settings';
 import { PomodoroSummary } from './summary';
 import { State, BreakHelper } from '../timer/state';
 import { ChangeStateCause } from '../timer/timer';
+import { SaveStatisticsChecker, Answer } from './checker';
 
 export class SummaryCreator{
 
@@ -21,16 +22,7 @@ export class SummaryCreator{
   }
 
   private static isSaveStatistics(state: State ,settings: PomodoroSettings, cause: ChangeStateCause){
-    // TODO: zrobić pytania
-    if(settings.saveStatistics == SettingsAnswer.NO
-      || cause == ChangeStateCause.SKIP
-      || (cause == ChangeStateCause.STOP && !settings.saveStatisticsAfterStop)
-      || ( BreakHelper.isBreak(state) && !settings.saveBreakStage )
-    ){
-      return false;
-    }
-    //
-    return true;
+    return SaveStatisticsChecker.isSaveStatistics(state, settings, cause) == Answer.YES;
   }
 
 

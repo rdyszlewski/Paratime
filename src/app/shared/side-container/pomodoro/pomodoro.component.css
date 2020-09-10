@@ -71,3 +71,22 @@
     width: 50px;
     text-align: end;
 }
+
+
+.timer-container{
+  width: 300px;
+}
+
+.pomodoro-button{
+  width: 100px;
+  margin: 5px;
+  height: auto;
+}
+
+.buttons-container{
+  height: auto;
+  width: fit-content;
+  display: flex;
+  margin-right: auto;
+  margin-left: auto;
+}

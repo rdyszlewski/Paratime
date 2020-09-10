@@ -3,10 +3,12 @@ import { Task } from 'app/database/data/models/task';
 import { PomodoroSummaryAdapter } from 'app/database/data/models/pomodoro.history';
 import { DataService } from 'app/data.service';
 import { State, TimerState, BreakHelper } from 'app/pomodoro/pomodoro/timer/state';
-import { PomodoroService } from 'app/pomodoro/pomodoro/pomodoro.service';
+import { PomodoroService, CallbackType } from 'app/pomodoro/pomodoro/pomodoro.service';
 import { PomodoroSummary } from 'app/pomodoro/pomodoro/statistics/summary';
 import { PomodoroTickCallback, PomodoroEndCallback } from 'app/pomodoro/pomodoro/pomodoro.callbacks';
 import { Pomodorotask } from 'app/pomodoro/pomodoro/model/task';
+import { MatDialog } from '@angular/material/dialog';
+import { DialogHelper } from 'app/shared/common/dialog';
 
 
 
@@ -18,34 +20,52 @@ import { Pomodorotask } from 'app/pomodoro/pomodoro/model/task';
 export class PomodoroComponent implements OnInit {
 
   private _settingsOpen = false;
-  private _time: string = "";
   public state = State;
   public timerState = TimerState;
-  constructor(private pomodoroService: PomodoroService) { }
+
+  constructor(private pomodoroService: PomodoroService, private dialog: MatDialog) { }
 
   ngOnInit(): void {
-    // this.addEndCallback("save", (statistics)=>this.savePomodoroStatistics(statistics));
-    this.addTickCallback("updateTime", (time)=>this.tick(time));
-    this.addEndCallback("saveSummary", (summary)=>this.saveSummary(summary));
+    this.pomodoroService.setSaveSummaryCallback(summary=>this.saveSummary(summary));
+    this.pomodoroService.setQuestionCallback(CallbackType.SAVE_SUMMARY, ()=>{
+      return this.showSaveStatisticsQuestion();
+    });
+    this.pomodoroService.setQuestionCallback(CallbackType.STOP, ()=>{
+      return this.showStopStateQuestion();
+    });
+    this.pomodoroService.setQuestionCallback(CallbackType.SKIP, ()=>{
+      return this.showSkipStateQuestion();
+    });
   }
 
-  private tick(time: string){
-    this._time = time;
+
+
+private saveSummary(summary: PomodoroSummary){
+    console.log("Zapisywanie pomodoro");
+    const history = PomodoroSummaryAdapter.createHistory(summary);
+    DataService.getStoreManager().getPomodoroStore().create(history).then(savedSummary=>{
+      console.log(savedSummary);
+    });
+
   }
 
-  private saveSummary(summary: PomodoroSummary){
-    if(summary.saveSummary){
-      console.log("Zapisywanie pomodoro");
-      const history = PomodoroSummaryAdapter.createHistory(summary);
-      DataService.getStoreManager().getPomodoroStore().create(history).then(savedSummary=>{
-        console.log(savedSummary);
-      });
-    }
-    // TODO: można zrobić jakiś komunikat
+  private showSaveStatisticsQuestion():Promise<boolean>{
+    const message = "Czy zapisać wyniki";
+    return this.showDialog(message);
   }
 
-  public get time():string{
-    return this._time;
+  private showDialog(message: string):Promise<boolean>{
+    return DialogHelper.openDialog(message, this.dialog).toPromise();
+  }
+
+  public showStopStateQuestion():Promise<boolean>{
+    const message = "Czy przerwać obecny stan?";
+    return this.showDialog(message);
+  }
+
+  public showSkipStateQuestion(): Promise<boolean>{
+    const message = "Czy pominąć obecny stan?";
+    return this.showDialog(message);
   }
 
   public get service():PomodoroService{
