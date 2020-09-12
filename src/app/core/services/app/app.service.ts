@@ -1,6 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Project } from 'app/database/data/models/project';
 import { Task } from 'app/database/data/models/task';
+import { Pomodorotask } from 'app/pomodoro/pomodoro/model/task';
+import { PomodoroService } from 'app/pomodoro/pomodoro/pomodoro.service';
+import { PomodoroAdapter } from 'app/shared/adapters/pomodoro.adapter';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +14,7 @@ export class AppService {
   private currentProject: Project;
   private currentTask: Task;
 
-  constructor() { }
+  constructor(private pomodoroService: PomodoroService) { }
 
   public getTasksMode():TasksMode{
     return this.taskMode;
@@ -37,9 +40,13 @@ export class AppService {
 
   public setCurrentTask(task:Task):void{
     this.currentTask = task;
+    const pomodoroTask = PomodoroAdapter.createPomodoroTask(task);
+    this.pomodoroService.setTask(pomodoroTask);
   }
 
-
+  public isCurrentTask(task:Task):boolean{
+    return task == this.currentTask;
+  }
 }
 
 export enum TasksMode{

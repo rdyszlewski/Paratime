@@ -28,11 +28,13 @@ export class PomodoroSettings{
   private _continueState: StateControl = StateControl.NO;
   /// deterimens, wheter save timer result after stop current state
   ///
-  private _saveStatistics: SettingsAnswer = SettingsAnswer.YES;
+  private _saveSummary: SettingsAnswer = SettingsAnswer.YES;
 
-  private _saveStatisticsAfterStop: SettingsAnswer = SettingsAnswer.YES;
+  private _saveSummaryAfterStop: SettingsAnswer = SettingsAnswer.YES;
 
-  private _saveBreakStage: boolean = true;
+  private _saveBreaksSummary: boolean = true;
+
+  private _saveStateLongerThan: number;
 
   private _allowAddingTime: boolean = true;
 
@@ -79,11 +81,11 @@ export class PomodoroSettings{
     this._continueState = value;
   }
 
-  public get saveBreakStage(): boolean {
-    return this._saveBreakStage;
+  public get saveBreaksSummary(): boolean {
+    return this._saveBreaksSummary;
   }
-  public set saveBreakStage(value: boolean) {
-    this._saveBreakStage = value;
+  public set saveBreaksSummary(value: boolean) {
+    this._saveBreaksSummary = value;
   }
 
   public get allowAddingTime(): boolean {
@@ -93,17 +95,24 @@ export class PomodoroSettings{
     this._allowAddingTime = value;
   }
 
-  public get saveStatistics(): SettingsAnswer {
-    return this._saveStatistics;
+  public get saveSummary(): SettingsAnswer {
+    return this._saveSummary;
   }
-  public set saveStatistics(value: SettingsAnswer) {
-    this._saveStatistics = value;
+  public set saveSummary(value: SettingsAnswer) {
+    this._saveSummary = value;
   }
 
-  public get saveStatisticsAfterStop(): SettingsAnswer {
-    return this._saveStatisticsAfterStop;
+  public get saveStateLongerThan(): number {
+    return this._saveStateLongerThan;
   }
-  public set saveStatisticsAfterStop(value: SettingsAnswer) {
-    this._saveStatisticsAfterStop = value;
+  public set saveStateLongerThan(value: number) {
+    this._saveStateLongerThan = value;
+  }
+
+  public get saveSummaryAfterStop(): SettingsAnswer {
+    return this._saveSummaryAfterStop;
+  }
+  public set saveSummaryAfterStop(value: SettingsAnswer) {
+    this._saveSummaryAfterStop = value;
   }
 }

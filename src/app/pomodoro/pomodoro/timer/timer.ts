@@ -13,7 +13,8 @@ export type TimerEndCallback = (summary: PomodoroStateSummary)=>void;
 export enum ChangeStateCause{
   FINISH,
   STOP,
-  SKIP
+  SKIP,
+  TASK_CHANGED
 }
 
 export interface ITimerControl{
@@ -41,6 +42,8 @@ export interface ITimerInfo{
 
 export interface IPomodoroTimer extends ITimerControl, ITimerCallbacks, ITimerInfo{
   updateSettings(settings: PomodoroSettings);
+  getSummary(): PomodoroStateSummary;
+  resetStateTime():void;
 }
 
 
@@ -177,6 +180,17 @@ export class PomodoroTimer implements IPomodoroTimer{
     }
   }
 
+  // TODO: sprawdzić, czy nie można tego zrobić w jakiś inny sposób
+  public getSummary(): PomodoroStateSummary{
+    const summary = new PomodoroStateSummary(this._stateInfo.state, this._stateTime, ChangeStateCause.TASK_CHANGED);
+    return summary;
+  }
+
+  public resetStateTime():void{
+    // TODO: to powinno wystarczyć
+    this._stateTime = 0;
+  }
+
   private isAutomaticallyContinueState(continueState: StateControl, nextState: State): boolean{
     return (continueState == StateControl.ALL
     || (continueState == StateControl.WORK && nextState == State.WORK)
@@ -221,7 +235,7 @@ export class PomodoroTimer implements IPomodoroTimer{
   }
 
   public isTicking():boolean{
-    return this._timerState == TimerState.TICKING;
+    return this._timerState == TimerState.TICKING || this._timerState == TimerState.CONTINUATION;
   }
 
   public getState(){

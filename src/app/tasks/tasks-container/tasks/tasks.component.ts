@@ -157,8 +157,22 @@ export class TasksComponent implements OnInit, ITaskList {
     EventBus.getDefault().post(new TaskDetailsEvent(task));
   }
 
+  public setActiveTask(task: Task){
+    this.appService.setCurrentTask(task);
+  }
+
+  public removeActiveTask(){
+    this.appService.setCurrentProject(null);
+  }
+
+  public isActiveTask(task: Task){
+    return this.appService.isCurrentTask(task);
+  }
+
+
   public finishTask(task:Task){
     DataService.getStoreManager().getTaskStore().changeStatus(task, Status.ENDED).then(updatedTasks=>{
+      this.appService.setCurrentTask(null);
       this.model.updateTasks(updatedTasks);
     });
   }

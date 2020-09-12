@@ -232,6 +232,16 @@
         Usuń
       </button>
 
+      <button mat-menu-item (click)="setActiveTask(task)"
+      *ngIf="!isActiveTask(task)">
+        Ustaw jako aktywne
+      </button>
+
+      <button mat-menu-item (click)="removeActiveTask()"
+      *ngIf="isActiveTask(task)">
+        Usuń jako aktywne zadanie
+      </button>
+
       <button mat-menu-item (click)="finishTask(task)">
         Zakończ zadanie
       </button>

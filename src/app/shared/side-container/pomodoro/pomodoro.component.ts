@@ -9,6 +9,7 @@ import { PomodoroTickCallback, PomodoroEndCallback } from 'app/pomodoro/pomodoro
 import { Pomodorotask } from 'app/pomodoro/pomodoro/model/task';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogHelper } from 'app/shared/common/dialog';
+import { PomodoroAdapter } from 'app/shared/adapters/pomodoro.adapter';
 
 
 
@@ -124,22 +125,10 @@ private saveSummary(summary: PomodoroSummary){
     return index == this.service.getTimerInfo().currentStep();
   }
 
-  // TODO: przenieść do serwisu
-
+  // TODO: sprawdzić, czy to jest gdzieś wykorzystywane
   public addTaskToPomodoro(task:Task){
-    this.service.setTask(this.createPomodoroTask(task));
+    this.service.setTask(PomodoroAdapter.createPomodoroTask(task));
   }
-
-  private createPomodoroTask(task:Task){
-    const pomodoroTask = new Pomodorotask();
-    pomodoroTask.setTask(task.getId(), task.getName());
-    pomodoroTask.setProject(task.getProject().getId(), task.getProject().getName());
-    task.getLabels().forEach(label=>{
-      pomodoroTask.addLabel(label.getId(), label.getName());
-    });
-    return pomodoroTask;
-  }
-
 
   public isStoppedState(){
     return this.service.getTimerInfo().timerState() == TimerState.STOPED;

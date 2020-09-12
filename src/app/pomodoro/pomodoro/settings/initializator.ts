@@ -11,10 +11,10 @@ export class SettingsInitializator{
     settings.interval = 3;
     settings.runNextState = StateControl.NO;
     settings.continueState = StateControl.WORK;
-    settings.saveBreakStage = false;
-    settings.saveStatistics = SettingsAnswer.YES;
-    settings.saveStatisticsAfterStop = SettingsAnswer.YES;
-
+    settings.saveBreaksSummary = false;
+    settings.saveSummary = SettingsAnswer.YES;
+    settings.saveSummaryAfterStop = SettingsAnswer.YES;
+    settings.saveStateLongerThan = 5;
     PomodoroSettingsStore.saveSettings(settings);
     return settings;
   }

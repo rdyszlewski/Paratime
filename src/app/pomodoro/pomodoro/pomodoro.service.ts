@@ -8,8 +8,8 @@ import { SettingsInitializator } from './settings/initializator';
 import { TimerFormatter } from './timer/formatter';
 import { PomodoroSettings } from './settings/settings';
 import { PomodoroSettingsStore } from './settings/settings.storage';
-import { MatDialog } from '@angular/material/dialog';
 import { SaveStatisticsChecker, Answer } from './statistics/checker';
+import { PomodoroSummary } from './statistics/summary';
 
 export type QuestionCallback = ()=>Promise<boolean>;
 
@@ -19,7 +19,6 @@ export enum CallbackType{
   SKIP
 }
 
-// TODO: to chyba będzie trzeba zmienić, żeby było dostepne wyłączenie w PomodoroModule
 @Injectable({
   providedIn: "root"
 })
@@ -36,6 +35,7 @@ export class PomodoroService implements IPomodoroCallbacks, ITimerControl {
 
   private _stateStartDate: Date;
 
+  private _summariesToSave: PomodoroSummary[] = [];
   // TODO: zastanowić się, czy to powinno wyglądać w ten sposób
   public get task(): IPomodoroTask{
     return this._task;
@@ -45,7 +45,7 @@ export class PomodoroService implements IPomodoroCallbacks, ITimerControl {
     return this._settings;
   }
 
-  constructor(private dialog: MatDialog) {
+  constructor() {
     this._settings = PomodoroSettingsStore.getSettings();
     if(!this._settings){
       this._settings = SettingsInitializator.initializeSettings();
@@ -66,29 +66,59 @@ export class PomodoroService implements IPomodoroCallbacks, ITimerControl {
   }
 
   private finishTicking(summary: PomodoroStateSummary){
-    const finishDate = new Date();
-    // TODO: sprawdzenie, czy potrzebny jest zapis
-    // TODO: sprawdzić to
-    const pomodoroSummary = SummaryCreator.createPomodoroSummary(summary, this._task, this._settings, this._stateStartDate, finishDate);
-    if(SaveStatisticsChecker.isSaveStatistics(summary.state, this._settings, summary.finishCause)==Answer.ASK){
-      this._questionCallbacks.get(CallbackType.SAVE_SUMMARY)().then(answer=>{
-        pomodoroSummary.saveSummary = answer;
-        if(this._saveSummaryCallback){
-          this._saveSummaryCallback(pomodoroSummary);
-        }
-      });
+    console.log("Finish Ticking");
+    this.addSummaryToSave(summary);
+    console.log(this._summariesToSave);
+    if(this._summariesToSave.length <= 0){
+      return;
     }
-    // TODO: zastanowić się, czy to się jakoś nie popsuje, podczas zmiany zadania. To zadanie które chcemy zapisać prawdopodobnie nie będzie już aktualne
+    const isSave = SaveStatisticsChecker.isSaveStatistics(summary.state, this._settings, summary.finishCause);
+    console.log(isSave);
+    if(isSave==Answer.ASK){
+      this._questionCallbacks.get(CallbackType.SAVE_SUMMARY)().then(answer=>{
+          this.runSavingSummaries();
+      });
+    } else if(isSave==Answer.YES){
+      this.runSavingSummaries();
+    }
   }
 
-  private startTimer(){
-    console.log("Wystartowano zegar");
-    this._stateStartDate = new Date();
+  private runSavingSummaries() {
+    if(!this._saveSummaryCallback){
+      return;
+    }
+    console.log(this._summariesToSave);
+    this._summariesToSave.forEach(summaryToSave => {
+      console.log(summaryToSave);
+      this._saveSummaryCallback(summaryToSave);
+    });
+    this._summariesToSave = [];
+  }
+
+  private addSummaryToSave(summary: PomodoroStateSummary) {
+    if(this.isSummaryValid(summary)){
+      console.log("Ważne");
+      const finishDate = new Date();
+      const pomodoroSummary = SummaryCreator.createPomodoroSummary(summary, this._task, this._settings, this._stateStartDate, finishDate);
+      this._summariesToSave.push(pomodoroSummary);
+      return pomodoroSummary;
+    }
+    console.log("Nie ważne");
+    return null;
+  }
+
+  private isSummaryValid(summary: PomodoroStateSummary){
+    console.log(summary.time);
+    return summary.time > this._settings.saveStateLongerThan;
   }
 
   public setTask(task: IPomodoroTask){
+    if(this._timer.isTicking()){
+      const summary = this._timer.getSummary();
+      this.addSummaryToSave(summary);
+      this._timer.resetStateTime();
+    }
     this._task = task;
-    // TODO: jeżeli licznik jest uruchomiony, oraz wczesniej było ustawione zadanie, to zapisujemy
   }
 
   public getTimerInfo(): ITimerInfo{

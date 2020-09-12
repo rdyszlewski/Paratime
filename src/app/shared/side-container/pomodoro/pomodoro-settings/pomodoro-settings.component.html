@@ -50,7 +50,7 @@
 
   <div class="settings-group">
     <label class="settings-label">Zapisuj statystyki</label>
-    <select class="settings-value" [ngModel]="settings.saveStatistics" (ngModelChange)="settings.saveStatistics = $event" (change)="service.updateSettings()">
+    <select class="settings-value" [ngModel]="settings.saveSummary" (ngModelChange)="settings.saveStatistics = $event" (change)="service.updateSettings()">
       <option [ngValue]="settingsAnswer.YES">Tak</option>
       <option [ngValue]="settingsAnswer.NO">Nie</option>
       <option [ngValue]="settingsAnswer.ASK">Pytaj</option>
@@ -58,8 +58,15 @@
   </div>
 
   <div class="settings-group">
+    <label class="settings-label">Zapisuj tylko dłuższe niż</label>
+    <input type="number" class="settings-value"
+      [ngModel]="settings.saveStateLongerThan" (ngModelChange)="settings.saveStateLongerThan = $event"
+      (change)="service.updateSettings()">
+  </div>
+
+  <div class="settings-group">
     <label class="settings-label">Zapisuj statystyki po przerwaniu rundy</label>
-    <select class="settings-value" [ngModel]="settings.saveStatisticsAfterStop" (ngModelChange)="settings.saveStatisticsAfterStop = $event" (change)="service.updateSettings()">
+    <select class="settings-value" [ngModel]="settings.saveSummaryAfterStop" (ngModelChange)="settings.saveStatisticsAfterStop = $event" (change)="service.updateSettings()">
       <option [ngValue]="settingsAnswer.YES">Tak</option>
       <option [ngValue]="settingsAnswer.NO">Nie</option>
       <option [ngValue]="settingsAnswer.ASK">Pytaj</option>
@@ -68,7 +75,7 @@
 
   <div class="settings-group">
     <label class="settings-label">Zapisuj przerwy</label>
-    <select class="settings-value" [ngModel]="settings.saveBreakStage" (ngModelChange)="settings.saveBreakStage = $event" (change)="service.updateSettings()">
+    <select class="settings-value" [ngModel]="settings.saveBreaksSummary" (ngModelChange)="settings.saveBreakStage = $event" (change)="service.updateSettings()">
       <option [ngValue]="true">Tak</option>
       <option [ngValue]="false">Nie</option>
     </select>

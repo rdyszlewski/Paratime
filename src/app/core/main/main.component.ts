@@ -18,6 +18,7 @@ import { TasksMode, AppService } from '../services/app/app.service';
 import { LocalDatabase } from 'app/database/local/database';
 import { TimeService } from '../services/time/time.service';
 import { PomodoroComponent } from 'app/shared/side-container/pomodoro/pomodoro.component';
+import { PomodoroSettingsStore } from 'app/pomodoro/pomodoro/settings/settings.storage';
 
 @Component({
   selector: 'app-main',
@@ -70,6 +71,7 @@ export class MainComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
+    // PomodoroSettingsStore.removeSettings();
     // this.deleteDatabase();
     // this.configureDexie();
   }

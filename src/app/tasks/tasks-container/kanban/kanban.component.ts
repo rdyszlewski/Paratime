@@ -134,7 +134,6 @@ export class KanbanComponent implements OnInit, ITaskList {
   }
 
   public setCurrentTask(task: KanbanTask) {
-    console.log(task);
     this.appService.setCurrentTask(task.getTask());
   }
 
@@ -143,11 +142,7 @@ export class KanbanComponent implements OnInit, ITaskList {
   }
 
   public isCurrentTask(task: KanbanTask): boolean {
-    const currentTask = this.appService.getCurrentTask();
-    if (currentTask) {
-      return currentTask.getId() == task.getTask().getId();
-    }
-    return false;
+    return this.appService.isCurrentTask(task.getTask());
   }
 
   public finishTask(task: KanbanTask): void {
