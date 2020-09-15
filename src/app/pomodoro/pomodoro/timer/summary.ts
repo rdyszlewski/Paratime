@@ -1,17 +1,14 @@
-import { State } from './state';
-import { ChangeStateCause } from './timer';
+import { State} from '../shared/state';
 
 export class PomodoroStateSummary{
 
   private _state: State;
   private _time: number;
-  private _finishCause: ChangeStateCause;
 
-  constructor(state: State, time: number, cause: ChangeStateCause){
+  constructor(state: State, time: number){
 
     this._state = state;
     this._time = time;
-    this._finishCause = cause;
   }
 
   public get state(): State {
@@ -21,9 +18,4 @@ export class PomodoroStateSummary{
   public get time(): number {
     return this._time;
   }
-
-  public get finishCause(): ChangeStateCause {
-    return this._finishCause;
-  }
-
 }

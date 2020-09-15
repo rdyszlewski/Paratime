@@ -1,4 +1,4 @@
-import { State } from 'app/pomodoro/pomodoro/timer/state';
+import { State } from 'app/pomodoro/pomodoro/shared/state';
 import { PomodoroSummary } from 'app/pomodoro/pomodoro/statistics/summary';
 
 export class PomodoroHistory {

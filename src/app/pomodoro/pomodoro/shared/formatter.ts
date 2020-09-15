@@ -1,5 +1,6 @@
 import { TimerState } from './state';
 
+
 export class TimerFormatter{
 
   public static getTimeText(time: number, timerState: TimerState = TimerState.TICKING):string{

@@ -1,6 +1,6 @@
 import { PomodoroSettings } from '../settings/settings';
 import { StateInfo } from './state.info';
-import { State } from './state';
+import { State } from '../shared/state';
 
 export class StateInfoCreator{
 
@@ -15,7 +15,6 @@ export class StateInfoCreator{
   }
 
   public static getNextStateInfo(currentState: StateInfo, settings: PomodoroSettings):StateInfo{
-    // this.runEndCallbacks(); // TODO: to nie tutaj
     let newState = new StateInfo();
     newState.state = this.getNextState(currentState, settings);
     newState.step = this.getNextStep(currentState, settings);

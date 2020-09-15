@@ -1,15 +1,16 @@
 import { Injectable } from '@angular/core';
-import { PomodoroTimer, IPomodoroTimer, ITimerControl, ITimerInfo } from './timer/timer';
+import {  IPomodoroTimer, ITimerControl, ITimerInfo } from './timer/timer';
 import { IPomodoroTask } from './model/task';
 import { PomodoroStateSummary } from './timer/summary';
 import { IPomodoroCallbacks, PomodoroTickCallback, PomodoroEndCallback, SaveSummaryCallback as SaveSummaryCallback } from './pomodoro.callbacks';
 import { SummaryCreator } from './statistics/summary.creator';
-import { SettingsInitializator } from './settings/initializator';
-import { TimerFormatter } from './timer/formatter';
 import { PomodoroSettings } from './settings/settings';
-import { PomodoroSettingsStore } from './settings/settings.storage';
 import { SaveStatisticsChecker, Answer } from './statistics/checker';
 import { PomodoroSummary } from './statistics/summary';
+import { TimerFormatter } from './shared/formatter';
+import { SettingsController } from './settings/settings.controller';
+import { PomodoroTimer } from './timer/pomodoro.timer';
+import { ChangeStateCause } from './shared/change.cause';
 
 export type QuestionCallback = ()=>Promise<boolean>;
 
@@ -36,6 +37,8 @@ export class PomodoroService implements IPomodoroCallbacks, ITimerControl {
   private _stateStartDate: Date;
 
   private _summariesToSave: PomodoroSummary[] = [];
+
+  private _changeStateCause: ChangeStateCause;
   // TODO: zastanowić się, czy to powinno wyglądać w ten sposób
   public get task(): IPomodoroTask{
     return this._task;
@@ -46,11 +49,7 @@ export class PomodoroService implements IPomodoroCallbacks, ITimerControl {
   }
 
   constructor() {
-    this._settings = PomodoroSettingsStore.getSettings();
-    if(!this._settings){
-      this._settings = SettingsInitializator.initializeSettings();
-    }
-
+    this._settings = SettingsController.getSettings();
     this._timer = new PomodoroTimer(this._settings,
       time=>this.tick(time),
       summary=>this.finishTicking(summary));
@@ -68,19 +67,34 @@ export class PomodoroService implements IPomodoroCallbacks, ITimerControl {
   private finishTicking(summary: PomodoroStateSummary){
     console.log("Finish Ticking");
     this.addSummaryToSave(summary);
-    console.log(this._summariesToSave);
-    if(this._summariesToSave.length <= 0){
+    if(this._summariesToSave.length <= 0){      console.log("Ważne");
+
       return;
     }
-    const isSave = SaveStatisticsChecker.isSaveStatistics(summary.state, this._settings, summary.finishCause);
+    // TODO: sprawdzić, czy na pewno tak będzie
+    this.saveSummaries(summary, this._changeStateCause);
+  }
+
+  private saveSummaries(summary: PomodoroStateSummary, cause: ChangeStateCause) {
+    // TODO: sprawdzić wszystkie warunki
+    console.log("P");
+    console.log(cause);
+    if(!cause){
+      cause = ChangeStateCause.FINISH;
+    }
+    console.log("Powód");
+    console.log(cause);
+    const isSave = SaveStatisticsChecker.isSaveStatistics(summary.state, this._settings, cause);
+    console.log("Czy zapisywać statystyki");
     console.log(isSave);
-    if(isSave==Answer.ASK){
-      this._questionCallbacks.get(CallbackType.SAVE_SUMMARY)().then(answer=>{
-          this.runSavingSummaries();
+    if (isSave == Answer.ASK) {
+      this._questionCallbacks.get(CallbackType.SAVE_SUMMARY)().then(answer => {
+        this.runSavingSummaries();
       });
-    } else if(isSave==Answer.YES){
+    } else if (isSave == Answer.YES) {
       this.runSavingSummaries();
     }
+    this._changeStateCause = null;
   }
 
   private runSavingSummaries() {
@@ -114,6 +128,7 @@ export class PomodoroService implements IPomodoroCallbacks, ITimerControl {
 
   public setTask(task: IPomodoroTask){
     if(this._timer.isTicking()){
+      this._changeStateCause = ChangeStateCause.TASK_CHANGED;
       const summary = this._timer.getSummary();
       this.addSummaryToSave(summary);
       this._timer.resetStateTime();
@@ -160,8 +175,7 @@ export class PomodoroService implements IPomodoroCallbacks, ITimerControl {
   }
 
   public updateSettings(){
-    PomodoroSettingsStore.saveSettings(this._settings);
-    // TODO: aktualizacja czasu
+    SettingsController.saveSettings(this._settings);
     this._timer.updateSettings(this._settings);
   }
 
@@ -177,6 +191,7 @@ export class PomodoroService implements IPomodoroCallbacks, ITimerControl {
       this._timer.pause();
       this._questionCallbacks.get(CallbackType.STOP)().then(result=>{
         if(result){
+          this._changeStateCause = ChangeStateCause.STOP;
           this._timer.stop();
         } else {
           this._timer.start();
@@ -189,8 +204,8 @@ export class PomodoroService implements IPomodoroCallbacks, ITimerControl {
     this._timer.pause();
   }
 
-  public continue() {
-    this._timer.continue();
+  public resume() {
+    this._timer.resume();
   }
 
   public continueState() {
@@ -201,6 +216,7 @@ export class PomodoroService implements IPomodoroCallbacks, ITimerControl {
     if(this._questionCallbacks.has(CallbackType.SKIP)){
       this._questionCallbacks.get(CallbackType.SKIP)().then(result=>{
         if(result){
+          this._changeStateCause = ChangeStateCause.SKIP;
           this._timer.skipState();
         }
       });

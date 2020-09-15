@@ -1,6 +1,6 @@
-import { State, BreakHelper } from '../timer/state';
+import { State, BreakHelper } from '../shared/state';
 import { PomodoroSettings, SettingsAnswer } from '../settings/settings';
-import { ChangeStateCause } from '../timer/timer';
+import { ChangeStateCause } from '../shared/change.cause';
 
 export enum Answer{
   YES,
@@ -23,6 +23,6 @@ export class SaveStatisticsChecker{
       return Answer.NO;
     }
     //
-    return Answer.ASK;
+    return Answer.YES;
   }
 }

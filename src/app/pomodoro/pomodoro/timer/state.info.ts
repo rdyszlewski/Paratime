@@ -1,5 +1,4 @@
-import { State } from "./state";
-import { PomodoroSettings } from "../settings/settings"
+import { State } from "../shared/state";
 
 export class StateInfo{
 
@@ -35,7 +34,5 @@ export class StateInfo{
   public set step(value: number) {
     this._step = value;
   }
-  // TODO: być może dołożyć tutaj aktualny interwał czy coś
-
 }
 

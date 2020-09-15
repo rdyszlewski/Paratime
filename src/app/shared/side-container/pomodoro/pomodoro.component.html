@@ -44,7 +44,7 @@
 
         <div id="paused-buttons" class="buttons-container" *ngIf="isPausedState()">
           <button class="pomodoro-button" (click)="service.stop()">Stop</button>
-          <button class="pomodoro-button" (click)="service.continue()">Kontynuuj</button>
+          <button class="pomodoro-button" (click)="service.resume()">Kontynuuj</button>
         </div>
 
         <div id="contine-buttons" class="buttons-container" *ngIf="isContinueState()">

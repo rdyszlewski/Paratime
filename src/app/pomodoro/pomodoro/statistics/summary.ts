@@ -1,4 +1,4 @@
-import { State } from '../timer/state';
+import { State } from '../shared/state';
 
 export class PomodoroSummary{
 
