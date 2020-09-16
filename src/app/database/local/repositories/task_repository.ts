@@ -36,10 +36,14 @@ export class LocalTaskRepository implements ITaskRepository{
         return this.table.where('description').startsWith(description).toArray();
     }
 
-    public findTasksByDate(date: Date): Promise<Task[]> {
+    public findTasksByDate(date: Date, endDate: Date = null): Promise<Task[]> {
         // TODO: sprawdzić, dlaczego to działa
         let d = new Date(date.toDateString());
-        return this.table.where('date').equals(d).toArray();
+        if(!endDate){
+          return this.table.where('date').equals(d).toArray();
+        }
+        let endD = new Date(endDate.toDateString());
+        return this.table.where('date').between(d, endD).toArray();
     }
 
     public findTasksByDeadlineDate(date: Date): Promise<Task[]> {

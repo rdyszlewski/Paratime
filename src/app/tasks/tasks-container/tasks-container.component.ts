@@ -6,6 +6,7 @@ import { EventBus, Subscribe } from 'eventbus-ts';
 import { TasksComponent } from './tasks/tasks.component';
 import { KanbanComponent } from './kanban/kanban.component';
 import { TasksMode, AppService } from 'app/core/services/app/app.service';
+import { CalendarComponent } from './calendar/calendar.component';
 
 @Component({
   selector: 'app-tasks-container',
@@ -19,6 +20,9 @@ export class TasksContainerComponent implements OnInit, AfterViewInit {
 
   @ViewChild(KanbanComponent)
   private kanbanComponent: KanbanComponent;
+
+  @ViewChild(CalendarComponent)
+  private calendarComponent: CalendarComponent;
   // TODO: zrobić interfejs do tego wszystkiego
 
   private _project: Project;
@@ -70,6 +74,9 @@ export class TasksContainerComponent implements OnInit, AfterViewInit {
         break;
       case TasksMode.KANBAN:
         this._currentList = this.kanbanComponent;
+        break;
+      case TasksMode.CALENDAR:
+        this._currentList = this.calendarComponent;
         break;
     }
     if(this._project){

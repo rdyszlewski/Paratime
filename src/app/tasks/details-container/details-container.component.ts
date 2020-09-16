@@ -31,7 +31,7 @@ export class DetailsContainerComponent implements OnInit {
 
   public detailsType = DetailsType;
 
-  private _type: DetailsType=DetailsType.PROJECT;
+  private _type: DetailsType= null;
 
 
   private lastEditedProject: Project;

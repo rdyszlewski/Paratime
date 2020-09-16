@@ -10,6 +10,7 @@ import { MainComponent } from './core/main/main.component';
 import { LabelsComponent } from './shared/side-container/labels/labels.component';
 import { PomodoroComponent } from './shared/side-container/pomodoro/pomodoro.component';
 import { PomodoroSettingsComponent } from './shared/side-container/pomodoro/pomodoro-settings/pomodoro-settings.component';
+import { CalendarComponent } from './tasks/tasks-container/calendar/calendar.component';
 
 
 const routes: Routes = [
@@ -22,7 +23,8 @@ const routes: Routes = [
   {path: 'pomodoro', component:PomodoroComponent},
   {path: 'pomodoro_statistics', component: PomodoroStatisticsComponent},
   {path: 'kanban', component: KanbanComponent},
-  {path: "settings", component: PomodoroSettingsComponent}
+  {path: "settings", component: PomodoroSettingsComponent},
+  {path: "calendar", component: CalendarComponent}
 ];
 
 @NgModule({

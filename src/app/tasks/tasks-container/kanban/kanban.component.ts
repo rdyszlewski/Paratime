@@ -20,8 +20,6 @@ import { EditInputHandler } from 'app/shared/common/edit_input_handler';
 import { EventBus } from 'eventbus-ts';
 import { TaskDetailsEvent } from '../events/details.event';
 
-
-
 @Component({
   selector: 'app-kanban',
   templateUrl: './kanban.component.html',

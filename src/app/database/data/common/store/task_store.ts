@@ -139,8 +139,8 @@ export class TaskStore implements IOrderableStore<Task> {
       });
   }
 
-  public getTasksByDate(date: Date): Promise<Task[]> {
-    return this.taskRepository.findTasksByDate(date).then((tasks) => {
+  public getTasksByDate(date: Date, endDate:Date = null): Promise<Task[]> {
+    return this.taskRepository.findTasksByDate(date, endDate).then((tasks) => {
       return this.getCompletedTasks(tasks);
     });
   }

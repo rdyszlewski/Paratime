@@ -8,7 +8,7 @@ export interface ITaskRepository extends IOrderableRepository<Task>{
     findTasksByLabel(label:string):Promise<Task[]>;
     findTasksByName(name:string):Promise<Task[]>;
     findTasksByDescription(description:string): Promise<Task[]>;
-    findTasksByDate(date:Date):Promise<Task[]>;
+    findTasksByDate(date:Date,  endDate: Date):Promise<Task[]>;
     findTasksByDeadlineDate(date:Date):Promise<Task[]>;
     findTasksByStatus(projectId: number, status:Status):Promise<Task[]>;
     findTasksExceptStatus(projectId:number, status:Status):Promise<Task[]>;

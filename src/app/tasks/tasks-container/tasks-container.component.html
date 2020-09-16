@@ -3,7 +3,8 @@
     <span class="project-name">{{getProjectName()}}</span>
     <span class="mode-buttons">
       <button class="toolbar-button" (click)="changeTaskMode(taskMode.LIST)">L</button>
-    <button class="toolbar-button" (click)="changeTaskMode(taskMode.KANBAN)">K</button>
+      <button class="toolbar-button" (click)="changeTaskMode(taskMode.KANBAN)">K</button>
+      <button class="toolbar-button" (click)="changeTaskMode(taskMode.CALENDAR)">C</button>
     </span>
   </div>
 
@@ -17,5 +18,9 @@
       [hidden]="mode!=taskMode.KANBAN"
       >
     </app-kanban>
+
+    <app-calendar class="task-list" [hidden]="mode!=taskMode.CALENDAR">
+
+    </app-calendar>
   </div>
 </div>

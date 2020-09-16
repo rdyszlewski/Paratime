@@ -7,6 +7,7 @@ import { Stage } from './stage';
 import { OrderableItem } from './orderable.item';
 import { ITaskItem } from './task.item';
 import { IFilterable } from 'app/shared/common/filter/filterable';
+import { DateAdapter } from './date.adapter';
 
 export class Task extends OrderableItem implements IFilterable, ITaskItem{
 
@@ -16,7 +17,8 @@ export class Task extends OrderableItem implements IFilterable, ITaskItem{
     private description: string = null;
     private important: number = 0;
     private labels: Label[] = [];
-    private date:Date = null;
+    // private date:Date = null;
+    private date: string = null;
     private time: number = null;
     private endDate: Date = null;
     private plannedTime: number = null;
@@ -88,11 +90,12 @@ export class Task extends OrderableItem implements IFilterable, ITaskItem{
     }
 
     public getDate():Date{
-        return this.date;
+       return DateAdapter.getDate(this.date);
     }
 
     public setDate(date:Date):void{
-        this.date = date;
+        // this.date = date;
+      this.date = DateAdapter.getText(date);
     }
 
     public getTime():number{
