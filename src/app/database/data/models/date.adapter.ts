@@ -5,14 +5,18 @@ export class DateAdapter{
       return null;
     }
     const dateParts = date.split("-");
-    return new Date(Number.parseInt(dateParts[0], Number.parseInt(dateParts[1],Number.parseInt(dateParts[2]))));
+    return new Date(Number.parseInt(dateParts[0],
+        Number.parseInt(dateParts[1],
+        Number.parseInt(dateParts[2]))));
   }
 
   public static getText(date: Date){
     if(!date){
       return null;
     } else {
-      return date.getFullYear() + "-" + date.getMonth() + "-" + date.getDate();
+      const dateText = date.getFullYear() + "-" + date.getMonth() + "-" + date.getDate();
+      console.log(dateText);
+      return dateText;
     }
   }
 }

@@ -17,10 +17,11 @@ export class Task extends OrderableItem implements IFilterable, ITaskItem{
     private description: string = null;
     private important: number = 0;
     private labels: Label[] = [];
-    // private date:Date = null;
     private date: string = null;
+    private _date: Date = null;
     private time: number = null;
-    private endDate: Date = null;
+    private endDate: string = null;
+    private _endDate: Date = null;
     private plannedTime: number = null;
     private subtasks: Subtask[] = []
     private status: Status = null;
@@ -41,7 +42,6 @@ export class Task extends OrderableItem implements IFilterable, ITaskItem{
     public getName(){
         return this.name;
     }
-
 
     public setName(name:string){
         this.name = name;
@@ -65,7 +65,6 @@ export class Task extends OrderableItem implements IFilterable, ITaskItem{
 
     public setImportant(important:boolean){
         this.important = important ? 1 : 0;
-        // this.important = important;
     }
 
     public getLabels(){
@@ -90,11 +89,11 @@ export class Task extends OrderableItem implements IFilterable, ITaskItem{
     }
 
     public getDate():Date{
-       return DateAdapter.getDate(this.date);
+      return this._date;
     }
 
     public setDate(date:Date):void{
-        // this.date = date;
+      this._date = date;
       this.date = DateAdapter.getText(date);
     }
 
@@ -107,11 +106,12 @@ export class Task extends OrderableItem implements IFilterable, ITaskItem{
     }
 
     public getEndDate():Date{
-        return this.endDate;
+      return this._endDate;
     }
 
     public setEndDate(date: Date){
-        this.endDate = date;
+      this._endDate = date;
+      this.endDate = DateAdapter.getText(date);
     }
 
     public getPlannedTime(){

@@ -3,6 +3,7 @@ import { Position } from 'app/database/data/models/orderable.item';
 import { Status } from 'app/database/data/models/status';
 import { OrderRepository } from 'app/database/data/common/repositories/orderable.repository';
 import { ITaskRepository } from 'app/database/data/common/repositories/task_repository';
+import { DateAdapter } from 'app/database/data/models/date.adapter';
 
 export class LocalTaskRepository implements ITaskRepository{
 
@@ -38,11 +39,11 @@ export class LocalTaskRepository implements ITaskRepository{
 
     public findTasksByDate(date: Date, endDate: Date = null): Promise<Task[]> {
         // TODO: sprawdzić, dlaczego to działa
-        let d = new Date(date.toDateString());
+        let d = DateAdapter.getText(date);
         if(!endDate){
           return this.table.where('date').equals(d).toArray();
         }
-        let endD = new Date(endDate.toDateString());
+        let endD = DateAdapter.getText(endDate);
         return this.table.where('date').between(d, endD).toArray();
     }
 
