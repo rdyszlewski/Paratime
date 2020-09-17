@@ -22,6 +22,7 @@ export class CalendarComponent implements OnInit, ITaskList{
   private _year: number;
 
   private _cells: TaskDay[];
+  private _tasksWithoutDate = [];
 
   public get month():number{
     return this._month;
@@ -35,7 +36,12 @@ export class CalendarComponent implements OnInit, ITaskList{
     return this._cells;
   }
 
-  constructor() { }
+  public get tasksWithoutDate():Task[]{
+    return this._tasksWithoutDate;
+  }
+
+  constructor() {
+  }
 
   openProject(project: Project): void {
     this._project = project;
@@ -50,7 +56,11 @@ export class CalendarComponent implements OnInit, ITaskList{
   }
 
   private loadTasks(){
-    TaskLoader.loadTasks(this._cells, this._project, this._year);
+    TaskLoader.loadTasks(this._cells, this._project, this._year).then(result=>{
+      this._cells = result.cells;
+      this._tasksWithoutDate = result.tasksWithoutDate;
+      console.log(this._tasksWithoutDate);
+    });
   }
 
   removeTask(task: ITaskItem): void {
@@ -115,6 +125,7 @@ export class CalendarComponent implements OnInit, ITaskList{
     this._cells.forEach(x=>{
       cellNames.push(this.getCellName(x));
     });
+    cellNames.push('withoutDate')
     return cellNames;
   }
 
@@ -135,17 +146,20 @@ export class CalendarComponent implements OnInit, ITaskList{
   }
 
   private changeDate(task: Task, cellName: string){
-    const cellParts = cellName.split("_");
+    if(cellName == "withoutDate"){
+      task.setDate(null);
+    } else {
+      const cellParts = cellName.split("_");
     // TODO: tutaj będzie trzeba uważać na rok
-    const cell = this._cells.find(x=>x.day== Number.parseInt(cellParts[1]) && x.month==Number.parseInt(cellParts[2]));
-    const day = Number.parseInt(cellParts[1]);
-    const month = Number.parseInt(cellParts[2]);
-    // TODO: czy to na pewno jest konieczne
-    if(cell){
-      const newDate = new Date(this._year, month, day);
-      task.setDate(newDate);
+      const cell = this._cells.find(x=>x.day== Number.parseInt(cellParts[1]) && x.month==Number.parseInt(cellParts[2]));
+      const day = Number.parseInt(cellParts[1]);
+      const month = Number.parseInt(cellParts[2]);
+      // TODO: czy to na pewno jest konieczne
+      if(cell){
+        const newDate = new Date(this._year, month, day);
+        task.setDate(newDate);
+      }
     }
-
     DataService.getStoreManager().getTaskStore().update(task);
   }
 }
