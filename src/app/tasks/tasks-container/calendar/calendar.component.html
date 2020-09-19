@@ -1,64 +1,92 @@
 <div class="calendar-view shadow app-panel">
-  <div class="calendar-controls">
-    <div id="month-control" class="date-control">
-      <button (click)="decreaseMonth()"><</button>
-      <div class="date-control-value">{{month + 1}}</div>
-      <button (click)="increaseMonth()">></button>
-    </div>
-    <div id="year-control" class="date-control">
-      <button (click)="decreaseYear()"><</button>
-      <div class="date-control-value">{{year}}</div>
-      <button (click)="increaseYear()">></button>
-    </div>
-  </div>
-  <div class="calendar-container">
-    <div [ngTemplateOutlet]="withoutDate">
-
-    </div>
-    <div class="grid">
-      <div *ngFor="let day of cells" [ngClass]="{
-        'active-day': day.active,
-        'day-cell':true
-      }"
-      >
-      <ng-container
-      [ngTemplateOutlet]="day_cell"
-      [ngTemplateOutletContext]="{ $implicit: day }"
-      ></ng-container>
+  <div class="calendar-top-bar">
+    <button (click)="toggleShowWithoutDate()"></button>
+    <div class="calendar-controls">
+      <div id="month-control" class="date-control">
+        <button (click)="decreaseMonth()"><</button>
+        <div class="date-control-value">{{ month + 1 }}</div>
+        <button (click)="increaseMonth()">></button>
+      </div>
+      <div id="year-control" class="date-control">
+        <button (click)="decreaseYear()"><</button>
+        <div class="date-control-value">{{ year }}</div>
+        <button (click)="increaseYear()">></button>
       </div>
     </div>
   </div>
+
+  <div class="calendar-container">
+    <ng-container [ngTemplateOutlet]="without_date" *ngIf="showWithDate"></ng-container>
+    <!-- TODO: tutaj wstawić nazwy dni tygodnia -->
+    <div class="grid">
+      <div
+        *ngFor="let day of cells"
+        [ngClass]="{
+          'active-day': day.active,
+          'day-cell': true
+        }"
+        (click)="setCurrentDay(day)"
+      >
+        <ng-container
+          [ngTemplateOutlet]="day_cell"
+          [ngTemplateOutletContext]="{ $implicit: day }"
+        ></ng-container>
+      </div>
+    </div>
+    <ng-container [ngTemplateOutlet]="day_tasks" *ngIf="showCurrentTasks"></ng-container>
+
+  </div>
 </div>
 
-<ng-template #withoutDate>
+<ng-template #without_date>
   <!-- TODO: dorobić przeciąganie -->
-  <div class="tasks-without-date tasks-list"
-  cdkDropList
-  id="withoutDate"
-  #withoutDate="cdkDropList"
-  [cdkDropListData]="tasksWithoutDate"
-  [cdkDropListConnectedTo]="getCellNames()"
-  (cdkDropListDropped)="taskDrop($event)">
-
-    <div *ngFor="let task of tasksWithoutDate" class="task-item"
-    cdkDrag>{{task.getName()}}</div>
+  <div
+    class="tasks-without-date tasks-list"
+    cdkDropList
+    id="withoutDate"
+    #withoutDate="cdkDropList"
+    [cdkDropListData]="tasksWithoutDate"
+    [cdkDropListConnectedTo]="getCellNames()"
+    (cdkDropListDropped)="taskDrop($event)"
+  >
+    <div *ngFor="let task of tasksWithoutDate" class="task-item" cdkDrag>
+      {{ task.getName() }}
+    </div>
   </div>
 </ng-template>
 
 <ng-template #day_cell let-day>
-  <div>{{day.day}}</div>
+  <div class="day-number">{{ day.day }}</div>
 
-  <div class="tasks-list"
-  cdkDropList
-  id="{{getCellName(day).toString()}}"
-  #getCellName(day).toString()="cdkDropList"
-  [cdkDropListData]="day.tasks"
-  [cdkDropListConnectedTo]="getCellNames()"
-  (cdkDropListDropped)="taskDrop($event)">
+  <div
+    class="tasks-list"
+    cdkDropList
+    id="{{ getCellName(day).toString() }}"
+    #getCellName(day).toString()="cdkDropList"
+    [cdkDropListData]="day.tasks"
+    [cdkDropListConnectedTo]="getCellNames()"
+    (cdkDropListDropped)="taskDrop($event)"
+  >
     <!-- TODO: przenieść to do oddzielnego -->
-    <div *ngFor="let task of day.tasks" class="task-item"
-    cdkDrag>{{task.getName()}}</div>
-
+    <div *ngFor="let task of day.tasks" class="task-item" cdkDrag>
+      {{ task.getName() }}
+    </div>
   </div>
+</ng-template>
 
+<ng-template #day_tasks>
+  <div
+    class="tasks-without-date tasks-list"
+    cdkDropList
+    id="currentTasks"
+    #withoutDate="cdkDropList"
+    [cdkDropListData]="getCurrentTasks()"
+    [cdkDropListConnectedTo]="getCellNames()"
+    (cdkDropListDropped)="taskDrop($event)"
+  >
+    <!-- TODO: pozamieniać to wszystko -->
+    <div *ngFor="let task of getCurrentTasks()" class="task-item" cdkDrag>
+      {{ task.getName() }}
+    </div>
+  </div>
 </ng-template>

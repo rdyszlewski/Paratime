@@ -1,4 +1,8 @@
-import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
+import {
+  CdkDragDrop,
+  moveItemInArray,
+  transferArrayItem,
+} from '@angular/cdk/drag-drop';
 import { Component, OnInit } from '@angular/core';
 import { DataService } from 'app/data.service';
 import { Project } from 'app/database/data/models/project';
@@ -13,10 +17,9 @@ import { TaskDay } from './task.day';
 @Component({
   selector: 'app-calendar',
   templateUrl: './calendar.component.html',
-  styleUrls: ['./calendar.component.css']
+  styleUrls: ['./calendar.component.css'],
 })
-export class CalendarComponent implements OnInit, ITaskList{
-
+export class CalendarComponent implements OnInit, ITaskList {
   private _project: Project;
   private _month: number;
   private _year: number;
@@ -24,24 +27,39 @@ export class CalendarComponent implements OnInit, ITaskList{
   private _cells: TaskDay[];
   private _tasksWithoutDate = [];
 
-  public get month():number{
+  private _showWithoutDate = true;
+  private _currentDay: TaskDay;
+  private _showCurrentTasks = true;
+
+  public get month(): number {
     return this._month;
   }
 
-  public get year(): number{
+  public get year(): number {
     return this._year;
   }
 
-  public get cells():TaskDay[]{
+  public get cells(): TaskDay[] {
     return this._cells;
   }
 
-  public get tasksWithoutDate():Task[]{
+  public get tasksWithoutDate(): Task[] {
     return this._tasksWithoutDate;
   }
 
-  constructor() {
+  public get showWithDate(): boolean {
+    return this._showWithoutDate;
   }
+
+  public get currentDay(): TaskDay {
+    return this._currentDay;
+  }
+
+  public get showCurrentTasks():boolean{
+    return this._showCurrentTasks;
+  }
+
+  constructor() {}
 
   openProject(project: Project): void {
     this._project = project;
@@ -49,18 +67,20 @@ export class CalendarComponent implements OnInit, ITaskList{
     this.createCalendar();
   }
 
-  private setCurrentDate(){
+  private setCurrentDate() {
     const date = new Date();
     this._month = date.getMonth();
     this._year = date.getFullYear();
   }
 
-  private loadTasks(){
-    TaskLoader.loadTasks(this._cells, this._project, this._year).then(result=>{
-      this._cells = result.cells;
-      this._tasksWithoutDate = result.tasksWithoutDate;
-      console.log(this._tasksWithoutDate);
-    });
+  private loadTasks() {
+    TaskLoader.loadTasks(this._cells, this._project, this._year).then(
+      (result) => {
+        this._cells = result.cells;
+        this._tasksWithoutDate = result.tasksWithoutDate;
+        console.log(this._tasksWithoutDate);
+      }
+    );
   }
 
   removeTask(task: ITaskItem): void {
@@ -81,57 +101,60 @@ export class CalendarComponent implements OnInit, ITaskList{
     this.createCalendar();
   }
 
-
-
-  private createCalendar(){
+  private createCalendar() {
     this._cells = CalendarCreator.createCalendar(this._month, this.year);
     this.loadTasks();
   }
 
-  public increaseMonth(){
+  public increaseMonth() {
     this._month += 1;
-    if(this._month > 11){
+    if (this._month > 11) {
       this._month = 0;
       this._year += 1;
     }
     this.createCalendar();
   }
 
-  public decreaseMonth(){
+  public decreaseMonth() {
     this._month -= 1;
-    if(this._month < 0){
+    if (this._month < 0) {
       this._month = 11;
-      this._year -=1;
+      this._year -= 1;
     }
     this.createCalendar();
   }
 
-  public increaseYear(){
+  public increaseYear() {
     this._year += 1;
     this.createCalendar();
   }
 
-  public decreaseYear(){
+  public decreaseYear() {
     this._year -= 1;
     this.createCalendar();
   }
 
-  public getCellName(cell: TaskDay){
-    return "cell_"+cell.day+"_"+cell.month;
+  public getCellName(cell: TaskDay) {
+    return 'cell_' + cell.day + '_' + cell.month;
   }
 
-  public getCellNames(){
+  public getCellNames() {
     const cellNames = [];
-    this._cells.forEach(x=>{
+    this._cells.forEach((x) => {
       cellNames.push(this.getCellName(x));
     });
-    cellNames.push('withoutDate')
+    cellNames.push('withoutDate');
+    cellNames.push('currentTasks');
     return cellNames;
   }
 
   public taskDrop(event: CdkDragDrop<Task[]>) {
     if (event.previousContainer === event.container) {
-      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+      moveItemInArray(
+        event.container.data,
+        event.previousIndex,
+        event.currentIndex
+      );
     } else {
       const task = event.previousContainer.data[event.previousIndex];
       this.changeDate(task, event.container.id);
@@ -145,21 +168,53 @@ export class CalendarComponent implements OnInit, ITaskList{
     }
   }
 
-  private changeDate(task: Task, cellName: string){
-    if(cellName == "withoutDate"){
+  private changeDate(task: Task, cellName: string) {
+    // TODO: w przypadku przeciągania dlo obecnych zadań, wrzucić do odpowiedniej daty
+    if (cellName == 'withoutDate') {
       task.setDate(null);
-    } else {
-      const cellParts = cellName.split("_");
-    // TODO: tutaj będzie trzeba uważać na rok
-      const cell = this._cells.find(x=>x.day== Number.parseInt(cellParts[1]) && x.month==Number.parseInt(cellParts[2]));
+    } else if(cellName == "currentTasks"){
+      const currentCell = this.getCellName(this._currentDay);
+      this.changeDate(task, currentCell);
+    }
+    else {
+      this.changeTaskDate(task, cellName);
+    }
+    DataService.getStoreManager().getTaskStore().update(task);
+  }
+
+  private changeTaskDate(task:Task, cellName: string){
+    const cellParts = cellName.split('_');
+      // TODO: tutaj będzie trzeba uważać na rok
+      const cell = this._cells.find(
+        (x) =>
+          x.day == Number.parseInt(cellParts[1]) &&
+          x.month == Number.parseInt(cellParts[2])
+      );
       const day = Number.parseInt(cellParts[1]);
       const month = Number.parseInt(cellParts[2]);
       // TODO: czy to na pewno jest konieczne
-      if(cell){
+      if (cell) {
         const newDate = new Date(this._year, month, day);
         task.setDate(newDate);
       }
+  }
+
+  public toggleShowWithoutDate() {
+    this._showWithoutDate = !this._showWithoutDate;
+  }
+
+  public toggleShowCurrentTasks(){
+    this._showCurrentTasks = !this._showCurrentTasks;
+  }
+
+  public getCurrentTasks(){
+    if(this._currentDay){
+      return this._currentDay.tasks;
     }
-    DataService.getStoreManager().getTaskStore().update(task);
+    return [];
+  }
+
+  public setCurrentDay(day: TaskDay){
+    this._currentDay = day;
   }
 }

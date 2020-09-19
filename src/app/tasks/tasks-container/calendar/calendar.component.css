@@ -55,6 +55,7 @@
 
 .task-item{
   border: 1px solid black;
+  font-size: small;
 }
 
 .tasks-list{
@@ -89,4 +90,13 @@
 
 .calendar-container{
   display: flex;
+  height: 100%;
+}
+
+.calendar-top-bar{
+  display: flex;
+}
+
+.day-number{
+  font-size: x-small;
 }
