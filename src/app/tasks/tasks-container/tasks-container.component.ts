@@ -54,12 +54,9 @@ export class TasksContainerComponent implements OnInit, AfterViewInit {
     }
   }
 
-
-
   public openProject(project:Project):void{
     this._project = project;
     this.appService.setCurrentProject(project);
-    // this.changeTaskMode(taskMode);
     if(this._currentList){
       this._currentList.openProject(project);
     }
@@ -100,5 +97,4 @@ export class TasksContainerComponent implements OnInit, AfterViewInit {
     this._currentList.openProject(project);
     this.appService.setCurrentProject(project);
   }
-
 }

@@ -1,6 +1,4 @@
 import { Project } from 'app/database/data/models/project';
-import { Task } from 'app/database/data/models/task';
-import { KanbanTask } from 'app/database/data/models/kanban';
 import { ITaskItem } from 'app/database/data/models/task.item';
 import { ITaskContainer } from 'app/database/data/models/task.container';
 

@@ -2,10 +2,12 @@ import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { AppService } from 'app/core/services/app/app.service';
 import { DataService } from 'app/data.service';
-import { KanbanTask } from 'app/database/data/models/kanban';
+import { InsertTaskData } from 'app/database/data/common/models/insert.task.data';
+import { InsertTaskResult } from 'app/database/data/common/models/insert.task.result';
+import { KanbanColumn, KanbanTask } from 'app/database/data/models/kanban';
+import { Project } from 'app/database/data/models/project';
 import { Status } from 'app/database/data/models/status';
 import { Task } from 'app/database/data/models/task';
-import { ITaskContainer } from 'app/database/data/models/task.container';
 import { ITaskItem } from 'app/database/data/models/task.item';
 import { DialogHelper } from 'app/shared/common/dialog';
 import { EventBus } from 'eventbus-ts';
@@ -16,7 +18,6 @@ import { TaskDetailsEvent } from './tasks-container/events/details.event';
 })
 export class TasksService {
 
-  // TODO: wstawić tutaj wszystkie działania na zadaniach
   constructor(private dialog: MatDialog, private appService: AppService) { }
 
   public removeTask(task: ITaskItem): Promise<ITaskItem[]>{
@@ -45,14 +46,6 @@ export class TasksService {
     EventBus.getDefault().post(new TaskDetailsEvent(task as Task));
   }
 
-  addTask(container: ITaskContainer): void;
-
-  addTask(task: ITaskItem, container: ITaskContainer): void;
-
-  addTask(task: any, container?: any) {
-    throw new Error('Method not implemented.');
-  }
-
   public finishTask(task: Task): Promise<Task[]>{
     return DataService.getStoreManager().getTaskStore().changeStatus(task, Status.ENDED).then(updatedTasks=>{
       if(this.appService.getCurrentTask() == task){
@@ -62,5 +55,17 @@ export class TasksService {
     })
   }
 
+  public addTask(name:string, project:Project = null, column: KanbanColumn=null, date: Date = null):Promise<InsertTaskResult>{
+    const task = this.prepareTaskToInsert(name, project, date);
+    const data = new InsertTaskData(task, column, project.getId());
+    return DataService.getStoreManager().getTaskStore().createTask(data);
+  }
 
+  private prepareTaskToInsert(name: string, project: Project = null, date:Date=null){
+    const task = new Task();
+    task.setName(name);
+    task.setProject(project as Project);
+    task.setDate(date);
+    return task;
+  }
 }

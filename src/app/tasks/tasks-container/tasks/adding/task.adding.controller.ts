@@ -1,11 +1,9 @@
-import { Task } from 'app/database/data/models/task';
 import { TasksAddingModel } from './task.adding.model';
 import { TasksModel } from '../model';
-import { DataService } from 'app/data.service';
-import { InsertTaskData } from 'app/database/data/common/models/insert.task.data';
 import { InsertTaskResult } from 'app/database/data/common/models/insert.task.result';
 import { FocusHelper, ScrollBarHelper } from 'app/shared/common/view_helper';
 import { EditInputHandler } from 'app/shared/common/edit_input_handler';
+import { TasksService } from 'app/tasks/tasks.service';
 
 export class TaskAddingController {
   private TASK_LIST = '#tasks-list';
@@ -13,9 +11,11 @@ export class TaskAddingController {
 
   private mainModel: TasksModel;
   private model: TasksAddingModel = new TasksAddingModel();
+  private tasksService: TasksService;
 
-  constructor(mainModel: TasksModel) {
+  constructor(mainModel: TasksModel, tasksService: TasksService) {
     this.mainModel = mainModel;
+    this.tasksService = tasksService;
   }
 
   public getModel() {
@@ -33,18 +33,11 @@ export class TaskAddingController {
   }
 
   private saveTask() {
-    const task = this.prepareTaskToInsert();
-    const data = new InsertTaskData(
-      task,
-      null,
-      this.mainModel.getProject().getId()
-    );
-    DataService.getStoreManager()
-      .getTaskStore()
-      .createTask(data)
-      .then((result) => {
-        this.updateViewAfterInserting(result);
-      });
+    const name = this.model.getNewTaskName();
+    const project = this.mainModel.getProject();
+    this.tasksService.addTask(name, project).then(result=>{
+      this.updateViewAfterInserting(result);
+    });
   }
 
   private updateViewAfterInserting(result: InsertTaskResult) {
@@ -53,13 +46,6 @@ export class TaskAddingController {
     this.closeAddingNewTask();
     ScrollBarHelper.moveToBottom(this.TASK_LIST);
     // TODO: prawdopodobnie będzie trzeba zaktualizoreplaceTasksOrderwać elementy, w których została zmieniona kolejność
-  }
-
-  private prepareTaskToInsert() {
-    const task = new Task();
-    task.setName(this.model.getNewTaskName());
-    task.setProject(this.mainModel.getProject());
-    return task;
   }
 
   public closeAddingNewTask() {

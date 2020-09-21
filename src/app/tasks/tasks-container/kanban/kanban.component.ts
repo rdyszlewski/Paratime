@@ -10,7 +10,6 @@ import { KanbanColumn, KanbanTask } from 'app/database/data/models/kanban';
 import { Status } from 'app/database/data/models/status';
 import { MatDialog } from '@angular/material/dialog';
 import { KanbanTaskOrderController, KanbanColumnOrderController } from './controllers/order.controller';
-import { KanbanTaskController } from './controllers/task.controller';
 import { KanbanColumnController } from './controllers/column.controller';
 import { ITaskList } from '../task.list';
 import { TaskItemInfo } from '../tasks/common/task.item.info';
@@ -28,7 +27,6 @@ import { TaskRemoveEvent } from '../events/remove.event';
 })
 export class KanbanComponent implements OnInit, ITaskList {
 
-  private taskController: KanbanTaskController;
   private columnController: KanbanColumnController;
 
   private model: KanbanModel = new KanbanModel();
@@ -40,7 +38,6 @@ export class KanbanComponent implements OnInit, ITaskList {
   constructor(private dialog: MatDialog, private appService: AppService, private tasksService: TasksService) {}
 
   ngOnInit(): void {
-    this.taskController = new KanbanTaskController(this.model);
     this.columnController = new KanbanColumnController(this.model, this.dialog);
   }
 
@@ -95,9 +92,12 @@ export class KanbanComponent implements OnInit, ITaskList {
     this.defaultColumnOpen = !this.defaultColumnOpen;
   }
 
-  // TODO: całe dodwanie przenieść w inne miejsce
   public addTask(column: KanbanColumn) {
-    this.taskController.addTask(column);
+    const name = this.model.getNewTaskName();
+    const project = this.model.getProject();
+    this.tasksService.addTask(name, project, column).then(result=>{
+      this.model.updateTasks(result.updatedKanbanTasks, column.getId());
+    });
     this.closeAddingNewTask();
   }
 

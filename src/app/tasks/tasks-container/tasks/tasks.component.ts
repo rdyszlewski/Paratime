@@ -30,7 +30,6 @@ import { TasksService } from 'app/tasks/tasks.service';
 })
 export class TasksComponent implements OnInit, ITaskList {
 
-
   public status = Status;
   public taskType = TaskType;
 
@@ -46,7 +45,7 @@ export class TasksComponent implements OnInit, ITaskList {
     this.itemInfo = new TaskItemInfo();
     this.itemController = new TaskItemController();
     this.specialListsController = new SpecialListTask(this.model);
-    this.addingController = new TaskAddingController(this.model);
+    this.addingController = new TaskAddingController(this.model, this.tasksService);
     this.filteringController = new TaskFilteringController(this.model);
 
     EventBus.getDefault().register(this);
@@ -114,6 +113,7 @@ export class TasksComponent implements OnInit, ITaskList {
     }
   }
 
+  // TODO: sprawdzić, czy to jest gdziekoleiek wykorzystywane
   public addTask(task: Task, container: ITaskContainer = null) {
     if (task.getProjectID() == this.model.getProject().getId()) {
       this.model.addTask(task);

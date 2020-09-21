@@ -121,12 +121,17 @@ export class CalendarComponent implements OnInit, ITaskList {
     this.tasksService.openDetails(task);
   }
 
-  public addTask(container: ITaskContainer): void;
+  public showAddingTaskDialog(){
+    // TODO: wyskoczenie okienka z polem do wpisaniem nazwy
+    // TODO: akceptowanie nazwy -> wykonanie metody addTask
+  }
 
-  public addTask(task: ITaskItem, container: ITaskContainer): void;
 
-  public addTask(task: any, container?: any) {
-    throw new Error('Method not implemented.');
+
+  // TODO: zastanowić się, czy to powinno wyglądać w ten sposób. Czy to daje nam jakieś korzyści
+  public addTask(task:ITaskItem, container: ITaskContainer=null): void{
+    // TODO: pokazać okienko ze wstawianiem nowej daty
+
   }
 
   ngOnInit(): void {
