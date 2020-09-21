@@ -18,7 +18,8 @@ import { AppService } from 'app/core/services/app/app.service';
 import { FocusHelper } from 'app/shared/common/view_helper';
 import { EditInputHandler } from 'app/shared/common/edit_input_handler';
 import { EventBus } from 'eventbus-ts';
-import { TaskDetailsEvent } from '../events/details.event';
+import { TasksService } from 'app/tasks/tasks.service';
+import { TaskRemoveEvent } from '../events/remove.event';
 
 @Component({
   selector: 'app-kanban',
@@ -36,10 +37,10 @@ export class KanbanComponent implements OnInit, ITaskList {
 
   public status = Status;
 
-  constructor(private dialog: MatDialog, private appService: AppService) {}
+  constructor(private dialog: MatDialog, private appService: AppService, private tasksService: TasksService) {}
 
   ngOnInit(): void {
-    this.taskController = new KanbanTaskController(this.model, this.dialog);
+    this.taskController = new KanbanTaskController(this.model);
     this.columnController = new KanbanColumnController(this.model, this.dialog);
   }
 
@@ -52,13 +53,10 @@ export class KanbanComponent implements OnInit, ITaskList {
   }
 
   public openProject(project: Project) {
-    console.log("Ładuję to");
     console.log(project);
     if(!project || project.getId() < 0){
-      console.log("Niestety się nie udało");
       return;
     }
-    console.log("Jestem tutaj");
     this.model.setProject(project);
     this.loadTasks(project);
   }
@@ -70,8 +68,6 @@ export class KanbanComponent implements OnInit, ITaskList {
       .then((columns) => {
         this.model.setColumns(columns);
         this.model.setTasks(columns);
-        console.log("Kolumny");
-        console.log(columns);
       });
   }
 
@@ -105,8 +101,11 @@ export class KanbanComponent implements OnInit, ITaskList {
     this.closeAddingNewTask();
   }
 
-  public  removeTask(task: KanbanTask): void {
-    this.taskController.removeTask(task);
+  public  removeTask(kanbanTask: KanbanTask): void {
+    this.tasksService.removeTask(kanbanTask.getTask()).then(updatedTasks=>{
+      this.model.updateTasks(updatedTasks as KanbanTask[], kanbanTask.getColumnId());
+      EventBus.getDefault().post(new TaskRemoveEvent(kanbanTask.getTask()));
+    });
   }
 
   public closeAddingNewTask() {
@@ -127,8 +126,8 @@ export class KanbanComponent implements OnInit, ITaskList {
     return '#new_task_input_' + column.getId();
   }
 
-  public openDetails(task: KanbanTask) {
-    EventBus.getDefault().post(new TaskDetailsEvent(task.getTask()));
+  public openDetails(kanbanTask: KanbanTask) {
+    this.tasksService.openDetails(kanbanTask.getTask());
   }
 
   public setCurrentTask(task: KanbanTask) {
@@ -143,8 +142,10 @@ export class KanbanComponent implements OnInit, ITaskList {
     return this.appService.isCurrentTask(task.getTask());
   }
 
-  public finishTask(task: KanbanTask): void {
-    this.taskController.finishTask(task);
+  public finishTask(kanbanTask: KanbanTask): void {
+    this.tasksService.finishTask(kanbanTask.getTask()).then(updatedTasks=>{
+      // TODO: odpowiednio zaktualizować interfejs
+    });
   }
 
   public handleAddingNewColumn(event: KeyboardEvent) {

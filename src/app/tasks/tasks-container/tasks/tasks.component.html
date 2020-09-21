@@ -219,7 +219,7 @@
 </ng-template>
 
 <ng-template #item_options let-task>
-  <div
+  <span
     class="list-item-options"
     (click)="menuClick($event, task)"
     [matMenuTriggerFor]="menu"
@@ -247,7 +247,7 @@
       </button>
     </mat-menu>
     ...
-  </div>
+  </span>
 </ng-template>
 
 <ng-template #new_task>

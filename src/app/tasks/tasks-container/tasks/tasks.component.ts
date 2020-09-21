@@ -4,7 +4,6 @@ import { Task } from 'app/database/data/models/task';
 import { Project } from 'app/database/data/models/project';
 import { Status } from 'app/database/data/models/status';
 import { TasksModel } from './model';
-import { MatDialog } from '@angular/material/dialog';
 import { TaskItemInfo } from './common/task.item.info';
 import { TaskItemController } from './common/task.item.controller';
 import { SpecialListTasks as SpecialListTask } from './common/special.list';
@@ -21,9 +20,8 @@ import { Subscribe, EventBus } from 'eventbus-ts';
 import { ITaskList } from '../task.list';
 import { SpecialList } from 'app/tasks/lists-container/projects/common/special_list';
 import { AppService } from 'app/core/services/app/app.service';
-import { DialogHelper } from 'app/shared/common/dialog';
-import { TaskDetailsEvent } from '../events/details.event';
 import { TaskRemoveEvent } from '../events/remove.event';
+import { TasksService } from 'app/tasks/tasks.service';
 
 @Component({
   selector: 'app-tasks',
@@ -43,7 +41,7 @@ export class TasksComponent implements OnInit, ITaskList {
   private addingController: TaskAddingController;
   private filteringController: TaskFilteringController;
 
-  constructor(public dialog: MatDialog, private appService: AppService) {
+  constructor(private appService: AppService, private tasksService: TasksService) {
     this.model = new TasksModel();
     this.itemInfo = new TaskItemInfo();
     this.itemController = new TaskItemController();
@@ -81,9 +79,7 @@ export class TasksComponent implements OnInit, ITaskList {
   }
 
   public openProject(project: Project): void {
-    console.log("Otrzymano projekt");
     if (!project || project.getId() < 0) {
-      console.log("Nieodpowiedni projekt");
       console.log(project);
       return;
     }
@@ -134,27 +130,15 @@ export class TasksComponent implements OnInit, ITaskList {
   }
 
   public removeTask(task: Task): void {
-    const message = 'Czy na pewno usunąć zadanie?';
-    DialogHelper.openDialog(message, this.dialog).subscribe((result) => {
-      if (result) {
-        this.removeTaskTaskFromStore(task);
-      }
-    });
-  }
-
-  private removeTaskTaskFromStore(task: Task): void {
-    DataService.getStoreManager()
-      .getTaskStore()
-      .removeTask(task.getId())
-      .then((updatedTasks) => {
-        this.model.removeTask(task);
-        this.model.updateTasks(updatedTasks);
-        EventBus.getDefault().post(new TaskRemoveEvent(task));
-    });
+    this.tasksService.removeTask(task).then(updatedTasks=>{
+      this.model.removeTask(task);
+      this.model.updateTasks(updatedTasks as Task[]);
+      EventBus.getDefault().post(new TaskRemoveEvent(task));
+    })
   }
 
   public openDetails(task: Task): void {
-    EventBus.getDefault().post(new TaskDetailsEvent(task));
+    this.tasksService.openDetails(task);
   }
 
   public setActiveTask(task: Task){
@@ -169,10 +153,8 @@ export class TasksComponent implements OnInit, ITaskList {
     return this.appService.isCurrentTask(task);
   }
 
-
   public finishTask(task:Task){
-    DataService.getStoreManager().getTaskStore().changeStatus(task, Status.ENDED).then(updatedTasks=>{
-      this.appService.setCurrentTask(null);
+    this.tasksService.finishTask(task).then(updatedTasks=>{
       this.model.updateTasks(updatedTasks);
     });
   }

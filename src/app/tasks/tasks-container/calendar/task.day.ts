@@ -4,13 +4,15 @@ export class TaskDay{
 
   private _day: number;
   private _month: number;
+  private _year: number;
 
   private _active: boolean;
   private _tasks: Task[] = [];
 
-  constructor(number: number, month: number, active: boolean = true){
-    this._day = number;
+  constructor(day: number, month: number, year:number, active: boolean = true){
+    this._day = day;
     this._month = month;
+    this._year = year;
     this._active = active;
   }
   // TODO: wstawić zadania i takie tam
@@ -41,5 +43,12 @@ export class TaskDay{
   }
   public set tasks(value: Task[]) {
     this._tasks = value;
+  }
+
+  public get year(): number {
+    return this._year;
+  }
+  public set year(value: number) {
+    this._year = value;
   }
 }

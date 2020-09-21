@@ -56,6 +56,8 @@
 .task-item{
   border: 1px solid black;
   font-size: small;
+  display: flex;
+
 }
 
 .tasks-list{
@@ -99,4 +101,15 @@
 
 .day-number{
   font-size: x-small;
+}
+
+.list-item-options{
+  width: 22px;
+  height: 100%;
+  background-color: azure;
+  visibility: visible;
+}
+
+.task-name{
+  width: 100%;
 }
