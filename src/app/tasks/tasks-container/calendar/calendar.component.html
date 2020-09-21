@@ -22,21 +22,32 @@
       *ngIf="showWithDate"
     ></ng-container>
     <!-- TODO: tutaj wstawić nazwy dni tygodnia -->
-    <div class="grid">
-      <div
-        *ngFor="let day of cells"
-        [ngClass]="{
-          'active-day': day.active,
-          'day-cell': true
-        }"
-        (click)="setSelectedDay(day)"
-      >
-        <ng-container
-          [ngTemplateOutlet]="day_cell"
-          [ngTemplateOutletContext]="{ $implicit: day }"
-        ></ng-container>
+
+    <div>
+      <div class="grid-week-days">
+        <div *ngFor="let day of ['pon', 'wt', 'śr', 'cz', 'pią', 'sob', 'nied']" class="week-day">{{day}}</div>
+      </div>
+      <div class="grid">
+
+        <div
+          *ngFor="let day of cells"
+          [ngClass]="{
+            'active-day': day.active,
+            'day-cell': true
+          }"
+          (click)="setSelectedDay(day)"
+          (contextmenu)="openCreatingDialog(day)"
+        >
+          <ng-container
+            [ngTemplateOutlet]="day_cell"
+            [ngTemplateOutletContext]="{ $implicit: day }"
+          ></ng-container>
+        </div>
       </div>
     </div>
+
+
+
     <ng-container
       [ngTemplateOutlet]="day_tasks"
       *ngIf="showCurrentTasks"
@@ -119,7 +130,8 @@
     <mat-menu #calendar_task_menu="matMenu">
       <button mat-menu-item (click)="openDetails(task)">
         Edytuj
-      </button>
+      </button>    console.log(this._project);
+
       <button mat-menu-item (click)="removeTask(task)">
         Usuń
       </button>

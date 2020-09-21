@@ -4,6 +4,7 @@ import {
   transferArrayItem,
 } from '@angular/cdk/drag-drop';
 import { Component, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
 import { AppService } from 'app/core/services/app/app.service';
 import { DataService } from 'app/data.service';
 import { Project } from 'app/database/data/models/project';
@@ -11,6 +12,8 @@ import { Task } from 'app/database/data/models/task';
 import { ITaskContainer } from 'app/database/data/models/task.container';
 import { ITaskItem } from 'app/database/data/models/task.item';
 import { ListHelper } from 'app/shared/common/lists/list.helper';
+import { DialogModel } from 'app/tasks/creating-dialog/dialog.model';
+import { CreatingDialogHelper } from 'app/tasks/creating-dialog/helper';
 import { TasksService } from 'app/tasks/tasks.service';
 import { ITaskList } from '../task.list';
 import { CalendarCreator } from './calendar/calendar.creator';
@@ -66,7 +69,7 @@ export class CalendarComponent implements OnInit, ITaskList {
     return this._showCurrentTasks;
   }
 
-  constructor(private appService: AppService, private tasksService: TasksService) {}
+  constructor(private appService: AppService, private tasksService: TasksService, private dialog: MatDialog) {}
 
   public openProject(project: Project): void {
     this._project = project;
@@ -267,5 +270,21 @@ export class CalendarComponent implements OnInit, ITaskList {
     this.tasksService.finishTask(task).then(updatedTasks=>{
       // TODO: zastanowić się i zaktualizować widok
     });
+  }
+
+  public openCreatingDialog(cell: TaskDay){
+    const data = new DialogModel("", this._project, this.getDate(cell), model=>{
+      if(model){
+        this.tasksService.addTask(model.name, model.project, null, model.date).then(result=>{
+          cell.tasks.push(result.insertedTask);
+        });
+      }
+    });
+    CreatingDialogHelper.openDialog(data, this.dialog);
+    return false;
+  }
+
+  private getDate(cell: TaskDay){
+    return new Date(cell.year, cell.month, cell.day);
   }
 }

@@ -42,6 +42,7 @@ import { MainComponent } from './core/main/main.component';
 import { PomodoroComponent } from './shared/side-container/pomodoro/pomodoro.component';
 import { PomodoroSettingsComponent } from './shared/side-container/pomodoro/pomodoro-settings/pomodoro-settings.component';
 import { CalendarComponent } from './tasks/tasks-container/calendar/calendar.component';
+import { CreatingDialogComponent } from './tasks/creating-dialog/creating-dialog.component';
 
 @NgModule({
   declarations: [
@@ -64,6 +65,7 @@ import { CalendarComponent } from './tasks/tasks-container/calendar/calendar.com
     DetailsContainerComponent,
     PomodoroSettingsComponent,
     CalendarComponent,
+    CreatingDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -90,7 +92,7 @@ import { CalendarComponent } from './tasks/tasks-container/calendar/calendar.com
     MatCheckboxModule,
     NgbModule,
     WidgetsModule,
-    MatTabsModule
+    MatTabsModule,
   ],
   entryComponents:[
     DialogComponent

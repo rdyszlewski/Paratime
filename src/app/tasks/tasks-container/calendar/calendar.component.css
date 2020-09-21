@@ -21,6 +21,15 @@
   grid-template-rows: repeat(6, 1fr);
 }
 
+.grid-week-days{
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+}
+
+.week-day{
+  text-align: center;
+}
+
 .day-cell{
   background-color: aqua;
   width: 100%;
