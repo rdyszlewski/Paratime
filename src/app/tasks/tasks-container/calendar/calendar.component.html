@@ -13,6 +13,8 @@
         <button (click)="increaseYear()">></button>
       </div>
     </div>
+    <button (click)="toggleShowingActiveTasks()"> Aktywne</button>
+    <button (click)="moveToCurrentDay()">Obecny</button>
     <button (click)="toggleShowCurrentTasks()">Zadania</button>
   </div>
 
@@ -33,6 +35,7 @@
           *ngFor="let day of cells"
           [ngClass]="{
             'active-day': day.active,
+            'current-day': isCurrentDay(day),
             'day-cell': true
           }"
           (click)="setSelectedDay(day)"
@@ -45,7 +48,6 @@
         </div>
       </div>
     </div>
-
 
 
     <ng-container

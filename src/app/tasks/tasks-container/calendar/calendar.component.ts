@@ -17,8 +17,8 @@ import { CreatingDialogHelper } from 'app/tasks/creating-dialog/helper';
 import { TasksService } from 'app/tasks/tasks.service';
 import { ITaskList } from '../task.list';
 import { CalendarCreator } from './calendar/calendar.creator';
-import { TaskLoader } from './calendar/task.loader';
-import { TaskDay } from './task.day';
+import { TaskLoader, TaskStatus } from './calendar/task.loader';
+import { TaskDay} from './task.day';
 
 @Component({
   selector: 'app-calendar',
@@ -30,6 +30,8 @@ export class CalendarComponent implements OnInit, ITaskList {
   public readonly WITHOUT_DATE = "withoutDate";
   public  readonly CURRENT_TASKS = "currentTasks";
 
+  private _currentDate;
+
   private _project: Project;
   private _month: number;
   private _year: number;
@@ -40,6 +42,8 @@ export class CalendarComponent implements OnInit, ITaskList {
   private _showWithoutDate = true;
   private _selectedDay: TaskDay;
   private _showCurrentTasks = true;
+  // TODO: zapamiętać ostatnio wybraną opcję
+  private _showingStatus: TaskStatus = TaskStatus.ALL;
 
   public get month(): number {
     return this._month;
@@ -69,7 +73,11 @@ export class CalendarComponent implements OnInit, ITaskList {
     return this._showCurrentTasks;
   }
 
-  constructor(private appService: AppService, private tasksService: TasksService, private dialog: MatDialog) {}
+  constructor(private appService: AppService, private tasksService: TasksService, private dialog: MatDialog) {
+    this._currentDate = new Date();
+    console.log("Obecna data");
+    console.log(this._currentDate);
+  }
 
   public openProject(project: Project): void {
     this._project = project;
@@ -84,11 +92,11 @@ export class CalendarComponent implements OnInit, ITaskList {
   }
 
   private loadTasks() {
-    TaskLoader.loadTasks(this._cells, this._project, this._year).then(
+    this.cells.forEach(x=>x.tasks=[]);
+    TaskLoader.loadTasks(this._cells, this._project, this._year, this._showingStatus).then(
       (result) => {
         this._cells = result.cells;
         this._tasksWithoutDate = result.tasksWithoutDate;
-        console.log(this._tasksWithoutDate);
       }
     );
   }
@@ -125,15 +133,11 @@ export class CalendarComponent implements OnInit, ITaskList {
   }
 
   public showAddingTaskDialog(){
-    // TODO: wyskoczenie okienka z polem do wpisaniem nazwy
-    // TODO: akceptowanie nazwy -> wykonanie metody addTask
+
   }
-
-
 
   // TODO: zastanowić się, czy to powinno wyglądać w ten sposób. Czy to daje nam jakieś korzyści
   public addTask(task:ITaskItem, container: ITaskContainer=null): void{
-    // TODO: pokazać okienko ze wstawianiem nowej daty
 
   }
 
@@ -194,33 +198,35 @@ export class CalendarComponent implements OnInit, ITaskList {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
     } else {
       const task = event.previousContainer.data[event.previousIndex];
-      this.changeDate(task, event.container.id);
+      this.changeDate(task, event.container.id, event.previousContainer.id);
       transferArrayItem(event.previousContainer.data, event.container.data, event.previousIndex, event.currentIndex);
     }
   }
 
-  private changeDate(task: Task, cellName: string) {
+  private changeDate(task: Task, cellName: string, previousCellName: string) {
     switch(cellName){
       case this.WITHOUT_DATE:
         task.setDate(null);
         break;
       case this.CURRENT_TASKS:
         const currentCell = this.getCellName(this._selectedDay);
-        this.changeDate(task, currentCell);
+        this.changeTaskDate(task, currentCell); // TODO: trzeba sobie to sprawdzić
         break;
       default:
         this.changeTaskDate(task, cellName);
     }
-    DataService.getStoreManager().getTaskStore().update(task);
+    DataService.getStoreManager().getTaskStore().update(task).then(result=>{
+
+    });
   }
 
   private changeTaskDate(task:Task, cellName: string){
     const cellParts = cellName.split('_');
-      const day = Number.parseInt(cellParts[1]);
-      const month = Number.parseInt(cellParts[2]);
-      const year = Number.parseInt(cellParts[3]);
-      const newDate = new Date(year, month, day);
-      task.setDate(newDate);
+    const day = Number.parseInt(cellParts[1]);
+    const month = Number.parseInt(cellParts[2]);
+    const year = Number.parseInt(cellParts[3]);
+    const newDate = new Date(year, month, day);
+    task.setDate(newDate);
   }
 
   public toggleShowWithoutDate() {
@@ -276,7 +282,7 @@ export class CalendarComponent implements OnInit, ITaskList {
     const data = new DialogModel("", this._project, this.getDate(cell), model=>{
       if(model){
         this.tasksService.addTask(model.name, model.project, null, model.date).then(result=>{
-          cell.tasks.push(result.insertedTask);
+          cell.addTask(result.insertedTask);
         });
       }
     });
@@ -286,5 +292,31 @@ export class CalendarComponent implements OnInit, ITaskList {
 
   private getDate(cell: TaskDay){
     return new Date(cell.year, cell.month, cell.day);
+  }
+
+  public isCurrentDay(cell: TaskDay){
+    return this._currentDate.getDate() == cell.day && this._currentDate.getMonth() == cell.month && this._currentDate.getFullYear() == cell.year;
+  }
+
+  public moveToCurrentDay(){
+    this._month = this._currentDate.getMonth();
+    this._year = this._currentDate.getFullYear();
+    this.createCalendar();
+  }
+
+  public toggleShowingActiveTasks(){
+    // TODO: to rozwiązenie jest trochę wolne. Pomyśleć nad czyms innym
+    switch(this._showingStatus){
+      case TaskStatus.ALL:
+        this._showingStatus = TaskStatus.ACTIVE;
+        break;
+      case TaskStatus.ACTIVE:
+        this._showingStatus = TaskStatus.ACTIVE_DATE;
+        break;
+      case TaskStatus.ACTIVE_DATE:
+        this._showingStatus = TaskStatus.ALL;
+        break;
+    }
+    this.loadTasks();
   }
 }

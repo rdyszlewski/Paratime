@@ -122,3 +122,8 @@
 .task-name{
   width: 100%;
 }
+
+.current-day{
+  border: 2px solid blue;
+  box-sizing: border-box;
+}
