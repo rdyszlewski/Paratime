@@ -38,13 +38,13 @@
             'current-day': isCurrentDay(day),
             'day-cell': true
           }"
-          (click)="setSelectedDay(day)"
-          (contextmenu)="openCreatingDialog(day)"
         >
           <ng-container
-            [ngTemplateOutlet]="day_cell"
-            [ngTemplateOutletContext]="{ $implicit: day }"
+          [ngTemplateOutlet]="day_cell"
+          [ngTemplateOutletContext]="{ $implicit: day }"
+
           ></ng-container>
+
         </div>
       </div>
     </div>
@@ -78,7 +78,16 @@
 </ng-template>
 
 <ng-template #day_cell let-day>
-  <div class="day-number">{{ day.day }}</div>
+  <div class="day-handler"
+  id="{{getDayName(day)}}"
+  draggable="true"
+  (dragstart)="draggingController.onDragStart($event)"
+  (dragover)="draggingController.allowDrop($event)"
+  (drop)="draggingController.onDrop($event)"
+  (dragleave)="draggingController.handleDragLeave($event)"
+  >
+    <div class="day-number">{{ day.day }}</div>
+  </div>
 
   <div
     class="tasks-list"

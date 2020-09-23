@@ -1,9 +1,10 @@
 import {
   CdkDragDrop,
+  CdkDragEnd,
   moveItemInArray,
   transferArrayItem,
 } from '@angular/cdk/drag-drop';
-import { Component, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { AppService } from 'app/core/services/app/app.service';
 import { DataService } from 'app/data.service';
@@ -11,12 +12,14 @@ import { Project } from 'app/database/data/models/project';
 import { Task } from 'app/database/data/models/task';
 import { ITaskContainer } from 'app/database/data/models/task.container';
 import { ITaskItem } from 'app/database/data/models/task.item';
+import { DialogHelper } from 'app/shared/common/dialog';
 import { ListHelper } from 'app/shared/common/lists/list.helper';
 import { DialogModel } from 'app/tasks/creating-dialog/dialog.model';
 import { CreatingDialogHelper } from 'app/tasks/creating-dialog/helper';
 import { TasksService } from 'app/tasks/tasks.service';
 import { ITaskList } from '../task.list';
 import { CalendarCreator } from './calendar/calendar.creator';
+import { CellDraging } from './calendar/day.dragging';
 import { TaskLoader, TaskStatus } from './calendar/task.loader';
 import { TaskDay} from './task.day';
 
@@ -25,7 +28,7 @@ import { TaskDay} from './task.day';
   templateUrl: './calendar.component.html',
   styleUrls: ['./calendar.component.css'],
 })
-export class CalendarComponent implements OnInit, ITaskList {
+export class CalendarComponent implements OnInit, ITaskList, AfterViewInit {
 
   public readonly WITHOUT_DATE = "withoutDate";
   public  readonly CURRENT_TASKS = "currentTasks";
@@ -44,6 +47,11 @@ export class CalendarComponent implements OnInit, ITaskList {
   private _showCurrentTasks = true;
   // TODO: zapamiętać ostatnio wybraną opcję
   private _showingStatus: TaskStatus = TaskStatus.ALL;
+  private _cellDraggingController;
+
+  public get draggingController(){
+    return this._cellDraggingController;
+  }
 
   public get month(): number {
     return this._month;
@@ -75,8 +83,13 @@ export class CalendarComponent implements OnInit, ITaskList {
 
   constructor(private appService: AppService, private tasksService: TasksService, private dialog: MatDialog) {
     this._currentDate = new Date();
-    console.log("Obecna data");
-    console.log(this._currentDate);
+    this._cellDraggingController = new CellDraging((previousId, currentId)=>{
+      this.moveAllTask(previousId, currentId);
+    });
+
+  }
+  ngAfterViewInit(): void {
+
   }
 
   public openProject(project: Project): void {
@@ -101,6 +114,8 @@ export class CalendarComponent implements OnInit, ITaskList {
     );
   }
 
+
+
   public removeTask(task: ITaskItem): void {
     this.tasksService.removeTask(task).then(updatedTasks=>{
       if(updatedTasks != null){
@@ -111,11 +126,11 @@ export class CalendarComponent implements OnInit, ITaskList {
 
   private removeTaskFromDay(task: Task){
     if(task.getDate() != null){
-      const cell =this._cells.find(x=>this.isCorrectCell(x, task));
+      const cell = this.findCellByDate(task.getDate());
       if(cell){
         ListHelper.remove(task, cell.tasks);
       } else {
-        if(this._selectedDay && this.isCorrectCell(this._selectedDay, task)){
+        if(this._selectedDay && this.isCorrectCell(this._selectedDay, task.getDate())){
           ListHelper.remove(task, this._selectedDay.tasks);
         }
       }
@@ -124,8 +139,8 @@ export class CalendarComponent implements OnInit, ITaskList {
     }
   }
 
-  private isCorrectCell(x: TaskDay, task: Task): unknown {
-    return x.month == task.getDate().getMonth() && x.day == task.getDate().getDate() && x.year == task.getDate().getFullYear();
+  private isCorrectCell(x: TaskDay, date: Date): boolean {
+    return x.month == date.getMonth() && x.day == date.getDate() && x.year == date.getFullYear();
   }
 
   public openDetails(task: Task): void {
@@ -144,6 +159,8 @@ export class CalendarComponent implements OnInit, ITaskList {
   ngOnInit(): void {
     this.setCurrentDate();
     this.createCalendar();
+
+
   }
 
   private createCalendar() {
@@ -183,6 +200,11 @@ export class CalendarComponent implements OnInit, ITaskList {
     return 'cell_' + cell.day + '_' + cell.month + "_" + cell.year;
   }
 
+  public getDayName(cell:TaskDay){
+    return 'day_' + cell.day + '_' + cell.month + "_" + cell.year;
+
+  }
+
   public getCellNames() {
     const cellNames = [];
     this._cells.forEach((x) => {
@@ -193,17 +215,21 @@ export class CalendarComponent implements OnInit, ITaskList {
     return cellNames;
   }
 
+  public getDayNames(){
+    return this._cells.map(x=>this.getDayName(x));
+  }
+
   public taskDrop(event: CdkDragDrop<Task[]>) {
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
     } else {
       const task = event.previousContainer.data[event.previousIndex];
-      this.changeDate(task, event.container.id, event.previousContainer.id);
+      this.changeDate(task, event.container.id);
       transferArrayItem(event.previousContainer.data, event.container.data, event.previousIndex, event.currentIndex);
     }
   }
 
-  private changeDate(task: Task, cellName: string, previousCellName: string) {
+  private changeDate(task: Task, cellName: string) {
     switch(cellName){
       case this.WITHOUT_DATE:
         task.setDate(null);
@@ -221,12 +247,17 @@ export class CalendarComponent implements OnInit, ITaskList {
   }
 
   private changeTaskDate(task:Task, cellName: string){
-    const cellParts = cellName.split('_');
+    const newDate = this.createDateFromCellId(cellName);
+    task.setDate(newDate);
+  }
+
+  private createDateFromCellId(cellId: string) {
+    const cellParts = cellId.split('_');
     const day = Number.parseInt(cellParts[1]);
     const month = Number.parseInt(cellParts[2]);
     const year = Number.parseInt(cellParts[3]);
     const newDate = new Date(year, month, day);
-    task.setDate(newDate);
+    return newDate;
   }
 
   public toggleShowWithoutDate() {
@@ -318,5 +349,52 @@ export class CalendarComponent implements OnInit, ITaskList {
         break;
     }
     this.loadTasks();
+  }
+
+  public dropped(event: CdkDragDrop<string[]>) {
+    console.log(event.item);
+    moveItemInArray(
+       [],
+       event.previousIndex,
+       event.currentIndex
+      );
+  }
+
+  public moveAllTask(previousCellId: string, currentCellId: string){
+    // TODO: trochę w tym rozwiązaniu zbyt wiele 
+    this.showMoveAllTasksQuestion(previousCellId, currentCellId).then(answer=>{
+      if(answer){
+        this.changeDateAllTasksFromCells(previousCellId, currentCellId);
+      }
+    });
+  }
+
+  private showMoveAllTasksQuestion(previousCellId: string, currentCellId: string):Promise<boolean>{
+    const previousDate = this.createDateFromCellId(previousCellId);
+    const currentDate = this.createDateFromCellId(currentCellId);
+    const message = "Czy na pewno przełożyć wszystkie zadania z dnia: " + previousDate.toLocaleDateString()
+      + " na dzień: " + currentDate.toLocaleDateString() + " ?";
+    return DialogHelper.openDialog(message, this.dialog).toPromise();
+  }
+
+  private changeDateAllTasksFromCells(previousCellId:string, currentCellId:string){
+    const previousCell = this.findCell(previousCellId);
+    const currentCell = this.findCell(currentCellId);
+    previousCell.tasks.forEach(task=>{
+      this.changeDate(task, currentCellId);
+    });
+    currentCell.tasks.push(...previousCell.tasks);
+    previousCell.tasks = [];
+
+  }
+
+  private findCell(cellId: string){
+    const date = this.createDateFromCellId(cellId);
+    const cell = this.findCellByDate(date);
+    return cell;
+  }
+
+  private findCellByDate(date:Date){
+    return this._cells.find(x=>this.isCorrectCell(x, date));
   }
 }
