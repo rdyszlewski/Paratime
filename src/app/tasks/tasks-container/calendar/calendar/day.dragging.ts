@@ -2,7 +2,8 @@ type Callback = (dragged:string, dropped:string)=>void;
 
 export class CellDraging{
   private readonly DRAGGING_CLASS = 'dragging';
-  private readonly LOOKING_CLASS = 'day-number';
+  private readonly LOOKING_CLASS = 'cell-info';
+  private readonly DROPPABLE_CONTAINER = 'day-handler';
   private _currentDraggingTarget: HTMLElement;
   private _draggedElement: HTMLElement;
   private _callback: Callback;
@@ -37,17 +38,25 @@ export class CellDraging{
   public allowDrop(event:DragEvent){
     event.preventDefault();
     let target = event.target as HTMLElement;
+    let element = this.getElement(target);
 
-    if(target.classList.contains(this.LOOKING_CLASS)){
-      const parent = target.parentElement;
-      if(this.isChangedTarget(parent)){
-        this.deselectCell(this._currentDraggingTarget);
-      }
-      this.selectCell(parent);
-      this._currentDraggingTarget = parent;
-      event.stopPropagation();
+    if(this.isChangedTarget(element)){
+      this.deselectCell(this._currentDraggingTarget);
     }
+    this.selectCell(element);
+    this._currentDraggingTarget = element;
+    event.stopPropagation();
     return true;
+  }
+
+  private getElement(target: HTMLElement) {
+    let element;
+    if (target.classList.contains(this.LOOKING_CLASS)) {
+      element = target.parentElement;
+    } else if (target.classList.contains(this.DROPPABLE_CONTAINER)) {
+      element = target;
+    }
+    return element;
   }
 
   private isChangedTarget(parent: HTMLElement) {

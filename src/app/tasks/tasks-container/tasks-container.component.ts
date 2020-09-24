@@ -58,6 +58,7 @@ export class TasksContainerComponent implements OnInit, AfterViewInit {
     this._project = project;
     this.appService.setCurrentProject(project);
     if(this._currentList){
+      this._currentList.close();
       this._currentList.openProject(project);
     }
     //TODO: dokończyć to
@@ -65,6 +66,9 @@ export class TasksContainerComponent implements OnInit, AfterViewInit {
 
   public changeTaskMode(taskMode: TasksMode){
     this._mode = taskMode;
+    if(this._currentList){
+      this._currentList.close();
+    }
     switch(taskMode){
       case TasksMode.LIST:
         this._currentList = this.tasksComponent;
@@ -94,7 +98,9 @@ export class TasksContainerComponent implements OnInit, AfterViewInit {
 
   @Subscribe("ProjectLoadEvent")
   public onProjectLoad(project:Project){
-    this._currentList.openProject(project);
-    this.appService.setCurrentProject(project);
+    if(this._currentList){ // TODO: sprawdzić, czy nie spowoduje to problemów
+      this._currentList.openProject(project);
+      this.appService.setCurrentProject(project);
+    }
   }
 }

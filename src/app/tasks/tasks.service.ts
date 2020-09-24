@@ -21,8 +21,8 @@ export class TasksService {
   constructor(private dialog: MatDialog, private appService: AppService) { }
 
   public removeTask(task: ITaskItem): Promise<ITaskItem[]>{
-    return this.showMessage(task).then(result=>{
-      if(result){
+    return this.showMessage(task).then(answer=>{
+      if(answer){
         return this.removeTaskFromDatabase(task);
       }
       return Promise.resolve(null);
@@ -40,6 +40,23 @@ export class TasksService {
     } else if (task instanceof KanbanTask){
       return DataService.getStoreManager().getKanbanTaskStore().removeTask(task.getId());
     }
+  }
+
+  public removeManyTasks(tasks: ITaskItem[]):Promise<ITaskItem[]>{
+    return this.showMessageMany(tasks).then(answer=>{
+      if(answer){
+        const promises = tasks.map(x=>this.removeTaskFromDatabase(x));
+        // TODO: sprawdzić, czy to będzie poprawnie działać
+        return Promise.all(promises).then(results=>{
+          return Promise.resolve([].concat.apply([], results));
+        });
+      }
+    })
+  }
+
+  private showMessageMany(tasks: ITaskItem[]): Promise<boolean>{
+    const message = "Czy na pewno usunąć " + tasks.length + " zadania?";
+    return DialogHelper.openDialog(message, this.dialog).toPromise();
   }
 
   public openDetails(task: ITaskItem): void {

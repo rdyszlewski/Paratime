@@ -92,7 +92,8 @@
   (drop)="draggingController.onDrop($event)"
   (dragleave)="draggingController.handleDragLeave($event)"
   >
-    <div class="day-number">{{ day.day }}</div>
+    <div class="day-number cell-info">{{ day.day }}</div>
+    <div class="day-tasks cell-info" *ngIf="getTasksNumber(day) >0">{{getTasksNumber(day)}}</div>
   </div>
 
   <div
@@ -152,7 +153,7 @@
 <ng-template #item_options let-task>
   <div class="list-item-options"
   (click)="menuClick($event, task)"
-  [matMenuTriggerFor]="calendar_task_menu">
+  [matMenuTriggerFor]="isManySelected()?calendar_many_task_menu:calendar_task_menu">
   <!-- TODO: Być może będzie można przenieśc to menu do oddzielnej klasy, aby korzystać z  -->
     <mat-menu #calendar_task_menu="matMenu">
       <button mat-menu-item (click)="openDetails(task)">
@@ -175,6 +176,12 @@
 
       <button mat-menu-item (click)="finishTask(task)">
         Zakończ zadanie
+      </button>
+    </mat-menu>
+
+    <mat-menu #calendar_many_task_menu="matMenu">
+      <button mat-menu-item (click)="removeManyTasks()">
+        Usuń wiele
       </button>
     </mat-menu>
     ...

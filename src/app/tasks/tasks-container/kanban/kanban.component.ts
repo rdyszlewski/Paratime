@@ -37,6 +37,10 @@ export class KanbanComponent implements OnInit, ITaskList {
 
   constructor(private dialog: MatDialog, private appService: AppService, private tasksService: TasksService) {}
 
+  close() {
+
+  }
+
   ngOnInit(): void {
     this.columnController = new KanbanColumnController(this.model, this.dialog);
   }

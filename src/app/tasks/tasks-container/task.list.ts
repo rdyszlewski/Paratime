@@ -9,4 +9,5 @@ export interface ITaskList{
   openDetails(task: ITaskItem):void;
   addTask(container: ITaskContainer): void;
   addTask(task: ITaskItem, container: ITaskContainer): void;
+  close();
 }

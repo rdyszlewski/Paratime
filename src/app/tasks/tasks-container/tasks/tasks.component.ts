@@ -51,6 +51,10 @@ export class TasksComponent implements OnInit, ITaskList {
     EventBus.getDefault().register(this);
   }
 
+  close() {
+
+  }
+
   ngOnInit(): void {}
 
   public getModel() {

@@ -61,6 +61,7 @@ export abstract class TaskSelectionBase implements ITaskSelection{
 
   public abstract getSelectedTasks(originalOrder: Task[]): Task[];
 
-
-
+  public isManySelected(){
+    return this._selectedTasks.length >= 2;
+  }
 }

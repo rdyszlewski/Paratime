@@ -108,7 +108,19 @@
 }
 
 .day-number{
+  float: left;
+}
+
+.day-tasks{
+  float: right;
+}
+
+.cell-info{
   font-size: x-small;
+  width: fit-content;
+  border-radius: 10px;
+  padding: 1px;
+  text-align: center;
 }
 
 .list-item-options{
@@ -135,3 +147,4 @@
 .selected{
   background-color: burlywood;
 }
+

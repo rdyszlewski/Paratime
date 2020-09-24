@@ -1,8 +1,10 @@
+import { HIGH_CONTRAST_MODE_ACTIVE_CSS_CLASS } from '@angular/cdk/a11y/high-contrast-mode/high-contrast-mode-detector';
 import {
   CdkDragDrop,
   moveItemInArray,
   transferArrayItem,
 } from '@angular/cdk/drag-drop';
+import { HostListener } from '@angular/core';
 import { AfterViewInit, Component, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { AppService } from 'app/core/services/app/app.service';
@@ -19,7 +21,9 @@ import { TasksService } from 'app/tasks/tasks.service';
 import { ITaskList } from '../task.list';
 import { CalendarCreator } from './calendar/calendar.creator';
 import { CellDraging } from './calendar/day.dragging';
-import { TaskLoader, TaskStatus } from './calendar/task.loader';
+import { NoDateFilter, OldDateFilter } from './loader/date.filter';
+import { ActiveStatusFilter, NoStatusFilter } from './loader/status.filter';
+import { TaskLoader, TaskStatus } from './loader/task.loader';
 import { ITaskSelection } from './selection/selection';
 import { TaskSelection } from './selection/selection.manager';
 import { VariousTaskSelection } from './selection/selection.many.manager';
@@ -48,11 +52,11 @@ export class CalendarComponent implements OnInit, ITaskList, AfterViewInit {
   private _showWithoutDate = true;
   private _selectedDay: TaskDay;
   private _showCurrentTasks = true;
-  // TODO: zapamiętać ostatnio wybraną opcję
   private _showingStatus: TaskStatus = TaskStatus.ALL;
   private _cellDraggingController:CellDraging;
   private _taskTransfer: ManyTaskTransfer = new ManyTaskTransfer();
   private _selectionManager: ITaskSelection = new VariousTaskSelection();
+  private _taskLoader: TaskLoader = new TaskLoader();
 
   public get draggingController(){
     return this._cellDraggingController;
@@ -93,6 +97,11 @@ export class CalendarComponent implements OnInit, ITaskList, AfterViewInit {
     });
 
   }
+
+  close() {
+    this._selectionManager.deselectAll();
+  }
+
   ngAfterViewInit(): void {
 
   }
@@ -110,8 +119,9 @@ export class CalendarComponent implements OnInit, ITaskList, AfterViewInit {
   }
 
   private loadTasks() {
+    this._selectionManager.deselectAll();
     this.cells.forEach(x=>x.tasks=[]);
-    TaskLoader.loadTasks(this._cells, this._project, this._year, this._showingStatus).then(
+    this._taskLoader.loadTasks(this._cells, this._project, this._year, this._showingStatus).then(
       (result) => {
         this._cells = result.cells;
         this._tasksWithoutDate = result.tasksWithoutDate;
@@ -145,6 +155,17 @@ export class CalendarComponent implements OnInit, ITaskList, AfterViewInit {
 
   private isCorrectCell(x: TaskDay, date: Date): boolean {
     return x.month == date.getMonth() && x.day == date.getDate() && x.year == date.getFullYear();
+  }
+
+  public removeManyTasks(){
+    const tasksToRemove = this._selectionManager.getSelectedTasks(null);
+    this.tasksService.removeManyTasks(tasksToRemove).then(updated=>{
+      tasksToRemove.forEach(task=>{
+        this.removeTaskFromDay(task);
+      });
+    });
+    this._selectionManager.deselectAll();
+
   }
 
   public openDetails(task: Task): void {
@@ -360,12 +381,18 @@ export class CalendarComponent implements OnInit, ITaskList, AfterViewInit {
     switch(this._showingStatus){
       case TaskStatus.ALL:
         this._showingStatus = TaskStatus.ACTIVE;
+        this._taskLoader.setDateFilter(new NoDateFilter());
+        this._taskLoader.setStatusFilter(new ActiveStatusFilter());
         break;
       case TaskStatus.ACTIVE:
         this._showingStatus = TaskStatus.ACTIVE_DATE;
+        this._taskLoader.setDateFilter(new OldDateFilter());
+        this._taskLoader.setStatusFilter(new ActiveStatusFilter());
         break;
       case TaskStatus.ACTIVE_DATE:
         this._showingStatus = TaskStatus.ALL;
+        this._taskLoader.setDateFilter(new NoDateFilter());
+        this._taskLoader.setStatusFilter(new NoStatusFilter());
         break;
     }
     this.loadTasks();
@@ -432,4 +459,13 @@ export class CalendarComponent implements OnInit, ITaskList, AfterViewInit {
       // TODO: tutaj być może będzie trzeba sprawdzić, czy to jest odpowieni tym
     }
   }
+
+  public getTasksNumber(cell: TaskDay): number{
+    return cell.tasks.length;
+  }
+
+  public isManySelected():boolean{
+    return this._selectionManager.isManySelected();
+  }
+
 }
