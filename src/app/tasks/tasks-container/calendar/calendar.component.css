@@ -131,3 +131,7 @@
   border: 2px solid green;
   box-sizing: border-box;
 }
+
+.selected{
+  background-color: burlywood;
+}

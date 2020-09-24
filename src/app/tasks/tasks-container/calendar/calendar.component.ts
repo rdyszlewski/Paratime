@@ -1,6 +1,5 @@
 import {
   CdkDragDrop,
-  CdkDragEnd,
   moveItemInArray,
   transferArrayItem,
 } from '@angular/cdk/drag-drop';
@@ -21,6 +20,10 @@ import { ITaskList } from '../task.list';
 import { CalendarCreator } from './calendar/calendar.creator';
 import { CellDraging } from './calendar/day.dragging';
 import { TaskLoader, TaskStatus } from './calendar/task.loader';
+import { ITaskSelection } from './selection/selection';
+import { TaskSelection } from './selection/selection.manager';
+import { VariousTaskSelection } from './selection/selection.many.manager';
+import { ManyTaskTransfer } from './selection/task.transfer';
 import { TaskDay} from './task.day';
 
 @Component({
@@ -47,7 +50,9 @@ export class CalendarComponent implements OnInit, ITaskList, AfterViewInit {
   private _showCurrentTasks = true;
   // TODO: zapamiętać ostatnio wybraną opcję
   private _showingStatus: TaskStatus = TaskStatus.ALL;
-  private _cellDraggingController;
+  private _cellDraggingController:CellDraging;
+  private _taskTransfer: ManyTaskTransfer = new ManyTaskTransfer();
+  private _selectionManager: ITaskSelection = new VariousTaskSelection();
 
   public get draggingController(){
     return this._cellDraggingController;
@@ -110,11 +115,10 @@ export class CalendarComponent implements OnInit, ITaskList, AfterViewInit {
       (result) => {
         this._cells = result.cells;
         this._tasksWithoutDate = result.tasksWithoutDate;
+        this._taskTransfer.init(this._cells, this._tasksWithoutDate);
       }
     );
   }
-
-
 
   public removeTask(task: ITaskItem): void {
     this.tasksService.removeTask(task).then(updatedTasks=>{
@@ -159,13 +163,12 @@ export class CalendarComponent implements OnInit, ITaskList, AfterViewInit {
   ngOnInit(): void {
     this.setCurrentDate();
     this.createCalendar();
-
-
   }
 
   private createCalendar() {
     this._cells = CalendarCreator.createCalendar(this._month, this.year);
     this.loadTasks();
+    this._taskTransfer.init(this._cells, this._tasksWithoutDate);
   }
 
   public increaseMonth() {
@@ -220,13 +223,30 @@ export class CalendarComponent implements OnInit, ITaskList, AfterViewInit {
   }
 
   public taskDrop(event: CdkDragDrop<Task[]>) {
+    const task = event.previousContainer.data[event.previousIndex];
+
+    // TODO: być może odznaczyć można jeszcze przed działaniem, będzie to lepiej wyglądało
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
     } else {
-      const task = event.previousContainer.data[event.previousIndex];
-      this.changeDate(task, event.container.id);
-      transferArrayItem(event.previousContainer.data, event.container.data, event.previousIndex, event.currentIndex);
+      if(this._selectionManager.isSelected(task)){
+        const selectedTasks = this._selectionManager.getSelectedTasks(event.previousContainer.data);
+        // this.transferManyItems(event.previousContainer.data, event.container.data, selectedTasks, event.currentIndex);
+        this._taskTransfer.transferItems(event.container.data, event.currentIndex, selectedTasks);
+        this.changeManyDates(selectedTasks, event.container.id);
+      }else {
+        const task = event.previousContainer.data[event.previousIndex];
+        this.changeDate(task, event.container.id);
+        transferArrayItem(event.previousContainer.data, event.container.data, event.previousIndex, event.currentIndex);
+      }
     }
+    this._selectionManager.deselectAll();
+  }
+
+  private changeManyDates(tasks: Task[], cellId:string){
+    tasks.forEach(task=>{
+      this.changeDate(task, cellId);
+    });
   }
 
   private changeDate(task: Task, cellName: string) {
@@ -361,7 +381,7 @@ export class CalendarComponent implements OnInit, ITaskList, AfterViewInit {
   }
 
   public moveAllTask(previousCellId: string, currentCellId: string){
-    // TODO: trochę w tym rozwiązaniu zbyt wiele 
+    // TODO: trochę w tym rozwiązaniu zbyt wiele
     this.showMoveAllTasksQuestion(previousCellId, currentCellId).then(answer=>{
       if(answer){
         this.changeDateAllTasksFromCells(previousCellId, currentCellId);
@@ -396,5 +416,20 @@ export class CalendarComponent implements OnInit, ITaskList, AfterViewInit {
 
   private findCellByDate(date:Date){
     return this._cells.find(x=>this.isCorrectCell(x, date));
+  }
+
+  public isSelected(task: Task):boolean{
+    return this._selectionManager.isSelected(task);
+  }
+
+  public onTaskClick(task: Task, event: MouseEvent){
+    if(event.ctrlKey){
+      this._selectionManager.selectTask(task);
+    } else if(event.shiftKey){
+      this._selectionManager.selectMany(task, this._tasksWithoutDate);
+    } else {
+      this._selectionManager.deselectAll();
+      // TODO: tutaj być może będzie trzeba sprawdzić, czy to jest odpowieni tym
+    }
   }
 }

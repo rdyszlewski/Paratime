@@ -69,9 +69,15 @@
       [cdkDropListConnectedTo]="getCellNames()"
       (cdkDropListDropped)="taskDrop($event)"
     >
-      <div *ngFor="let task of tasksWithoutDate" class="task-item" cdkDrag>
+      <div *ngFor="let task of tasksWithoutDate" cdkDrag
+      (click)="onTaskClick(task, $event)"
+      [ngClass]="{
+        'selected': isSelected(task),
+        'task-item': true
+      }">
         <ng-container [ngTemplateOutlet]="task_item"
-        [ngTemplateOutletContext]="{ $implicit: task }"></ng-container>
+        [ngTemplateOutletContext]="{ $implicit: task }"
+        ></ng-container>
       </div>
     </div>
   </div>
@@ -99,7 +105,12 @@
     (cdkDropListDropped)="taskDrop($event)"
   >
     <!-- TODO: przenieść to do oddzielnego -->
-    <div *ngFor="let task of day.tasks" class="task-item" cdkDrag>
+    <div *ngFor="let task of day.tasks" class="task-item" cdkDrag
+    (click)="onTaskClick(task, $event)"
+    [ngClass]="{
+      'selected': isSelected(task),
+      'task-item': true
+    }">
       <ng-container [ngTemplateOutlet]="task_item"
       [ngTemplateOutletContext]="{ $implicit: task }"></ng-container>
     </div>
@@ -119,7 +130,12 @@
     (cdkDropListDropped)="taskDrop($event)"
   >
     <!-- TODO: pozamieniać to wszystko -->
-    <div *ngFor="let task of getCurrentTasks()" class="task-item" cdkDrag>
+    <div *ngFor="let task of getCurrentTasks()" class="task-item" cdkDrag
+    (click)="onTaskClick(task, $event)"
+    [ngClass]="{
+      'selected': isSelected(task),
+      'task-item': true
+    }">>
       <ng-container [ngTemplateOutlet]="task_item"
       [ngTemplateOutletContext]="{ $implicit: task }"></ng-container>
     </div>
