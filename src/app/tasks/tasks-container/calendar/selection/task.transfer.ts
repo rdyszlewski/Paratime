@@ -1,19 +1,16 @@
 import { Task } from 'app/database/data/models/task';
-import { TaskDay } from '../task.day';
+import { ICalendarTasks } from '../models/tasks.model';
 
 export class ManyTaskTransfer{
 
-  private _cells: TaskDay[];
-  private _tasksWithoutDate: Task[];
+  private _tasksModel: ICalendarTasks;
 
-  constructor(cells: TaskDay[]=null, tasksWithoutDate: Task[]=null){
-    this._cells = cells;
-    this._tasksWithoutDate = tasksWithoutDate;
+  constructor(tasksModel: ICalendarTasks = null){
+    this._tasksModel = tasksModel;
   }
 
-  public init(cells: TaskDay[], tasksWithoutDate: Task[]){
-    this._cells =cells;
-    this._tasksWithoutDate = tasksWithoutDate;
+  public init(tasksModel: ICalendarTasks){
+    this._tasksModel = tasksModel;
   }
 
   public transferItems(currentList: Task[], currentIndex: number, items: Task[]){
@@ -37,9 +34,9 @@ export class ManyTaskTransfer{
 
   private findTasksWithDate(date: Date): Task[]{
     if(date == null){
-      return this._tasksWithoutDate;
+      return this._tasksModel.tasksWithoutDate;
     }
-    const cell = this._cells.find(x=>x.day == date.getDate() && x.month == date.getMonth() && x.year == date.getFullYear());
+    const cell = this._tasksModel.findCell(date);
     if(cell){
       return cell.tasks;
     }

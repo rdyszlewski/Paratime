@@ -1,27 +1,27 @@
 <div class="calendar-view shadow app-panel">
   <div class="calendar-top-bar">
-    <button (click)="toggleShowWithoutDate()">Bez daty</button>
+    <button (click)="view.toggleShowingWithoutDate()">Bez daty</button>
     <div class="calendar-controls">
       <div id="month-control" class="date-control">
-        <button (click)="decreaseMonth()"><</button>
-        <div class="date-control-value">{{ month + 1 }}</div>
-        <button (click)="increaseMonth()">></button>
+        <button (click)="date.decreaseMonth()"><</button>
+        <div class="date-control-value">{{ date.month + 1 }}</div>
+        <button (click)="date.increaseMonth()">></button>
       </div>
       <div id="year-control" class="date-control">
-        <button (click)="decreaseYear()"><</button>
-        <div class="date-control-value">{{ year }}</div>
-        <button (click)="increaseYear()">></button>
+        <button (click)="date.decreaseYear()"><</button>
+        <div class="date-control-value">{{ date.month }}</div>
+        <button (click)="date.increaseYear()">></button>
       </div>
     </div>
     <button (click)="toggleShowingActiveTasks()"> Aktywne</button>
-    <button (click)="moveToCurrentDay()">Obecny</button>
-    <button (click)="toggleShowCurrentTasks()">Zadania</button>
+    <button (click)="date.setCurrentDate()">Obecny</button>
+    <button (click)="view.toggleShowingCurrentTasks()">Zadania</button>
   </div>
 
   <div class="calendar-container">
     <ng-container
       [ngTemplateOutlet]="without_date"
-      *ngIf="showWithDate"
+      *ngIf="view.isShowingWithoutDate()"
     ></ng-container>
     <!-- TODO: tutaj wstawić nazwy dni tygodnia -->
 
@@ -32,12 +32,13 @@
       <div class="grid">
 
         <div
-          *ngFor="let day of cells"
+          *ngFor="let day of tasks.cells"
           [ngClass]="{
             'active-day': day.active,
             'current-day': isCurrentDay(day),
             'day-cell': true
           }"
+          (click)="view.selectDay(day)"
         >
           <ng-container
           [ngTemplateOutlet]="day_cell"
@@ -52,7 +53,7 @@
 
     <ng-container
       [ngTemplateOutlet]="day_tasks"
-      *ngIf="showCurrentTasks"
+      *ngIf="view.isShowingCurrentTasks()"
     ></ng-container>
   </div>
 </div>
@@ -65,11 +66,11 @@
       cdkDropList
       id="withoutDate"
       #withoutDate="cdkDropList"
-      [cdkDropListData]="tasksWithoutDate"
-      [cdkDropListConnectedTo]="getCellNames()"
+      [cdkDropListData]="tasks.tasksWithoutDate"
+      [cdkDropListConnectedTo]="idsCreator.getCellIds()"
       (cdkDropListDropped)="taskDrop($event)"
     >
-      <div *ngFor="let task of tasksWithoutDate" cdkDrag
+      <div *ngFor="let task of tasks.tasksWithoutDate" cdkDrag
       (click)="onTaskClick(task, $event)"
       [ngClass]="{
         'selected': isSelected(task),
@@ -85,7 +86,7 @@
 
 <ng-template #day_cell let-day>
   <div class="day-handler"
-  id="{{getDayName(day)}}"
+  id="{{idsCreator.getDayId(day)}}"
   draggable="true"
   (dragstart)="draggingController.onDragStart($event)"
   (dragover)="draggingController.allowDrop($event)"
@@ -99,10 +100,10 @@
   <div
     class="tasks-list"
     cdkDropList
-    id="{{ getCellName(day).toString() }}"
+    id="{{idsCreator.getCellId(day).toString() }}"
     #getCellName(day).toString()="cdkDropList"
     [cdkDropListData]="day.tasks"
-    [cdkDropListConnectedTo]="getCellNames()"
+    [cdkDropListConnectedTo]="idsCreator.getCellIds()"
     (cdkDropListDropped)="taskDrop($event)"
   >
     <!-- TODO: przenieść to do oddzielnego -->
@@ -127,16 +128,16 @@
     id="currentTasks"
     #withoutDate="cdkDropList"
     [cdkDropListData]="getCurrentTasks()"
-    [cdkDropListConnectedTo]="getCellNames()"
+    [cdkDropListConnectedTo]="idsCreator.getCellIds()"
     (cdkDropListDropped)="taskDrop($event)"
   >
     <!-- TODO: pozamieniać to wszystko -->
     <div *ngFor="let task of getCurrentTasks()" class="task-item" cdkDrag
     (click)="onTaskClick(task, $event)"
     [ngClass]="{
-      'selected': isSelected(task),
+      'selected': view.isSelected(task),
       'task-item': true
-    }">>
+    }">
       <ng-container [ngTemplateOutlet]="task_item"
       [ngTemplateOutletContext]="{ $implicit: task }"></ng-container>
     </div>
