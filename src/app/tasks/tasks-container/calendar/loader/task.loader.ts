@@ -6,14 +6,6 @@ import { TaskDay } from '../task.day';
 import { IDateFilter, NoDateFilter } from './date.filter';
 import { IStatusFilter, NoStatusFilter } from './status.filter';
 
-
-export enum TaskStatus{
-  ACTIVE,
-  ACTIVE_DATE,
-  ALL
-}
-
-
 // TODO: przerobić tę klasę jakoś w taki sposób, aby nie było trzeba filtrować odpowiedzi. Najlepiej będzie napisać funkcję do bazyd danych, która przyjmuje filter jako parametr
 export class TaskLoader{
 
@@ -77,6 +69,8 @@ export class TaskLoader{
   }
 
   protected isCorrectStatus(task: Task){
+    console.log(this._dateFilter);
+    console.log(this._statusFilter);
     return this._dateFilter.isCorrect(task) && this._statusFilter.isCorrect(task);
   }
 

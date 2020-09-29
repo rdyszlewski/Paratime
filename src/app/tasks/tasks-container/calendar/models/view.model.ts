@@ -10,7 +10,6 @@ export interface ICalendarView{
   selectDay(day: TaskDay): void;
   isSelected(dayTask: TaskDay):boolean;
   getSelectedDate(): string;
-  getSelectedDay(): TaskDay;
 }
 
 export class ViewModel implements ICalendarView{
@@ -29,7 +28,7 @@ export class ViewModel implements ICalendarView{
   }
 
   public get selectedDay(): TaskDay{
-    return this._currentDay;
+    return this._selectedDay;
   }
 
   public set selectedDay(value: TaskDay){
@@ -57,10 +56,6 @@ export class ViewModel implements ICalendarView{
       return this._selectedDay.day + "." +this._selectedDay.month;
     }
     return "";
-  }
-
-  public getSelectedDay(): TaskDay {
-    return this._selectedDay;
   }
     // TODO: pomyśleć, jak powinno się zrobić w przypadku zaznaczonego elementu
 }

@@ -11,7 +11,7 @@ export class NoDateFilter implements IDateFilter{
   }
 }
 
-export class OldDateFilter implements IDateFilter{
+export class FutureDateFilter implements IDateFilter{
 
   private _currentDate;
 
@@ -21,5 +21,18 @@ export class OldDateFilter implements IDateFilter{
 
   public isCorrect(task: Task): boolean {
     return task.getDate() >= this._currentDate;
+  }
+}
+
+export class PastDateFilter implements IDateFilter{
+
+  private _currentDate;
+
+  constructor(){
+    this._currentDate = new Date();
+  }
+
+  isCorrect(task: Task): boolean {
+    return task.getDate() < this._currentDate;
   }
 }

@@ -1,5 +1,6 @@
 import { Status } from 'app/database/data/models/status';
 import { Task } from 'app/database/data/models/task';
+import { TaskHelper } from 'app/shared/common/tasks/task.helper';
 
 export interface IStatusFilter{
   isCorrect(task:Task): boolean;
@@ -15,10 +16,13 @@ export class NoStatusFilter implements IStatusFilter{
 export class ActiveStatusFilter implements IStatusFilter{
 
   public isCorrect(task: Task): boolean {
-    return this.isActiveTask(task);
+    return TaskHelper.isActive(task);
   }
+}
 
-  private isActiveTask(task: Task){
-    return task.getStatus() != Status.ENDED && task.getStatus() != Status.CANCELED;
-  }
+export class InactiveStatusFilter implements IStatusFilter{
+
+  isCorrect(task: Task): boolean {
+    return !TaskHelper.isActive(task);  }
+
 }

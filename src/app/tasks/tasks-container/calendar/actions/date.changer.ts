@@ -27,7 +27,10 @@ export class DateChanger{
         task.setDate(null);
         break;
       case CalendarValues.CURRENT_TASKS:
+        console.log("CURRENT TASKS");
+        console.log(this._viewModel.selectedDay);
         const currentCell = this._dropIdsCreator.getCellId(this._viewModel.selectedDay);
+        console.log(currentCell);
         this.changeTaskDate(task, currentCell); // TODO: trzeba sobie to sprawdzić
         break;
       default:

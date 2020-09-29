@@ -1,22 +1,6 @@
 <div class="calendar-view shadow app-panel">
-  <div class="calendar-top-bar">
-    <button (click)="view.toggleShowingWithoutDate()">Bez daty</button>
-    <div class="calendar-controls">
-      <div id="month-control" class="date-control">
-        <button (click)="date.decreaseMonth()"><</button>
-        <div class="date-control-value">{{ date.month + 1 }}</div>
-        <button (click)="date.increaseMonth()">></button>
-      </div>
-      <div id="year-control" class="date-control">
-        <button (click)="date.decreaseYear()"><</button>
-        <div class="date-control-value">{{ date.month }}</div>
-        <button (click)="date.increaseYear()">></button>
-      </div>
-    </div>
-    <button (click)="toggleShowingActiveTasks()"> Aktywne</button>
-    <button (click)="date.setCurrentDate()">Obecny</button>
-    <button (click)="view.toggleShowingCurrentTasks()">Zadania</button>
-  </div>
+  <ng-container [ngTemplateOutlet]='top_bar'></ng-container>
+  <ng-container [ngTemplateOutlet]="calendar_settings"></ng-container>
 
   <div class="calendar-container">
     <ng-container
@@ -38,7 +22,7 @@
             'current-day': isCurrentDay(day),
             'day-cell': true
           }"
-          (click)="view.selectDay(day)"
+          (click)="onDayClick(day, $event)"
         >
           <ng-container
           [ngTemplateOutlet]="day_cell"
@@ -57,6 +41,43 @@
     ></ng-container>
   </div>
 </div>
+
+<ng-template #top_bar>
+  <div class="calendar-top-bar">
+    <button (click)="view.toggleShowingWithoutDate()">Bez daty</button>
+    <div class="calendar-controls">
+      <div id="month-control" class="date-control">
+        <button (click)="date.decreaseMonth()"><</button>
+        <div class="date-control-value">{{ date.month + 1 }}</div>
+        <button (click)="date.increaseMonth()">></button>
+      </div>
+      <div id="year-control" class="date-control">
+        <button (click)="date.decreaseYear()"><</button>
+        <div class="date-control-value">{{ date.month }}</div>
+        <button (click)="date.increaseYear()">></button>
+      </div>
+    </div>
+    <button (click)="date.setCurrentDate()">Obecny</button>
+    <button (click)="view.toggleShowingCurrentTasks()">Zadania</button>
+    <button (click)="toggleShowSettings()">O</button>
+  </div>
+</ng-template>
+
+<ng-template #calendar_settings>
+  <div [hidden]="!showSettings">
+    <select [ngModel]="settings.taskStatus" (ngModelChange)="settings.taskStatus = $event" (change)="changeStatusOption()">
+      <option [ngValue]="taskStatus.ALL">Wszystkie</option>
+      <option [ngValue]="taskStatus.ACTIVE">Aktywne</option>
+      <option [ngValue]="taskStatus.INACTIVE">Zakończone</option>
+    </select>
+
+    <select [ngModel]="settings.dateOption" (ngModelChange)="settings.dateOption = $event" (change)="changeDateOption()">
+      <option [ngValue]="dateOption.ALL">Wszystkie</option>
+      <option [ngValue]="dateOption.ACTIVE">Aktywne</option>
+      <option [ngValue]="dateOption.INACTIVE">Przeszłe</option>
+    </select>
+  </div>
+</ng-template>
 
 <ng-template #without_date>
   <div>
