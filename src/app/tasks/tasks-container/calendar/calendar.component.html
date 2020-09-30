@@ -9,12 +9,11 @@
     ></ng-container>
     <!-- TODO: tutaj wstawić nazwy dni tygodnia -->
 
-    <div>
+    <div class="calendar">
       <div class="grid-week-days">
         <div *ngFor="let day of ['pon', 'wt', 'śr', 'cz', 'pią', 'sob', 'nied']" class="week-day">{{day}}</div>
       </div>
       <div class="grid">
-
         <div
           *ngFor="let day of tasks.cells"
           [ngClass]="{
@@ -33,6 +32,8 @@
         </div>
       </div>
     </div>
+
+
 
 
     <ng-container
@@ -80,7 +81,7 @@
 </ng-template>
 
 <ng-template #without_date>
-  <div>
+  <div class="tasks-panel">
     <div>Zadania bez daty</div>
     <div
       class="tasks-without-date tasks-list"
@@ -141,7 +142,7 @@
 </ng-template>
 
 <ng-template #day_tasks>
-  <div>
+  <div class="tasks-panel">
     <div>Zadania {{getSelectedDate()}}</div>
     <div
     class="tasks-without-date tasks-list"
