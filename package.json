@@ -66,5 +66,16 @@
     "ts-node": "~8.3.0",
     "tslint": "~6.1.0",
     "typescript": "~3.8.3"
-  }
+  },
+  "description": "npm install --save-dev sqlite3\r npm install --save-dev bluebird",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rdyszlewski/Paratime.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rdyszlewski/Paratime/issues"
+  },
+  "homepage": "https://github.com/rdyszlewski/Paratime#readme"
 }
