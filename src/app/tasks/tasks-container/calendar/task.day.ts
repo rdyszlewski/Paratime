@@ -1,4 +1,3 @@
-import { Status } from 'app/database/data/models/status';
 import { Task } from 'app/database/data/models/task';
 
 
@@ -17,11 +16,7 @@ export class TaskDay{
     this._month = month;
     this._year = year;
     this._active = active;
-    if(day == 17){
-      console.log(this._tasks);
-    }
   }
-  // TODO: wstawić zadania i takie tam
 
   public get day(): number {
     return this._day;

@@ -5,6 +5,7 @@
       <button class="toolbar-button" (click)="changeTaskMode(taskMode.LIST)">L</button>
       <button class="toolbar-button" (click)="changeTaskMode(taskMode.KANBAN)">K</button>
       <button class="toolbar-button" (click)="changeTaskMode(taskMode.CALENDAR)">C</button>
+      <button class="toolbar-button" (click)="changeTaskMode(taskMode.DAY_SCHEDULE)">D</button>
     </span>
   </div>
 
@@ -22,5 +23,8 @@
     <app-calendar class="task-list" [hidden]="mode!=taskMode.CALENDAR">
 
     </app-calendar>
+
+    <day-schedule class="task-list" [hidden]="mode!=taskMode.DAY_SCHEDULE"></day-schedule>
+
   </div>
 </div>

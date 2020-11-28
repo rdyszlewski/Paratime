@@ -1,0 +1,15 @@
+<div class="mini-calendar">
+  <div class="calendar-control">
+
+  </div>
+  <div class="grid">
+    <div *ngFor="let day of days"
+    [ngClass]="{
+      'active-day': day.active,
+      'current-day': isCurrentDay(day),
+      'day-cell': true
+    }">
+    {{day.day}}
+    </div>
+  </div>
+</div>

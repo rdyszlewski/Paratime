@@ -52,5 +52,6 @@ export class AppService {
 export enum TasksMode{
   LIST,
   KANBAN,
-  CALENDAR
+  CALENDAR,
+  DAY_SCHEDULE
 }

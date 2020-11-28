@@ -43,6 +43,8 @@ import { PomodoroComponent } from './shared/side-container/pomodoro/pomodoro.com
 import { PomodoroSettingsComponent } from './shared/side-container/pomodoro/pomodoro-settings/pomodoro-settings.component';
 import { CalendarComponent } from './tasks/tasks-container/calendar/calendar.component';
 import { CreatingDialogComponent } from './tasks/creating-dialog/creating-dialog.component';
+import { DayScheduleComponent } from './tasks/tasks-container/day-schedule/day-schedule.component';
+import { MiniCalendarComponent } from './tasks/tasks-container/day-schedule/mini-calendar/mini-calendar.component';
 
 @NgModule({
   declarations: [
@@ -65,7 +67,9 @@ import { CreatingDialogComponent } from './tasks/creating-dialog/creating-dialog
     DetailsContainerComponent,
     PomodoroSettingsComponent,
     CalendarComponent,
-    CreatingDialogComponent
+    CreatingDialogComponent,
+    DayScheduleComponent,
+    MiniCalendarComponent
   ],
   imports: [
     BrowserModule,

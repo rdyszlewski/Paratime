@@ -7,6 +7,7 @@ import { TasksComponent } from './tasks/tasks.component';
 import { KanbanComponent } from './kanban/kanban.component';
 import { TasksMode, AppService } from 'app/core/services/app/app.service';
 import { CalendarComponent } from './calendar/calendar.component';
+import { DayScheduleComponent } from './day-schedule/day-schedule.component';
 
 @Component({
   selector: 'app-tasks-container',
@@ -23,6 +24,9 @@ export class TasksContainerComponent implements OnInit, AfterViewInit {
 
   @ViewChild(CalendarComponent)
   private calendarComponent: CalendarComponent;
+
+  @ViewChild(DayScheduleComponent)
+  private DayScheduleComponent: DayScheduleComponent;
   // TODO: zrobić interfejs do tego wszystkiego
 
   private _project: Project;
@@ -78,6 +82,9 @@ export class TasksContainerComponent implements OnInit, AfterViewInit {
         break;
       case TasksMode.CALENDAR:
         this._currentList = this.calendarComponent;
+        break;
+      case TasksMode.DAY_SCHEDULE:
+        this._currentList = this.DayScheduleComponent;
         break;
     }
     if(this._project){

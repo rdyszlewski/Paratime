@@ -105,11 +105,6 @@
 }
 
 .calendar{
-<<<<<<< HEAD
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-=======
   width: 100%;
 }
 
@@ -117,7 +112,6 @@
   height: 100%;
   display: flex;
   flex-direction: column;
->>>>>>> 2e4669000d3f1762cdb6e5b18ddaeb84096796d5
 }
 
 .calendar-top-bar{
