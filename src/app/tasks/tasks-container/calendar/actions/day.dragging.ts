@@ -1,6 +1,8 @@
+import { IDraggingController } from '../../day-schedule/tasks-list/draggine-controller';
+
 type Callback = (dragged:string, dropped:string)=>void;
 
-export class CellDraging{
+export class CellDraging implements IDraggingController{
   private readonly DRAGGING_CLASS = 'dragging';
   private readonly LOOKING_CLASS = 'cell-info';
   private readonly DROPPABLE_CONTAINER = 'day-handler';

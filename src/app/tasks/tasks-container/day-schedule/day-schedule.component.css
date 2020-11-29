@@ -1,3 +1,9 @@
 .tasks-container{
   width: 20%;
+  display: block;
+}
+
+.day-view{
+  display: flex;
+  flex-direction: row;
 }

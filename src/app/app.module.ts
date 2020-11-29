@@ -45,6 +45,7 @@ import { CalendarComponent } from './tasks/tasks-container/calendar/calendar.com
 import { CreatingDialogComponent } from './tasks/creating-dialog/creating-dialog.component';
 import { DayScheduleComponent } from './tasks/tasks-container/day-schedule/day-schedule.component';
 import { MiniCalendarComponent } from './tasks/tasks-container/day-schedule/mini-calendar/mini-calendar.component';
+import { TasksListComponent } from './tasks/tasks-container/day-schedule/tasks-list/tasks-list.component';
 
 @NgModule({
   declarations: [
@@ -69,7 +70,8 @@ import { MiniCalendarComponent } from './tasks/tasks-container/day-schedule/mini
     CalendarComponent,
     CreatingDialogComponent,
     DayScheduleComponent,
-    MiniCalendarComponent
+    MiniCalendarComponent,
+    TasksListComponent
   ],
   imports: [
     BrowserModule,

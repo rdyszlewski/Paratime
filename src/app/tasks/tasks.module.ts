@@ -3,11 +3,14 @@ import { CommonModule } from '@angular/common';
 import { DayScheduleComponent } from './tasks-container/day-schedule/day-schedule.component';
 import { MiniCalendarComponent } from './tasks-container/day-schedule/mini-calendar/mini-calendar.component';
 import { TasksListComponent } from './tasks-container/day-schedule/tasks-list/tasks-list.component';
+import { DragDropModule } from '@angular/cdk/drag-drop';
+import { DaySchedulerComponent } from './tasks-container/day-schedule/day-scheduler/day-scheduler.component';
 
 @NgModule({
-  declarations: [DayScheduleComponent, MiniCalendarComponent, TasksListComponent],
+  declarations: [DayScheduleComponent, MiniCalendarComponent, TasksListComponent, DaySchedulerComponent],
   imports: [
-    CommonModule
+    CommonModule,
+    DragDropModule
   ]
 })
 export class TasksModule { }

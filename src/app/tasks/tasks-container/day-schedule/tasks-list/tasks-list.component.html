@@ -1,7 +1,20 @@
 <div class="tasks-list">
-
+  <div class="tasks-list"
+  cdkDropList
+  id="{{id}}"
+  #id="cdkDropList"
+  [cdkDropListData]="tasks"
+  [cdkDropListConnectedTo]="connectedLists"
+  (cdkDropListDropped)="onDrop($event)"
+  >
+    <div *ngFor="let task of tasks">
+      {{task.getName()}}
+    </div>
+  </div>
 </div>
 
 <ng-template #task>
-  <div></div>
+  <div>
+
+  </div>
 </ng-template>
