@@ -65,6 +65,4 @@ export class TasksListComponent implements OnInit {
     this.tasks.push(task1, task2, task3);
   }
 
-
-
 }

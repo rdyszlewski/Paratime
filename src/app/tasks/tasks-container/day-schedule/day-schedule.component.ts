@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, HostListener, OnInit, ViewChild } from '@angular/core';
 import { Project } from 'app/database/data/models/project';
 import { Task } from 'app/database/data/models/task';
 import { ITaskContainer } from 'app/database/data/models/task.container';
@@ -6,6 +6,8 @@ import { ITaskItem } from 'app/database/data/models/task.item';
 import { TasksList } from 'app/shared/common/lists/tasks.list';
 import { ITaskList } from '../task.list';
 import { CalendarDay } from './day';
+import { ICalendarCallback } from './mini-calendar/calendar-callback';
+import { MiniCalendarComponent } from './mini-calendar/mini-calendar.component';
 import { TasksListComponent } from './tasks-list/tasks-list.component';
 
 @Component({
@@ -14,6 +16,9 @@ import { TasksListComponent } from './tasks-list/tasks-list.component';
   styleUrls: ['./day-schedule.component.css']
 })
 export class DayScheduleComponent implements OnInit, ITaskList, AfterViewInit {
+
+  @ViewChild(MiniCalendarComponent)
+  private calendarComponent: MiniCalendarComponent;
 
   @ViewChild('current_day_tasks')
   private currentDayTasksComponent: TasksListComponent;
@@ -27,6 +32,11 @@ export class DayScheduleComponent implements OnInit, ITaskList, AfterViewInit {
 
   public get days(): CalendarDay[]{
     return this._days;
+  }
+
+  @HostListener('contextmenu', ['$event'])
+  onRightClick(event){
+    event.preventDefault();
   }
 
   constructor() {
@@ -66,6 +76,14 @@ export class DayScheduleComponent implements OnInit, ITaskList, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
+    this.calendarComponent.callbacks = {
+      onLeftClick(day: CalendarDay){
+        console.log("Kliknięcie");
+      },
+      onRightClick(day: CalendarDay){
+        console.log(day);
+      }
+    }
     setTimeout(()=>{
       this.currentDayTasksComponent.initDropList("current-day", ["current-day"], (task: Task)=>{
         console.log(task);
@@ -83,4 +101,19 @@ export class DayScheduleComponent implements OnInit, ITaskList, AfterViewInit {
       this._currentDay.getFullYear() == day.year);
   }
   //
+
+}
+
+class CalendarCallback implements ICalendarCallback{
+
+  onLeftClick(day: CalendarDay) {
+    console.log("Left click");
+    console.log(day);
+  }
+
+  onRightClick(day: CalendarDay) {
+    console.log("Right click");
+    console.log(day);
+  }
+
 }

@@ -7,7 +7,7 @@
   [cdkDropListConnectedTo]="connectedLists"
   (cdkDropListDropped)="onDrop($event)"
   >
-    <div *ngFor="let task of tasks">
+    <div *ngFor="let task of tasks" cdkDrag>
       {{task.getName()}}
     </div>
   </div>

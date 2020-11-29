@@ -1,0 +1,95 @@
+.day-schedule-view{
+  display: flex;
+  flex-direction: row;
+}
+
+.day-table{
+  border-collapse: collapse;
+  border: 2px solid black;
+  width: 100%;
+}
+
+.hour-header{
+  width: 5em;
+}
+
+.hour-column{
+  width: 5em;
+  list-style: none;
+  border: 1px solid black;
+  padding: 0;
+}
+
+.task-column{
+  list-style: none;
+  border: 1px solid black;
+  width: 100%;
+  padding: 0;
+}
+
+.task-header{
+
+}
+
+.hour-cell{
+  height: 0.8em;
+  box-sizing: border-box;
+}
+
+
+.upper-hour-cell{
+  /* border-right: 0.5px solid grey; */
+  text-align: center;
+
+}
+
+.bottom-hour-cell{
+  /* border-right: 0.5px solid grey; */
+  /* border-bottom: 1px solid black; */
+  /* width: 100%; */
+}
+
+.last-task-cell{
+  border-bottom: 1px solid black;
+}
+
+.upper-task-cell{
+  border-bottom: 0.5px dotted grey;
+}
+
+.bottom-task-cell{
+  /* border-bottom: 1px solid black; */
+  border-bottom: 0.5px dotted grey;
+
+}
+
+.task-cell{
+  height: 0.8em;
+  position: relative;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.drop-container{
+  width: 100%;
+  height: 100%;
+}
+
+.task{
+  /* position: absolute; */
+  /* top: 0; */
+  width: 50%;
+  height: 5em;
+  background-color: aqua;
+  position: absolute;
+  z-index: 1;
+}
+
+.drag-handler{
+  width: 100%;
+  height: 100%;
+}
+
+.selected-cell{
+  background-color: antiquewhite;
+}

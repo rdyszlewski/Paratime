@@ -1,1 +1,64 @@
-<p>day-scheduler works!</p>
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" href="day-scheduler.component.css">
+</head>
+<body>
+
+<!-- <table class="day-table">
+  <tbody>
+    <tr class="border">
+      <th class="hour-header"></th>
+      <th class="task-header">Dzień</th>
+    </tr>
+
+    <ng-container *ngFor="let hour of hours"
+    [ngTemplateOutlet]="day" [ngTemplateOutletContext]="{ $implicit: hour }"></ng-container>
+  </tbody>
+</table> -->
+<div class="day-schedule-view shadow app-panel">
+
+  <ul class="hour-column" >
+    <li *ngFor="let hour of hours"
+    [ngClass]="{
+      'upper-hour-cell': hour.mainHour,
+      'bottom-hour-cell':!hour.mainHour && !hour.lastHour,
+      'last-task-cell': hour.lastHour,
+      'hour-cell': true
+    }">
+    <div *ngIf="hour.mainHour">
+      {{hour.time}}
+    </div>
+    </li>
+  </ul>
+
+  <ul class="task-column" cdkDropListGroup #dropGroup>
+    <li *ngFor="let hour of hours"
+    cdkDropList
+    [id]="hour.time"
+    #hour.time="cdkDropList"
+    [cdkDropListData]="hour.getTask()"
+    (cdkDropListDropped)="onDrop($event)"
+    [cdkDropListSortingDisabled]="true"
+    
+    [ngClass]="{
+      'upper-task-cell': hour.mainHour,
+      'bottom-task-cell': !hour.mainHour && !hour.lastHour,
+      'last-task-cell': hour.lastHour,
+      'task-cell': true
+    }">
+      <div *ngFor="let t of hour.getTask()"
+      class="task" cdkDrag cdkDragBoundary=".task-column"
+      [cdkDragFreeDragPosition]="position"
+      >
+        {{t.getName()}}
+      </div>
+    <!-- <ng-container *ngIf="hour.getTask()" [ngTemplateOutlet]="task" [ngTemplateOutletContext]="{$implicit: hour.getTask()}"></ng-container> -->
+    </li>
+  </ul>
+</div>
+
+
+</body>
+
+

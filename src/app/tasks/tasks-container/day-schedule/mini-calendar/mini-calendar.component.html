@@ -4,6 +4,8 @@
   </div>
   <div class="grid">
     <div *ngFor="let day of days"
+    (click)="onLeftClick(day)"
+    (contextmenu)="onRightClick(day)"
     [ngClass]="{
       'active-day': day.active,
       'current-day': isCurrentDay(day),
