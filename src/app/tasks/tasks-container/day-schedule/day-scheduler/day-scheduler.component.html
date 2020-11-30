@@ -1,64 +1,65 @@
 <!DOCTYPE html>
 <html>
-<head>
-<link rel="stylesheet" href="day-scheduler.component.css">
-</head>
-<body>
+  <head>
+    <link rel="stylesheet" href="day-scheduler.component.css" />
+  </head>
+  <body>
+    <div class="shadow app-panel">
+      <select (change)="changeScale($event)">
+        <option [value]="100" default>100%</option>
+        <option [value]="200">200%</option>
+        <option [value]="300">300</option>
+        <option [value]="400">400%</option>
+      </select>
 
-<!-- <table class="day-table">
-  <tbody>
-    <tr class="border">
-      <th class="hour-header"></th>
-      <th class="task-header">Dzień</th>
-    </tr>
+      <div class="day-schedule-view">
+        <ul class="hour-column">
+          <li
+            *ngFor="let hour of hours"
+            [style.height.%]="hour.height"
+            [ngClass]="{
+              'upper-hour-cell': hour.mainHour,
+              'bottom-hour-cell': !hour.mainHour && !hour.lastHour,
+              'last-task-cell': hour.lastHour,
+              'hour-cell': true
+            }"
+          >
+            <div *ngIf="hour.mainHour">
+              {{ hour.time }}
+            </div>
+          </li>
+        </ul>
 
-    <ng-container *ngFor="let hour of hours"
-    [ngTemplateOutlet]="day" [ngTemplateOutletContext]="{ $implicit: hour }"></ng-container>
-  </tbody>
-</table> -->
-<div class="day-schedule-view shadow app-panel">
-
-  <ul class="hour-column" >
-    <li *ngFor="let hour of hours"
-    [ngClass]="{
-      'upper-hour-cell': hour.mainHour,
-      'bottom-hour-cell':!hour.mainHour && !hour.lastHour,
-      'last-task-cell': hour.lastHour,
-      'hour-cell': true
-    }">
-    <div *ngIf="hour.mainHour">
-      {{hour.time}}
-    </div>
-    </li>
-  </ul>
-
-  <ul class="task-column" cdkDropListGroup #dropGroup>
-    <li *ngFor="let hour of hours"
-    cdkDropList
-    [id]="hour.time"
-    #hour.time="cdkDropList"
-    [cdkDropListData]="hour.getTask()"
-    (cdkDropListDropped)="onDrop($event)"
-    [cdkDropListSortingDisabled]="true"
-    
-    [ngClass]="{
-      'upper-task-cell': hour.mainHour,
-      'bottom-task-cell': !hour.mainHour && !hour.lastHour,
-      'last-task-cell': hour.lastHour,
-      'task-cell': true
-    }">
-      <div *ngFor="let t of hour.getTask()"
-      class="task" cdkDrag cdkDragBoundary=".task-column"
-      [cdkDragFreeDragPosition]="position"
-      >
-        {{t.getName()}}
+        <ul class="task-column" cdkDropListGroup #dropGroup>
+          <li
+            *ngFor="let hour of hours"
+            cdkDropList
+            [id]="hour.time"
+            #hour.time="cdkDropList"
+            [cdkDropListData]="hour.tasks"
+            (cdkDropListDropped)="onDrop($event)"
+            [cdkDropListSortingDisabled]="true"
+            [style.height.%]="hour.height"
+            [ngClass]="{
+              'upper-task-cell': hour.mainHour,
+              'bottom-task-cell': !hour.mainHour && !hour.lastHour,
+              'last-task-cell': hour.lastHour,
+              'task-cell': true
+            }"
+          >
+            <div
+              *ngFor="let t of hour.tasks"
+              class="task"
+              cdkDrag
+              cdkDragBoundary=".task-column"
+              [cdkDragFreeDragPosition]="position"
+              [style.height.%]="t.size"
+            >
+              {{ t.task.getName() }}
+            </div>
+          </li>
+        </ul>
       </div>
-    <!-- <ng-container *ngIf="hour.getTask()" [ngTemplateOutlet]="task" [ngTemplateOutletContext]="{$implicit: hour.getTask()}"></ng-container> -->
-    </li>
-  </ul>
-</div>
-
-
-</body>
-
-
+    </div>
+  </body>
+</html>

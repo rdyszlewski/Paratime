@@ -1,5 +1,5 @@
 import { CdkDragDrop, CdkDragEnter, CdkDragExit, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
-import { Component, OnInit } from '@angular/core';
+import {  AfterViewInit, Component, OnInit } from '@angular/core';
 import { Status } from 'app/database/data/models/status';
 import { Task } from 'app/database/data/models/task';
 
@@ -8,7 +8,7 @@ import { Task } from 'app/database/data/models/task';
   templateUrl: './day-scheduler.component.html',
   styleUrls: ['./day-scheduler.component.css']
 })
-export class DaySchedulerComponent implements OnInit {
+export class DaySchedulerComponent implements OnInit, AfterViewInit {
 
   private _hours: Hour[];
   public get hours():Hour[]{
@@ -18,12 +18,58 @@ export class DaySchedulerComponent implements OnInit {
 
   private _connectedText: string;
 
+  private _sizeRatio:number;
+
   constructor() {
 
   }
 
+  ngAfterViewInit(): void {
+    this.changeSchedulerScale(100);
+  }
+
+  private setCellsHeight(scale: number){
+    let parts = this._hours.length;
+    let height = scale / parts;
+    this._hours.forEach(x=>x.height = height);
+  }
+
+  private calculateBaseCellHeight(){
+    let element = document.getElementById("5:00") as HTMLElement;
+    let offsetHeight = element.offsetHeight;
+    let clientHeight = element.clientHeight;
+    console.log(offsetHeight);
+    console.log(clientHeight);
+    let result = offsetHeight/clientHeight;
+    console.log(result);
+    return result;
+  }
+
+  private calculateHeightOfTasks(){
+    this._hours.forEach(x=>x.tasks.forEach(task=>{
+      task.size = this._sizeRatio * (task.task.getTime()/10) * 100;
+    }));
+  }
+
+  public changeScale(event){
+    let scale = event.target.value;
+    this.changeSchedulerScale(scale);
+  }
+
+  private changeSchedulerScale(scale: number){
+    setTimeout(()=>{
+      this.setCellsHeight(scale);
+    },0);
+    setTimeout(()=>{
+      this._sizeRatio = this.calculateBaseCellHeight();
+      this.calculateHeightOfTasks();
+    });
+  }
+
   ngOnInit(): void {
     // TODO: zrobić takie coś, żeby było od innej godziny
+
+
     let firstHour = 5;
     this._hours = [];
     for(let i=firstHour; i< 24; i++){
@@ -43,15 +89,22 @@ export class DaySchedulerComponent implements OnInit {
       this._hours.push(new Hour(i, 40, false));
       this._hours.push(new Hour(i, 50, false, true));
       // this._hours.push(new Hour(i, 30, false, true));
-    }
-    let hour = this._hours.find(x=>x.time == "9:00");
-    // hour.task = new Task("Jeden", "", Status.STARTED);
-    hour.addTask(new Task("Jeden", "", Status.STARTED));
 
-    let hour2 = this._hours.find(x=>x.time=="12:00");
-    hour2.addTask(new Task("Dwa", "", Status.STARTED));
-    this._connectedText = this.hours.map(x=>x.time).join(',');
-    console.log(this._connectedText);
+      let hour = this._hours.find(x=>x.time == "9:00");
+      // hour.task = new Task("Jeden", "", Status.STARTED);
+      let task1 = new Task("Jeden", "", Status.STARTED);
+      task1.setTime(120);
+      let taskContainer1 = new TaskContainer(task1)
+      // taskContainer1.size = 7*6;
+      hour.addTask(taskContainer1);
+
+      let hour2 = this._hours.find(x=>x.time=="15:00");
+      let task2 = new Task("Dwa", "", Status.STARTED);
+      task2.setTime(50);
+      let taskContainer2 = new TaskContainer(task2);
+      // taskContainer2.size = 7*15;
+      hour2.addTask(taskContainer2);
+    }
   }
 
   public getTimesId():string{
@@ -101,9 +154,6 @@ export class DaySchedulerComponent implements OnInit {
     event.stopPropagation();
   }
 
-  // public drop(hour: Hour){
-  //   console.log(hour);
-  // }
 
   public drop(event: CdkDragDrop<Task[]>){
     console.log(event.item.data);
@@ -127,15 +177,41 @@ export class DaySchedulerComponent implements OnInit {
   }
 }
 
+export class TaskContainer{
+  private _task: Task;
+  private _size: number;
+
+  public get task(): Task{
+    return this._task;
+  }
+
+  public get size(): number{
+    return this._size;
+  }
+
+  public set size(value: number){
+    this._size = value;
+  }
+
+  // public getHeight():string{
+  //   return this.size + "%";
+  // }
+
+  constructor(task: Task){
+    this._task = task;
+  }
+}
+
 export class Hour{
   private _hour: number;
   private _minutes: number;
   private _mainHour: boolean;
   private _selected: boolean;
   private _lastHour: boolean;
+  private _height: number;
 
   // private _task: Task;
-  private _tasks: Task[] = [];
+  private _tasks: TaskContainer[] = [];
 
   // TODO: tutaj można wstawić zadania
   public get time(){
@@ -158,6 +234,14 @@ export class Hour{
     return this._lastHour;
   }
 
+  public get height():number{
+    return this._height;
+  }
+
+  public set height(value: number){
+    this._height = value;
+  }
+
   // public get task(): Task{
   //   return this._task;
   // }
@@ -166,18 +250,16 @@ export class Hour{
   //   this._task = value;
   // }
 
-  public getTask():Task[]{
+  public get tasks(): TaskContainer[]{
     return this._tasks;
   }
 
-  public setTasks(value: Task[]){
-    // this._tasks = [];
-    // this._tasks.push(value);
-    this._tasks = value;
+  public addTask(value: TaskContainer){
+    this._tasks.push(value);
   }
 
-  public addTask(value: Task){
-    this._tasks.push(value);
+  public removeTask(value: TaskContainer){
+    this._tasks = this._tasks.filter(x=>x!=value);
   }
 
   constructor(hour: number, minutes: number, mainHour: boolean = true, lastHour=false){
