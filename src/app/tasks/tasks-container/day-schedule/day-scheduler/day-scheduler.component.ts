@@ -1,5 +1,5 @@
-import { CdkDragDrop, CdkDragEnter, CdkDragExit, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
-import {  AfterViewInit, Component, OnInit } from '@angular/core';
+import { CdkDrag, CdkDragDrop, CdkDragEnter, CdkDragExit, CdkDragMove, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
+import {  AfterViewInit, Component, OnInit, NgZone } from '@angular/core';
 import { Status } from 'app/database/data/models/status';
 import { Task } from 'app/database/data/models/task';
 
@@ -9,18 +9,16 @@ import { Task } from 'app/database/data/models/task';
   styleUrls: ['./day-scheduler.component.css']
 })
 export class DaySchedulerComponent implements OnInit, AfterViewInit {
+  [x: string]: any;
 
   private _hours: Hour[];
   public get hours():Hour[]{
     return this._hours;
   }
-  private _selectedHour: Hour;
-
-  private _connectedText: string;
 
   private _sizeRatio:number;
 
-  constructor() {
+  constructor(private ngZone: NgZone) {
 
   }
 
@@ -89,41 +87,36 @@ export class DaySchedulerComponent implements OnInit, AfterViewInit {
       this._hours.push(new Hour(i, 40, false));
       this._hours.push(new Hour(i, 50, false, true));
       // this._hours.push(new Hour(i, 30, false, true));
-
-      let hour = this._hours.find(x=>x.time == "9:00");
-      // hour.task = new Task("Jeden", "", Status.STARTED);
-      let task1 = new Task("Jeden", "", Status.STARTED);
-      task1.setTime(120);
-      let taskContainer1 = new TaskContainer(task1)
-      // taskContainer1.size = 7*6;
-      hour.addTask(taskContainer1);
-
-      let hour2 = this._hours.find(x=>x.time=="15:00");
-      let task2 = new Task("Dwa", "", Status.STARTED);
-      task2.setTime(50);
-      let taskContainer2 = new TaskContainer(task2);
-      // taskContainer2.size = 7*15;
-      hour2.addTask(taskContainer2);
     }
+    let hour = this._hours.find(x=>x.time == "9:00");
+    // hour.task = new Task("Jeden", "", Status.STARTED);
+    let task1 = new Task("Jeden", "", Status.STARTED);
+    task1.setId(1);
+    task1.setTime(120);
+    let taskContainer1 = new TaskContainer(task1)
+    // taskContainer1.size = 7*6;
+    hour.addTask(taskContainer1);
+
+    let hour2 = this._hours.find(x=>x.time=="15:00");
+    let task2 = new Task("Dwa", "", Status.STARTED);
+    task2.setId(2);
+    task2.setTime(50);
+    let taskContainer2 = new TaskContainer(task2);
+    // taskContainer2.size = 7*15;
+    hour2.addTask(taskContainer2);
+
   }
-
-  public getTimesId():string{
-    // let result = this._hours.map(x=>x.time);
-
-    // console.log(result);
-    // return result;
-    return this._connectedText;
-  }
-
-  public position;
 
   // TODO: czy ta metoda na pewno wyglądała w ten sposób?
   public onDrop(event: CdkDragDrop<string[]>) {
-    console.log(event);
-    this.position = {x: 50, y:50};
+    let id = event.item.element.nativeElement.id;
+    if(!id.includes("task")){
+      // TODO: tutaj być może powinno być zapisywanie wysokości
+      return;
+    }
     if (event.previousContainer === event.container) {
       // this.changeLabelsOrder(event.previousIndex, event.currentIndex);
-      console.log(event);
+
       moveItemInArray(
         event.container.data,
         event.previousIndex,
@@ -139,42 +132,51 @@ export class DaySchedulerComponent implements OnInit, AfterViewInit {
     }
   }
 
+  public canDrop(item: CdkDrag){
+    console.log(item);
+  }
 
-  public dragover(event: DragEvent, hour: Hour){
-    console.log("Siema");
-    if(hour != this._selectedHour){
-      if(this._selectedHour){
-        this._selectedHour.selected = false;
-      }
-    }
-    hour.selected = true;
-    console.log(hour);
-    this._selectedHour = hour;
-    event.preventDefault();
-    event.stopPropagation();
+  public dragMove(event: CdkDragMove<any>, taskContainer: TaskContainer){
+    // TODO: to z jakiegoś powodu nie działa
+    // let taskElement = event.source.element.nativeElement.offsetParent;q
+    let taskElement = document.getElementById("task_"+taskContainer.task.getId());
+    let element = event.source.element.nativeElement;
+
+    // this.resize(element, taskElement);
+    this.ngZone.runOutsideAngular(()=>{
+      this.resize(element, taskElement, event.distance, taskContainer)
+    })
+  }
+
+  private resize(dragHandle: HTMLElement, target: HTMLElement, distance, taskContainer: TaskContainer){
+    const dragRect = dragHandle.getBoundingClientRect();
+    const targetRect = target.getBoundingClientRect();
+    // console.log(targetRect);
+
+    // TODO: naprawić to
+    const height = dragRect.top - targetRect.top + dragRect.height;
+    let dinstanceY = distance["y"];
+    let cellHeight = document.getElementById("5:00").offsetHeight;
+    let cells = dinstanceY / cellHeight;
+    let minutes = cells * 10;
+    console.log("minutes");
+    console.log(minutes);
+    // TODO: będzie trzeba zaktualizować czas w zadaniu. Albo wymyślić jakiś inny sposób
+    let taskHeight = taskContainer.size +  this._sizeRatio * (minutes/10) * 100;
+    taskContainer.size = taskHeight;
+    console.log(taskHeight);
+
+    // target.style.height = target.style.height + distance + "% !important";
+
+    setTimeout(()=>{
+      // console.log("Update");
+    });
+    // TODO: może dałoby się zamienić to jakoś na procenty
+    // this.setAllHandleTransform();
   }
 
 
-  public drop(event: CdkDragDrop<Task[]>){
-    console.log(event.item.data);
-    // console.log(hour);
-    // TODo: wykonać jakieś działania
-    if(this._selectedHour){
-      this._selectedHour.selected = false;
-    }
-  }
 
-  public dragEntered(event: CdkDragEnter){
-    console.log("DragEntered");
-    this._selectedHour = event.item.data;
-    this._selectedHour.selected = true;
-  }
-
-  public dragExited(event: CdkDragExit){
-    console.log("DragExited");
-    this._selectedHour.selected = false;
-    this._selectedHour = null;
-  }
 }
 
 export class TaskContainer{

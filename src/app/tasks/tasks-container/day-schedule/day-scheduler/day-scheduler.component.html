@@ -50,12 +50,15 @@
             <div
               *ngFor="let t of hour.tasks"
               class="task"
+              [id]="'task_'+ t.task.getId()"
+              #t.task.getId()="cdkDrag"
               cdkDrag
               cdkDragBoundary=".task-column"
-              [cdkDragFreeDragPosition]="position"
               [style.height.%]="t.size"
             >
-              {{ t.task.getName() }}
+            <div #dragHandleTop cdkDragLockAxis="y" class="dragHandle top" cdkDrag (cdkDragMoved)="dragMove($event, t)"></div>
+            <div class="task-name">{{ t.task.getName() }} </div>
+            <div #dragHandleBottom cdkDragLockAxis="y" class="dragHandle bottom" cdkDrag (cdkDragMoved)="dragMove($event, t)"></div>
             </div>
           </li>
         </ul>
