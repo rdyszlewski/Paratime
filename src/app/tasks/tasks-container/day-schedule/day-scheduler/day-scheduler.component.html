@@ -16,7 +16,7 @@
         <ul class="hour-column">
           <li
             *ngFor="let hour of hours"
-            [style.height.%]="hour.height"
+            [style.height.px]="hour.height"
             [ngClass]="{
               'upper-hour-cell': hour.mainHour,
               'bottom-hour-cell': !hour.mainHour && !hour.lastHour,
@@ -39,7 +39,8 @@
             [cdkDropListData]="hour.tasks"
             (cdkDropListDropped)="onDrop($event)"
             [cdkDropListSortingDisabled]="true"
-            [style.height.%]="hour.height"
+            [style.height.px]="hour.height"
+            (dragover)="dragover($event, hour)"
             [ngClass]="{
               'upper-task-cell': hour.mainHour,
               'bottom-task-cell': !hour.mainHour && !hour.lastHour,
@@ -54,11 +55,16 @@
               #t.task.getId()="cdkDrag"
               cdkDrag
               cdkDragBoundary=".task-column"
-              [style.height.%]="t.size"
+              [cdkDragDisabled]="isMoveTaskDisabled()"
+              [style.height.px]="t.size"
+              [style.z-index]="t.position"
+              [style.top.px]="t.offset"
             >
-            <div #dragHandleTop cdkDragLockAxis="y" class="dragHandle top" cdkDrag (cdkDragMoved)="dragMove($event, t)"></div>
+            <div [id]="'top_handler_'+t.task.getId()" cdkDragLockAxis="y" class="dragHandle top" cdkDrag (cdkDragMoved)="dragMove($event, t)"></div>
+            <!-- <div #dragHandleTop draggable="true" class="dragHandle top" (drag)="drag($event)" (mouseenter)="resizeMouseEnter()" (mouseleave)="resizeMouseExit()" (dragstart)="resizeStart($event)" (dragend)="resizeEnd($event)" (mousedown)="resizeStart($event)"></div> -->
             <div class="task-name">{{ t.task.getName() }} </div>
-            <div #dragHandleBottom cdkDragLockAxis="y" class="dragHandle bottom" cdkDrag (cdkDragMoved)="dragMove($event, t)"></div>
+            <!-- <div #dragHandleBottom draggable="true" class="dragHandle bottom" (drag)="drag($event)" (mouseenter)="resizeMouseEnter()" (mouseleave)="resizeMouseExit()" (dragstart)="resizeStart($event)" (dragend)="resizeEnd($event)" (mousedown)="resizeStart($event)"></div> -->
+            <div [id]="'bottom_handler_' + t.task.getId()" cdkDragLockAxis="y" class="dragHandle bottom" cdkDrag (cdkDragMoved)="dragMove($event, t)" (cdkDragEntered)="dragEntered($event)" (cdkDragExited)="dragExited($event)" ></div>
             </div>
           </li>
         </ul>

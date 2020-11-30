@@ -1,7 +1,9 @@
 import { CdkDrag, CdkDragDrop, CdkDragEnter, CdkDragExit, CdkDragMove, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
-import {  AfterViewInit, Component, OnInit, NgZone } from '@angular/core';
+import {  AfterViewInit, Component, OnInit, NgZone, HostListener } from '@angular/core';
 import { Status } from 'app/database/data/models/status';
 import { Task } from 'app/database/data/models/task';
+import { Hour } from './day-model';
+import { TaskContainer } from './task-container';
 
 @Component({
   selector: 'app-day-scheduler',
@@ -16,36 +18,50 @@ export class DaySchedulerComponent implements OnInit, AfterViewInit {
     return this._hours;
   }
 
-  private _sizeRatio:number;
+  private _resizedTask: TaskContainer;
+  private _currentScale = 100;
+  private _baseCellHeight = 6;
 
   constructor(private ngZone: NgZone) {
 
   }
 
+  @HostListener('window:resize', ['$event'])
+    onResize(event) {
+      console.log("Resize");
+      setTimeout(()=>{
+        this.changeSchedulerScale(this._currentScale);
+      });
+
+  }
+
   ngAfterViewInit(): void {
-    this.changeSchedulerScale(100);
+    this.changeSchedulerScale(this._currentScale);
   }
 
   private setCellsHeight(scale: number){
-    let parts = this._hours.length;
-    let height = scale / parts;
+    let baseHeight = this.calculateBaseCellHeight();
+    let height = baseHeight * (scale/100);
     this._hours.forEach(x=>x.height = height);
+    this._baseCellHeight = height;
+    this._currentScale = scale;
   }
 
   private calculateBaseCellHeight(){
     let element = document.getElementById("5:00") as HTMLElement;
-    let offsetHeight = element.offsetHeight;
-    let clientHeight = element.clientHeight;
-    console.log(offsetHeight);
-    console.log(clientHeight);
-    let result = offsetHeight/clientHeight;
-    console.log(result);
-    return result;
+    let parentElement = element.parentElement;
+    let parentHeight = parentElement.offsetHeight;
+    let cellHeight = Math.floor(parentHeight/this._hours.length);
+    return cellHeight;
   }
 
   private calculateHeightOfTasks(){
     this._hours.forEach(x=>x.tasks.forEach(task=>{
-      task.size = this._sizeRatio * (task.task.getTime()/10) * 100;
+      let cells = Math.ceil(task.task.getPlannedTime()/10);
+      let cellElement = document.getElementById("5:00") as HTMLElement;
+      let cellHeight = cellElement.offsetHeight;
+      let taskHeight = cells * cellHeight;
+      task.size = taskHeight;
     }));
   }
 
@@ -59,15 +75,15 @@ export class DaySchedulerComponent implements OnInit, AfterViewInit {
       this.setCellsHeight(scale);
     },0);
     setTimeout(()=>{
-      this._sizeRatio = this.calculateBaseCellHeight();
       this.calculateHeightOfTasks();
+
     });
   }
 
   ngOnInit(): void {
     // TODO: zrobić takie coś, żeby było od innej godziny
 
-
+    // TODO: refaktoryzacja
     let firstHour = 5;
     this._hours = [];
     for(let i=firstHour; i< 24; i++){
@@ -92,7 +108,8 @@ export class DaySchedulerComponent implements OnInit, AfterViewInit {
     // hour.task = new Task("Jeden", "", Status.STARTED);
     let task1 = new Task("Jeden", "", Status.STARTED);
     task1.setId(1);
-    task1.setTime(120);
+    task1.setTime(900);
+    task1.setPlannedTime(150);
     let taskContainer1 = new TaskContainer(task1)
     // taskContainer1.size = 7*6;
     hour.addTask(taskContainer1);
@@ -100,18 +117,32 @@ export class DaySchedulerComponent implements OnInit, AfterViewInit {
     let hour2 = this._hours.find(x=>x.time=="15:00");
     let task2 = new Task("Dwa", "", Status.STARTED);
     task2.setId(2);
-    task2.setTime(50);
+    task2.setTime(1500);
+    task2.setPlannedTime(50);
     let taskContainer2 = new TaskContainer(task2);
     // taskContainer2.size = 7*15;
     hour2.addTask(taskContainer2);
 
   }
 
+
   // TODO: czy ta metoda na pewno wyglądała w ten sposób?
   public onDrop(event: CdkDragDrop<string[]>) {
     let id = event.item.element.nativeElement.id;
-    if(!id.includes("task")){
-      // TODO: tutaj być może powinno być zapisywanie wysokości
+    if(id.includes("bottom") || id.includes('top')){
+      console.log(this._resizedTask);
+      // TODO: można wymyślić coś przyjemniejszego
+      let plannedTime = this._resizedTask.size / this._baseCellHeight * 10;
+      console.log("Planned time");
+      console.log(plannedTime);
+      console.log(this._baseCellHeight);
+      this._resizedTask.task.setPlannedTime(plannedTime);
+      this._resizedTask.offset = 0;
+      this._resizedTask.show();
+      // TODO: zrobić zapisywanie w bazie danych
+    }
+
+    if(id.includes('bottom')){
       return;
     }
     if (event.previousContainer === event.container) {
@@ -130,6 +161,12 @@ export class DaySchedulerComponent implements OnInit, AfterViewInit {
         event.currentIndex
       );
     }
+    // TODO: zaktualizowanie czasu
+    let timeId = event.container.element.nativeElement.id;
+    let splitted = timeId.split(":");
+    let timeValue = Number.parseInt(splitted[0]) * 100 + Number.parseInt(splitted[1]);
+    this._resizedTask.task.setTime(timeValue);
+    // TODO: zrobić zapisywanie w bazie danych
   }
 
   public canDrop(item: CdkDrag){
@@ -137,142 +174,111 @@ export class DaySchedulerComponent implements OnInit, AfterViewInit {
   }
 
   public dragMove(event: CdkDragMove<any>, taskContainer: TaskContainer){
-    // TODO: to z jakiegoś powodu nie działa
-    // let taskElement = event.source.element.nativeElement.offsetParent;q
+    this._resizedTask = taskContainer;
     let taskElement = document.getElementById("task_"+taskContainer.task.getId());
     let element = event.source.element.nativeElement;
 
-    // this.resize(element, taskElement);
-    this.ngZone.runOutsideAngular(()=>{
-      this.resize(element, taskElement, event.distance, taskContainer)
-    })
+    if(element.id.includes('top')){
+      console.log("Góra");
+      this.moveTask(element, taskElement, event, taskContainer);
+      this.resize(element, taskElement, event.distance, taskContainer, true);
+    } else {
+      console.log("Dół");
+      this.resize(element, taskElement, event.distance, taskContainer, false)
+    }
   }
 
-  private resize(dragHandle: HTMLElement, target: HTMLElement, distance, taskContainer: TaskContainer){
-    const dragRect = dragHandle.getBoundingClientRect();
-    const targetRect = target.getBoundingClientRect();
-    // console.log(targetRect);
+  private _baseTaskHeight = null;
 
-    // TODO: naprawić to
-    const height = dragRect.top - targetRect.top + dragRect.height;
-    let dinstanceY = distance["y"];
-    let cellHeight = document.getElementById("5:00").offsetHeight;
-    let cells = dinstanceY / cellHeight;
-    let minutes = cells * 10;
-    console.log("minutes");
-    console.log(minutes);
-    // TODO: będzie trzeba zaktualizować czas w zadaniu. Albo wymyślić jakiś inny sposób
-    let taskHeight = taskContainer.size +  this._sizeRatio * (minutes/10) * 100;
-    taskContainer.size = taskHeight;
-    console.log(taskHeight);
+  private moveTask(dragHandle: HTMLElement, target: HTMLElement, event:CdkDragMove<any>, taskContainer: TaskContainer){
+    taskContainer.hide();
+    // let distanceY = Math.ceil(distance["y"]-distance["y"]%this._baseCellHeight);
+    let distance = event.distance;
+    let distanceY = distance["y"];
+    let rest = distanceY % this._baseCellHeight;
+    distanceY -= rest;
+    distanceY -= this._baseCellHeight;
 
-    // target.style.height = target.style.height + distance + "% !important";
-
-    setTimeout(()=>{
-      // console.log("Update");
-    });
-    // TODO: może dałoby się zamienić to jakoś na procenty
-    // this.setAllHandleTransform();
+    // if(rest != 0){
+    //   distanceY -= rest;
+    //   // TODO: to zależy od tego, czy ruch jest w górę  czy w dół
+    //   // distanceY -= this._baseCellHeight;
+    // }
+    taskContainer.offset = distanceY;
   }
 
-
-
-}
-
-export class TaskContainer{
-  private _task: Task;
-  private _size: number;
-
-  public get task(): Task{
-    return this._task;
+  private resize(dragHandle: HTMLElement, target: HTMLElement, distance, taskContainer: TaskContainer, top: boolean){
+    taskContainer.hide();
+    // let distanceY = Math.ceil(distance["y"]-distance["y"]%this._baseCellHeight);
+    let distanceY = distance["y"];
+    let rest = distanceY%this._baseCellHeight;
+    if(rest != 0){
+      distanceY -= rest;
+      if(top){
+        distanceY -= this._baseCellHeight;
+      } else {
+        distanceY += this._baseCellHeight;
+      }
+    }
+    let orginalHeight = taskContainer.task.getPlannedTime()/10 * this._baseCellHeight;
+    if(top){
+      taskContainer.size = orginalHeight - distanceY;
+    } else {
+      taskContainer.size = orginalHeight + distanceY;
+    }
   }
 
-  public get size(): number{
-    return this._size;
+  public dragEntered(event:CdkDragEnter){
+    let id = event.container.element.nativeElement.id;
+    let selectedHourIndex = this._hours.findIndex(x=>x.time==id);
+    selectedHourIndex++;
+    if(selectedHourIndex == this.hours.length){
+      selectedHourIndex = 0;
+    }
+    this.selectedHour = this._hours[selectedHourIndex];
   }
 
-  public set size(value: number){
-    this._size = value;
+  public dragExited(event:CdkDragExit){
+    this.selectedHour = null;
   }
 
-  // public getHeight():string{
-  //   return this.size + "%";
-  // }
+  // =-========================
 
-  constructor(task: Task){
-    this._task = task;
-  }
-}
-
-export class Hour{
-  private _hour: number;
-  private _minutes: number;
-  private _mainHour: boolean;
-  private _selected: boolean;
-  private _lastHour: boolean;
-  private _height: number;
-
-  // private _task: Task;
-  private _tasks: TaskContainer[] = [];
-
-  // TODO: tutaj można wstawić zadania
-  public get time(){
-    return this._hour + ":" + this.formatMinutes(this._minutes);
+  public drag(event: DragEvent){
+    if(this.selectedHour){
+      console.log(this.selectedHour.time);
+    }
   }
 
-  public get mainHour():boolean{
-    return this._mainHour;
+  public canDrag = true;
+  public resizeActive = false;
+  private selectedHour: Hour;
+
+  public resizeMouseEnter(){
+    this.canDrag = false;
   }
 
-  public get selected(): boolean{
-    return this._selected;
+  public resizeMouseExit(){
+    this.canDrag = true;
   }
 
-  public set selected(value: boolean){
-    this._selected = value;
+  public resizeStart(event){
+    this.resizeActive = true;
   }
 
-  public get lastHour():boolean{
-    return this._lastHour;
+  public resizeEnd(event){
+    this.resizeActive = false;
   }
 
-  public get height():number{
-    return this._height;
+  public isMoveTaskDisabled(){
+    return !this.canDrag && this.resizeActive;
   }
 
-  public set height(value: number){
-    this._height = value;
-  }
-
-  // public get task(): Task{
-  //   return this._task;
-  // }
-
-  // public set task(value: Task){
-  //   this._task = value;
-  // }
-
-  public get tasks(): TaskContainer[]{
-    return this._tasks;
-  }
-
-  public addTask(value: TaskContainer){
-    this._tasks.push(value);
-  }
-
-  public removeTask(value: TaskContainer){
-    this._tasks = this._tasks.filter(x=>x!=value);
-  }
-
-  constructor(hour: number, minutes: number, mainHour: boolean = true, lastHour=false){
-    this._hour = hour;
-    this._minutes = minutes;
-    this._mainHour = mainHour;
-    this._lastHour = lastHour;
-  }
-
-  private formatMinutes(minutes: number){
-    return String(minutes).padStart(2, '0')
+  public dragover(event: DragEvent, hour: Hour){
+    this.selectedHour = hour;
   }
 
 }
+
+
+
