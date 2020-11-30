@@ -6,6 +6,7 @@ export class Hour{
   private _mainHour: boolean;
   private _selected: boolean;
   private _lastHour: boolean;
+  private _middleHour: boolean;
   private _height: number;
 
   // private _task: Task;
@@ -14,6 +15,10 @@ export class Hour{
   // TODO: tutaj można wstawić zadania
   public get time(){
     return this._hour + ":" + this.formatMinutes(this._minutes);
+  }
+
+  public equal(hour: number, minutes: number){
+    return this._hour == hour && this._minutes == minutes;
   }
 
   public get mainHour():boolean{
@@ -36,18 +41,13 @@ export class Hour{
     return this._height;
   }
 
+  public get middleHour():boolean{
+    return this._middleHour;
+  }
+
   public set height(value: number){
     this._height = value;
   }
-
-  // public get task(): Task{
-  //   return this._task;
-  // }
-
-  // public set task(value: Task){
-  //   this._task = value;
-  // }
-
   public get tasks(): TaskContainer[]{
     return this._tasks;
   }
@@ -60,11 +60,12 @@ export class Hour{
     this._tasks = this._tasks.filter(x=>x!=value);
   }
 
-  constructor(hour: number, minutes: number, mainHour: boolean = true, lastHour=false){
+  constructor(hour: number, minutes: number, mainHour: boolean = true, lastHour=false, middleHour=false){
     this._hour = hour;
     this._minutes = minutes;
     this._mainHour = mainHour;
     this._lastHour = lastHour;
+    this._middleHour = middleHour;
   }
 
   private formatMinutes(minutes: number){
