@@ -11,8 +11,6 @@ import { Project } from "app/database/data/models/project";
 import { Task } from "app/database/data/models/task";
 import { ITaskContainer } from "app/database/data/models/task.container";
 import { ITaskItem } from "app/database/data/models/task.item";
-import { TasksList } from "app/shared/common/lists/tasks.list";
-import { filter } from "rxjs/operators";
 import { ITaskList } from "../task.list";
 import { CalendarDay } from "./day";
 import { DaySchedulerComponent } from "./day-scheduler/day-scheduler.component";
@@ -43,6 +41,12 @@ export class DayScheduleComponent implements OnInit, ITaskList, AfterViewInit {
 
   private _currentDay: Date;
 
+  private _specificDayOpen:boolean = false;
+
+  public get specificDayOpen():boolean{
+    return this._specificDayOpen;
+  }
+
   public get days(): CalendarDay[] {
     return this._days;
   }
@@ -67,9 +71,10 @@ export class DayScheduleComponent implements OnInit, ITaskList, AfterViewInit {
       this.currentDayTasksComponent,
       this.selectedDayTasksComponent,
       this.daySchedulerComponent,
+      ()=>{
+        this._specificDayOpen = !this._specificDayOpen;
+      }
     );
-    // TODO: wyświetlenie zadań na liscie
-    // TODo: załadowanie dzisiejszego dnia
   }
 
   removeTask(task: ITaskItem): void {
@@ -100,12 +105,14 @@ export class DayScheduleComponent implements OnInit, ITaskList, AfterViewInit {
       this.currentDayTasksComponent.initDropList("current-day",
       this.daySchedulerComponent.getCells().concat(["current-day", "selected-day"]),
        (task: Task) => {
+         // TODO: uzupełnić to
         console.log(task);
       });
       this.selectedDayTasksComponent.initDropList(
         "selected-day",
         this.daySchedulerComponent.getCells().concat(["selected-day", "current-day"]),
         (task: Task) => {
+          // TODO: uzupełnić to
           console.log("Zaznaczony dzień");
           console.log(task);
         },
@@ -120,7 +127,10 @@ export class DayScheduleComponent implements OnInit, ITaskList, AfterViewInit {
       this._currentDay.getFullYear() == day.year
     );
   }
-  //
+
+  public closeSpecificDayTasks(){
+    this._specificDayOpen = false;
+  }
 }
 
 class CalendarCallback implements ICalendarCallback {
@@ -129,6 +139,7 @@ class CalendarCallback implements ICalendarCallback {
     private currentDayTasks: TasksListComponent,
     private selectedDayTasks: TasksListComponent,
     private scheduler: DaySchedulerComponent,
+    private openSpecificCallback: ()=>void
   ) {}
 
   onLeftClick(day: CalendarDay) {
@@ -142,6 +153,7 @@ class CalendarCallback implements ICalendarCallback {
 
   onRightClick(day: CalendarDay) {
     this.loadListTasks(day, this.selectedDayTasks, [this.getProjectPredicate()]);
+    this.openSpecificCallback();
   }
 
   private loadListTasks(

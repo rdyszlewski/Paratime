@@ -276,23 +276,16 @@ export class TaskStore implements IOrderableStore<Task> {
 
     updated.add(task);
     return this.orderController.remove(task).then((updatedItems) => {
-      console.log("Zaktualizowane ");
-      console.log(updatedItems);
       updatedItems.forEach((x) => updated.add(x));
-      console.log(updated);
 
       return this.taskRepository
         .findFirstTaskWithStatus(task.getProjectID(), status)
         .then((firstTask) => {
-          console.log("First task");
-          console.log(firstTask);
           task.setStatus(status);
           task.setPosition(Position.HEAD);
           return this.orderController
             .insert(task, firstTask, task.getContainerId())
             .then((updatedItems) => {
-              console.log("changeStatus");
-              console.log(updatedItems);
               updatedItems.forEach((x) => updated.add(x));
               return Promise.resolve(Array.from(updated));
             });

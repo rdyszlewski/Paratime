@@ -588,3 +588,7 @@ html, body{
 .active-side-item{
   font-weight: bold;
 }
+
+.project-title{
+  min-height: 30px;
+}

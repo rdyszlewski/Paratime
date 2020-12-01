@@ -5,7 +5,7 @@ import { TaskContainer } from "./task-container";
 export class SchedulerTaskResizer {
   private _resizedTask: TaskContainer;
 
-  constructor(private _scaler: DaySchedulerScaler) {}
+  constructor(private _scaler: DaySchedulerScaler, private resizeCallback: (container: TaskContainer)=>void) {}
 
   public dragMove(event: CdkDragMove<any>, taskContainer: TaskContainer) {
     this._resizedTask = taskContainer;
@@ -59,7 +59,8 @@ export class SchedulerTaskResizer {
     this._resizedTask.task.setPlannedTime(plannedTime);
     this._resizedTask.offset = 0;
     this._resizedTask.show();
-
+    this.resizeCallback(this._resizedTask);
+    this._resizedTask = null;
     // TODO: ustawienie czasu również powinno tutaj być
   }
 }

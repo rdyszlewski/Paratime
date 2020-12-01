@@ -37,7 +37,6 @@ export class CreatingDialogComponent implements OnInit {
   }
 
   public onOk(){
-    console.log(this._model.name);
     this._model.callback(this._model);
     this.closeDialog();
   }

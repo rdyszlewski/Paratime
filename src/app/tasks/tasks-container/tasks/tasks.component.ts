@@ -83,7 +83,6 @@ export class TasksComponent implements OnInit, ITaskList {
 
   public openProject(project: Project): void {
     if (!project || project.getId() < 0) {
-      console.log(project);
       return;
     }
     this.model.setProject(project);
@@ -96,7 +95,6 @@ export class TasksComponent implements OnInit, ITaskList {
       ? project
       : this.appService.getCurrentProject();
     this.loadProjectTasks(currentProject, taskType).then((tasks) => {
-      console.log(tasks);
       this.model.setTasks(tasks);
       this.model.setTaskType(taskType);
       this.model.isOpen
@@ -104,7 +102,6 @@ export class TasksComponent implements OnInit, ITaskList {
   }
 
   private loadProjectTasks(project: Project, taskType: TaskType) {
-    console.log('loadProjectsTasks');
     switch (taskType) {
       case TaskType.ACTIVE:
         return DataService.getStoreManager()

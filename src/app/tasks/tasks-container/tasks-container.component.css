@@ -18,5 +18,5 @@
 }
 
 .tasks-container-list{
-  height: 100%;
+  height: calc(100% - 30px);
 }

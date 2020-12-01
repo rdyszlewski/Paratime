@@ -3,7 +3,8 @@
     <app-mini-calendar></app-mini-calendar>
     <app-tasks-list #current_day_tasks></app-tasks-list>
   </div>
-  <div class="tasks-container">
+  <div class="tasks-container" [hidden]="!specificDayOpen">
+    <button class="close-button" (click)="closeSpecificDayTasks()">X</button>
     <app-tasks-list #selected_day_tasks></app-tasks-list>
   </div>
   <div class="scheduler">

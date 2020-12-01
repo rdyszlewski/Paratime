@@ -98,8 +98,6 @@ export class StoreOrderController<T extends OrderableItem> {
     const toUpdate = [];
     // TODO: tutaj jest błąd, który powoduje
     return this.getLast(item, containerId).then(lastItem=>{
-      console.log("ostatni element");
-      console.log(lastItem);
       if(lastItem){
         lastItem.setSuccessorId(item.getId());
         item.setPosition(Position.NORMAL);
@@ -109,14 +107,11 @@ export class StoreOrderController<T extends OrderableItem> {
       }
       item.setSuccessorId(OrderValues.DEFAULT_ORDER);
       toUpdate.push(item);
-      console.log(toUpdate);
       return this.updateItems(toUpdate);
     });
   }
 
   protected getLast(item: T, containerId: number): Promise<T>{
-    console.log("Wykonywanie tego starego");
-    console.log(item);
     return this.repository.findLast(containerId, item.getId());
   }
 

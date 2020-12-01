@@ -64,13 +64,13 @@ export class TimepickerComponent implements OnInit {
   }
 
   private  updateText(){
-    console.log("UpdateText");
-    console.log(this.time);
-    const value = this.time.split(":");
-    this.model.hours = Number.parseInt(value[0]);
-    this.model.minutes = Number.parseInt(value[1]);
-    const text = this.getTimeText();
-    this.input.value = text;
+    if(this.input){
+      const value = this.time.split(":");
+      this.model.hours = Number.parseInt(value[0]);
+      this.model.minutes = Number.parseInt(value[1]);
+      const text = this.getTimeText();
+      this.input.value = text;
+    }
   }
 
   public increaseHours(){

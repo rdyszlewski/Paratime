@@ -28,7 +28,6 @@ export class MiniCalendarComponent implements OnInit {
     this._month = this._currentDate.getMonth();
     this._year = this._currentDate.getFullYear();
     this._days = CalendarCreator.create(this._month, this._year);
-    console.log(this._days);
   }
 
   ngOnInit(): void {}

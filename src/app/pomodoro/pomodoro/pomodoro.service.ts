@@ -77,16 +77,10 @@ export class PomodoroService implements IPomodoroCallbacks, ITimerControl {
 
   private saveSummaries(summary: PomodoroStateSummary, cause: ChangeStateCause) {
     // TODO: sprawdzić wszystkie warunki
-    console.log("P");
-    console.log(cause);
     if(!cause){
       cause = ChangeStateCause.FINISH;
     }
-    console.log("Powód");
-    console.log(cause);
     const isSave = SaveStatisticsChecker.isSaveStatistics(summary.state, this._settings, cause);
-    console.log("Czy zapisywać statystyki");
-    console.log(isSave);
     if (isSave == Answer.ASK) {
       this._questionCallbacks.get(CallbackType.SAVE_SUMMARY)().then(answer => {
         this.runSavingSummaries();
@@ -101,9 +95,7 @@ export class PomodoroService implements IPomodoroCallbacks, ITimerControl {
     if(!this._saveSummaryCallback){
       return;
     }
-    console.log(this._summariesToSave);
     this._summariesToSave.forEach(summaryToSave => {
-      console.log(summaryToSave);
       this._saveSummaryCallback(summaryToSave);
     });
     this._summariesToSave = [];
@@ -111,18 +103,15 @@ export class PomodoroService implements IPomodoroCallbacks, ITimerControl {
 
   private addSummaryToSave(summary: PomodoroStateSummary) {
     if(this.isSummaryValid(summary)){
-      console.log("Ważne");
       const finishDate = new Date();
       const pomodoroSummary = SummaryCreator.createPomodoroSummary(summary, this._task, this._settings, this._stateStartDate, finishDate);
       this._summariesToSave.push(pomodoroSummary);
       return pomodoroSummary;
     }
-    console.log("Nie ważne");
     return null;
   }
 
   private isSummaryValid(summary: PomodoroStateSummary){
-    console.log(summary.time);
     return summary.time > this._settings.saveStateLongerThan;
   }
 

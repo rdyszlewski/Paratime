@@ -1,4 +1,5 @@
 import { AfterViewInit, Component, OnInit, HostListener } from "@angular/core";
+import { DataService } from 'app/data.service';
 import { Status } from "app/database/data/models/status";
 import { Task } from "app/database/data/models/task";
 import { Hour } from "./day-model";
@@ -44,7 +45,8 @@ export class DaySchedulerComponent implements OnInit, AfterViewInit {
   }
 
   public init(){
-    let element = document.getElementById("5:00") as HTMLElement;
+    // let element = document.getElementById("5:00") as HTMLElement;
+    let element = document.getElementsByClassName("day-schedule-view")[0] as HTMLElement;
     this._scaler.init(element, this._hours);
     this._scaler.scale();
   }
@@ -61,10 +63,13 @@ export class DaySchedulerComponent implements OnInit, AfterViewInit {
 
   private initComponents() {
     this._scaler = new DaySchedulerScaler();
-    this._resizer = new SchedulerTaskResizer(this._scaler);
-    this._draggingController = new DraggingController(this._resizer, insertedTaskContainer=>{
-      this._scaler.scaleTask(insertedTaskContainer);
-    });
+    this._resizer = new SchedulerTaskResizer(this._scaler, container=>this.onTaskChanged(container));
+    this._draggingController = new DraggingController(this._resizer, insertedTaskContainer=>this.onTaskChanged(insertedTaskContainer));
+  }
+
+  private onTaskChanged(taskContainer: TaskContainer){
+    DataService.getStoreManager().getTaskStore().update(taskContainer.task);
+    this._scaler.scaleTask(taskContainer);
   }
 
   private initScheduler() {

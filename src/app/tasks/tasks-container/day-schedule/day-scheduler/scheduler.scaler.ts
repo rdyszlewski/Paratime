@@ -27,17 +27,19 @@ export class DaySchedulerScaler {
 
   private setCellsHeight(scale: number) {
     let baseHeight = this.calculateBaseCellHeight();
-    let height = baseHeight * (scale / 100);
+    let height = baseHeight * (scale / 100) - (scale/100 * 1 - 1);
+    console.log(height);
     this._hours.forEach((x) => (x.height = height));
     this._cellHeight = height;
     this._currentScale = scale;
   }
 
   private calculateBaseCellHeight() {
-    let element = document.getElementById("5:00") as HTMLElement;
-    let parentElement = element.parentElement;
-    let parentHeight = parentElement.offsetHeight;
-    let cellHeight = Math.floor(parentHeight / this._hours.length);
+    // let element = document.getElementById("5:00") as HTMLElement;
+    // let parentElement = element.parentElement;
+    // let parentHeight = parentElement.offsetHeight;
+    // let cellHeight = Math.floor(parentHeight / this._hours.length);
+    let cellHeight = Math.floor(this._referenceCellElement.offsetHeight / this._hours.length);
     return cellHeight;
   }
 
@@ -47,8 +49,9 @@ export class DaySchedulerScaler {
 
   public scaleTask(task: TaskContainer) {
     let cells = Math.ceil(task.getTime() / 10);
-    let cellHeight = this._referenceCellElement.offsetHeight;
-    let taskHeight = cells * cellHeight;
+    // let cellHeight = this._referenceCellElement.offsetHeight;
+    // let taskHeight = cells * cellHeight;
+    let taskHeight = cells * this._cellHeight;
     task.size = taskHeight;
   }
 

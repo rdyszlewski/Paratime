@@ -6,10 +6,10 @@ import { TaskContainer } from "./task-container";
 export class DraggingController {
   private _draggedTask: TaskContainer;
 
+  // TODO: można zmienic nazwę callbacku
   constructor(private _resizer: SchedulerTaskResizer, private insertTaskCallback: (task:TaskContainer)=>void) {}
 
   public onDrop(event: CdkDragDrop<TaskContainer[]>) {
-    console.log("Zdarzenie nastąpiło");
     let id = event.item.element.nativeElement.id;
     if (id.includes("bottom") || id.includes("top")) {
       this._resizer.acceptResize();
@@ -39,6 +39,7 @@ export class DraggingController {
       event.currentIndex
     );
     this.updateStartTime(event.container.element.nativeElement.id, this._draggedTask);
+    this.insertTaskCallback(this._draggedTask);
   }
 
   private transferFromAnotherList(event: CdkDragDrop<TaskContainer[], TaskContainer[]>) {
@@ -61,8 +62,6 @@ export class DraggingController {
   }
 
   public dragStarted(event: CdkDrag, taskContainer: TaskContainer) {
-    console.log(event);
-    console.log(taskContainer);
     this._draggedTask = taskContainer;
     // this._draggedTask.hide();
   }
