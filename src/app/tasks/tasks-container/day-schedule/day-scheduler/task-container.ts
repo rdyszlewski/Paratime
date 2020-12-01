@@ -9,6 +9,19 @@ export class TaskContainer{
   private _originalPosition: number;
   private _isHided = false;
 
+  // TODO: można zrobić metodę, która będzie zwracała odkreślony czas
+
+  constructor(task: Task){
+    this._task = task;
+  }
+
+  public getTime():number{
+    if(this.task.getPlannedTime()!=null){
+      return this.task.getPlannedTime();
+    }
+
+    return 30;
+  }
 
   public get task(): Task{
     return this._task;
@@ -46,13 +59,5 @@ export class TaskContainer{
   public show(){
     this._position = this._originalPosition;
     this._isHided = false;
-  }
-
-  // public getHeight():string{
-  //   return this.size + "%";
-  // }
-
-  constructor(task: Task){
-    this._task = task;
   }
 }

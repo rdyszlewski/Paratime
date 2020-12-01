@@ -97,12 +97,14 @@ export class DayScheduleComponent implements OnInit, ITaskList, AfterViewInit {
 
   ngAfterViewInit(): void {
     setTimeout(() => {
-      this.currentDayTasksComponent.initDropList("current-day", ["current-day"], (task: Task) => {
+      this.currentDayTasksComponent.initDropList("current-day",
+      this.daySchedulerComponent.getCells().concat(["current-day", "selected-day"]),
+       (task: Task) => {
         console.log(task);
       });
       this.selectedDayTasksComponent.initDropList(
         "selected-day",
-        ["specific-day"],
+        this.daySchedulerComponent.getCells().concat(["selected-day", "current-day"]),
         (task: Task) => {
           console.log("Zaznaczony dzień");
           console.log(task);

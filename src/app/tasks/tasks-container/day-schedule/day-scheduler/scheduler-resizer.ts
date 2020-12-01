@@ -44,7 +44,7 @@ export class SchedulerTaskResizer {
         distanceY += cellSize;
       }
     }
-    let orginalHeight = (taskContainer.task.getPlannedTime() / 10) * cellSize;
+    let orginalHeight = (taskContainer.getTime() / 10) * cellSize;
     // taskContainer.size = orginalHeight + (top? -distanceY: distanceY)
     if (top) {
       taskContainer.size = orginalHeight - distanceY;

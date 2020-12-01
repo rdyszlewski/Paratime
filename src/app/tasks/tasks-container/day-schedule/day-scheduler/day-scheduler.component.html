@@ -34,6 +34,7 @@
         (cdkDropListDropped)="dragginController.onDrop($event)"
         [cdkDropListSortingDisabled]="true"
         [style.height.px]="hour.height"
+        [cdkDropListConnectedTo]="['current-day']"
         [ngClass]="{
           'upper-task-cell': hour.mainHour,
           'bottom-task-cell': !hour.mainHour && !hour.lastHour,

@@ -62,7 +62,9 @@ export class DaySchedulerComponent implements OnInit, AfterViewInit {
   private initComponents() {
     this._scaler = new DaySchedulerScaler();
     this._resizer = new SchedulerTaskResizer(this._scaler);
-    this._draggingController = new DraggingController(this._resizer);
+    this._draggingController = new DraggingController(this._resizer, insertedTaskContainer=>{
+      this._scaler.scaleTask(insertedTaskContainer);
+    });
   }
 
   private initScheduler() {
@@ -88,15 +90,21 @@ export class DaySchedulerComponent implements OnInit, AfterViewInit {
   public setTasks(tasks: Task[]){
     this.clear();
     if(tasks!=null){
-      this.initTasks(tasks);
+      let containers = this.initTasks(tasks);
+      this._scaler.scaleTasks(containers);
     }
+  }
+
+  public getCells():string[]{
+    return this._hours.map(x=>x.time);
   }
 
   public clear(){
     this._hours.forEach(x=>x.clearTasks());
   }
 
-  private initTasks(tasks: Task[]) {
+  private initTasks(tasks: Task[]): TaskContainer[] {
+    let containers: TaskContainer[] = [];
     tasks.forEach((task) => {
       let container = new TaskContainer(task);
       let time = task.getTime();
@@ -104,6 +112,8 @@ export class DaySchedulerComponent implements OnInit, AfterViewInit {
       let minutes = time % 100;
       let hourElement = this.hours.find((x) => x.equal(hour, minutes));
       hourElement.addTask(container);
+      containers.push(container);
     });
+    return containers;
   }
 }

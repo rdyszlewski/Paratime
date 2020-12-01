@@ -1,13 +1,15 @@
 import { CdkDrag, CdkDragDrop, moveItemInArray, transferArrayItem } from "@angular/cdk/drag-drop";
+import { Task } from "app/database/data/models/task";
 import { SchedulerTaskResizer } from "./scheduler-resizer";
 import { TaskContainer } from "./task-container";
 
 export class DraggingController {
   private _draggedTask: TaskContainer;
 
-  constructor(private _resizer: SchedulerTaskResizer) {}
+  constructor(private _resizer: SchedulerTaskResizer, private insertTaskCallback: (task:TaskContainer)=>void) {}
 
-  public onDrop(event: CdkDragDrop<string[]>) {
+  public onDrop(event: CdkDragDrop<TaskContainer[]>) {
+    console.log("Zdarzenie nastąpiło");
     let id = event.item.element.nativeElement.id;
     if (id.includes("bottom") || id.includes("top")) {
       this._resizer.acceptResize();
@@ -17,24 +19,45 @@ export class DraggingController {
     }
     if (event.previousContainer === event.container) {
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+      // this._draggedTask.show();
+      this._draggedTask = null;
     } else {
-      transferArrayItem(
-        event.previousContainer.data,
-        event.container.data,
-        event.previousIndex,
-        event.currentIndex,
-      );
+      if (this.dragFromScheduler(event)) {
+        this.moveFromAnotherHour(event);
+      } else {
+        this.transferFromAnotherList(event);
+        // TODO: to powinno być teraz przeskalowane
+      }
     }
-    this.updateStartTime(event);
-    // this._draggedTask.show();
-    this._draggedTask = null;
   }
 
-  private updateStartTime(event: CdkDragDrop<string[]>) {
-    let timeId = event.container.element.nativeElement.id;
+  private moveFromAnotherHour(event: CdkDragDrop<TaskContainer[], TaskContainer[]>) {
+    transferArrayItem(
+      event.previousContainer.data,
+      event.container.data,
+      event.previousIndex,
+      event.currentIndex
+    );
+    this.updateStartTime(event.container.element.nativeElement.id, this._draggedTask);
+  }
+
+  private transferFromAnotherList(event: CdkDragDrop<TaskContainer[], TaskContainer[]>) {
+    let task = event.item.dropContainer.data[event.previousIndex];
+    let container = new TaskContainer(task as Task);
+    event.previousContainer.data.splice(event.previousIndex, 1);
+    event.container.data.push(container);
+    this.updateStartTime(event.container.element.nativeElement.id, container);
+    this.insertTaskCallback(container);
+  }
+
+  private dragFromScheduler(event: CdkDragDrop<TaskContainer[], TaskContainer[]>) {
+    return !event.item.dropContainer.data[event.previousIndex];
+  }
+
+  private updateStartTime(timeId: string, taskContainer: TaskContainer) {
     let splitted = timeId.split(":");
     let timeValue = Number.parseInt(splitted[0]) * 100 + Number.parseInt(splitted[1]);
-    this._draggedTask.task.setTime(timeValue);
+    taskContainer.task.setTime(timeValue);
   }
 
   public dragStarted(event: CdkDrag, taskContainer: TaskContainer) {

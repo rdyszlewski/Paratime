@@ -1,4 +1,5 @@
 import { Hour } from "./day-model";
+import { TaskContainer } from './task-container';
 
 export class DaySchedulerScaler {
   private _currentScale: number = 100;
@@ -41,13 +42,17 @@ export class DaySchedulerScaler {
   }
 
   private calculateHeightOfTasks() {
-    this._hours.forEach((x) =>
-      x.tasks.forEach((task) => {
-        let cells = Math.ceil(task.task.getPlannedTime() / 10);
-        let cellHeight = this._referenceCellElement.offsetHeight;
-        let taskHeight = cells * cellHeight;
-        task.size = taskHeight;
-      }),
-    );
+    this._hours.forEach(x =>this.scaleTasks(x.tasks));
+  }
+
+  public scaleTask(task: TaskContainer) {
+    let cells = Math.ceil(task.getTime() / 10);
+    let cellHeight = this._referenceCellElement.offsetHeight;
+    let taskHeight = cells * cellHeight;
+    task.size = taskHeight;
+  }
+
+  public scaleTasks(tasks: TaskContainer[]){
+    tasks.forEach(task=>this.scaleTask(task));
   }
 }
