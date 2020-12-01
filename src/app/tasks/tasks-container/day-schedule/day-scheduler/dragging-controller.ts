@@ -12,9 +12,7 @@ export class DraggingController {
   public onDrop(event: CdkDragDrop<TaskContainer[]>) {
     let id = event.item.element.nativeElement.id;
     if (id.includes("bottom") || id.includes("top")) {
-      this._resizer.acceptResize();
-    }
-    if (id.includes("bottom")) {
+      this._resizer.acceptResize(event, id.includes("top"));
       return;
     }
     if (event.previousContainer === event.container) {

@@ -1,4 +1,4 @@
-import { CdkDragMove } from "@angular/cdk/drag-drop";
+import { CdkDragDrop, CdkDragMove, moveItemInArray, transferArrayItem } from "@angular/cdk/drag-drop";
 import { DaySchedulerScaler } from "./scheduler.scaler";
 import { TaskContainer } from "./task-container";
 
@@ -53,14 +53,35 @@ export class SchedulerTaskResizer {
     }
   }
 
-  public acceptResize() {
+  // TODO: jakoś to wykorzystać
+  public acceptResize(event: CdkDragDrop<TaskContainer[]>, top: boolean) {
     let cellSize = this._scaler.cellHeight;
     let plannedTime = (this._resizedTask.size / cellSize) * 10;
     this._resizedTask.task.setPlannedTime(plannedTime);
     this._resizedTask.offset = 0;
     this._resizedTask.show();
+    // this.resizeCallback(this._resizedTask);
+    // this._resizedTask = null;
+
+    if(top){
+      if(event.previousContainer != event.container){
+        transferArrayItem(
+          event.previousContainer.data,
+          event.container.data,
+          event.previousIndex,
+          event.currentIndex
+        );
+      }
+      this.updateStartTime(event.container.element.nativeElement.id, this._resizedTask);
+    }
     this.resizeCallback(this._resizedTask);
-    this._resizedTask = null;
     // TODO: ustawienie czasu również powinno tutaj być
+  }
+
+  private updateStartTime(timeId: string, taskContainer: TaskContainer) {
+    let splitted = timeId.split(":");
+    let timeValue = Number.parseInt(splitted[0]) * 100 + Number.parseInt(splitted[1]);
+    taskContainer.task.setTime(timeValue);
+    // TODO: przenieść do oddzielnej klasy
   }
 }

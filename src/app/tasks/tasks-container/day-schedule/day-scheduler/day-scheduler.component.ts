@@ -68,6 +68,7 @@ export class DaySchedulerComponent implements OnInit, AfterViewInit {
   }
 
   private onTaskChanged(taskContainer: TaskContainer){
+    console.log(taskContainer.task);
     DataService.getStoreManager().getTaskStore().update(taskContainer.task);
     this._scaler.scaleTask(taskContainer);
   }
@@ -109,11 +110,14 @@ export class DaySchedulerComponent implements OnInit, AfterViewInit {
   }
 
   private initTasks(tasks: Task[]): TaskContainer[] {
+    if(!tasks){
+      return [];
+    }
     let containers: TaskContainer[] = [];
     tasks.forEach((task) => {
       let container = new TaskContainer(task);
       let time = task.getTime();
-      let hour = time / 100;
+      let hour = Math.floor(time / 100);
       let minutes = time % 100;
       let hourElement = this.hours.find((x) => x.equal(hour, minutes));
       hourElement.addTask(container);
