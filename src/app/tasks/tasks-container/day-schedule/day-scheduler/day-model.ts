@@ -60,6 +60,10 @@ export class Hour{
     this._tasks = this._tasks.filter(x=>x!=value);
   }
 
+  public clearTasks(){
+    this._tasks = [];
+  }
+
   constructor(hour: number, minutes: number, mainHour: boolean = true, lastHour=false, middleHour=false){
     this._hour = hour;
     this._minutes = minutes;

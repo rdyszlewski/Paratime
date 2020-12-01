@@ -1,32 +1,38 @@
-import { AfterViewInit, Component, HostListener, OnInit, Predicate, ViewChild } from '@angular/core';
-import { DataService } from 'app/data.service';
-import { Project } from 'app/database/data/models/project';
-import { Task } from 'app/database/data/models/task';
-import { ITaskContainer } from 'app/database/data/models/task.container';
-import { ITaskItem } from 'app/database/data/models/task.item';
-import { TasksList } from 'app/shared/common/lists/tasks.list';
-import { filter } from 'rxjs/operators';
-import { ITaskList } from '../task.list';
-import { CalendarDay } from './day';
-import { DaySchedulerComponent } from './day-scheduler/day-scheduler.component';
-import { ICalendarCallback } from './mini-calendar/calendar-callback';
-import { MiniCalendarComponent } from './mini-calendar/mini-calendar.component';
-import { TasksListComponent } from './tasks-list/tasks-list.component';
+import {
+  AfterViewInit,
+  Component,
+  HostListener,
+  OnInit,
+  Predicate,
+  ViewChild,
+} from "@angular/core";
+import { DataService } from "app/data.service";
+import { Project } from "app/database/data/models/project";
+import { Task } from "app/database/data/models/task";
+import { ITaskContainer } from "app/database/data/models/task.container";
+import { ITaskItem } from "app/database/data/models/task.item";
+import { TasksList } from "app/shared/common/lists/tasks.list";
+import { filter } from "rxjs/operators";
+import { ITaskList } from "../task.list";
+import { CalendarDay } from "./day";
+import { DaySchedulerComponent } from "./day-scheduler/day-scheduler.component";
+import { ICalendarCallback } from "./mini-calendar/calendar-callback";
+import { MiniCalendarComponent } from "./mini-calendar/mini-calendar.component";
+import { TasksListComponent } from "./tasks-list/tasks-list.component";
 
 @Component({
-  selector: 'day-schedule',
-  templateUrl: './day-schedule.component.html',
-  styleUrls: ['./day-schedule.component.css']
+  selector: "day-schedule",
+  templateUrl: "./day-schedule.component.html",
+  styleUrls: ["./day-schedule.component.css"],
 })
 export class DayScheduleComponent implements OnInit, ITaskList, AfterViewInit {
-
   @ViewChild(MiniCalendarComponent)
   private calendarComponent: MiniCalendarComponent;
 
-  @ViewChild('current_day_tasks')
+  @ViewChild("current_day_tasks")
   private currentDayTasksComponent: TasksListComponent;
 
-  @ViewChild('selected_day_tasks')
+  @ViewChild("selected_day_tasks")
   private selectedDayTasksComponent: TasksListComponent;
 
   @ViewChild(DaySchedulerComponent)
@@ -37,12 +43,12 @@ export class DayScheduleComponent implements OnInit, ITaskList, AfterViewInit {
 
   private _currentDay: Date;
 
-  public get days(): CalendarDay[]{
+  public get days(): CalendarDay[] {
     return this._days;
   }
 
-  @HostListener('contextmenu', ['$event'])
-  onRightClick(event){
+  @HostListener("contextmenu", ["$event"])
+  onRightClick(event) {
     event.preventDefault();
   }
 
@@ -52,22 +58,26 @@ export class DayScheduleComponent implements OnInit, ITaskList, AfterViewInit {
     this._currentDay = new Date();
   }
 
-
   openProject(project: Project): void {
-    console.log("Otwieranie projektu");
+    this.daySchedulerComponent.clear();
     this._project = project;
     this.daySchedulerComponent.init();
-    this.calendarComponent.callbacks = new CalendarCallback(this._project, this.currentDayTasksComponent, this.selectedDayTasksComponent);
+    this.calendarComponent.callbacks = new CalendarCallback(
+      this._project,
+      this.currentDayTasksComponent,
+      this.selectedDayTasksComponent,
+      this.daySchedulerComponent,
+    );
     // TODO: wyświetlenie zadań na liscie
     // TODo: załadowanie dzisiejszego dnia
   }
 
   removeTask(task: ITaskItem): void {
-    throw new Error('Method not implemented.');
+    throw new Error("Method not implemented.");
   }
 
   openDetails(task: ITaskItem): void {
-    throw new Error('Method not implemented.');
+    throw new Error("Method not implemented.");
   }
 
   // TODO: trzeba sprawdzić, czy na pewno to jest potrzebne. Możliwe, że coś z tego będzie można wyrzucić, po dodaniu komend
@@ -76,80 +86,97 @@ export class DayScheduleComponent implements OnInit, ITaskList, AfterViewInit {
   addTask(task: ITaskItem, container: ITaskContainer): void;
 
   addTask(task: any, container?: any) {
-    throw new Error('Method not implemented.');
+    throw new Error("Method not implemented.");
   }
 
   close() {
     // throw new Error('Method not implemented.');
   }
 
-  ngOnInit(): void {
-
-  }
+  ngOnInit(): void {}
 
   ngAfterViewInit(): void {
-    // this.calendarComponent.callbacks = {
-    //   onLeftClick(day: CalendarDay){
-    //     console.log("Kliknięcie");
-    //     // TODO: załadowanie zadań bez godziny
-    //     // TODO: załadowanie zadań z godziną
-    //     // TODO: zadania bez godziny wyświetlić na liście
-    //     // TODO: zadania z wyświetlić na planie dnia
-    //   },
-    //   onRightClick(day: CalendarDay){
-    //     console.log(day);
-    //   }
-    // };
-    setTimeout(()=>{
-      this.currentDayTasksComponent.initDropList("current-day", ["current-day"], (task: Task)=>{
+    setTimeout(() => {
+      this.currentDayTasksComponent.initDropList("current-day", ["current-day"], (task: Task) => {
         console.log(task);
       });
-      this.selectedDayTasksComponent.initDropList("selected-day", ['specific-day'], (task: Task)=>{
-        console.log("Zaznaczony dzień");
-        console.log(task);
-      });
+      this.selectedDayTasksComponent.initDropList(
+        "selected-day",
+        ["specific-day"],
+        (task: Task) => {
+          console.log("Zaznaczony dzień");
+          console.log(task);
+        },
+      );
     });
   }
 
-
-
-  public isCurrentDay(day: CalendarDay){
-    return (this._currentDay.getDate() == day.day &&
+  public isCurrentDay(day: CalendarDay) {
+    return (
+      this._currentDay.getDate() == day.day &&
       this._currentDay.getMonth() == day.month &&
-      this._currentDay.getFullYear() == day.year);
+      this._currentDay.getFullYear() == day.year
+    );
   }
   //
-
 }
 
-class CalendarCallback implements ICalendarCallback{
-
-  constructor(private project: Project, private currentDayTasks: TasksListComponent, private selectedDayTasks: TasksListComponent){}
+class CalendarCallback implements ICalendarCallback {
+  constructor(
+    private project: Project,
+    private currentDayTasks: TasksListComponent,
+    private selectedDayTasks: TasksListComponent,
+    private scheduler: DaySchedulerComponent,
+  ) {}
 
   onLeftClick(day: CalendarDay) {
     // this.initTasks(day);
-    this.loadTasks(day, this.currentDayTasks,
-      [this.getProjectPredicate(),
-        task=>task.getTime==null]);
+    this.loadListTasks(day, this.currentDayTasks, [
+      this.getProjectPredicate(),
+      (task) => task.getTime() == null,
+    ]);
+    this.loadSchedulerTasks(day, [this.getProjectPredicate(), (task) => task.getTime() != null]);
   }
-
 
   onRightClick(day: CalendarDay) {
-    this.loadTasks(day, this.selectedDayTasks, [this.getProjectPredicate()]);
+    this.loadListTasks(day, this.selectedDayTasks, [this.getProjectPredicate()]);
   }
 
-  private loadTasks(day:CalendarDay, listComponent: TasksListComponent, predicates: Predicate<Task>[],){
-    let date = new Date(day.year, day.month, day.day);
-    DataService.getStoreManager().getTaskStore().getTasksByDate(date).then(tasks=>{
-      let resultTasks = tasks;
-      predicates.forEach(predicate=>{
-        resultTasks = resultTasks.filter(predicate);
-      })
-      listComponent.tasks = resultTasks;
+  private loadListTasks(
+    day: CalendarDay,
+    listComponent: TasksListComponent,
+    predicates: Predicate<Task>[],
+  ) {
+    this.loadTasksWithAction(day, predicates, (tasks) => {
+      listComponent.tasks = tasks;
     });
   }
 
-  private getProjectPredicate(): Predicate<Task>{
-    return task=>task.getProject().getId() == this.project.getId();
+  private loadTasksWithAction(
+    day: CalendarDay,
+    predicates: Predicate<Task>[],
+    action: (tasks: Task[]) => void,
+  ) {
+    let date = new Date(day.year, day.month, day.day);
+    DataService.getStoreManager()
+      .getTaskStore()
+      .getTasksByDate(date)
+      .then((tasks) => {
+        let resultTasks = tasks;
+        predicates.forEach((predicate) => {
+          resultTasks = resultTasks.filter(predicate);
+        });
+        action(resultTasks);
+      });
+  }
+
+  private getProjectPredicate(): Predicate<Task> {
+    return (task) => task.getProject().getId() == this.project.getId();
+  }
+
+  private loadSchedulerTasks(day: CalendarDay, predicates: Predicate<Task>[]) {
+    this.loadTasksWithAction(day, predicates, (tasks) => {
+      this.scheduler.setTasks(tasks);
+    });
   }
 }

@@ -63,10 +63,13 @@ export class TasksListComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    // this.addTestTasks();
+  }
+
+  private addTestTasks(){
     let task1 = new Task("Jeden", "", Status.STARTED);
     let task2 = new Task("Dwa", "", Status.STARTED);
     let task3 = new Task("Trzy", "", Status.STARTED);
     this.tasks.push(task1, task2, task3);
   }
-
 }

@@ -67,8 +67,8 @@ export class DaySchedulerComponent implements OnInit, AfterViewInit {
 
   private initScheduler() {
     this._hours = SchedulerCreator.create(6, 6);
-    let tasks = this.createTasksTest();
-    this.initTasks(tasks);
+    // let tasks = this.createTasksTest();
+    // this.initTasks(tasks);
   }
 
   private createTasksTest(): Task[] {
@@ -83,6 +83,17 @@ export class DaySchedulerComponent implements OnInit, AfterViewInit {
     task2.setPlannedTime(50);
 
     return [task1, task2];
+  }
+
+  public setTasks(tasks: Task[]){
+    this.clear();
+    if(tasks!=null){
+      this.initTasks(tasks);
+    }
+  }
+
+  public clear(){
+    this._hours.forEach(x=>x.clearTasks());
   }
 
   private initTasks(tasks: Task[]) {
