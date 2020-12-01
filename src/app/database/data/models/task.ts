@@ -19,6 +19,7 @@ export class Task extends OrderableItem implements IFilterable, ITaskItem{
     private labels: Label[] = [];
     private date: string = null;
     private _date: Date = null;
+    // tasks start time (format HHMM) H * 100 + M
     private time: number = null;
     private endDate: string = null;
     private _endDate: Date = null;

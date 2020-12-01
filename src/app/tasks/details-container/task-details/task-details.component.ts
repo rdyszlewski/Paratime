@@ -160,7 +160,7 @@ export class TaskDetailsComponent implements OnInit {
   }
 
   private getTimeValue(hour: number, minutes: number) {
-    return hour * 60 + minutes;
+    return hour * 100 + minutes;
   }
 
   public getTime(): string {
@@ -168,14 +168,16 @@ export class TaskDetailsComponent implements OnInit {
     let hours;
     let minutes;
     if (value) {
-      hours = Math.floor(value / 60);
-      minutes = value % 60;
+      hours = Math.floor(value / 100);
+      minutes = value % 100;
     } else {
       // TODO: tutaj można podać aktualną godzinę
       hours = 0;
       minutes = 0;
       // TODO: zrobić obsługe braku czasu w timepicker
     }
-    return hours.toString() + ':' + minutes.toString();
+    // TODO: prawdopodobnie potrzebne będzie tutaj jakieś formatowanie
+    let result = hours.toString() + ":" + minutes.toString();
+    return result;
   }
 }

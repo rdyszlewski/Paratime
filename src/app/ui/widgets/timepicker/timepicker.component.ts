@@ -1,6 +1,8 @@
-import { Component, OnInit, Output, EventEmitter, Input, HostListener } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Input, HostListener, SimpleChanges } from '@angular/core';
 import { TimeModel } from './time_model';
 import { TimepickerTriggerDirective } from './directives/timepicker-trigger.directive';
+import { Observable } from 'rxjs';
+
 
 
 @Component({
@@ -34,7 +36,7 @@ export class TimepickerComponent implements OnInit {
 
   @Input("paraTimepickerTrigger") trigger: TimepickerTriggerDirective;
   // @Input() time: Observable<string>;
-  @Input() time: string;
+  @Input("time") time: string;
 
 
   @Output() onClose: EventEmitter<null> = new EventEmitter();
@@ -46,6 +48,11 @@ export class TimepickerComponent implements OnInit {
     }
   }
 
+  ngOnChanges(changes: SimpleChanges) {
+    this.updateText();
+
+}
+
   public clickedInside(event:MouseEvent){
     event.stopPropagation();
   }
@@ -53,10 +60,12 @@ export class TimepickerComponent implements OnInit {
   constructor() { }
 
   ngOnInit(): void {
-    this
+    this.updateText();
   }
 
   private  updateText(){
+    console.log("UpdateText");
+    console.log(this.time);
     const value = this.time.split(":");
     this.model.hours = Number.parseInt(value[0]);
     this.model.minutes = Number.parseInt(value[1]);
@@ -119,6 +128,7 @@ export class TimepickerComponent implements OnInit {
   }
 
   private formatTime(number:number):string{
+    // TODO: chyba istnieje łatwiejszy sposób na zrobienie tego
     const size = 2;
     let s = number+"";
     while (s.length < size) s = "0" + s;
@@ -130,6 +140,4 @@ export class TimepickerComponent implements OnInit {
     const minutes = this.model.minutes;
     return hours >= this.minHours && hours <= this.maxHours && minutes >= this.minMinutes && minutes <= this.maxMinutes
   }
-
-
 }

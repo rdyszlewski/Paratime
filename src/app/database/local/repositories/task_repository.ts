@@ -86,7 +86,6 @@ export class LocalTaskRepository implements ITaskRepository{
       return this.table.where({"successor": -1, "projectID": projectId, "status": status}).and(x=>x["id"]!=exceptItem).first();
     }
 
-
     public insertTask(task: Task): Promise<number> {
         let taskToSave = this.getTaskCopyReadyToSave(task);
         return this.table.add(taskToSave);

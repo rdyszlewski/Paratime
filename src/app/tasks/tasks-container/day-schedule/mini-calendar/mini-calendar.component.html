@@ -1,6 +1,8 @@
 <div class="mini-calendar">
   <div class="calendar-control">
-
+    <button class="control-button" (click)="decreaseMonth()"><</button>
+    <span class="month-value">{{getMonthValue()}}</span>
+    <button class="control-button" (click)="increaseMonth()">></button>
   </div>
   <div class="grid">
     <div *ngFor="let day of days"

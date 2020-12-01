@@ -33,6 +33,10 @@ export class TasksListComponent implements OnInit {
     return this._tasks;
   }
 
+  public set tasks(value: Task[]){
+    this._tasks = value;
+  }
+
   public get connectedLists(): string[]{
     return this._connectedLists;
   }

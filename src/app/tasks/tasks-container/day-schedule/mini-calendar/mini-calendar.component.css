@@ -24,3 +24,16 @@
 .day-cell:hover{
   background-color: aqua;
 }
+
+.calendar-control{
+  display: flex;
+}
+
+.control-button{
+
+}
+
+.month-value{
+  width: 100%;
+  text-align: center;
+}

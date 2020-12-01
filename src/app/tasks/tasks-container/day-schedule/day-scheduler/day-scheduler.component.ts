@@ -40,6 +40,10 @@ export class DaySchedulerComponent implements OnInit, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
+    this.init();
+  }
+
+  public init(){
     let element = document.getElementById("5:00") as HTMLElement;
     this._scaler.init(element, this._hours);
     this._scaler.scale();

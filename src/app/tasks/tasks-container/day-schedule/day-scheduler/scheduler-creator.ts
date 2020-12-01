@@ -14,7 +14,7 @@ export class SchedulerCreator {
       for (let segment = 0; segment < segments; segment++) {
         let mainHour = segment == 0;
         let lastHour = segment == segments - 1;
-        let middleHour = segment == segments / 2;
+        let middleHour = segment == (segments / 2) - 1;
         let hourElement = new Hour(hour, segmentTime * segment, mainHour, lastHour, middleHour);
         hours.push(hourElement);
       }

@@ -26,8 +26,7 @@ export class DraggingController {
       );
     }
     this.updateStartTime(event);
-    this._draggedTask.show();
-    console.log("Pokazano");
+    // this._draggedTask.show();
     this._draggedTask = null;
   }
 
@@ -43,6 +42,5 @@ export class DraggingController {
     console.log(taskContainer);
     this._draggedTask = taskContainer;
     // this._draggedTask.hide();
-    console.log("Schowano");
   }
 }

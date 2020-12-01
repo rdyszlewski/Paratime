@@ -1,11 +1,14 @@
-import { AfterViewInit, Component, HostListener, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, HostListener, OnInit, Predicate, ViewChild } from '@angular/core';
+import { DataService } from 'app/data.service';
 import { Project } from 'app/database/data/models/project';
 import { Task } from 'app/database/data/models/task';
 import { ITaskContainer } from 'app/database/data/models/task.container';
 import { ITaskItem } from 'app/database/data/models/task.item';
 import { TasksList } from 'app/shared/common/lists/tasks.list';
+import { filter } from 'rxjs/operators';
 import { ITaskList } from '../task.list';
 import { CalendarDay } from './day';
+import { DaySchedulerComponent } from './day-scheduler/day-scheduler.component';
 import { ICalendarCallback } from './mini-calendar/calendar-callback';
 import { MiniCalendarComponent } from './mini-calendar/mini-calendar.component';
 import { TasksListComponent } from './tasks-list/tasks-list.component';
@@ -26,7 +29,11 @@ export class DayScheduleComponent implements OnInit, ITaskList, AfterViewInit {
   @ViewChild('selected_day_tasks')
   private selectedDayTasksComponent: TasksListComponent;
 
+  @ViewChild(DaySchedulerComponent)
+  private daySchedulerComponent: DaySchedulerComponent;
+
   private _days: CalendarDay[];
+  private _project: Project;
 
   private _currentDay: Date;
 
@@ -47,7 +54,12 @@ export class DayScheduleComponent implements OnInit, ITaskList, AfterViewInit {
 
 
   openProject(project: Project): void {
-    // throw new Error('Method not implemented.');
+    console.log("Otwieranie projektu");
+    this._project = project;
+    this.daySchedulerComponent.init();
+    this.calendarComponent.callbacks = new CalendarCallback(this._project, this.currentDayTasksComponent, this.selectedDayTasksComponent);
+    // TODO: wyświetlenie zadań na liscie
+    // TODo: załadowanie dzisiejszego dnia
   }
 
   removeTask(task: ITaskItem): void {
@@ -76,14 +88,18 @@ export class DayScheduleComponent implements OnInit, ITaskList, AfterViewInit {
   }
 
   ngAfterViewInit(): void {
-    this.calendarComponent.callbacks = {
-      onLeftClick(day: CalendarDay){
-        console.log("Kliknięcie");
-      },
-      onRightClick(day: CalendarDay){
-        console.log(day);
-      }
-    }
+    // this.calendarComponent.callbacks = {
+    //   onLeftClick(day: CalendarDay){
+    //     console.log("Kliknięcie");
+    //     // TODO: załadowanie zadań bez godziny
+    //     // TODO: załadowanie zadań z godziną
+    //     // TODO: zadania bez godziny wyświetlić na liście
+    //     // TODO: zadania z wyświetlić na planie dnia
+    //   },
+    //   onRightClick(day: CalendarDay){
+    //     console.log(day);
+    //   }
+    // };
     setTimeout(()=>{
       this.currentDayTasksComponent.initDropList("current-day", ["current-day"], (task: Task)=>{
         console.log(task);
@@ -94,6 +110,8 @@ export class DayScheduleComponent implements OnInit, ITaskList, AfterViewInit {
       });
     });
   }
+
+
 
   public isCurrentDay(day: CalendarDay){
     return (this._currentDay.getDate() == day.day &&
@@ -106,14 +124,32 @@ export class DayScheduleComponent implements OnInit, ITaskList, AfterViewInit {
 
 class CalendarCallback implements ICalendarCallback{
 
+  constructor(private project: Project, private currentDayTasks: TasksListComponent, private selectedDayTasks: TasksListComponent){}
+
   onLeftClick(day: CalendarDay) {
-    console.log("Left click");
-    console.log(day);
+    // this.initTasks(day);
+    this.loadTasks(day, this.currentDayTasks,
+      [this.getProjectPredicate(),
+        task=>task.getTime==null]);
   }
+
 
   onRightClick(day: CalendarDay) {
-    console.log("Right click");
-    console.log(day);
+    this.loadTasks(day, this.selectedDayTasks, [this.getProjectPredicate()]);
   }
 
+  private loadTasks(day:CalendarDay, listComponent: TasksListComponent, predicates: Predicate<Task>[],){
+    let date = new Date(day.year, day.month, day.day);
+    DataService.getStoreManager().getTaskStore().getTasksByDate(date).then(tasks=>{
+      let resultTasks = tasks;
+      predicates.forEach(predicate=>{
+        resultTasks = resultTasks.filter(predicate);
+      })
+      listComponent.tasks = resultTasks;
+    });
+  }
+
+  private getProjectPredicate(): Predicate<Task>{
+    return task=>task.getProject().getId() == this.project.getId();
+  }
 }

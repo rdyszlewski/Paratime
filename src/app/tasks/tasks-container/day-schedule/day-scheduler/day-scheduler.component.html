@@ -1,73 +1,79 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <link rel="stylesheet" href="day-scheduler.component.css" />
-  </head>
-  <body>
-    <div class="shadow app-panel">
-      <select (change)="changeScale($event)">
-        <option [value]="100" default>100%</option>
-        <option [value]="200">200%</option>
-        <option [value]="300">300</option>
-        <option [value]="400">400%</option>
-      </select>
+<div class="shadow app-panel">
+  <select (change)="changeScale($event)">
+    <option [value]="100" default>100%</option>
+    <option [value]="200">200%</option>
+    <option [value]="300">300</option>
+    <option [value]="400">400%</option>
+  </select>
 
-      <div class="day-schedule-view">
-        <ul class="hour-column">
-          <li
-            *ngFor="let hour of hours"
-            [style.height.px]="hour.height"
-            [ngClass]="{
-              'upper-hour-cell': hour.mainHour,
-              'bottom-hour-cell': !hour.mainHour && !hour.lastHour,
-              'last-task-cell': hour.lastHour,
-              'hour-cell': true
-            }"
-          >
-            <div *ngIf="hour.mainHour">
-              {{ hour.time }}
-            </div>
-          </li>
-        </ul>
+  <div class="day-schedule-view">
+    <ul class="hour-column">
+      <li
+        *ngFor="let hour of hours"
+        [style.height.px]="hour.height"
+        [ngClass]="{
+          'upper-hour-cell': hour.mainHour,
+          'bottom-hour-cell': !hour.mainHour && !hour.lastHour,
+          'last-task-cell': hour.lastHour,
+          'hour-cell': true
+        }"
+      >
+        <div *ngIf="hour.mainHour">
+          {{ hour.time }}
+        </div>
+      </li>
+    </ul>
 
-        <ul class="task-column" cdkDropListGroup #dropGroup>
-          <li
-            *ngFor="let hour of hours"
-            cdkDropList
-            [id]="hour.time"
-            #hour.time="cdkDropList"
-            [cdkDropListData]="hour.tasks"
-            (cdkDropListDropped)="dragginController.onDrop($event)"
-            [cdkDropListSortingDisabled]="true"
-            [style.height.px]="hour.height"
-            [ngClass]="{
-              'upper-task-cell': hour.mainHour,
-              'bottom-task-cell': !hour.mainHour && !hour.lastHour,
-              'last-task-cell': hour.lastHour,
-              'task-cell': true
-            }"
-          >
-            <div
-              *ngFor="let t of hour.tasks"
-              class="task"
-              [id]="'task_'+ t.task.getId()"
-              #t.task.getId()="cdkDrag"
-              cdkDrag
-              cdkDragBoundary=".task-column"
-              (cdkDragStarted)="dragginController.dragStarted($event, t)"
-              [style.height.px]="t.size"
-              [style.z-index]="t.position"
-              [style.top.px]="t.offset"
-            >
-            <div [id]="'top_handler_'+t.task.getId()" cdkDragLockAxis="y" class="dragHandle top" cdkDrag (cdkDragMoved)="resizer.dragMove($event, t)" (cdkDragStarted)="dragginController.dragStarted($event, t)"></div>
-            <!-- <div #dragHandleTop draggable="true" class="dragHandle top" (drag)="drag($event)" (mouseenter)="resizeMouseEnter()" (mouseleave)="resizeMouseExit()" (dragstart)="resizeStart($event)" (dragend)="resizeEnd($event)" (mousedown)="resizeStart($event)"></div> -->
-            <div class="task-name">{{ t.task.getName() }} </div>
-            <!-- <div #dragHandleBottom draggable="true" class="dragHandle bottom" (drag)="drag($event)" (mouseenter)="resizeMouseEnter()" (mouseleave)="resizeMouseExit()" (dragstart)="resizeStart($event)" (dragend)="resizeEnd($event)" (mousedown)="resizeStart($event)"></div> -->
-            <div [id]="'bottom_handler_' + t.task.getId()" cdkDragLockAxis="y" class="dragHandle bottom" cdkDrag (cdkDragMoved)="resizer.dragMove($event, t)" ></div>
-            </div>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </body>
-</html>
+    <ul class="task-column" cdkDropListGroup #dropGroup>
+      <li
+        *ngFor="let hour of hours"
+        cdkDropList
+        [id]="hour.time"
+        #hour.time="cdkDropList"
+        [cdkDropListData]="hour.tasks"
+        (cdkDropListDropped)="dragginController.onDrop($event)"
+        [cdkDropListSortingDisabled]="true"
+        [style.height.px]="hour.height"
+        [ngClass]="{
+          'upper-task-cell': hour.mainHour,
+          'bottom-task-cell': !hour.mainHour && !hour.lastHour,
+          'last-task-cell': hour.lastHour,
+          'middle-task-cell':hour.middleHour,
+          'task-cell': true
+        }"
+      >
+        <div
+          *ngFor="let t of hour.tasks"
+          class="task"
+          [id]="'task_' + t.task.getId()"
+          #t.task.getId()="cdkDrag"
+          cdkDrag
+          cdkDragBoundary=".task-column"
+          (cdkDragStarted)="dragginController.dragStarted($event, t)"
+          [style.height.px]="t.size"
+          [style.z-index]="t.position"
+          [style.top.px]="t.offset"
+        >
+          <div *cdkDragPlaceholder class="drag-placeholder"
+          [style.height.px]="t.size"></div>
+          <div
+            [id]="'top_handler_' + t.task.getId()"
+            cdkDragLockAxis="y"
+            class="dragHandle top"
+            cdkDrag
+            (cdkDragMoved)="resizer.dragMove($event, t)"
+            (cdkDragStarted)="dragginController.dragStarted($event, t)"
+          ></div>
+          <div class="task-name">{{ t.task.getName() }}</div>
+          <div
+            [id]="'bottom_handler_' + t.task.getId()"
+            cdkDragLockAxis="y"
+            class="dragHandle bottom"
+            cdkDrag
+            (cdkDragMoved)="resizer.dragMove($event, t)"
+          ></div>
+        </div>
+      </li>
+    </ul>
+  </div>
+</div>
