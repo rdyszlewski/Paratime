@@ -7,7 +7,7 @@ import { IProjectStageService } from './stage.service';
 import { ISubtaskService } from './subtask.service';
 import { ITaskService } from './task.service';
 
-export interface DataSource{
+export interface IDataSource{
   getProjectService(): IProjectService;
   getTaskService(): ITaskService;
   getSubtaskService(): ISubtaskService;

@@ -9,7 +9,8 @@ export interface IProjectService{
   getByFilter(filter: ProjectFilter): Promise<Project[]>;
   getAll(): Promise<Project[]>;
   create(project: Project): Promise<ProjectInsertResult>;
-  remove(id: number): Promise<Project>;
+  /// return: project in which the order has changed
+  remove(id: number): Promise<Project[]>;
   update(project: Project): Promise<Project>;
-  changeOrder(currentTask: Task, previoustask: Task, currentIndex: number, previousIndex: number): Promise<Project[]>;
+  changeOrder(currentProject: Project, previousProject: Project, currentIndex: number, previousIndex: number): Promise<Project[]>;
 }

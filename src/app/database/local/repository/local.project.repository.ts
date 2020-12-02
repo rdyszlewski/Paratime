@@ -26,7 +26,7 @@ export class LocalProjectRepository extends OrderRepository<Project>{
     return this.table.toArray();
   }
 
-  public create(project: Project): Promise<number>{
+  public insert(project: Project): Promise<number>{
     let preparedProject = this.getPreparedProject(project);
     return this.table.add(preparedProject);
   }
