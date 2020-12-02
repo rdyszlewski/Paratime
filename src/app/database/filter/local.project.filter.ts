@@ -10,6 +10,9 @@ export class ProjectRepositoryFilter extends RepositoryFilter<Project, ProjectFi
   }
 
   protected init(filter: ProjectFilter):void{
+    if(filter.name != null){
+      this.addCondition(project=>project.getName().includes(filter.name));
+    }
     if(filter.description!=null){
       this.addCondition(project=>project.getDescription()==filter.description);
     }

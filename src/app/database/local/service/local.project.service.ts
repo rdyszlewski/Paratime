@@ -54,7 +54,7 @@ export class LocalProjectService implements IProjectService{
   create(project: Project): Promise<ProjectInsertResult> {
     return this.insertNewProject(project).then(insertedProject=>{
       // TODO: wstawienie kolumny kanban
-      return this.orderInsertedProject(project);
+      return this.orderInsertedProject(insertedProject);
     });
   }
 

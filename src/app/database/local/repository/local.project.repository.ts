@@ -1,6 +1,6 @@
 import { Project } from 'app/database/data/models/project';
+import { ProjectRepositoryFilter } from 'app/database/filter/local.project.filter';
 import { ProjectFilter } from 'app/database/filter/project.filter';
-import { ProjectRepositoryFilter } from './local.project.filter';
 import { OrderRepository } from './order.respository';
 
 export class LocalProjectRepository extends OrderRepository<Project>{

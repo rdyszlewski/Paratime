@@ -1,15 +1,15 @@
 import { IKanbanColumnsRepository } from 'app/database/data/common/repositories/kanban_columns_repository';
 import { KanbanColumn } from 'app/database/data/models/kanban';
-import { LocalOrderRepository } from 'app/database/data/common/repositories/orderable.repository';
+import { OrderRepository } from 'app/database/data/common/repositories/orderable.repository';
 
 export class LocalKanbanColumnsRepository implements IKanbanColumnsRepository{
 
     private table: Dexie.Table<KanbanColumn, number>;
-    private orderRepository: LocalOrderRepository<KanbanColumn>;
+    private orderRepository: OrderRepository<KanbanColumn>;
 
     constructor(table: Dexie.Table<KanbanColumn, number>){
         this.table = table;
-        this.orderRepository = new LocalOrderRepository(table, "projectId");
+        this.orderRepository = new OrderRepository(table, "projectId");
     }
 
     public findById(id: number): Promise<KanbanColumn> {

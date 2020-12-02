@@ -2,7 +2,6 @@ import { Task } from 'app/database/data/models/task';
 import { Project } from 'app/database/data/models/project';
 import { PomodoroHistory } from 'app/database/data/models/pomodoro.history';
 import { DataService } from 'app/data.service';
-import { createUrlResolverWithoutPackagePrefix } from '@angular/compiler';
 
 export class PomodoroStatisticsModel{
     private tasksEntries: TaskEntry[] = [];

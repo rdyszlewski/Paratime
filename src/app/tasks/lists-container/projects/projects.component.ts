@@ -9,7 +9,6 @@ import { ProjectsViewState } from './common/state';
 import { ProjectsFilteringController } from './filtering/projects.filtering.controller';
 import { ProjectAddingController } from './adding/projects.adding.controller';
 import { ProjectsRemovingController } from './removing/projects.removing.controller';
-import { ProjectsLoader } from './common/projects.loader';
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { EventBus } from 'eventbus-ts';
 import { ProjectLoadEvent, ProjectEditEvent } from './events/project.event';
@@ -31,14 +30,14 @@ export class ProjectsComponent implements OnInit {
   public status = Status;
   public type = ProjectType;
 
-  constructor(public dialog:MatDialog) { }
+  constructor(public dialog:MatDialog, private dataService: DataService) { }
 
   ngOnInit(): void {
     this.model = new ProjectsModel();
     this.state = new ProjectsViewState();
-    this.filteringController = new ProjectsFilteringController(this.model);
-    this.addingController = new ProjectAddingController(this.state, this.model);
-    this.removingController = new ProjectsRemovingController(this.model, this.dialog);
+    this.filteringController = new ProjectsFilteringController(this.model, this.dataService);
+    this.addingController = new ProjectAddingController(this.state, this.model, this.dataService);
+    this.removingController = new ProjectsRemovingController(this.model, this.dialog, this.dataService);
     this.loadProjects();
   }
 
@@ -64,7 +63,7 @@ export class ProjectsComponent implements OnInit {
 
   // loading projects from database
   private loadProjects(){
-    ProjectsLoader.loadProjectsFromStore().then(projects=>{
+    this.dataService.getProjectService().getAll().then(projects=>{
       this.model.setProjects(projects);
     });
   }
@@ -88,7 +87,6 @@ export class ProjectsComponent implements OnInit {
 // click events
 
   public onProjectClick(project:Project){
-    // this.loadEvent.emit(project);
     EventBus.getDefault().post(new ProjectLoadEvent(project));
   }
 
@@ -100,9 +98,7 @@ export class ProjectsComponent implements OnInit {
   }
 
   public onEditProject(){
-    DataService.getStoreManager().getProjectStore().getProjectById(this.model.getProjectWithOpenMenu().getId()).then(loadedProject=>{
-      // this.editEvent.emit(loadedProject);
-      console.log("Jestem tutaj");
+    this.dataService.getProjectService().getById(this.model.getProjectWithOpenMenu().getId()).then(loadedProject=>{
       EventBus.getDefault().post(new ProjectEditEvent(loadedProject));
       this.model.setSelectedProject(this.model.getProjectWithOpenMenu());
     });
@@ -125,7 +121,7 @@ export class ProjectsComponent implements OnInit {
   private changeTasksOrder(previousIndex: number, currentIndex:number){
     const previousTask = this.model.getProjectByIndex(previousIndex);
     const currentTask = this.model.getProjectByIndex(currentIndex);
-    DataService.getStoreManager().getProjectStore().move(previousTask, currentTask, previousIndex > currentIndex).then(updatedProjects=>{
+    this.dataService.getProjectService().changeOrder(currentTask, previousTask, currentIndex, previousIndex).then(updatedProjects=>{
       this.model.updateProjects(updatedProjects);
     });
   }

@@ -10,7 +10,7 @@ export class LocalOrderController<T extends OrderableItem> {
   }
 
   public move(currentItem: T, previousItem: T, currentIndex: number, previousIndex: number): Promise<T[]> {
-    let moveUp = currentIndex > previousIndex;
+    let moveUp = currentIndex < previousIndex;
     return this.remove(previousItem).then(updatedItems1=>{
       const updatedCurrentItem = updatedItems1.filter(x=>x.getId()==currentItem.getId());
       let newCurrentItem = updatedCurrentItem.length>0? updatedCurrentItem[0]: currentItem;

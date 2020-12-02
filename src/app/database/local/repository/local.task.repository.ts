@@ -1,6 +1,6 @@
 import { Task } from 'app/database/data/models/task';
+import { TaskRepositoryFilter } from 'app/database/filter/local.task.filter';
 import { TaskFilter } from 'app/database/filter/task.filter';
-import { TaskRepositoryFilter } from './local.task.filter';
 import { OrderRepository } from './order.respository';
 
 export class LocalTaskRepository extends OrderRepository<Task>{

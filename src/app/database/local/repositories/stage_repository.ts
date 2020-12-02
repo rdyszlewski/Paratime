@@ -1,14 +1,14 @@
+import { OrderRepository } from 'app/database/data/common/repositories/orderable.repository';
 import { IProjectStageRepository } from 'app/database/data/common/repositories/stage_repository';
 import { Stage } from 'app/database/data/models/stage';
-import { LocalOrderRepository } from 'app/database/data/common/repositories/orderable.repository';
 
 export class LocalProjectStageRepository implements IProjectStageRepository {
   private table: Dexie.Table<Stage, number>;
-  private orderRepository: LocalOrderRepository<Stage>;
+  private orderRepository: OrderRepository<Stage>;
 
   constructor(table: Dexie.Table<Stage, number>) {
     this.table = table;
-    this.orderRepository = new LocalOrderRepository(table, 'projectID');
+    this.orderRepository = new OrderRepository(table, 'projectID');
   }
 
   public findById(id: number): Promise<Stage> {

@@ -15,10 +15,8 @@ export class ProjectAddingController{
 
 
     private model: ProjectsAddingModel = new ProjectsAddingModel();
-    private state: ProjectsViewState;
-    private listModel: ProjectsModel;
 
-    constructor(state: ProjectsViewState, listModel: ProjectsModel){
+    constructor(private state: ProjectsViewState,private listModel: ProjectsModel, private dataService: DataService){
         this.state = state;
         this.listModel = listModel;
     }
@@ -45,10 +43,9 @@ export class ProjectAddingController{
     public saveProject(){
         const project = new Project();
         project.setName(this.model.getNewProjectName());
-        DataService.getStoreManager().getProjectStore().createProject(project).then(result=>{
-          // this.listModel.addProject(result.insertedProject);
+        this.dataService.getProjectService().create(project).then(result=>{
+          console.log(result);
           this.listModel.updateProjects(result.updatedProjects);
-
           EventBus.getDefault().post(new ProjectLoadEvent(result.insertedProject));
         });
         // TODO: można wstawić jakąś zaślepkę, która będzie chowana dopiero po wstawieniu zadania

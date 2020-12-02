@@ -1,15 +1,15 @@
 import { Subtask } from 'app/database/data/models/subtask';
-import { LocalOrderRepository } from 'app/database/data/common/repositories/orderable.repository';
+import { OrderRepository } from 'app/database/data/common/repositories/orderable.repository';
 import { ISubtaskRepository } from 'app/database/data/common/repositories/subtask_repository';
 
 export class LocalSubtaskRepository implements ISubtaskRepository{
 
     private table: Dexie.Table<Subtask, number>;
-    private orderRepository: LocalOrderRepository<Subtask>;
+    private orderRepository: OrderRepository<Subtask>;
 
     constructor(table: Dexie.Table<Subtask, number>){
         this.table = table;
-        this.orderRepository = new LocalOrderRepository(table, "taskId");
+        this.orderRepository = new OrderRepository(table, "taskId");
     }
 
     public findById(id: number): Promise<Subtask> {

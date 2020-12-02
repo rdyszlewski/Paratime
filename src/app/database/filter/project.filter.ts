@@ -1,12 +1,17 @@
 import { TransitionCheckState } from '@angular/material/checkbox';
 
 export class ProjectFilter{
+  private _name:string;
   private _finished: boolean;
   private _startDate: Date;
   private _endDate: Date;
   private _description: string;
 
   private constructor(){}
+
+  public get name():string{
+    return this._name;
+  }
 
   public get finished():boolean{
     return this._finished;
@@ -31,6 +36,11 @@ export class ProjectFilter{
   static Builder = class{
 
     constructor(private filter: ProjectFilter){}
+
+    public setName(name:string): ProjectFilter.Builder{
+      this.filter._name = name;
+      return this;
+    }
 
     public setFinished(finished: boolean): ProjectFilter.Builder{
       this.filter._finished = finished;

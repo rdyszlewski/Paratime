@@ -36,6 +36,10 @@ export class ProjectDetailsComponent implements OnInit {
   public projectType = ProjectType;
   public status = Status;
 
+  constructor(private dataService: DataService){
+
+  }
+
   ngOnInit(): void {
     this.model = new ProjectDetails();
     this.state = new ProjectDetailsState(this.model);
@@ -77,12 +81,9 @@ export class ProjectDetailsComponent implements OnInit {
   }
 
   public updateProject() {
-    DataService.getStoreManager()
-      .getProjectStore()
-      .updateProject(this.model.getProject())
-      .then(() => {
-        EventBus.getDefault().post(new ProjectUpdateEvent(this.model.getProject()));
-      });
+    this.dataService.getProjectService().update(this.model.getProject()).then(updatedProject=>{
+        EventBus.getDefault().post(new ProjectUpdateEvent(updatedProject));
+    });
   }
 
   public onRemoveStage(stage: Stage) {
