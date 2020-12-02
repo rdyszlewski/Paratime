@@ -1,15 +1,15 @@
 import { Project } from 'app/database/data/models/project';
-import { OrderRepository } from 'app/database/data/common/repositories/orderable.repository';
+import { LocalOrderRepository } from 'app/database/data/common/repositories/orderable.repository';
 import { IProjectRepository } from 'app/database/data/common/repositories/project_repository';
 
 export class LocalProjectRepository implements IProjectRepository{
 
     private table: Dexie.Table<Project, number>;
-    private orderRepository: OrderRepository<Project>;
+    private orderRepository: LocalOrderRepository<Project>;
 
     constructor(table: Dexie.Table<Project, number>){
         this.table = table;;
-        this.orderRepository = new OrderRepository(table, null);
+        this.orderRepository = new LocalOrderRepository(table, null);
     }
 
     public findAllProjects(): Promise<Project[]> {

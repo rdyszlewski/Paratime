@@ -155,7 +155,7 @@ export class TaskDetailsComponent implements OnInit {
     const values = time.split(':');
     const hours = Number.parseInt(values[0]);
     const minutes = Number.parseInt(values[1]);
-    this.model.getTask().setTime(this.getTimeValue(hours, minutes));
+    this.model.getTask().setStartTime(this.getTimeValue(hours, minutes));
     this.updateTask();
   }
 
@@ -164,7 +164,7 @@ export class TaskDetailsComponent implements OnInit {
   }
 
   public getTime(): string {
-    const value = this.model.getTask().getTime();
+    const value = this.model.getTask().getStartTime();
     let hours;
     let minutes;
     if (value) {

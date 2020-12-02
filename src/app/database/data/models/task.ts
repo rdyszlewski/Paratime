@@ -20,7 +20,8 @@ export class Task extends OrderableItem implements IFilterable, ITaskItem{
     private date: string = null;
     private _date: Date = null;
     // tasks start time (format HHMM) H * 100 + M
-    private time: number = null;
+    private startTime: number = null;
+    private endTime: number = null;
     private endDate: string = null;
     private _endDate: Date = null;
     private plannedTime: number = null;
@@ -98,12 +99,20 @@ export class Task extends OrderableItem implements IFilterable, ITaskItem{
       this.date = DateAdapter.getText(date);
     }
 
-    public getTime():number{
-        return this.time;
+    public getStartTime():number{
+        return this.startTime;
     }
 
-    public setTime(time:number):void{
-        this.time = time;
+    public setStartTime(time:number):void{
+        this.startTime = time;
+    }
+
+    public getEndTimer():number{
+      return this.endTime;
+    }
+
+    public setEndTime(time: number){
+      this.endTime = time;
     }
 
     public getEndDate():Date{

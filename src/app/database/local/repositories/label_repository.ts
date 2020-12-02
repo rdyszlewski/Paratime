@@ -1,15 +1,15 @@
 import { Label } from 'app/database/data/models/label';
-import { OrderRepository } from 'app/database/data/common/repositories/orderable.repository';
+import { LocalOrderRepository } from 'app/database/data/common/repositories/orderable.repository';
 import { ILabelRepository } from 'app/database/data/common/repositories/label_repository';
 
 export class LocalLabelRepository implements ILabelRepository{
 
     private table: Dexie.Table<Label, number>;
-    private orderRepository: OrderRepository<Label>;
+    private orderRepository: LocalOrderRepository<Label>;
 
     constructor(table: Dexie.Table<Label, number>){
         this.table = table;
-        this.orderRepository = new OrderRepository(this.table, null);
+        this.orderRepository = new LocalOrderRepository(this.table, null);
     }
 
     public findById(id: number): Promise<Label> {

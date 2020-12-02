@@ -146,9 +146,9 @@ class CalendarCallback implements ICalendarCallback {
     // this.initTasks(day);
     this.loadListTasks(day, this.currentDayTasks, [
       this.getProjectPredicate(),
-      (task) => task.getTime() == null,
+      (task) => task.getStartTime() == null,
     ]);
-    this.loadSchedulerTasks(day, [this.getProjectPredicate(), (task) => task.getTime() != null]);
+    this.loadSchedulerTasks(day, [this.getProjectPredicate(), (task) => task.getStartTime() != null]);
   }
 
   onRightClick(day: CalendarDay) {

@@ -82,12 +82,12 @@ export class DaySchedulerComponent implements OnInit, AfterViewInit {
   private createTasksTest(): Task[] {
     let task1 = new Task("Jeden", "", Status.STARTED);
     task1.setId(1);
-    task1.setTime(900);
+    task1.setStartTime(900);
     task1.setPlannedTime(150);
 
     let task2 = new Task("Dwa", "", Status.STARTED);
     task2.setId(2);
-    task2.setTime(1500);
+    task2.setStartTime(1500);
     task2.setPlannedTime(50);
 
     return [task1, task2];
@@ -116,7 +116,7 @@ export class DaySchedulerComponent implements OnInit, AfterViewInit {
     let containers: TaskContainer[] = [];
     tasks.forEach((task) => {
       let container = new TaskContainer(task);
-      let time = task.getTime();
+      let time = task.getStartTime();
       let hour = Math.floor(time / 100);
       let minutes = time % 100;
       let hourElement = this.hours.find((x) => x.equal(hour, minutes));

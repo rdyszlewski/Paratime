@@ -1,9 +1,9 @@
 import { Task } from 'app/database/data/models/task';
 import { Position } from 'app/database/data/models/orderable.item';
 import { Status } from 'app/database/data/models/status';
-import { OrderRepository } from 'app/database/data/common/repositories/orderable.repository';
 import { ITaskRepository } from 'app/database/data/common/repositories/task_repository';
 import { DateAdapter } from 'app/database/data/models/date.adapter';
+import { OrderRepository } from 'app/database/data/common/repositories/orderable.repository';
 
 export class LocalTaskRepository implements ITaskRepository{
 
@@ -117,7 +117,7 @@ export class LocalTaskRepository implements ITaskRepository{
         }
         newTask.setImportant(task.isImportant());
         newTask.setDate(task.getDate());
-        newTask.setTime(task.getTime());
+        newTask.setStartTime(task.getStartTime());
         newTask.setEndDate(task.getEndDate());
         newTask.setPlannedTime(task.getPlannedTime());
         newTask.setProgress(task.getProgress());
