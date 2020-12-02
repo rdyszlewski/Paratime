@@ -1,21 +1,19 @@
-import { Project } from 'app/database/data/models/project';
-import { KanbanColumn } from 'app/database/data/models/kanban';
+import { KanbanColumn } from '../data/models/kanban';
+import { Project } from '../data/models/project';
 
-export class InsertProjectResult{
+export class ProjectInsertResult{
 
   private _insertedProject: Project;
   private _updatedProjects: Project[];
-
   private _insertedKanbanColumn: KanbanColumn;
-
   private _updatedKanbanColumns: KanbanColumn[];
+
+  constructor(insertedProject: Project){
+    this._insertedProject = insertedProject;
+  }
 
   public get insertedProject():Project{
     return this._insertedProject;
-  }
-
-  public set insertedProject(project: Project){
-    this._insertedProject = project;
   }
 
   public get updatedProjects(): Project[] {

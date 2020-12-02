@@ -14,7 +14,6 @@ import { IOrderableStore } from './orderable.store';
 import { StoreOrderController } from '../order/order.controller';
 import { KanbanTaskStore } from './kanban.task.store';
 import { Position } from 'app/database/data/models/orderable.item';
-import { first } from 'rxjs/operators';
 import { StatusStoreOrderController } from '../order/status.order.controller';
 
 // TODO: przydałyby się do tego wszystkiego transakcje.
