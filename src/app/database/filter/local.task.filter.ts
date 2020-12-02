@@ -11,30 +11,30 @@ export class TaskRepositoryFilter extends RepositoryFilter<Task, TaskFilter>{
 
   protected init(filter: TaskFilter):void {
     if(filter.projectId != null){
-      this.addCondition(task=>task.getProjectID() == filter.projectId);
+      this.addCondition(task=>task["projectID"]== filter.projectId);
     }
     if(filter.active){
-      this.addCondition(task=>task.getStatus()==Status.STARTED);
+      this.addCondition(task=>task["status"]==Status.STARTED);
     }
     if(filter.finished){
-      this.addCondition(task=>task.getStatus()==Status.ENDED);
+      this.addCondition(task=>task["status"]==Status.ENDED);
     }
     if(filter.important){
-      this.addCondition(task=>task.isImportant());
+      // TODO: sprawdzić, czy jest poprawnie
+      this.addCondition(task=>task["important"]==1);
     }
     if(filter.startDate != null){
       // TODO: prawdopodobnie będzie trzeba inaczej porównywać daty
-      this.addCondition(task=>task.getDate() == filter.startDate);
+      this.addCondition(task=>task["date"] == filter.startDate.toString());
     }
     if(filter.endDate != null){
-      this.addCondition(task=>task.getEndDate() == filter.endDate);
+      this.addCondition(task=>task["endDate"] == filter.endDate.toString());
     }
     if(filter.startTime != null){
-      this.addCondition(task=>task.getStartTime() == filter.startTime);
+      this.addCondition(task=>task["startTime"] == filter.startTime);
     }
     if(filter.endDate != null){
-      this.addCondition(task=>task.getEndTimer() == filter.endTime);
+      this.addCondition(task=>task["endTime"] == filter.endTime);
     }
   }
-
 }

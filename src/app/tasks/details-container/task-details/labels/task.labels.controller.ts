@@ -6,13 +6,11 @@ import { LabelsTask } from 'app/database/data/common/models';
 
 export class TaskLabelsController{
 
-    private mainModel: TaskDetails;
     private model: TaskLabelsModel;
     private selectedLabels: Label[] = [];
 
-    constructor(model:TaskDetails){
-        this.mainModel = model;
-        this.model = new TaskLabelsModel(model);
+    constructor(private mainModel:TaskDetails, private dataService: DataService){
+        this.model = new TaskLabelsModel(mainModel);
         this.init();
     }
 
@@ -21,7 +19,7 @@ export class TaskLabelsController{
     }
 
     public loadLabels(){
-        DataService.getStoreManager().getLabelStore().getAllLabel().then(labels=>{
+        this.dataService.getLabelService().getAll().then(labels=>{
           this.model.setLabels(labels);
         });
     }
@@ -92,34 +90,28 @@ export class TaskLabelsController{
       return false;
     }
 
-    private removeAllLabels():Promise<void>{
+    private removeAllLabels():Promise<number>{
       // TODO: coś tutaj jest nie tak. Z nazwami funkcji w LabelStore
-      return DataService.getStoreManager().getLabelStore().removeTaskLabels(this.mainModel.getTask().getId());
+      return this.dataService.getLabelService().removeAllAssigningFromTask(this.mainModel.getTask().getId());
     }
 
     private saveLabel(label:Label):Promise<LabelsTask>{
-      return DataService.getStoreManager().getLabelStore().connectTaskAndLabel(this.mainModel.getTask().getId(), label.getId());
+      return this.dataService.getLabelService().assginLabel(this.mainModel.getTask().getId(), label.getId() );
     }
 
     public cancelChoosingLabels(){
       this.selectedLabels = [];
     }
 
-
-
-
     public chooseLabel(label:Label){
-        // TODO
-        DataService.getStoreManager().getLabelStore().connectTaskAndLabel(this.mainModel.getTask().getId(), label.getId()).then(()=>{
+        this.saveLabel(label).then(_=>{
           this.mainModel.getTask().addLabel(label);
-        });
+        })
       }
 
       public removeLabel(label:Label){
-        DataService.getStoreManager().getLabelStore().removeLabelFromTask(this.mainModel.getTask().getId(), label.getId()).then(()=>{
+        this.dataService.getLabelService().removeAssigning(this.mainModel.getTask().getId(), label.getId()).then(()=>{
           this.mainModel.getTask().removeLabel(label);
-          // TODO: dlaczego to tutaj jest ?
-          // this.model.setEditedSubtask(null);
         });
       }
 }

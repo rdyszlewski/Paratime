@@ -11,19 +11,19 @@ export class ProjectRepositoryFilter extends RepositoryFilter<Project, ProjectFi
 
   protected init(filter: ProjectFilter):void{
     if(filter.name != null){
-      this.addCondition(project=>project.getName().includes(filter.name));
+      this.addCondition(project=>project["name"].includes(filter.name));
     }
     if(filter.description!=null){
-      this.addCondition(project=>project.getDescription()==filter.description);
+      this.addCondition(project=>project["description"]==filter.description);
     }
     if(filter.finished){
-      this.addCondition(project=>project.getStatus() == Status.ENDED);
+      this.addCondition(project=>project["status"] == Status.ENDED);
     }
     if(filter.startDate != null){
-      this.addCondition(project=>project.getStartDate() == filter.startDate);
+      this.addCondition(project=>project["startDate"] == filter.startDate);
     }
     if(filter.endDate != null){
-      this.addCondition(project=>project.getEndDate() == filter.endDate);
+      this.addCondition(project=>project["endDate"] == filter.endDate);
     }
   }
 }

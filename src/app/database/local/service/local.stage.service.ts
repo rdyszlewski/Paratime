@@ -50,7 +50,7 @@ export class LocalProjectStageService implements IProjectStageService{
       return this.repository.remove(stageId).then(()=>{
         return Promise.resolve(updatedStages);
       });
-    })
+    });
   }
 
   private orderRemoveStage(stageId: number): Promise<Stage[]>{

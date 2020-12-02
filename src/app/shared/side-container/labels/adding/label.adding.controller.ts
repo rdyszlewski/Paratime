@@ -12,12 +12,12 @@ export class LabelAddingController {
   private LABEL_INPUT_ID = '#label';
 
   private labelModel: LabelAddingModel = new LabelAddingModel();
-  private state: LabelViewState;
-  private listModel: LabelsModel;
+
 
   constructor(
-    state: LabelViewState,
-    listModel: LabelsModel
+    private state: LabelViewState,
+    private listModel: LabelsModel,
+    private dataService: DataService
   ) {
     this.state = state;
     this.listModel = listModel;
@@ -48,14 +48,11 @@ export class LabelAddingController {
   }
 
   private saveNewLabel(labelToInsert: Label) {
-    DataService.getStoreManager()
-      .getLabelStore()
-      .createLabel(labelToInsert)
-      .then((updatedLabels) => {
-        this.listModel.updateLabels(updatedLabels);
-        this.cancelAddingLabel();
-        EventBus.getDefault().post(new LabelsUpdateEvent(null));
-      });
+    this.dataService.getLabelService().create(labelToInsert).then(result=>{
+      this.listModel.updateLabels(result.updatedLabels);
+      this.cancelAddingLabel();
+      EventBus.getDefault().post(new LabelsUpdateEvent(null));
+    });
   }
 
   public handleKeysOnNewLabelInput(event: KeyboardEvent) {

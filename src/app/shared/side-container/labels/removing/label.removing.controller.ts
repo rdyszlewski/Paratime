@@ -7,12 +7,11 @@ import { EventBus } from 'eventbus-ts';
 import { LabelsUpdateEvent } from '../events/update.event';
 
 export class LabelRemovingController {
-  private dialog: MatDialog;
-  private listModel: LabelsModel;
 
   constructor(
-    listModel: LabelsModel,
-    dialog: MatDialog
+    private listModel: LabelsModel,
+    private dialog: MatDialog,
+    private dataService: DataService
   ) {
     this.listModel = listModel;
     this.dialog = dialog;
@@ -28,12 +27,9 @@ export class LabelRemovingController {
   }
 
   private removeLabel(label: Label) {
-    DataService.getStoreManager()
-      .getLabelStore()
-      .removeLabel(label.getId())
-      .then((updatedLabels) => {
-        this.listModel.updateLabels(updatedLabels);
-        EventBus.getDefault().post(new LabelsUpdateEvent(null));
-      });
+    this.dataService.getLabelService().remove(label).then(updatedLabels=>{
+      this.listModel.updateLabels(updatedLabels);
+      EventBus.getDefault().post(new LabelsUpdateEvent(null));
+    });
   }
 }

@@ -4,12 +4,10 @@ import { DataService } from 'app/data.service';
 import { TaskFilterModel } from '../filter_model';
 
 export class TaskFilteringController {
-  private mainModel: TasksModel;
   private model: TaskFilteringModel = new TaskFilteringModel();
   private filter: TaskFilterModel = new TaskFilterModel();
 
-  constructor(mainModel: TasksModel) {
-    this.mainModel = mainModel;
+  constructor(private mainModel: TasksModel, private dataService: DataService) {
     this.init();
   }
 
@@ -27,12 +25,9 @@ export class TaskFilteringController {
   }
 
   private loadLabels() {
-    DataService.getStoreManager()
-      .getLabelStore()
-      .getAllLabel()
-      .then((labels) => {
-        this.model.setLabels(labels);
-      });
+    this.dataService.getLabelService().getAll().then(labels=>{
+      this.model.setLabels(labels);
+    });
   }
 
   public clearFilter() {

@@ -40,13 +40,13 @@ export class TasksComponent implements OnInit, ITaskList {
   private addingController: TaskAddingController;
   private filteringController: TaskFilteringController;
 
-  constructor(private appService: AppService, private tasksService: TasksService) {
+  constructor(private appService: AppService, private tasksService: TasksService, private dataService: DataService) {
     this.model = new TasksModel();
     this.itemInfo = new TaskItemInfo();
     this.itemController = new TaskItemController();
     this.specialListsController = new SpecialListTask(this.model);
     this.addingController = new TaskAddingController(this.model, this.tasksService);
-    this.filteringController = new TaskFilteringController(this.model);
+    this.filteringController = new TaskFilteringController(this.model, this.dataService);
 
     EventBus.getDefault().register(this);
   }

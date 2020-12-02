@@ -47,7 +47,7 @@ export class TaskDetailsComponent implements OnInit {
     this.validator = new TaskValidator(this.model);
     this.changeDetector = new TaskChangeDetector(this.model);
     this.subtaskController = new SubtasksController(this.model);
-    this.labelsController = new TaskLabelsController(this.model);
+    this.labelsController = new TaskLabelsController(this.model, this.dataService);
     this.view = new TaskDetailsView(this.dataService);
   }
 

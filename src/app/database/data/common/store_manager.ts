@@ -45,10 +45,6 @@ export class StoreManager{
         return this.subtaskStore;
     }
 
-    public getLabelStore():LabelStore{
-        return this.labelStore;
-    }
-
     public getPomodoroStore():PomodoroStore{
         return this.pomodoroStore;
     }
