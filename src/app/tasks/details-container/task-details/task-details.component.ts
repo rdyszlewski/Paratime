@@ -39,7 +39,7 @@ export class TaskDetailsComponent implements OnInit {
   private subtaskController: SubtasksController;
   private labelsController: TaskLabelsController;
 
-  constructor() {}
+  constructor(private dataService: DataService) {}
 
   ngOnInit(): void {
     this.model = new TaskDetails();
@@ -48,7 +48,7 @@ export class TaskDetailsComponent implements OnInit {
     this.changeDetector = new TaskChangeDetector(this.model);
     this.subtaskController = new SubtasksController(this.model);
     this.labelsController = new TaskLabelsController(this.model);
-    this.view = new TaskDetailsView();
+    this.view = new TaskDetailsView(this.dataService);
   }
 
   public getModel(): TaskDetails {

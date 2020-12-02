@@ -49,8 +49,8 @@ export class DataService implements IDataSource {
     return this.dataSource.getLabelService();
   }
 
-  getProjectStageService(): IProjectStageService {
-    return this.dataSource.getProjectStageService();
+  getStageService(): IProjectStageService {
+    return this.dataSource.getStageService();
   }
 
   getKanbanTaskService(): IKanbanTaskService {
@@ -64,5 +64,4 @@ export class DataService implements IDataSource {
   getPomodoroService(): IPomodoroService {
     return this.dataSource.getPomodoroService();
   }
-
 }

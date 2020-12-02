@@ -9,13 +9,16 @@ import { ISubtaskService } from '../common/subtask.service';
 import { ITaskService } from '../common/task.service';
 import { LocalDatabase } from './database';
 import { LocalProjectRepository } from './repository/local.project.repository';
+import { LocalProjectStageRepository } from './repository/local.stage.repository';
 import { LocalTaskRepository } from './repository/local.task.repository';
 import { LocalProjectService } from './service/local.project.service';
+import { LocalProjectStageService } from './service/local.stage.service';
 
 
 export class LocalDataSource implements IDataSource{
 
   private projectService: IProjectService;
+  private stageService: IProjectStageService;
   private taskService: ITaskService;
 
   constructor(){
@@ -23,9 +26,11 @@ export class LocalDataSource implements IDataSource{
     let database = new LocalDatabase();
 
     let projectRepository = new LocalProjectRepository(database.getProjectsTable());
+    let stageRepository = new LocalProjectStageRepository(database.getStagesTable());
     let taskRepository = new LocalTaskRepository(database.getTasksTable());
 
-    this.projectService = new LocalProjectService(projectRepository);
+    this.projectService = new LocalProjectService(projectRepository, stageRepository);
+    this.stageService = new LocalProjectStageService(stageRepository);
     // TODO: dokończyć to
   }
 
@@ -45,8 +50,8 @@ export class LocalDataSource implements IDataSource{
     throw new Error('Method not implemented.');
   }
 
-  getProjectStageService(): IProjectStageService {
-    throw new Error('Method not implemented.');
+  getStageService(): IProjectStageService {
+    return this.stageService;
   }
 
   getKanbanTaskService(): IKanbanTaskService {

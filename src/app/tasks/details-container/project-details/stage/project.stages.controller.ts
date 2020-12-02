@@ -15,7 +15,7 @@ export class ProjectStagesController {
   private model: ProjectDetails;
   private project: Project;
 
-  constructor(model: ProjectDetails) {
+  constructor(model: ProjectDetails, private dataService: DataService) {
     this.model = model;
   }
 
@@ -35,13 +35,10 @@ export class ProjectStagesController {
   }
 
   private saveStage(stage: Stage) {
-    DataService.getStoreManager()
-      .getStageStore()
-      .createStage(stage)
-      .then((updatedStages) => {
-        this.model.updateStages(updatedStages);
-        this.closeAddingNewStage();
-      });
+    this.dataService.getStageService().create(stage).then(result=>{
+      this.model.updateStages(result.updatedStages);
+      this.closeAddingNewStage();
+    });
   }
 
   public closeAddingNewStage() {

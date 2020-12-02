@@ -1,5 +1,3 @@
-import { Builder } from 'protractor';
-
 export class TaskFilter{
   private _projectId: number;
   private _active: boolean;
@@ -49,7 +47,7 @@ export class TaskFilter{
   }
 
 
-  static  Builder = class{
+  static Builder = class{
 
     constructor(private filter: TaskFilter){
 

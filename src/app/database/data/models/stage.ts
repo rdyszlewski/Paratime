@@ -5,6 +5,7 @@ import { OrderableItem } from './orderable.item';
 export class Stage extends OrderableItem {
   private name: string;
   private description: string;
+  private startDate: Date;
   private endDate: Date;
   private status: Status;
   private project: Project;
@@ -24,6 +25,14 @@ export class Stage extends OrderableItem {
 
   public setDescription(description: string): void {
     this.description = description;
+  }
+
+  public getStartDate(): Date{
+    return this.startDate;
+  }
+
+  public setStartDate(date: Date){
+    this.startDate = date;
   }
 
   public getEndDate(): Date {

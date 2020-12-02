@@ -49,10 +49,6 @@ export class StoreManager{
         return this.labelStore;
     }
 
-    public getStageStore():StageStore{
-        return this.stageStore;
-    }
-
     public getPomodoroStore():PomodoroStore{
         return this.pomodoroStore;
     }
