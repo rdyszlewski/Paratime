@@ -52,8 +52,4 @@ export class StoreManager{
     public getKanbanTaskStore():KanbanTaskStore{
       return this.kanbanTaskStore;
     }
-
-    public getKanbanColumnStore(): KanbanColumnStore{
-      return this.kanbanColumnStore;
-    }
 }

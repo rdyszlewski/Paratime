@@ -41,6 +41,10 @@ export class KanbanModel {
   public setColumns(columns: KanbanColumn[]) {
     console.log(columns);
     this.columns.setItems(columns);
+    columns.forEach((column) => {
+      this.tasks.set(column.getId(), new TasksList(column.getId()));
+      this.tasks.get(column.getId()).setItems(column.getKanbanTasks());
+    });
     // TODO: ten sposób możę być bardziej wymagający
   }
 
@@ -102,13 +106,6 @@ export class KanbanModel {
       .setItems(kanbanColumn.getKanbanTasks());
   }
 
-  public setTasks(kanbanColumns: KanbanColumn[]) {
-    kanbanColumns.forEach((column) => {
-      this.tasks.set(column.getId(), new TasksList(column.getId()));
-      this.tasks.get(column.getId()).setItems(column.getKanbanTasks());
-    });
-  }
-
   public getColumnsNames(): string[] {
     const names = [];
     this.columns.getItems().forEach((item) => {
@@ -116,11 +113,6 @@ export class KanbanModel {
         names.push(item.getId().toString());
       }
     });
-    //-X-DEFAULT-X-"
-    // names.push("Nieprzypisane");
-    // if (this.getDefaultColumn().getId()) {
-    //   names.push(this.defaultColumn.getId().toString());
-    // }
     return names;
   }
 
@@ -149,12 +141,12 @@ export class KanbanModel {
   }
 
   public openAddingColumn(){
-    console.log("Otworzyć bramy");
     this.columnAddingOpen = true;
     FocusHelper.focus("#new-column-input");
   }
 
   public closeAdddingColumn(){
+    this.setColumnName("");
     this.columnAddingOpen = false;
   }
 

@@ -44,7 +44,6 @@ export class ProjectAddingController{
         const project = new Project();
         project.setName(this.model.getNewProjectName());
         this.dataService.getProjectService().create(project).then(result=>{
-          console.log(result);
           this.listModel.updateProjects(result.updatedProjects);
           EventBus.getDefault().post(new ProjectLoadEvent(result.insertedProject));
         });

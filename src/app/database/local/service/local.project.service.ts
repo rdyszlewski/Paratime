@@ -1,7 +1,10 @@
+import { IKanbanColumnService } from 'app/database/common/kanban-column.service';
 import { IProjectService } from 'app/database/common/project.service';
+import { KanbanColumn } from 'app/database/data/models/kanban';
 import { Project } from 'app/database/data/models/project';
 import { ProjectFilter } from 'app/database/filter/project.filter';
 import { StageFilter } from 'app/database/filter/stage.filter';
+import { InsertResult } from 'app/database/model/insert-result';
 import { ProjectInsertResult } from 'app/database/model/project.insert-result';
 import { LocalProjectRepository } from '../repository/local.project.repository';
 import { LocalProjectStageRepository } from '../repository/local.stage.repository';
@@ -12,7 +15,8 @@ export class LocalProjectService implements IProjectService{
   private orderController: LocalOrderController<Project>;
 
   constructor(private repository: LocalProjectRepository,
-    private stageRepository: LocalProjectStageRepository){
+    private stageRepository: LocalProjectStageRepository,
+    private kanbanColumnService: IKanbanColumnService){
     this.orderController = new LocalOrderController(repository);
   }
 
@@ -56,24 +60,35 @@ export class LocalProjectService implements IProjectService{
   }
 
   public create(project: Project): Promise<ProjectInsertResult> {
-    return this.insertNewProject(project).then(insertedProject=>{
-      // TODO: wstawienie kolumny kanban
-      return this.orderInsertedProject(insertedProject);
+     return this.insertNewProject(project).then(insertedProject=>{
+      return Promise.all([
+        this.orderController.insert(insertedProject, null, null),
+        this.insertDefaultKanbanColumn(insertedProject.getId())
+      ]).then(results=>{
+        console.log(results);
+        return this.createInsertResult(insertedProject, results[0], results[1]);
+      })
     });
+  }
+
+  private createInsertResult(insertedProject: Project, updatedProject: Project[], kanbanResult: InsertResult<KanbanColumn>) {
+    let result = new ProjectInsertResult(insertedProject);
+    result.updatedProjects = updatedProject;
+    result.insertedKanbanColumn = kanbanResult.insertedElement;
+    result.updatedKanbanColumns = kanbanResult.updatedElements;
+    return Promise.resolve(result);
+  }
+
+  private insertDefaultKanbanColumn(projectId: number): Promise<InsertResult<KanbanColumn>>{
+    let defaultColumn = new KanbanColumn();
+    defaultColumn.setProjectId(projectId);
+    defaultColumn.setDefault(true);
+    return this.kanbanColumnService.create(defaultColumn);
   }
 
   private insertNewProject(project: Project): Promise<Project>{
     return this.repository.insert(project).then(insertedId=>{
       return this.repository.findById(insertedId);
-    });
-  }
-
-  private orderInsertedProject(project: Project): Promise<ProjectInsertResult>{
-    return this.orderController.insert(project, null, null).then(updatedProjects=>{
-      let result = new ProjectInsertResult(project);
-      result.updatedProjects = updatedProjects;
-      // TODO: kolumny
-      return Promise.resolve(result);
     });
   }
 
@@ -85,10 +100,20 @@ export class LocalProjectService implements IProjectService{
     // TODO: usunięcie projektu
     // TODO: ustawienie kolejności
 
-    return this.orderRemovedProject(id).then(updatedProjects=>{
-      return this.repository.remove(id).then(()=>{
-        return Promise.resolve(updatedProjects);
-      })
+    return this.removeElementsOfProject(id).then(()=>{
+      return this.orderRemovedProject(id).then(updatedProjects=>{
+        return this.repository.remove(id).then(()=>{
+          return Promise.resolve(updatedProjects);
+        });
+      });
+    });
+  }
+
+  private removeElementsOfProject(projectId: number): Promise<void>{
+    return Promise.all([
+      this.kanbanColumnService.removeByProject(projectId)
+    ]).then(_=>{
+      return Promise.resolve(null);
     })
   }
 

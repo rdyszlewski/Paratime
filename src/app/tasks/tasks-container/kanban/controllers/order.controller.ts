@@ -7,7 +7,9 @@ import { Task } from 'app/database/data/models/task';
 import { DataService } from 'app/data.service';
 import { KanbanModel } from '../kanban.model';
 
+// TODO: sprawdzić, czy to jest gdzieś wykorzystywane
 export class KanbanTaskOrderController {
+
   public static drop(event: CdkDragDrop<Task[]>, model: KanbanModel) {
     if (event.previousContainer === event.container) {
       this.changeTasksOrder(event.container.id, event.previousIndex,
@@ -84,9 +86,9 @@ export class KanbanTaskOrderController {
 }
 
 export class KanbanColumnOrderController {
-  public static drop(event: CdkDragDrop<Task[]>, model: KanbanModel) {
+  public static drop(event: CdkDragDrop<Task[]>, model: KanbanModel, dataService: DataService) {
     if (event.previousContainer === event.container) {
-      this.changeColumnsOrder(event.previousIndex, event.currentIndex, model);
+      this.changeColumnsOrder(event.previousIndex, event.currentIndex, model, dataService);
       moveItemInArray(
         event.container.data,
         event.previousIndex,
@@ -105,7 +107,8 @@ export class KanbanColumnOrderController {
   private static changeColumnsOrder(
     previousIndex: number,
     currentIndex: number,
-    model: KanbanModel
+    model: KanbanModel,
+    dataService: DataService
   ) {
     if (previousIndex == currentIndex) {
       return;
@@ -115,11 +118,8 @@ export class KanbanColumnOrderController {
     if (previousColumn.isDefault() || currentColumn.isDefault()) {
       return;
     }
-    DataService.getStoreManager()
-      .getKanbanColumnStore()
-      .move(previousColumn, currentColumn, previousIndex > currentIndex)
-      .then((updatedColumns) => {
-        model.updateColumns(updatedColumns);
-      });
+    dataService.getKanbanColumnService().changeOrder(currentColumn, previousColumn, currentIndex, previousIndex).then(updatedColumns=>{
+      model.updateColumns(updatedColumns);
+    });
   }
 }

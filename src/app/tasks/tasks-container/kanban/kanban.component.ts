@@ -35,14 +35,14 @@ export class KanbanComponent implements OnInit, ITaskList {
 
   public status = Status;
 
-  constructor(private dialog: MatDialog, private appService: AppService, private tasksService: TasksService) {}
+  constructor(private dialog: MatDialog, private appService: AppService, private tasksService: TasksService, private dataService: DataService) {}
 
   close() {
 
   }
 
   ngOnInit(): void {
-    this.columnController = new KanbanColumnController(this.model, this.dialog);
+    this.columnController = new KanbanColumnController(this.model, this.dialog, this.dataService);
   }
 
   public getModel() {
@@ -63,13 +63,9 @@ export class KanbanComponent implements OnInit, ITaskList {
   }
 
   private loadTasks(project: Project) {
-    DataService.getStoreManager()
-      .getKanbanColumnStore()
-      .getByProject(project.getId())
-      .then((columns) => {
-        this.model.setColumns(columns);
-        this.model.setTasks(columns);
-      });
+    this.dataService.getKanbanColumnService().getByProjectId(project.getId()).then(columns=>{
+      this.model.setColumns(columns);
+    })
   }
 
   public taskDrop(event: CdkDragDrop<Task[]>) {
@@ -77,7 +73,7 @@ export class KanbanComponent implements OnInit, ITaskList {
   }
 
   public columnDrop(event: CdkDragDrop<Task[]>) {
-   KanbanColumnOrderController.drop(event, this.model);
+   KanbanColumnOrderController.drop(event, this.model, this.dataService);
   }
 
   public addColumn() {
