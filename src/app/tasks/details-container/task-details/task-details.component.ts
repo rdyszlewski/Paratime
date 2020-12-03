@@ -46,7 +46,7 @@ export class TaskDetailsComponent implements OnInit {
     this.state = new TaskViewState(this.model);
     this.validator = new TaskValidator(this.model);
     this.changeDetector = new TaskChangeDetector(this.model);
-    this.subtaskController = new SubtasksController(this.model);
+    this.subtaskController = new SubtasksController(this.model, this.dataService);
     this.labelsController = new TaskLabelsController(this.model, this.dataService);
     this.view = new TaskDetailsView(this.dataService);
   }
@@ -143,12 +143,9 @@ export class TaskDetailsComponent implements OnInit {
     }
     const previousTask = this.model.getSubtaskByIndex(previousIndex);
     const currentTask = this.model.getSubtaskByIndex(currentIndex);
-    DataService.getStoreManager()
-      .getSubtaskStore()
-      .move(previousTask, currentTask, previousIndex > currentIndex)
-      .then((updatedSubtasks) => {
-        this.model.updateSubtasks(updatedSubtasks);
-      });
+    this.dataService.getSubtaskService().changeOrder(currentTask, previousTask, currentIndex, previousIndex).then(updatedSubtasks=>{
+      this.model.updateSubtasks(updatedSubtasks);
+    });
   }
   // TODO: przerzucić to gdzieś
   public timeChange(time: string) {

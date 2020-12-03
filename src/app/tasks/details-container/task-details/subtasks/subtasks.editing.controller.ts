@@ -15,10 +15,8 @@ export class SubtasksController{
 
     private editingModel: SubtasksEditingModel = new SubtasksEditingModel();
     private task: Task;
-    private model: TaskDetails;
 
-    constructor(model: TaskDetails){
-      this.model = model;
+    constructor(private model: TaskDetails, private dataService: DataService){
     }
 
     public getModel():SubtasksEditingModel{
@@ -50,9 +48,9 @@ export class SubtasksController{
     }
 
     private saveNewSubtask(subtask: Subtask) {
-        DataService.getStoreManager().getSubtaskStore().createSubtask(subtask).then(result => {
-            this.model.updateSubtasks(result.updatedSubstask);
-        });
+        this.dataService.getSubtaskService().create(subtask).then(result=>{
+          this.model.updateSubtasks(result.updatedElements);
+        })
     }
 
     public openEditingSubtask(subtask:Subtask){
@@ -75,14 +73,14 @@ export class SubtasksController{
     }
 
     private updateSubtask(subtask: Subtask) {
-        DataService.getStoreManager().getSubtaskStore().updateSubtask(subtask).then(updatedSubtask => {
-            this.closeEditingSubtask();
+        this.dataService.getSubtaskService().update(subtask).then(updatedSubtask=>{
+          this.closeEditingSubtask();
         });
     }
 
     public removeSubtask(subtask:Subtask){
-        DataService.getStoreManager().getSubtaskStore().removeSubtask(subtask.getId()).then(updatedSubtasks=>{
-            this.model.updateSubtasks(updatedSubtasks);
+        this.dataService.getSubtaskService().remove(subtask).then(updatedSubtasks=>{
+          this.model.updateSubtasks(updatedSubtasks);
         });
     }
 

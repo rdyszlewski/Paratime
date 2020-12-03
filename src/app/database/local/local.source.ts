@@ -12,12 +12,14 @@ import { LocalKanbanColumnRepository } from './repository/local.kanban-column.re
 import { LocalLabelRepository } from './repository/local.label.repository';
 import { LocalProjectRepository } from './repository/local.project.repository';
 import { LocalProjectStageRepository } from './repository/local.stage.repository';
+import { LocalSubtaskRepository } from './repository/local.subtask.repository';
 import { LocalTaskLabelsRepository } from './repository/local.task-labels.repository';
 import { LocalTaskRepository } from './repository/local.task.repository';
 import { LocalKanbanColumnService } from './service/local.kanban-column.service';
 import { LocalLabelService } from './service/local.label.service';
 import { LocalProjectService } from './service/local.project.service';
 import { LocalProjectStageService } from './service/local.stage.service';
+import { LocalSubtaskService } from './service/local.subtask';
 
 
 export class LocalDataSource implements IDataSource{
@@ -25,8 +27,10 @@ export class LocalDataSource implements IDataSource{
   private projectService: IProjectService;
   private stageService: IProjectStageService;
   private taskService: ITaskService;
+  private subtaskService: ISubtaskService;
   private labelService: ILabelService;
   private kanbanColumnService: IKanbanColumnService;
+
 
   constructor(){
     // TODO: zrobić tak, żeby przekazywać bazę danych, aby mozna było wstawiać testową bazę
@@ -38,11 +42,13 @@ export class LocalDataSource implements IDataSource{
     let labelRepository = new LocalLabelRepository(database.getLabelsTable());
     let taskLabelsRepository = new LocalTaskLabelsRepository(database.getTaskLabelsTable());
     let kanbanColumnRepository = new LocalKanbanColumnRepository(database.getKanbanColumnsTable());
+    let subtaskRepository = new LocalSubtaskRepository(database.getSubtasksTable());
 
     this.kanbanColumnService = new LocalKanbanColumnService(kanbanColumnRepository);
     this.projectService = new LocalProjectService(projectRepository, stageRepository, this.kanbanColumnService);
     this.stageService = new LocalProjectStageService(stageRepository);
     this.labelService = new LocalLabelService(labelRepository, taskLabelsRepository);
+    this.subtaskService = new LocalSubtaskService(subtaskRepository);
 
   }
 
@@ -55,7 +61,7 @@ export class LocalDataSource implements IDataSource{
   }
 
   public getSubtaskService(): ISubtaskService {
-    throw new Error('Method not implemented.');
+    return this.subtaskService;
   }
 
   public getLabelService(): ILabelService {

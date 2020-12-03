@@ -34,15 +34,12 @@ export class StoreManager{
     }
 
     public getProjectStore():ProjectStore{
-        return this.projectStore;
+      return this.projectStore; // TODO: później to zlikwidować
     }
+
 
     public getTaskStore():TaskStore{
         return this.taskStore;
-    }
-
-    public getSubtaskStore():SubtaskStore{
-        return this.subtaskStore;
     }
 
     public getPomodoroStore():PomodoroStore{
