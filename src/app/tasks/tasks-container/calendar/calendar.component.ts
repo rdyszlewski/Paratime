@@ -25,6 +25,7 @@ import { ICalendarView, ViewModel } from "./models/view.model";
 import { CalendarFilterFactory } from "./loader/filter.factory";
 import { CalendarSettings, DateOption, TaskStatus } from "./loader/calendar.settings";
 import { TaskLoader } from "./loader/task.loader";
+import { DataService } from 'app/data.service';
 
 @Component({
   selector: "app-calendar",
@@ -87,6 +88,7 @@ export class CalendarComponent implements OnInit, ITaskList, AfterViewInit {
     private appService: AppService,
     private tasksService: TasksService,
     private dialog: MatDialog,
+    private dataService: DataService
   ) {
     this._currentDate = new Date();
     this._cellDraggingController = new CellDraging((previousId, currentId) => {
@@ -102,9 +104,10 @@ export class CalendarComponent implements OnInit, ITaskList, AfterViewInit {
       this._viewModel,
       this._dropIdsCreator,
       dialog,
+      dataService
     );
 
-    this._taskLoader = new TaskLoader();
+    this._taskLoader = new TaskLoader(dataService);
   }
 
   private createCalendar() {
@@ -124,7 +127,7 @@ export class CalendarComponent implements OnInit, ITaskList, AfterViewInit {
   private loadTasks() {
     this._selectionManager.deselectAll();
     this._tasksModel.clearTasks();
-    this._taskLoader.loadTasks(this._tasksModel, this._project).then((result) => {
+    this._taskLoader.loadTasks(this._tasksModel, this._project).then(result => {
       this._tasksModel.cells = result.cells;
       this._tasksModel.tasksWithoutDate = result.tasksWithoutDate;
       this._taskTransfer.init(this._tasksModel);
@@ -238,7 +241,7 @@ export class CalendarComponent implements OnInit, ITaskList, AfterViewInit {
     const data = new DialogModel("", this._project, this.getDate(cell), (model) => {
       if (model) {
         this.tasksService.addTask(model.name, model.project, null, model.date).then((result) => {
-          cell.addTask(result.insertedTask);
+          cell.addTask(result.insertedElement);
         });
       }
     });

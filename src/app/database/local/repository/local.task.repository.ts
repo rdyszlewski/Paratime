@@ -13,11 +13,23 @@ export class LocalTaskRepository extends OrderRepository<Task>{
     return this.table.get(id);
   }
 
+  public findByName(name: string): Promise<Task[]>{
+    return this.table.where("name").startsWithIgnoreCase(name).toArray();
+  }
+
   // TODO: można wstawić wyszukiwanie po nazwie, albo można dodać nazwę do filtrów
 
   public findByFilter(filter: TaskFilter): Promise<Task[]>{
     let taskFilter = new TaskRepositoryFilter(filter);
     return this.table.filter(task=>taskFilter.apply(task)).toArray();
+  }
+
+  public findByProject(projectId: number): Promise<Task[]>{
+    return this.table.where("projectID").equals(projectId).toArray();
+  }
+
+  public findAll():Promise<Task[]>{
+    return this.table.toArray();
   }
 
   // TODO: jakoś ogarnąć znajdź pierwsze i ostatnie zadanie z określonym statusem
@@ -37,6 +49,8 @@ export class LocalTaskRepository extends OrderRepository<Task>{
   }
 
   private getPreparedTask(task: Task): Task{
+    console.log("Status1");
+    console.log(task.getStatus());
     let newTask = new Task(task.getName(), task.getDescription(), task.getStatus());
     if(task.getId()){
         newTask.setId(task.getId());
@@ -52,6 +66,9 @@ export class LocalTaskRepository extends OrderRepository<Task>{
     newTask.setProjectStageID(task.getProjectStageID());
     newTask.setSuccessorId(task.getSuccessorId());
     newTask.setPosition(task.getPosition());
+
+    console.log("status2");
+    console.log(newTask.getStatus());
 
     return newTask;
   }

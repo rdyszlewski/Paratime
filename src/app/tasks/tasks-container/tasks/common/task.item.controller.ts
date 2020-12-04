@@ -4,6 +4,9 @@ import { Status } from 'app/database/data/models/status';
 
 export class TaskItemController {
 
+  constructor(private dataService: DataService){
+  }
+
   public toggleTaskImportance(task: Task, event: MouseEvent) {
     task.setImportant(!task.isImportant());
     this.updateTask(task);
@@ -11,7 +14,7 @@ export class TaskItemController {
   }
 
   private updateTask(task: Task) {
-    DataService.getStoreManager().getTaskStore().update(task);
+    this.dataService.getTaskService().update(task);
   }
 
   public isTaskDone(task: Task): boolean {

@@ -1,12 +1,19 @@
+import { Status } from '../data/models/status';
+
 export class TaskFilter{
-  private _projectId: number;
-  private _active: boolean;
-  private _finished: boolean;
-  private _important: boolean;
-  private _startDate: Date;
-  private _endDate: Date;
-  private _startTime: number;
-  private _endTime: number;
+  private _projectId: number = null;
+  private _active: boolean = null;
+  private _finished: boolean = null;
+  private _important: boolean = null;
+  private _startDate: Date = null;
+  private _endDate: Date = null;
+  private _startTime: number = null;
+  private _endTime: number = null;
+  private _hasDate: boolean = null;
+  private _startRangeStartDate: Date = null;
+  private _endRangeStartDate: Date = null;
+  private _status: Status = null;
+  private _hasStartTime: boolean;
 
   private constructor(){}
 
@@ -42,10 +49,30 @@ export class TaskFilter{
     return this._endTime;
   }
 
+  public get hasDate(): boolean{
+    return this._hasDate;
+  }
+
+  // TODO: trochę lepiej zaplanować jak te filtry mają działać
+  public get startRangeStartDate():Date{
+    return this._startRangeStartDate;
+  }
+
+  public get endRangeEndDate(): Date{
+    return this._endRangeStartDate;
+  }
+
+  public get status(): Status{
+    return this._status;
+  }
+
+  public get hasStartTime(): boolean{
+    return this._hasStartTime;
+  }
+
   public static getBuilder(): TaskFilter.Builder{
     return new TaskFilter.Builder(new TaskFilter());
   }
-
 
   static Builder = class{
 
@@ -53,7 +80,7 @@ export class TaskFilter{
 
     }
 
-    public setProjectId(projectId: number): TaskFilter.Builder{
+    public setProject(projectId: number): TaskFilter.Builder{
       this.filter._projectId = projectId;
       return this;
     }
@@ -90,6 +117,27 @@ export class TaskFilter{
 
     public setEndTime(time: number): TaskFilter.Builder{
       this.filter._endTime = time;
+      return this;
+    }
+
+    public setHasDate(hasDate: boolean): TaskFilter.Builder{
+      this.filter._hasDate = hasDate;
+      return this;
+    }
+
+    public setStartDateRange(start: Date, end: Date): TaskFilter.Builder{
+      this.filter._startRangeStartDate = start;
+      this.filter._endRangeStartDate = end;
+      return this;
+    }
+
+    public setStatus(status: Status): TaskFilter.Builder{
+      this.filter._status = status;
+      return this;
+    }
+
+    public setHasStartTime(hasTime: boolean): TaskFilter.Builder{
+      this.filter._hasStartTime = hasTime;
       return this;
     }
 

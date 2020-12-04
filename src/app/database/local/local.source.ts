@@ -20,6 +20,7 @@ import { LocalLabelService } from './service/local.label.service';
 import { LocalProjectService } from './service/local.project.service';
 import { LocalProjectStageService } from './service/local.stage.service';
 import { LocalSubtaskService } from './service/local.subtask';
+import { LocalTaskService } from './service/local.task.service';
 
 
 export class LocalDataSource implements IDataSource{
@@ -49,7 +50,7 @@ export class LocalDataSource implements IDataSource{
     this.stageService = new LocalProjectStageService(stageRepository);
     this.labelService = new LocalLabelService(labelRepository, taskLabelsRepository);
     this.subtaskService = new LocalSubtaskService(subtaskRepository);
-
+    this.taskService = new LocalTaskService(taskRepository, this.subtaskService, this.labelService);
   }
 
   public getProjectService(): IProjectService {
@@ -57,7 +58,7 @@ export class LocalDataSource implements IDataSource{
   }
 
   public getTaskService(): ITaskService {
-    throw new Error('Method not implemented.');
+    return this.taskService;
   }
 
   public getSubtaskService(): ISubtaskService {

@@ -90,10 +90,7 @@ export class TaskDetailsComponent implements OnInit {
 
   public updateTask() {
     if (this.validator.isValid()) {
-      DataService.getStoreManager()
-        .getTaskStore()
-        .update(this.model.getTask())
-        .then(() => {});
+      this.dataService.getTaskService().update(this.model.getTask());
     }
   }
 
@@ -136,7 +133,6 @@ export class TaskDetailsComponent implements OnInit {
     }
   }
 
-  // TODO: przenieść to w jakieś inne miejsce. Połączyć ze zmianą kolejności w zadaniach
   private changeSubtasksOrder(previousIndex: number, currentIndex: number) {
     if (previousIndex == currentIndex) {
       return;

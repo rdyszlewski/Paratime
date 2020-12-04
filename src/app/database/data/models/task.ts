@@ -26,7 +26,7 @@ export class Task extends OrderableItem implements IFilterable, ITaskItem{
     private _endDate: Date = null;
     private plannedTime: number = null;
     private subtasks: Subtask[] = []
-    private status: Status = null;
+    private status: Status = Status.STARTED;
     private progress: number = null;
     private project: Project = null;
     private projectID;

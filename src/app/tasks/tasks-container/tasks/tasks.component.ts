@@ -22,6 +22,7 @@ import { SpecialList } from 'app/tasks/lists-container/projects/common/special_l
 import { AppService } from 'app/core/services/app/app.service';
 import { TaskRemoveEvent } from '../events/remove.event';
 import { TasksService } from 'app/tasks/tasks.service';
+import { TaskFilter } from 'app/database/filter/task.filter';
 
 @Component({
   selector: 'app-tasks',
@@ -43,8 +44,8 @@ export class TasksComponent implements OnInit, ITaskList {
   constructor(private appService: AppService, private tasksService: TasksService, private dataService: DataService) {
     this.model = new TasksModel();
     this.itemInfo = new TaskItemInfo();
-    this.itemController = new TaskItemController();
-    this.specialListsController = new SpecialListTask(this.model);
+    this.itemController = new TaskItemController(this.dataService);
+    this.specialListsController = new SpecialListTask(this.model, this.dataService);
     this.addingController = new TaskAddingController(this.model, this.tasksService);
     this.filteringController = new TaskFilteringController(this.model, this.dataService);
 
@@ -94,23 +95,28 @@ export class TasksComponent implements OnInit, ITaskList {
     const currentProject = project
       ? project
       : this.appService.getCurrentProject();
-    this.loadProjectTasks(currentProject, taskType).then((tasks) => {
+    let filterBuilder = TaskFilter.getBuilder().setProject(currentProject.getId());
+    if(taskType == TaskType.ACTIVE){
+      filterBuilder.setActive(true);
+    } else if(taskType == TaskType.FINISHED){
+      filterBuilder.setFinished(true);
+    }
+    let filter = filterBuilder.build();
+    this.dataService.getTaskService().getByFilter(filter).then(tasks=>{
       this.model.setTasks(tasks);
       this.model.setTaskType(taskType);
-      this.model.isOpen
+      this.model.isOpen // TODO: co to tutaj robi?!!!!
     });
   }
 
   private loadProjectTasks(project: Project, taskType: TaskType) {
     switch (taskType) {
       case TaskType.ACTIVE:
-        return DataService.getStoreManager()
-          .getTaskStore()
-          .getActiveTasks(project.getId());
+        let activeFilter = TaskFilter.getBuilder().setProject(project.getId()).setActive(true).build();
+        return this.dataService.getTaskService().getByFilter(activeFilter);
       case TaskType.FINISHED:
-        return DataService.getStoreManager()
-          .getTaskStore()
-          .getFinishedTasks(project.getId());
+        let finishedFilter = TaskFilter.getBuilder().setProject(project.getId()).setFinished(true).build();
+        return this.dataService.getTaskService().getByFilter(finishedFilter);
     }
   }
 
@@ -122,7 +128,7 @@ export class TasksComponent implements OnInit, ITaskList {
   }
 
   public onDrop(event: CdkDragDrop<string[]>) {
-    TaskOrderController.onDrop(event, this.model.getTasks());
+    TaskOrderController.onDrop(event, this.model.getTasks(), this.dataService);
   }
 
   // MENU
@@ -132,7 +138,6 @@ export class TasksComponent implements OnInit, ITaskList {
 
   public removeTask(task: Task): void {
     this.tasksService.removeTask(task).then(updatedTasks=>{
-      this.model.removeTask(task);
       this.model.updateTasks(updatedTasks as Task[]);
       EventBus.getDefault().post(new TaskRemoveEvent(task));
     })

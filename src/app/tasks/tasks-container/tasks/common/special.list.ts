@@ -1,49 +1,58 @@
-import { DataService } from 'app/data.service';
-import { Project } from 'app/database/data/models/project';
-import { TasksModel } from '../model';
-import { SpecialList } from 'app/tasks/lists-container/projects/common/special_list';
-import { Values } from 'app/shared/common/values';
+import { DataService } from "app/data.service";
+import { Project } from "app/database/data/models/project";
+import { TasksModel } from "../model";
+import { SpecialList } from "app/tasks/lists-container/projects/common/special_list";
+import { Values } from "app/shared/common/values";
+import { TaskFilter } from "app/database/filter/task.filter";
+import { Task } from "app/database/data/models/task";
 
-export class SpecialListTasks{
+export class SpecialListTasks {
+  private IMPORTANT_NAME = "Ważne";
+  private TODAY_NAME = "Dzisiaj";
 
-    private IMPORTANT_NAME = "Ważne";
-    private TODAY_NAME = "Dzisiaj";
+  constructor(private model: TasksModel, private dataService: DataService) {}
 
-    private model: TasksModel;
-
-    constructor(model:TasksModel){
-        this.model = model;
+  public setSpecialList(listType: SpecialList) {
+    switch (listType) {
+      case SpecialList.IMPORTANT:
+        this.loadImportantTasks();
+        break;
+      case SpecialList.TODAY:
+        this.loadTodayTasks();
+        break;
     }
+  }
 
-    public setSpecialList(listType: SpecialList){
-        switch(listType){
-          case SpecialList.IMPORTANT:
-            this.loadImportantTasks();
-            break;
-          case SpecialList.TODAY:
-            this.loadTodayTasks();
-            break;
-        }
-      }
+  private loadImportantTasks() {
+    let filter = TaskFilter.getBuilder().setImportant(true).build();
+    this.dataService
+      .getTaskService()
+      .getByFilter(filter)
+      .then((tasks) => {
+        this.createAndSetSpecialProject(this.IMPORTANT_NAME, tasks);
+      });
+  }
 
-      private loadImportantTasks(){
-        DataService.getStoreManager().getTaskStore().getImportantTasks().then(tasks=>{
-          let project = new Project(this.IMPORTANT_NAME);
-          project.setId(Values.SPECIAL_LIST_ID); // TODO: przenieść do stałej
-          project.setTasks(tasks);
-          this.model.setProject(project);
-          this.model.setTasks(tasks);
-          // TODO: sprawdzić to, czy wszysto jest ok
-        });
-      }
+  private loadTodayTasks() {
+    let filter = TaskFilter.getBuilder().setStartDate(new Date()).build();
+    this.dataService
+      .getTaskService()
+      .getByFilter(filter)
+      .then((tasks) => {
+        this.createAndSetSpecialProject(this.TODAY_NAME, tasks);
+      });
+  }
 
-      private loadTodayTasks(){
-        DataService.getStoreManager().getTaskStore().getTasksByDate(new Date()).then(tasks=>{
-          let project = new Project(this.TODAY_NAME);
-          project.setTasks(tasks);
-          project.setId(Values.SPECIAL_LIST_ID); // TODo: przenieść do stałej
-          this.model.setProject(project);
-          this.model.setTasks(tasks);
-        });
-      }
+  private createAndSetSpecialProject(name: string, tasks: Task[]): void {
+    let project = this.createSpecialProject(name, tasks);
+    this.model.setProject(project);
+    this.model.setTasks(tasks, false);
+  }
+
+  private createSpecialProject(name: string, tasks: Task[]): Project {
+    let project = new Project(name);
+    project.setId(Values.SPECIAL_LIST_ID);
+    project.setTasks(tasks);
+    return project;
+  }
 }

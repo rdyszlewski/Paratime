@@ -25,7 +25,12 @@ export class TaskRepositoryFilter extends RepositoryFilter<Task, TaskFilter>{
     }
     if(filter.startDate != null){
       // TODO: prawdopodobnie będzie trzeba inaczej porównywać daty
-      this.addCondition(task=>task["date"] == filter.startDate.toString());
+      this.addCondition(task=>{
+        console.log("filter date");
+        console.log(task["date"]);
+        console.log(this.getDateFormat(filter.startDate));
+        return task["date"] == this.getDateFormat(filter.startDate)}
+        );
     }
     if(filter.endDate != null){
       this.addCondition(task=>task["endDate"] == filter.endDate.toString());
@@ -36,5 +41,30 @@ export class TaskRepositoryFilter extends RepositoryFilter<Task, TaskFilter>{
     if(filter.endDate != null){
       this.addCondition(task=>task["endTime"] == filter.endTime);
     }
+    if(filter.hasDate != null){
+      this.addCondition(task=>(task["date"]!=null) == filter.hasDate)
+    }
+    if(filter.startRangeStartDate != null && filter.endRangeEndDate != null){
+      this.addCondition(task=>{
+        let startDate = this.getDateFormat(filter.startRangeStartDate);
+        let endDate = this.getDateFormat(filter.endRangeEndDate);
+        return task["date"]>= startDate
+        && task["date"]<= endDate
+      });
+    }
+    if(filter.status != null){
+      this.addCondition(task=>task["status"]==filter.status);
+    }
+
+    if(filter.hasStartTime!=null){
+      this.addCondition(task=>{
+          console.log(task['startTime']);
+          return (task["startTime"]!=null)==filter.hasStartTime}
+        );
+    }
+  }
+
+  private getDateFormat(date: Date){
+    return `${ date.getFullYear() }-${ date.getMonth() }-${date.getDate()}`;
   }
 }

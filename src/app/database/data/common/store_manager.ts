@@ -37,7 +37,6 @@ export class StoreManager{
       return this.projectStore; // TODO: później to zlikwidować
     }
 
-
     public getTaskStore():TaskStore{
         return this.taskStore;
     }

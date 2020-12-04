@@ -32,6 +32,10 @@ export class DaySchedulerComponent implements OnInit, AfterViewInit {
     return this._draggingController;
   }
 
+  constructor(private dataService: DataService){
+
+  }
+
   @HostListener("window:resize", ["$event"])
   onResize(event) {
     console.log("Resize");
@@ -45,7 +49,6 @@ export class DaySchedulerComponent implements OnInit, AfterViewInit {
   }
 
   public init(){
-    // let element = document.getElementById("5:00") as HTMLElement;
     let element = document.getElementsByClassName("day-schedule-view")[0] as HTMLElement;
     this._scaler.init(element, this._hours);
     this._scaler.scale();
@@ -69,14 +72,12 @@ export class DaySchedulerComponent implements OnInit, AfterViewInit {
 
   private onTaskChanged(taskContainer: TaskContainer){
     console.log(taskContainer.task);
-    DataService.getStoreManager().getTaskStore().update(taskContainer.task);
+    this.dataService.getTaskService().update(taskContainer.task);
     this._scaler.scaleTask(taskContainer);
   }
 
   private initScheduler() {
     this._hours = SchedulerCreator.create(6, 6);
-    // let tasks = this.createTasksTest();
-    // this.initTasks(tasks);
   }
 
   private createTasksTest(): Task[] {

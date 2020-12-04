@@ -18,9 +18,9 @@ export class TasksList<T extends IFilterable & OrderableItem>
     this.containerId = containerId;
   }
 
-  public setItems(items: T[]): void {
+  public setItems(items: T[], order:boolean = true): void {
     this.items = items? items: [];
-    this.refresh();
+    this.refresh(order);
   }
 
   public setContainerId(containerId: number) {
@@ -54,8 +54,10 @@ export class TasksList<T extends IFilterable & OrderableItem>
     }
   }
 
-  private refresh() {
-    this.order();
+  private refresh(order: boolean=true) {
+    if(order){
+      this.order();
+    }
     this.itemFilter.filter(null, this.items);
   }
 

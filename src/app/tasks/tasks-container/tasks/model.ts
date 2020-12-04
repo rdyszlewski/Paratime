@@ -20,11 +20,11 @@ export class TasksModel {
     }
   }
 
-  public setTasks(tasks: Task[]) {
+  public setTasks(tasks: Task[], order=true) {
     if (tasks.length > 0) {
       this.tasks.setContainerId(tasks[0].getContainerId());
     }
-    this.tasks.setItems(tasks);
+    this.tasks.setItems(tasks, order);
   }
 
   public setProject(project: Project) {

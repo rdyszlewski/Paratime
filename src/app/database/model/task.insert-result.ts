@@ -1,26 +1,14 @@
 import { KanbanTask } from '../data/models/kanban';
 import { Task } from '../data/models/task';
+import { InsertResult } from './insert-result';
 
-export class TaskInsertResult{
-  private _insertedTask: Task;
-  private _updatedTasks: Task[] = [];
+export class TaskInsertResult extends InsertResult<Task>{
+
   private _insertedKanbanTask: KanbanTask;
   private _updatedKanabanTasks: KanbanTask[] = [];
 
-  constructor(insertedTask: Task){
-    this._insertedTask = insertedTask;
-  }
-
-  public get insertedTask(): Task{
-    return this.insertedTask;
-  }
-
-  public get updatedTasks(): Task[]{
-    return this._updatedTasks;
-  }
-
-  public set updatedTasks(tasks: Task[]){
-    this._updatedTasks = tasks;
+  constructor(insertedTask: Task, updatedTasks=[]){
+    super(insertedTask, updatedTasks);
   }
 
   public get insertedKanbanTask(): KanbanTask{
@@ -28,7 +16,7 @@ export class TaskInsertResult{
   }
 
   public set insertedKanbanTask(task: KanbanTask){
-    this.insertedKanbanTask = task;
+    this._insertedKanbanTask = task;
   }
 
   public get updatedKanbanTasks(): KanbanTask[]{
