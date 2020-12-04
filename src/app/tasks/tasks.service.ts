@@ -9,6 +9,7 @@ import { Task } from 'app/database/data/models/task';
 import { ITaskItem } from 'app/database/data/models/task.item';
 import { TaskInsertData } from 'app/database/model/task.insert-data';
 import { TaskInsertResult } from 'app/database/model/task.insert-result';
+import { TaskRemoveResult } from 'app/database/model/task.remove-result';
 import { DialogHelper } from 'app/shared/common/dialog';
 import { EventBus } from 'eventbus-ts';
 import { TaskDetailsEvent } from './tasks-container/events/details.event';
@@ -35,11 +36,11 @@ export class TasksService {
     return DialogHelper.openDialog(message, this.dialog).toPromise();
   }
 
-  private removeTaskFromDatabase(task: ITaskItem):Promise<ITaskItem[]>{
+  private removeTaskFromDatabase(task: ITaskItem):Promise<TaskRemoveResult>{
     if(task instanceof Task){
       return this.dataService.getTaskService().remove(task);
     } else if (task instanceof KanbanTask){
-      return DataService.getStoreManager().getKanbanTaskStore().removeTask(task.getId());
+      return this.dataService.getKanbanTaskService().remove(task.getTask());
     }
   }
 

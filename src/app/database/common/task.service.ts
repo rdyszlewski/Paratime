@@ -3,6 +3,7 @@ import { Task } from '../data/models/task';
 import { TaskFilter } from '../filter/task.filter';
 import { TaskInsertData } from '../model/task.insert-data';
 import { TaskInsertResult } from '../model/task.insert-result';
+import { TaskRemoveResult } from '../model/task.remove-result';
 
 export interface ITaskService{
   getById(id: number): Promise<Task>;
@@ -11,7 +12,7 @@ export interface ITaskService{
   getByProject(projectId: number): Promise<Task[]>;
   getAll(): Promise<Task[]>;
   create(data: TaskInsertData): Promise<TaskInsertResult>;
-  remove(task:Task): Promise<Task[]>;
+  remove(task:Task): Promise<TaskRemoveResult>;
   update(task: Task): Promise<Task>;
   changeStatus(task: Task, status: Status): Promise<Task[]>;
   changeProject(currentTask: Task, previousTask: Task, projectId: number): Promise<Task[]>;

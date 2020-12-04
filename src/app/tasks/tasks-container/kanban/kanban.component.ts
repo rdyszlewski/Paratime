@@ -54,7 +54,6 @@ export class KanbanComponent implements OnInit, ITaskList {
   }
 
   public openProject(project: Project) {
-    console.log(project);
     if(!project || project.getId() < 0){
       return;
     }
@@ -69,7 +68,7 @@ export class KanbanComponent implements OnInit, ITaskList {
   }
 
   public taskDrop(event: CdkDragDrop<Task[]>) {
-    KanbanTaskOrderController.drop(event, this.model);
+    KanbanTaskOrderController.drop(event, this.model, this.dataService);
   }
 
   public columnDrop(event: CdkDragDrop<Task[]>) {

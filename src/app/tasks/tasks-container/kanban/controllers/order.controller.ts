@@ -10,10 +10,10 @@ import { KanbanModel } from '../kanban.model';
 // TODO: sprawdzić, czy to jest gdzieś wykorzystywane
 export class KanbanTaskOrderController {
 
-  public static drop(event: CdkDragDrop<Task[]>, model: KanbanModel) {
+  public static drop(event: CdkDragDrop<Task[]>, model: KanbanModel, dataService: DataService) {
     if (event.previousContainer === event.container) {
       this.changeTasksOrder(event.container.id, event.previousIndex,
-        event.currentIndex, model );
+        event.currentIndex, model , dataService);
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
     } else {
       this.moveTaskToColumn(
@@ -21,7 +21,8 @@ export class KanbanTaskOrderController {
         event.container.id,
         event.previousIndex,
         event.currentIndex,
-        model
+        model,
+        dataService
       );
       transferArrayItem(
         event.previousContainer.data,
@@ -36,7 +37,8 @@ export class KanbanTaskOrderController {
     column: string,
     previousIndex: number,
     currentIndex: number,
-    model: KanbanModel
+    model: KanbanModel,
+    dataService: DataService
   ) {
     const currentColumn = model.getColumnById(Number.parseInt(column));
     const previousTask = model.getTaskByIndex(
@@ -47,12 +49,9 @@ export class KanbanTaskOrderController {
       currentIndex,
       currentColumn.getId()
     );
-    DataService.getStoreManager()
-      .getKanbanTaskStore()
-      .move(previousTask, currentTask, previousIndex > currentIndex)
-      .then((updatedTask) => {
-        model.updateTasks(updatedTask, currentColumn.getId());
-      });
+    dataService.getKanbanTaskService().changeOrder(currentTask, previousTask, currentIndex, previousIndex).then(updatedTasks=>{
+      model.updateTasks(updatedTasks, currentColumn.getId())
+    })
   }
 
   private static moveTaskToColumn(
@@ -60,7 +59,8 @@ export class KanbanTaskOrderController {
     currentColumnId: string,
     previousIndex: number,
     currentIndex: number,
-    model: KanbanModel
+    model: KanbanModel,
+    dataService: DataService
   ) {
     const previousColumn = model.getColumnById(
       Number.parseInt(previousColumnId)
@@ -75,13 +75,10 @@ export class KanbanTaskOrderController {
       currentTask = null;
     }
 
-    DataService.getStoreManager()
-      .getKanbanTaskStore()
-      .changeContainer(previousTask, currentTask, currentColumn.getId())
-      .then((updatedTask) => {
-        model.updateTasks(updatedTask, currentColumn.getId());
-        model.updateTasks(updatedTask, previousColumn.getId());
-      });
+    dataService.getKanbanTaskService().changeColumn(previousTask, currentTask, currentColumn.getId()).then(updatedTasks=>{
+      model.updateTasks(updatedTasks, currentColumn.getId());
+      model.updateTasks(updatedTasks, previousColumn.getId());
+    });
   }
 }
 

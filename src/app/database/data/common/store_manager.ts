@@ -44,8 +44,4 @@ export class StoreManager{
     public getPomodoroStore():PomodoroStore{
         return this.pomodoroStore;
     }
-
-    public getKanbanTaskStore():KanbanTaskStore{
-      return this.kanbanTaskStore;
-    }
 }

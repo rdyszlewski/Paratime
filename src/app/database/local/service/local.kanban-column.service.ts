@@ -1,4 +1,5 @@
 import { IKanbanColumnService } from 'app/database/common/kanban-column.service';
+import { IKanbanTaskService } from 'app/database/common/kanban-task.service';
 import { KanbanColumn } from 'app/database/data/models/kanban';
 import { InsertResult } from 'app/database/model/insert-result';
 import { LocalKanbanColumnRepository } from '../repository/local.kanban-column.repository';
@@ -8,7 +9,7 @@ export class LocalKanbanColumnService implements IKanbanColumnService{
 
   private orderController: LocalOrderController<KanbanColumn>;
 
-  constructor(private repository: LocalKanbanColumnRepository){
+  constructor(private repository: LocalKanbanColumnRepository, private kanbanTaskService: IKanbanTaskService){
     this.orderController = new LocalOrderController(repository);
   }
 
@@ -19,12 +20,13 @@ export class LocalKanbanColumnService implements IKanbanColumnService{
   }
 
   private fetchColumn(column: KanbanColumn):Promise<KanbanColumn>{
-    // TODO: zastanowić się, co tutaj powinno być pobierane
-    return Promise.resolve(column);
+    return this.kanbanTaskService.getByColumn(column.getId()).then(tasks=>{
+      column.setKanbanTasks(tasks);
+      return Promise.resolve(column);
+    });
   }
 
   public getByProjectId(projectId: number): Promise<KanbanColumn[]> {
-    // TODO: tutaj będzie trzeba chyba zrobić fetchowanie
     return this.repository.findByProjectId(projectId).then(columns=>{
       let promises = columns.map(column=>this.fetchColumn(column));
       return Promise.all(promises);
@@ -55,10 +57,11 @@ export class LocalKanbanColumnService implements IKanbanColumnService{
   }
 
   public remove(column: KanbanColumn): Promise<KanbanColumn[]> {
-    // TODO: zrobić usuwanie wszystkich zadań
-    return this.repository.remove(column).then(()=>{
-      return this.orderController.remove(column);
-    })
+    return this.kanbanTaskService.removeByColumn(column.getId()).then(()=>{
+      return this.repository.remove(column).then(()=>{
+        return this.orderController.remove(column);
+      });
+    });
   }
 
   public update(column: KanbanColumn): Promise<KanbanColumn> {

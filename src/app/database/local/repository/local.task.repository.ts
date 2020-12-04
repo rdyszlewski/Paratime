@@ -39,8 +39,8 @@ export class LocalTaskRepository extends OrderRepository<Task>{
     return this.table.add(preparedTask);
   }
 
-  public remove(id: number): Promise<void>{
-    return this.table.delete(id);
+  public remove(task: Task): Promise<void>{
+    return this.table.delete(task.getId());
   }
 
   public update(task:Task):Promise<number>{
@@ -49,8 +49,6 @@ export class LocalTaskRepository extends OrderRepository<Task>{
   }
 
   private getPreparedTask(task: Task): Task{
-    console.log("Status1");
-    console.log(task.getStatus());
     let newTask = new Task(task.getName(), task.getDescription(), task.getStatus());
     if(task.getId()){
         newTask.setId(task.getId());
@@ -66,10 +64,6 @@ export class LocalTaskRepository extends OrderRepository<Task>{
     newTask.setProjectStageID(task.getProjectStageID());
     newTask.setSuccessorId(task.getSuccessorId());
     newTask.setPosition(task.getPosition());
-
-    console.log("status2");
-    console.log(newTask.getStatus());
-
     return newTask;
   }
 }
