@@ -28,7 +28,7 @@ export class PomodoroStatisticsComponent implements AfterViewInit, OnInit {
 
   ngOnInit(): void {
     this.taskDataSource = new TaskDataSource(this.dataService);
-    this.projectDataSource = new ProjectDataSource();
+    this.projectDataSource = new ProjectDataSource(this.dataService);
   }
 
   ngAfterViewInit(): void {

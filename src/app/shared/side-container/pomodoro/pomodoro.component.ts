@@ -23,7 +23,7 @@ export class PomodoroComponent implements OnInit {
   public state = State;
   public timerState = TimerState;
 
-  constructor(private pomodoroService: PomodoroService, private dialog: MatDialog) { }
+  constructor(private pomodoroService: PomodoroService, private dialog: MatDialog, private dataService: DataService) { }
 
   ngOnInit(): void {
     this.pomodoroService.setSaveSummaryCallback(summary=>this.saveSummary(summary));
@@ -43,9 +43,7 @@ export class PomodoroComponent implements OnInit {
 private saveSummary(summary: PomodoroSummary){
     console.log("Zapisywanie pomodoro");
     const history = PomodoroSummaryAdapter.createHistory(summary);
-    DataService.getStoreManager().getPomodoroStore().create(history).then(savedSummary=>{
-      console.log(savedSummary);
-    });
+    this.dataService.getPomodoroService().create(history);
 
   }
 

@@ -33,15 +33,4 @@ export class StoreManager{
         this.kanbanTaskStore.setTaskStore(this.taskStore);
     }
 
-    public getProjectStore():ProjectStore{
-      return this.projectStore; // TODO: później to zlikwidować
-    }
-
-    public getTaskStore():TaskStore{
-        return this.taskStore;
-    }
-
-    public getPomodoroStore():PomodoroStore{
-        return this.pomodoroStore;
-    }
 }

@@ -156,9 +156,9 @@ export class TaskEntryCreator{
 
 export class ProjectEntryCreator{
 
-    public static create(history: PomodoroHistory[]):Promise<ProjectEntry[]>{
+    public static create(history: PomodoroHistory[], dataService: DataService):Promise<ProjectEntry[]>{
         const map = this.prepareMap(history);
-        return this.createProjectsEntries(map);
+        return this.createProjectsEntries(map, dataService);
     }
 
     // TODO: wspólna metoda z TaskEntryCreator
@@ -176,25 +176,23 @@ export class ProjectEntryCreator{
         return map;
     }
 
-    private static createProjectsEntries(map:Map<number, PomodoroHistory[]>):Promise<ProjectEntry[]>{
+    private static createProjectsEntries(map:Map<number, PomodoroHistory[]>, dataService: DataService):Promise<ProjectEntry[]>{
         const result = [];
         const promises = [];
+
         map.forEach((list, projectId)=>{
-            const promise = this.getProject(projectId).then(project=>{
-                if(project){
-                    const entry = this.createProjectEntry(project, list);
-                    result.push(entry);
-                }
+            let promise = dataService.getProjectService().getById(projectId).then(project=>{
+              if(project){
+                let entry = this.createProjectEntry(project, list);
+                result.push(entry);
+              }
+              return Promise.resolve(null);
             });
             promises.push(promise);
         });
         return Promise.all(promises).then(()=>{
             return Promise.resolve(result);
         });
-    }
-
-    private static getProject(projectId: number): Promise<Project>{
-        return DataService.getStoreManager().getProjectStore().getProjectById(projectId);
     }
 
     private static createProjectEntry(project:Project, list:PomodoroHistory[]){

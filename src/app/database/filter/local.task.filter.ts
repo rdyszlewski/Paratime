@@ -64,7 +64,4 @@ export class TaskRepositoryFilter extends RepositoryFilter<Task, TaskFilter>{
     }
   }
 
-  private getDateFormat(date: Date){
-    return `${ date.getFullYear() }-${ date.getMonth() }-${date.getDate()}`;
-  }
 }

@@ -24,4 +24,7 @@ export abstract class RepositoryFilter<T, K>{
     return true;
   }
 
+  protected getDateFormat(date: Date){
+    return `${ date.getFullYear() }-${ date.getMonth() }-${date.getDate()}`;
+  }
 }
