@@ -1,4 +1,4 @@
-import { Project } from 'app/database/data/models/project';
+import { Project } from 'app/database/shared/project/project';
 import { TasksList } from 'app/shared/common/lists/tasks.list';
 
 export class ProjectsModel{

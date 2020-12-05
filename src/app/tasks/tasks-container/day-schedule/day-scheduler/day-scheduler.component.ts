@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, OnInit, HostListener } from "@angular/core";
 import { DataService } from 'app/data.service';
-import { Status } from "app/database/data/models/status";
-import { Task } from "app/database/data/models/task";
+import { Status } from "app/database/shared/models/status";
+import { Task } from "app/database/shared/task/task";
 import { Hour } from "./day-model";
 import { DraggingController } from "./dragging-controller";
 import { SchedulerCreator } from "./scheduler-creator";
@@ -32,6 +32,10 @@ export class DaySchedulerComponent implements OnInit, AfterViewInit {
     return this._draggingController;
   }
 
+  constructor(private dataService: DataService){
+
+  }
+
   @HostListener("window:resize", ["$event"])
   onResize(event) {
     console.log("Resize");
@@ -45,7 +49,6 @@ export class DaySchedulerComponent implements OnInit, AfterViewInit {
   }
 
   public init(){
-    // let element = document.getElementById("5:00") as HTMLElement;
     let element = document.getElementsByClassName("day-schedule-view")[0] as HTMLElement;
     this._scaler.init(element, this._hours);
     this._scaler.scale();
@@ -69,25 +72,23 @@ export class DaySchedulerComponent implements OnInit, AfterViewInit {
 
   private onTaskChanged(taskContainer: TaskContainer){
     console.log(taskContainer.task);
-    DataService.getStoreManager().getTaskStore().update(taskContainer.task);
+    this.dataService.getTaskService().update(taskContainer.task);
     this._scaler.scaleTask(taskContainer);
   }
 
   private initScheduler() {
     this._hours = SchedulerCreator.create(6, 6);
-    // let tasks = this.createTasksTest();
-    // this.initTasks(tasks);
   }
 
   private createTasksTest(): Task[] {
     let task1 = new Task("Jeden", "", Status.STARTED);
     task1.setId(1);
-    task1.setTime(900);
+    task1.setStartTime(900);
     task1.setPlannedTime(150);
 
     let task2 = new Task("Dwa", "", Status.STARTED);
     task2.setId(2);
-    task2.setTime(1500);
+    task2.setStartTime(1500);
     task2.setPlannedTime(50);
 
     return [task1, task2];
@@ -116,7 +117,7 @@ export class DaySchedulerComponent implements OnInit, AfterViewInit {
     let containers: TaskContainer[] = [];
     tasks.forEach((task) => {
       let container = new TaskContainer(task);
-      let time = task.getTime();
+      let time = task.getStartTime();
       let hour = Math.floor(time / 100);
       let minutes = time % 100;
       let hourElement = this.hours.find((x) => x.equal(hour, minutes));

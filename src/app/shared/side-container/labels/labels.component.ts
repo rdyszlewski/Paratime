@@ -26,14 +26,12 @@ export class LabelsComponent implements OnInit {
   private addingManager: LabelAddingController;
   private removingManager: LabelRemovingController;
 
-  constructor(public dialog: MatDialog) {}
+  constructor(public dialog: MatDialog, private dataService: DataService) {}
 
   ngOnInit(): void {
-    this.editingManager = new LabelEditingController(
-      this.state
-    );
-    this.addingManager = new LabelAddingController(this.state, this.model );
-    this.removingManager = new LabelRemovingController(this.model, this.dialog);
+    this.editingManager = new LabelEditingController(this.state, this.dataService);
+    this.addingManager = new LabelAddingController(this.state, this.model, this.dataService);
+    this.removingManager = new LabelRemovingController(this.model, this.dialog, this.dataService);
     this.loadLabels();
   }
 
@@ -50,12 +48,9 @@ export class LabelsComponent implements OnInit {
   }
 
   private loadLabels() {
-    DataService.getStoreManager()
-      .getLabelStore()
-      .getAllLabel()
-      .then((labels) => {
-        this.model.setLabels(labels);
-      });
+    this.dataService.getLabelService().getAll().then(labels=>{
+      this.model.setLabels(labels);
+    });
   }
 
   public onDrop(event: CdkDragDrop<string[]>) {
@@ -81,12 +76,9 @@ export class LabelsComponent implements OnInit {
       return;
     }
     const previousLabel = this.model.getLabelByIndex(previousIndex);
-    const currentlabel = this.model.getLabelByIndex(currentIndex);
-    DataService.getStoreManager()
-      .getLabelStore()
-      .move(previousLabel, currentlabel, previousIndex > currentIndex)
-      .then((updatedLabels) => {
-        this.model.updateLabels(updatedLabels);
-      });
+    const currentLabel = this.model.getLabelByIndex(currentIndex);
+    this.dataService.getLabelService().changeOrder(currentLabel, previousLabel, currentIndex, previousIndex).then(updatedLabels=>{
+      this.model.updateLabels(updatedLabels);
+    });
   }
 }

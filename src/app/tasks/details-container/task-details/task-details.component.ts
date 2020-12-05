@@ -1,9 +1,9 @@
 import { Component, OnInit} from '@angular/core';
-import { Status } from 'app/database/data/models/status';
+import { Status } from 'app/database/shared/models/status';
 import { TaskDetails } from './model/model';
-import { Task } from 'app/database/data/models/task';
+import { Task } from 'app/database/shared/task/task';
 import { DataService } from 'app/data.service';
-import { Priority } from 'app/database/data/models/priority';
+import { Priority } from 'app/database/shared/task/priority';
 import { TaskViewState } from './model/state';
 import { TaskValidator } from './model/validator';
 import { TaskChangeDetector } from './model/change.detector';
@@ -39,16 +39,16 @@ export class TaskDetailsComponent implements OnInit {
   private subtaskController: SubtasksController;
   private labelsController: TaskLabelsController;
 
-  constructor() {}
+  constructor(private dataService: DataService) {}
 
   ngOnInit(): void {
     this.model = new TaskDetails();
     this.state = new TaskViewState(this.model);
     this.validator = new TaskValidator(this.model);
     this.changeDetector = new TaskChangeDetector(this.model);
-    this.subtaskController = new SubtasksController(this.model);
-    this.labelsController = new TaskLabelsController(this.model);
-    this.view = new TaskDetailsView();
+    this.subtaskController = new SubtasksController(this.model, this.dataService);
+    this.labelsController = new TaskLabelsController(this.model, this.dataService);
+    this.view = new TaskDetailsView(this.dataService);
   }
 
   public getModel(): TaskDetails {
@@ -90,10 +90,7 @@ export class TaskDetailsComponent implements OnInit {
 
   public updateTask() {
     if (this.validator.isValid()) {
-      DataService.getStoreManager()
-        .getTaskStore()
-        .update(this.model.getTask())
-        .then(() => {});
+      this.dataService.getTaskService().update(this.model.getTask());
     }
   }
 
@@ -136,26 +133,22 @@ export class TaskDetailsComponent implements OnInit {
     }
   }
 
-  // TODO: przenieść to w jakieś inne miejsce. Połączyć ze zmianą kolejności w zadaniach
   private changeSubtasksOrder(previousIndex: number, currentIndex: number) {
     if (previousIndex == currentIndex) {
       return;
     }
     const previousTask = this.model.getSubtaskByIndex(previousIndex);
     const currentTask = this.model.getSubtaskByIndex(currentIndex);
-    DataService.getStoreManager()
-      .getSubtaskStore()
-      .move(previousTask, currentTask, previousIndex > currentIndex)
-      .then((updatedSubtasks) => {
-        this.model.updateSubtasks(updatedSubtasks);
-      });
+    this.dataService.getSubtaskService().changeOrder(currentTask, previousTask, currentIndex, previousIndex).then(updatedSubtasks=>{
+      this.model.updateSubtasks(updatedSubtasks);
+    });
   }
   // TODO: przerzucić to gdzieś
   public timeChange(time: string) {
     const values = time.split(':');
     const hours = Number.parseInt(values[0]);
     const minutes = Number.parseInt(values[1]);
-    this.model.getTask().setTime(this.getTimeValue(hours, minutes));
+    this.model.getTask().setStartTime(this.getTimeValue(hours, minutes));
     this.updateTask();
   }
 
@@ -164,7 +157,7 @@ export class TaskDetailsComponent implements OnInit {
   }
 
   public getTime(): string {
-    const value = this.model.getTask().getTime();
+    const value = this.model.getTask().getStartTime();
     let hours;
     let minutes;
     if (value) {

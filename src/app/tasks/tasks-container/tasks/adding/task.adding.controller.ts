@@ -1,9 +1,9 @@
 import { TasksAddingModel } from './task.adding.model';
 import { TasksModel } from '../model';
-import { InsertTaskResult } from 'app/database/data/common/models/insert.task.result';
 import { FocusHelper, ScrollBarHelper } from 'app/shared/common/view_helper';
 import { EditInputHandler } from 'app/shared/common/edit_input_handler';
 import { TasksService } from 'app/tasks/tasks.service';
+import { TaskInsertResult } from 'app/database/shared/task/task.insert-result';
 
 export class TaskAddingController {
   private TASK_LIST = '#tasks-list';
@@ -40,12 +40,11 @@ export class TaskAddingController {
     });
   }
 
-  private updateViewAfterInserting(result: InsertTaskResult) {
-    this.mainModel.updateTasks(result.updatedTasks);
-    this.mainModel.addTask(result.insertedTask);
+  private updateViewAfterInserting(result: TaskInsertResult) {
+    this.mainModel.updateTasks(result.updatedElements);
+    this.mainModel.addTask(result.insertedElement);
     this.closeAddingNewTask();
     ScrollBarHelper.moveToBottom(this.TASK_LIST);
-    // TODO: prawdopodobnie będzie trzeba zaktualizoreplaceTasksOrderwać elementy, w których została zmieniona kolejność
   }
 
   public closeAddingNewTask() {

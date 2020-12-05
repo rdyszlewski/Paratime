@@ -1,4 +1,4 @@
-import { Label } from 'app/database/data/models/label';
+import { Label } from 'app/database/shared/label/label';
 import { TasksList } from 'app/shared/common/lists/tasks.list';
 
 export class LabelsModel {

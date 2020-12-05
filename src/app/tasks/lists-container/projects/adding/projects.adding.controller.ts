@@ -1,12 +1,12 @@
 import { DataService } from 'app/data.service';
 import { ProjectsViewState } from '../common/state';
 import { ProjectsAddingModel } from './projects.adding.model';
-import { Project } from 'app/database/data/models/project';
 import { ProjectsModel } from '../common/model';
 import { EventBus } from 'eventbus-ts';
 import { ProjectLoadEvent } from '../events/project.event';
 import { FocusHelper, ScrollBarHelper } from 'app/shared/common/view_helper';
 import { EditInputHandler } from 'app/shared/common/edit_input_handler';
+import { Project } from 'app/database/shared/project/project';
 
 export class ProjectAddingController{
 
@@ -15,10 +15,8 @@ export class ProjectAddingController{
 
 
     private model: ProjectsAddingModel = new ProjectsAddingModel();
-    private state: ProjectsViewState;
-    private listModel: ProjectsModel;
 
-    constructor(state: ProjectsViewState, listModel: ProjectsModel){
+    constructor(private state: ProjectsViewState,private listModel: ProjectsModel, private dataService: DataService){
         this.state = state;
         this.listModel = listModel;
     }
@@ -45,10 +43,8 @@ export class ProjectAddingController{
     public saveProject(){
         const project = new Project();
         project.setName(this.model.getNewProjectName());
-        DataService.getStoreManager().getProjectStore().createProject(project).then(result=>{
-          // this.listModel.addProject(result.insertedProject);
+        this.dataService.getProjectService().create(project).then(result=>{
           this.listModel.updateProjects(result.updatedProjects);
-
           EventBus.getDefault().post(new ProjectLoadEvent(result.insertedProject));
         });
         // TODO: można wstawić jakąś zaślepkę, która będzie chowana dopiero po wstawieniu zadania

@@ -1,4 +1,4 @@
-import { Label } from 'app/database/data/models/label';
+import { Label } from 'app/database/shared/label/label';
 import { DataService } from 'app/data.service';
 import { LabelEditingModel } from './label.editing.model';
 import { LabelViewState } from '../common/label_view_state';
@@ -12,9 +12,8 @@ export class LabelEditingController{
     private LABEL_ITEM_ID = "#label-name-input-";
 
     private model: LabelEditingModel = new LabelEditingModel();
-    private state: LabelViewState;
 
-    constructor(state: LabelViewState){
+    constructor(private state: LabelViewState, private dataService: DataService){
       this.state = state;
     }
 
@@ -47,9 +46,9 @@ export class LabelEditingController{
     }
 
     private updateLabel(label: Label) {
-        DataService.getStoreManager().getLabelStore().updateLabel(label).then(updatedLabel => {
-            this.state.closeEditingLabel();
-            EventBus.getDefault().post(new LabelsUpdateEvent(null));
+        this.dataService.getLabelService().update(label).then(_=>{
+          this.state.closeEditingLabel();
+          EventBus.getDefault().post(new LabelsUpdateEvent(null));
         });
     }
 

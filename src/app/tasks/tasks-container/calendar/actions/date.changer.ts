@@ -1,6 +1,6 @@
 import { MatDialog } from '@angular/material/dialog';
 import { DataService } from 'app/data.service';
-import { Task } from 'app/database/data/models/task';
+import { Task } from 'app/database/shared/task/task';
 import { DialogHelper } from 'app/shared/common/dialog';
 import { DropIdsCreator } from '../calendar/names';
 import { ICalendarTasks } from '../models/tasks.model';
@@ -9,16 +9,9 @@ import { CalendarValues } from '../values';
 
 export class DateChanger{
 
-  private _tasksModel: ICalendarTasks;
-  private _viewModel: ICalendarView;
-  private _dropIdsCreator: DropIdsCreator;
-  private _dialog: MatDialog;
 
-  constructor(tasksModel: ICalendarTasks, viewModel: ICalendarView, idsCreator: DropIdsCreator, dialog: MatDialog){
-    this._tasksModel = tasksModel;
-    this._viewModel = viewModel;
-    this._dropIdsCreator= idsCreator;
-    this._dialog = dialog;
+  constructor(private _tasksModel: ICalendarTasks, private _viewModel: ICalendarView, private _idsCreator: DropIdsCreator, private _dialog: MatDialog, private dataService: DataService){
+
   }
 
   public changeDate(task: Task, cellName: string){
@@ -29,16 +22,14 @@ export class DateChanger{
       case CalendarValues.CURRENT_TASKS:
         console.log("CURRENT TASKS");
         console.log(this._viewModel.selectedDay);
-        const currentCell = this._dropIdsCreator.getCellId(this._viewModel.selectedDay);
+        const currentCell = this._idsCreator.getCellId(this._viewModel.selectedDay);
         console.log(currentCell);
         this.changeTaskDate(task, currentCell); // TODO: trzeba sobie to sprawdzić
         break;
       default:
         this.changeTaskDate(task, cellName);
     }
-    DataService.getStoreManager().getTaskStore().update(task).then(result=>{
-
-    });
+    this.dataService.getTaskService().update(task);
   }
 
   private changeTaskDate(task:Task, cellName: string){

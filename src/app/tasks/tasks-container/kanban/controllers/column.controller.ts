@@ -1,18 +1,13 @@
-import { KanbanColumn } from 'app/database/data/models/kanban';
 import { DataService } from 'app/data.service';
 import { KanbanModel } from '../kanban.model';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogHelper } from 'app/shared/common/dialog';
 import { FocusHelper } from 'app/shared/common/view_helper';
+import { KanbanColumn } from 'app/database/shared/kanban-column/kanban-column';
 
 export class KanbanColumnController{
 
-  private model: KanbanModel;
-  private dialog: MatDialog;
-
-  constructor(model: KanbanModel, dialog: MatDialog){
-    this.model = model;
-    this.dialog = dialog;
+  constructor(private model: KanbanModel,private dialog: MatDialog, private dataService: DataService){
   }
 
   // ADDING
@@ -29,15 +24,12 @@ export class KanbanColumnController{
     kanbanColumn.setProjectId(this.model.getProject().getId());
     kanbanColumn.setName(this.model.getColumnName());
 
-    DataService.getStoreManager()
-      .getKanbanColumnStore()
-      .create(kanbanColumn)
-      .then((result) => {
-        this.model.addColumn(kanbanColumn);
-        this.model.updateColumns(result.updatedColumns);
-        this.model.setColumnNameValid(true);
-        this.model.closeAdddingColumn();
-      });
+    this.dataService.getKanbanColumnService().create(kanbanColumn).then(result=>{
+      this.model.addColumn(result.insertedElement);
+      this.model.updateColumns(result.updatedElements);
+      this.model.setColumnNameValid(true);
+      this.model.closeAdddingColumn();
+    });
   }
 
   // REMOVING
@@ -51,20 +43,16 @@ export class KanbanColumnController{
   }
 
   private removeColumnFromStore(column: KanbanColumn) {
-    // TODO: zastanowić się, czy przenieść wszystkie zadania do nieprzypisanych, czy usunąć
-    DataService.getStoreManager()
-      .getKanbanColumnStore()
-      .remove(column.getId())
-      .then((updatedColumns) => {
-        this.model.updateColumns(updatedColumns);
-      });
+    this.dataService.getKanbanColumnService().remove(column).then(updatedColumns=>{
+      this.model.updateColumns(updatedColumns);
+    });
   }
 
   //RENAME
   public updateColumnName() {
     this.model.getEditedColumn().setName(this.model.getColumnName());
-    DataService.getStoreManager()
-      .getKanbanColumnStore()
-      .update(this.model.getEditedColumn());
+    this.dataService.getKanbanColumnService().update(this.model.getEditedColumn()).then(updatedColumn=>{
+      this.model.updateColumns([updatedColumn]);
+    });
   }
 }

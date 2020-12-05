@@ -1,4 +1,4 @@
-import { Task } from 'app/database/data/models/task';
+import { Task } from 'app/database/shared/task/task';
 
 export interface IDateFilter{
   isCorrect(task: Task): boolean;

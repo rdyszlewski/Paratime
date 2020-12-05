@@ -2,15 +2,12 @@ import { DataService } from 'app/data.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ProjectsModel } from '../common/model';
 import { EventBus, Subscribe } from 'eventbus-ts';
-import { ProjectRemoveEvent } from '../events/project.event';
+
 import { DialogHelper } from 'app/shared/common/dialog';
 
 export class ProjectsRemovingController{
 
-    private dialog: MatDialog;
-    private listModel: ProjectsModel;
-
-    constructor(listModel: ProjectsModel, dialog:MatDialog){
+    constructor(private listModel: ProjectsModel,private dialog:MatDialog, private dataService: DataService){
         this.listModel = listModel;
         this.dialog = dialog;
         EventBus.getDefault().register(this);
@@ -19,8 +16,8 @@ export class ProjectsRemovingController{
     @Subscribe("ProjectRemoveEvent")
     public onRemoveProject(){
         return this.openRemoveConfirmationDialog().subscribe(result=>{
-            if(result){
-            this.removeProject();
+            if(result!=null){
+              this.removeProject();
             }
         });
     }
@@ -28,9 +25,8 @@ export class ProjectsRemovingController{
     private removeProject(){
         let project = this.listModel.getProjectWithOpenMenu();
         const id = project.getId();
-        DataService.getStoreManager().getProjectStore().removeProject(id).then(updatedProjects=>{
+        this.dataService.getProjectService().remove(id).then(updatedProjects=>{
           this.listModel.updateProjects(updatedProjects);
-          EventBus.getDefault().post(new ProjectRemoveEvent(null))
         });
     }
 

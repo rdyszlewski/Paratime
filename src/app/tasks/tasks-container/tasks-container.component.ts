@@ -1,6 +1,5 @@
 import { Component, OnInit, ViewChild, AfterViewInit, AfterContentInit } from '@angular/core';
-import { Project } from 'app/database/data/models/project';
-import { Task } from 'app/database/data/models/task';
+import { Task } from 'app/database/shared/task/task';
 import { ITaskList } from './task.list';
 import { EventBus, Subscribe } from 'eventbus-ts';
 import { TasksComponent } from './tasks/tasks.component';
@@ -8,6 +7,7 @@ import { KanbanComponent } from './kanban/kanban.component';
 import { TasksMode, AppService } from 'app/core/services/app/app.service';
 import { CalendarComponent } from './calendar/calendar.component';
 import { DayScheduleComponent } from './day-schedule/day-schedule.component';
+import { Project } from 'app/database/shared/project/project';
 
 @Component({
   selector: 'app-tasks-container',

@@ -1,8 +1,11 @@
-import { Task } from 'app/database/data/models/task';
+import { Task } from 'app/database/shared/task/task';
 import { DataService } from 'app/data.service';
-import { Status } from 'app/database/data/models/status';
+import { Status } from 'app/database/shared/models/status';
 
 export class TaskItemController {
+
+  constructor(private dataService: DataService){
+  }
 
   public toggleTaskImportance(task: Task, event: MouseEvent) {
     task.setImportant(!task.isImportant());
@@ -11,7 +14,7 @@ export class TaskItemController {
   }
 
   private updateTask(task: Task) {
-    DataService.getStoreManager().getTaskStore().update(task);
+    this.dataService.getTaskService().update(task);
   }
 
   public isTaskDone(task: Task): boolean {

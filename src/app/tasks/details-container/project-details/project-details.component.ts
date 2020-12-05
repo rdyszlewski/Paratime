@@ -1,10 +1,9 @@
 import { Component, OnInit} from '@angular/core';
-import { Project } from 'app/database/data/models/project';
-import { ProjectType } from 'app/database/data/models/project_type';
-import { Status } from 'app/database/data/models/status';
+import { ProjectType } from 'app/database/shared/project/project_type';
+import { Status } from 'app/database/shared/models/status';
 import { DataService } from 'app/data.service';
 import { ProjectDetails } from './model/model';
-import { Stage } from 'app/database/data/models/stage';
+import { Stage } from 'app/database/shared/stage/stage';
 import { ProjectDetailsState } from './model/state';
 import { ProjectChangeDetector } from './model/change.detector';
 import { ProjectValidator } from './model/validator';
@@ -18,6 +17,7 @@ import { DateFormatter } from 'app/shared/common/date_formatter';
 import { EventBus } from 'eventbus-ts';
 import { ProjectUpdateEvent } from './events/update.event';
 import { ProjectDetailsCloseEvent } from './events/close.event';
+import { Project } from 'app/database/shared/project/project';
 
 @Component({
   selector: 'app-project-details',
@@ -36,13 +36,17 @@ export class ProjectDetailsComponent implements OnInit {
   public projectType = ProjectType;
   public status = Status;
 
+  constructor(private dataService: DataService){
+
+  }
+
   ngOnInit(): void {
     this.model = new ProjectDetails();
     this.state = new ProjectDetailsState(this.model);
     this.changeDetector = new ProjectChangeDetector(this.model);
     this.validator = new ProjectValidator(this.model);
     this.stageController = new ProjectStagesController(
-      this.model
+      this.model, this.dataService
     );
   }
 
@@ -77,21 +81,15 @@ export class ProjectDetailsComponent implements OnInit {
   }
 
   public updateProject() {
-    DataService.getStoreManager()
-      .getProjectStore()
-      .updateProject(this.model.getProject())
-      .then(() => {
-        EventBus.getDefault().post(new ProjectUpdateEvent(this.model.getProject()));
-      });
+    this.dataService.getProjectService().update(this.model.getProject()).then(updatedProject=>{
+        EventBus.getDefault().post(new ProjectUpdateEvent(updatedProject));
+    });
   }
 
   public onRemoveStage(stage: Stage) {
-    DataService.getStoreManager()
-      .getStageStore()
-      .removeStage(stage.getId())
-      .then(updatedStages => {
-        this.model.updateStages(updatedStages);
-      });
+    this.dataService.getStageService().remove(stage.getId()).then(updatedStages=>{
+      this.model.updateStages(updatedStages);
+    });
   }
 
   public closeView() {
@@ -122,11 +120,8 @@ export class ProjectDetailsComponent implements OnInit {
     }
     const previousStage = this.model.getStageByIndex(previousIndex);
     const currentStage = this.model.getStageByIndex(currentIndex);
-    DataService.getStoreManager()
-      .getStageStore()
-      .move(previousStage, currentStage, previousIndex > currentIndex)
-      .then((updatedStages) => {
-        this.model.updateStages(updatedStages);
-      });
+    this.dataService.getStageService().changeOrder(currentStage, previousStage, currentIndex, previousIndex).then(updatedStages=>{
+      this.model.updateStages(updatedStages);
+    });
   }
 }

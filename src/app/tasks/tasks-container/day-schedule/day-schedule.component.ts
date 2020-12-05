@@ -3,20 +3,20 @@ import {
   Component,
   HostListener,
   OnInit,
-  Predicate,
   ViewChild,
 } from "@angular/core";
 import { DataService } from "app/data.service";
-import { Project } from "app/database/data/models/project";
-import { Task } from "app/database/data/models/task";
-import { ITaskContainer } from "app/database/data/models/task.container";
-import { ITaskItem } from "app/database/data/models/task.item";
+import { Task } from "app/database/shared/task/task";
+import { ITaskContainer } from "app/database/shared/task/task.container";
+import { ITaskItem } from "app/database/shared/task/task.item";
+import { TaskFilter } from 'app/database/shared/task/task.filter';
 import { ITaskList } from "../task.list";
 import { CalendarDay } from "./day";
 import { DaySchedulerComponent } from "./day-scheduler/day-scheduler.component";
 import { ICalendarCallback } from "./mini-calendar/calendar-callback";
 import { MiniCalendarComponent } from "./mini-calendar/mini-calendar.component";
 import { TasksListComponent } from "./tasks-list/tasks-list.component";
+import { Project } from 'app/database/shared/project/project';
 
 @Component({
   selector: "day-schedule",
@@ -56,13 +56,14 @@ export class DayScheduleComponent implements OnInit, ITaskList, AfterViewInit {
     event.preventDefault();
   }
 
-  constructor() {
+  constructor(private dataService: DataService) {
     // TODO: będzie konieczne odświeżać o określonej godzinie
     // TODO: najlepiej będzie, jeśli to będzie w jakieś innej klasie, wtedy będzie można korzystać z tego z różnych miejsc
     this._currentDay = new Date();
   }
 
   openProject(project: Project): void {
+    // TODO: w którym miejscu ładowane są zdania
     this.daySchedulerComponent.clear();
     this._project = project;
     this.daySchedulerComponent.init();
@@ -73,7 +74,8 @@ export class DayScheduleComponent implements OnInit, ITaskList, AfterViewInit {
       this.daySchedulerComponent,
       ()=>{
         this._specificDayOpen = !this._specificDayOpen;
-      }
+      },
+      this.dataService
     );
   }
 
@@ -134,63 +136,39 @@ export class DayScheduleComponent implements OnInit, ITaskList, AfterViewInit {
 }
 
 class CalendarCallback implements ICalendarCallback {
+  // TODO: sprawdzić, czy to będzie potrzebnme
   constructor(
     private project: Project,
     private currentDayTasks: TasksListComponent,
     private selectedDayTasks: TasksListComponent,
     private scheduler: DaySchedulerComponent,
-    private openSpecificCallback: ()=>void
+    private openSpecificCallback: ()=>void,
+    private dataService: DataService
   ) {}
 
   onLeftClick(day: CalendarDay) {
-    // this.initTasks(day);
-    this.loadListTasks(day, this.currentDayTasks, [
-      this.getProjectPredicate(),
-      (task) => task.getTime() == null,
-    ]);
-    this.loadSchedulerTasks(day, [this.getProjectPredicate(), (task) => task.getTime() != null]);
+    this.loadSchedulerTasks(day, this.project.getId(),false, this.currentDayTasks);
+    this.loadTasks(day, this.project.getId(), true).then(tasks=>{
+      this.scheduler.setTasks(tasks);
+    });
   }
 
   onRightClick(day: CalendarDay) {
-    this.loadListTasks(day, this.selectedDayTasks, [this.getProjectPredicate()]);
+    // this.loadListTasks(day, this.selectedDayTasks, [this.getProjectPredicate()]);
+    this.loadSchedulerTasks(day, this.project.getId(),null, this.selectedDayTasks);
     this.openSpecificCallback();
   }
 
-  private loadListTasks(
-    day: CalendarDay,
-    listComponent: TasksListComponent,
-    predicates: Predicate<Task>[],
-  ) {
-    this.loadTasksWithAction(day, predicates, (tasks) => {
+  private loadSchedulerTasks(day: CalendarDay, projectId: number, withTime: boolean, listComponent: TasksListComponent){
+    this.loadTasks(day, projectId, withTime).then(tasks=>{
       listComponent.tasks = tasks;
-    });
+    })
   }
 
-  private loadTasksWithAction(
-    day: CalendarDay,
-    predicates: Predicate<Task>[],
-    action: (tasks: Task[]) => void,
-  ) {
+  private loadTasks(day: CalendarDay, projectId: number, withTime: boolean):Promise<Task[]>{
     let date = new Date(day.year, day.month, day.day);
-    DataService.getStoreManager()
-      .getTaskStore()
-      .getTasksByDate(date)
-      .then((tasks) => {
-        let resultTasks = tasks;
-        predicates.forEach((predicate) => {
-          resultTasks = resultTasks.filter(predicate);
-        });
-        action(resultTasks);
-      });
-  }
-
-  private getProjectPredicate(): Predicate<Task> {
-    return (task) => task.getProject().getId() == this.project.getId();
-  }
-
-  private loadSchedulerTasks(day: CalendarDay, predicates: Predicate<Task>[]) {
-    this.loadTasksWithAction(day, predicates, (tasks) => {
-      this.scheduler.setTasks(tasks);
-    });
+    let filter = TaskFilter.getBuilder().setProject(projectId).setStartDate(date).setHasStartTime(withTime).build();
+    console.log("loadChedulerTasks2");
+    return this.dataService.getTaskService().getByFilter(filter)
   }
 }

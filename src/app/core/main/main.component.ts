@@ -5,10 +5,9 @@ import {
   ElementRef,
   AfterViewInit,
 } from '@angular/core';
-import { Project } from 'app/database/data/models/project';
-import { Task } from 'app/database/data/models/task';
+import { Task } from 'app/database/shared/task/task';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Stage } from 'app/database/data/models/stage';
+import { Stage } from 'app/database/shared/stage/stage';
 import { ProjectDetailsComponent } from 'app/tasks/details-container/project-details/project-details.component';
 import { DetailsContainerComponent } from 'app/tasks/details-container/details-container.component';
 import { ProjectsComponent } from 'app/tasks/lists-container/projects/projects.component';
@@ -19,6 +18,9 @@ import { LocalDatabase } from 'app/database/local/database';
 import { TimeService } from '../services/time/time.service';
 import { PomodoroComponent } from 'app/shared/side-container/pomodoro/pomodoro.component';
 import { PomodoroSettingsStore } from 'app/pomodoro/pomodoro/settings/settings.storage';
+import { DataService } from 'app/data.service';
+import { LocalDataSource } from 'app/database/local/local.source';
+import { Project } from 'app/database/shared/project/project';
 
 @Component({
   selector: 'app-main',
@@ -62,7 +64,8 @@ export class MainComponent implements OnInit, AfterViewInit {
 
   public pomodoroTime: string;
 
-  constructor(private appService: AppService, public snakBar: MatSnackBar, private timeService: TimeService) {}
+  constructor(private appService: AppService, public snakBar: MatSnackBar,
+    private timeService: TimeService, private dataService: DataService) {}
 
   ngAfterViewInit(): void {
     console.log("Inicjalizacja tyknięcia");
@@ -71,6 +74,7 @@ export class MainComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
+    this.dataService.setSource(new LocalDataSource());
     // PomodoroSettingsStore.removeSettings();
     // this.deleteDatabase();
     // this.configureDexie();

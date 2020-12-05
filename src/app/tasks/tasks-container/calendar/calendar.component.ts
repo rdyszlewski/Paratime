@@ -2,10 +2,9 @@ import { CdkDragDrop, moveItemInArray, transferArrayItem } from "@angular/cdk/dr
 import { AfterViewInit, Component, OnInit } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { AppService } from "app/core/services/app/app.service";
-import { Project } from "app/database/data/models/project";
-import { Task } from "app/database/data/models/task";
-import { ITaskContainer } from "app/database/data/models/task.container";
-import { ITaskItem } from "app/database/data/models/task.item";
+import { Task } from "app/database/shared/task/task";
+import { ITaskContainer } from "app/database/shared/task/task.container";
+import { ITaskItem } from "app/database/shared/task/task.item";
 import { ListHelper } from "app/shared/common/lists/list.helper";
 import { DialogModel } from "app/tasks/creating-dialog/dialog.model";
 import { CreatingDialogHelper } from "app/tasks/creating-dialog/helper";
@@ -25,6 +24,8 @@ import { ICalendarView, ViewModel } from "./models/view.model";
 import { CalendarFilterFactory } from "./loader/filter.factory";
 import { CalendarSettings, DateOption, TaskStatus } from "./loader/calendar.settings";
 import { TaskLoader } from "./loader/task.loader";
+import { DataService } from 'app/data.service';
+import { Project } from 'app/database/shared/project/project';
 
 @Component({
   selector: "app-calendar",
@@ -87,6 +88,7 @@ export class CalendarComponent implements OnInit, ITaskList, AfterViewInit {
     private appService: AppService,
     private tasksService: TasksService,
     private dialog: MatDialog,
+    private dataService: DataService
   ) {
     this._currentDate = new Date();
     this._cellDraggingController = new CellDraging((previousId, currentId) => {
@@ -102,9 +104,10 @@ export class CalendarComponent implements OnInit, ITaskList, AfterViewInit {
       this._viewModel,
       this._dropIdsCreator,
       dialog,
+      dataService
     );
 
-    this._taskLoader = new TaskLoader();
+    this._taskLoader = new TaskLoader(dataService);
   }
 
   private createCalendar() {
@@ -124,7 +127,7 @@ export class CalendarComponent implements OnInit, ITaskList, AfterViewInit {
   private loadTasks() {
     this._selectionManager.deselectAll();
     this._tasksModel.clearTasks();
-    this._taskLoader.loadTasks(this._tasksModel, this._project).then((result) => {
+    this._taskLoader.loadTasks(this._tasksModel, this._project).then(result => {
       this._tasksModel.cells = result.cells;
       this._tasksModel.tasksWithoutDate = result.tasksWithoutDate;
       this._taskTransfer.init(this._tasksModel);
@@ -238,7 +241,7 @@ export class CalendarComponent implements OnInit, ITaskList, AfterViewInit {
     const data = new DialogModel("", this._project, this.getDate(cell), (model) => {
       if (model) {
         this.tasksService.addTask(model.name, model.project, null, model.date).then((result) => {
-          cell.addTask(result.insertedTask);
+          cell.addTask(result.insertedElement);
         });
       }
     });

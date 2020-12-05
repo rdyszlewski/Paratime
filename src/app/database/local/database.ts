@@ -1,12 +1,14 @@
 import Dexie from 'dexie';
-import { Task } from 'app/database/data/models/task';
-import { Subtask } from 'app/database/data/models/subtask';
-import { Project } from 'app/database/data/models/project';
-import { Label } from 'app/database/data/models/label';
-import { Stage } from 'app/database/data/models/stage';
-import { PomodoroHistory } from 'app/database/data/models/pomodoro.history';
-import { KanbanColumn, KanbanTask } from 'app/database/data/models/kanban';
-import { LabelsTask } from 'app/database/data/common/models';
+import { Task } from 'app/database/shared/task/task';
+
+import { LabelsTask } from 'app/database/shared/label/labels-task';
+import { KanbanColumn } from '../shared/kanban-column/kanban-column';
+import { KanbanTask } from '../shared/kanban-task/kanban-task';
+import { Label } from '../shared/label/label';
+import { PomodoroHistory } from '../shared/pomodoro/pomodoro.history';
+import { Project } from '../shared/project/project';
+import { Stage } from '../shared/stage/stage';
+import { Subtask } from '../shared/subtask/subtask';
 
 export class LocalDatabase extends Dexie {
   private dbVersion = 1;
@@ -35,14 +37,14 @@ export class LocalDatabase extends Dexie {
   private createSchama() {
     this.version(this.dbVersion).stores({
       tasks:
-        '++id, name, description, important, date, endDate, plannedTime, status, progress, projectID, priority, projectStageID, successor, position',
+        '++id, name, description, important, date, endDate, startTime, endTime, plannedTime, status, progress, projectID, priority, projectStageID, successor, position',
       subtasks: '++id, name, status, taskId, successor, position',
       projects:
         '++id, name, description, startDate, endDate, status, type, successor, position',
       labels: '++id, name, successor, position',
       task_labels: '[taskId+labelId], taskId, labelId',
       stages:
-        '++id, name, description, endDate, status, projectID, successor, position',
+        '++id, name, description, startDate, endDate, status, projectID, successor, position',
       pomodoro: '++id, taskId, projectId, time, date',
       kanban_columns: '++id, projectId, name, default, successor, position',
       kanban_tasks: '++id, taskId, columnId, successor, position',
