@@ -1,13 +1,13 @@
-import { DataService } from 'app/data.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ProjectsModel } from '../common/model';
 import { EventBus, Subscribe } from 'eventbus-ts';
-
 import { DialogHelper } from 'app/shared/common/dialog';
+import { CommandService } from 'app/commands/manager/command.service';
+import { RemoveProjectCommand } from 'app/commands/data-command/command.remove-project';
 
 export class ProjectsRemovingController{
 
-    constructor(private listModel: ProjectsModel,private dialog:MatDialog, private dataService: DataService){
+    constructor(private listModel: ProjectsModel,private dialog:MatDialog, private commandService: CommandService){
         this.listModel = listModel;
         this.dialog = dialog;
         EventBus.getDefault().register(this);
@@ -24,10 +24,7 @@ export class ProjectsRemovingController{
 
     private removeProject(){
         let project = this.listModel.getProjectWithOpenMenu();
-        const id = project.getId();
-        this.dataService.getProjectService().remove(id).then(updatedProjects=>{
-          this.listModel.updateProjects(updatedProjects);
-        });
+        this.commandService.execute(new RemoveProjectCommand(project, this.listModel));
     }
 
     private openRemoveConfirmationDialog(){

@@ -10,7 +10,7 @@ export interface IProjectService{
   getAll(): Promise<Project[]>;
   create(project: Project): Promise<ProjectInsertResult>;
   /// return: project in which the order has changed
-  remove(id: number): Promise<Project[]>;
+  remove(project: Project): Promise<Project[]>;
   update(project: Project): Promise<Project>;
   changeOrder(currentProject: Project, previousProject: Project, currentIndex: number, previousIndex: number): Promise<Project[]>;
 }

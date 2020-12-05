@@ -8,3 +8,5 @@ npm install --save-dev jquery
 npm i –save-dev ng2-tooltip-directive
 npm install --save-dev ngx-material-timepicker
 npm install --save-dev eventbus-ts
+
+npm install ts-data.stack --save-dev

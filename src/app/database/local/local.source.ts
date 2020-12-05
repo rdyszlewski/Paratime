@@ -23,6 +23,8 @@ import { LocalLabelRepository } from './label/local.label.repository';
 import { LocalProjectRepository } from './project/local.project.repository';
 import { LocalProjectStageRepository } from './stage/local.stage.repository';
 import { LocalSubtaskRepository } from './subtask/local.subtask.repository';
+import { LocalPomodoroRepository } from './pomodoro/local.pomodoro.repository';
+import { LocalPomodoroService } from './pomodoro/local.pomodoro.service';
 
 
 export class LocalDataSource implements IDataSource{
@@ -34,6 +36,7 @@ export class LocalDataSource implements IDataSource{
   private labelService: ILabelService;
   private kanbanColumnService: IKanbanColumnService;
   private kanbanTaskService: IKanbanTaskService;
+  private pomodoroService: IPomodoroService;
 
 
   constructor(){
@@ -48,6 +51,7 @@ export class LocalDataSource implements IDataSource{
     let kanbanColumnRepository = new LocalKanbanColumnRepository(database.getKanbanColumnsTable());
     let subtaskRepository = new LocalSubtaskRepository(database.getSubtasksTable());
     let kanbanTaskRepository = new LocalKanbanTaskRepository(database.getKanbanTasksTable());
+    let pomodoroRepository = new LocalPomodoroRepository(database.getPomodoroTable());
 
     this.stageService = new LocalProjectStageService(stageRepository);
     this.labelService = new LocalLabelService(labelRepository, taskLabelsRepository);
@@ -56,6 +60,7 @@ export class LocalDataSource implements IDataSource{
     this.kanbanTaskService = new LocalKanbanTaskService(taskRepository, kanbanTaskRepository, kanbanColumnRepository, this.subtaskService, this.labelService);
     this.kanbanColumnService = new LocalKanbanColumnService(kanbanColumnRepository, this.kanbanTaskService);
     this.projectService = new LocalProjectService(projectRepository, stageRepository, this.kanbanColumnService);
+    this.pomodoroService = new LocalPomodoroService(pomodoroRepository);
   }
 
   public getProjectService(): IProjectService {
@@ -87,7 +92,7 @@ export class LocalDataSource implements IDataSource{
   }
 
   public getPomodoroService(): IPomodoroService {
-    throw new Error('Method not implemented.');
+    return this.pomodoroService;
   }
 
 }

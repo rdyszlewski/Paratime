@@ -93,17 +93,17 @@ export class LocalProjectService implements IProjectService{
     });
   }
 
-  public remove(id: number): Promise<Project[]> {
+  public remove(project: Project): Promise<Project[]> {
     // TODO: dodać transakcje
     // TODO: usuwanie zadań
     // TODO: usuwanie etapów
     // TODO: usuwanie kolumn
     // TODO: usunięcie projektu
     // TODO: ustawienie kolejności
-
+    let id = project.getId();
     return this.removeElementsOfProject(id).then(()=>{
       return this.orderRemovedProject(id).then(updatedProjects=>{
-        return this.repository.remove(id).then(()=>{
+        return this.repository.remove(project).then(()=>{
           return Promise.resolve(updatedProjects);
         });
       });

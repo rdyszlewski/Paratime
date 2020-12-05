@@ -12,6 +12,7 @@ import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/dr
 import { EventBus } from 'eventbus-ts';
 import { ProjectLoadEvent, ProjectEditEvent } from './events/project.event';
 import { Project } from 'app/database/shared/project/project';
+import { CommandService } from 'app/commands/manager/command.service';
 
 
 @Component({
@@ -30,14 +31,14 @@ export class ProjectsComponent implements OnInit {
   public status = Status;
   public type = ProjectType;
 
-  constructor(public dialog:MatDialog, private dataService: DataService) { }
+  constructor(public dialog:MatDialog, private dataService: DataService, private commandService: CommandService) { }
 
   ngOnInit(): void {
     this.model = new ProjectsModel();
     this.state = new ProjectsViewState();
     this.filteringController = new ProjectsFilteringController(this.model, this.dataService);
-    this.addingController = new ProjectAddingController(this.state, this.model, this.dataService);
-    this.removingController = new ProjectsRemovingController(this.model, this.dialog, this.dataService);
+    this.addingController = new ProjectAddingController(this.state, this.model, this.commandService);
+    this.removingController = new ProjectsRemovingController(this.model, this.dialog,this.commandService);
     this.loadProjects();
   }
 
