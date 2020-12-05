@@ -3,11 +3,9 @@ import { KanbanModel } from './kanban.model';
 import {
   CdkDragDrop,
 } from '@angular/cdk/drag-drop';
-import { Task } from 'app/database/data/models/task';
-import { Project } from 'app/database/data/models/project';
+import { Task } from 'app/database/shared/task/task';
 import { DataService } from 'app/data.service';
-import { KanbanColumn, KanbanTask } from 'app/database/data/models/kanban';
-import { Status } from 'app/database/data/models/status';
+import { Status } from 'app/database/shared/models/status';
 import { MatDialog } from '@angular/material/dialog';
 import { KanbanTaskOrderController, KanbanColumnOrderController } from './controllers/order.controller';
 import { KanbanColumnController } from './controllers/column.controller';
@@ -19,6 +17,9 @@ import { EditInputHandler } from 'app/shared/common/edit_input_handler';
 import { EventBus } from 'eventbus-ts';
 import { TasksService } from 'app/tasks/tasks.service';
 import { TaskRemoveEvent } from '../events/remove.event';
+import { KanbanColumn } from 'app/database/shared/kanban-column/kanban-column';
+import { KanbanTask } from 'app/database/shared/kanban-task/kanban-task';
+import { Project } from 'app/database/shared/project/project';
 
 @Component({
   selector: 'app-kanban',

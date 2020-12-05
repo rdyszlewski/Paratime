@@ -1,4 +1,4 @@
-import { Task } from 'app/database/data/models/task';
+import { Task } from 'app/database/shared/task/task';
 import { ITaskSelection } from './selection';
 
 export abstract class TaskSelectionBase implements ITaskSelection{

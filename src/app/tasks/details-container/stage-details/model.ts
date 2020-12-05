@@ -1,4 +1,4 @@
-import { Stage } from 'app/database/data/models/stage';
+import { Stage } from 'app/database/shared/stage/stage';
 
 export class StageDetailsModel{
 

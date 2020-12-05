@@ -1,8 +1,7 @@
 import { Component, OnInit} from '@angular/core';
 
-import { Task } from 'app/database/data/models/task';
-import { Project } from 'app/database/data/models/project';
-import { Status } from 'app/database/data/models/status';
+import { Task } from 'app/database/shared/task/task';
+import { Status } from 'app/database/shared/models/status';
 import { TasksModel } from './model';
 import { TaskItemInfo } from './common/task.item.info';
 import { TaskItemController } from './common/task.item.controller';
@@ -13,7 +12,7 @@ import {
 } from '@angular/cdk/drag-drop';
 import { DataService } from 'app/data.service';
 import { TaskType } from './task.type';
-import { ITaskContainer } from 'app/database/data/models/task.container';
+import { ITaskContainer } from 'app/database/shared/task/task.container';
 import { TaskAddingController } from './adding/task.adding.controller';
 import { TaskOrderController } from './controllers/order.controller';
 import { Subscribe, EventBus } from 'eventbus-ts';
@@ -22,7 +21,8 @@ import { SpecialList } from 'app/tasks/lists-container/projects/common/special_l
 import { AppService } from 'app/core/services/app/app.service';
 import { TaskRemoveEvent } from '../events/remove.event';
 import { TasksService } from 'app/tasks/tasks.service';
-import { TaskFilter } from 'app/database/filter/task.filter';
+import { TaskFilter } from 'app/database/shared/task/task.filter';
+import { Project } from 'app/database/shared/project/project';
 
 @Component({
   selector: 'app-tasks',

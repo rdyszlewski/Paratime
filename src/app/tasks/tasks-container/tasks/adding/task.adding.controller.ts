@@ -3,7 +3,7 @@ import { TasksModel } from '../model';
 import { FocusHelper, ScrollBarHelper } from 'app/shared/common/view_helper';
 import { EditInputHandler } from 'app/shared/common/edit_input_handler';
 import { TasksService } from 'app/tasks/tasks.service';
-import { TaskInsertResult } from 'app/database/model/task.insert-result';
+import { TaskInsertResult } from 'app/database/shared/task/task.insert-result';
 
 export class TaskAddingController {
   private TASK_LIST = '#tasks-list';

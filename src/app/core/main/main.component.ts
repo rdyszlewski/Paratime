@@ -5,10 +5,9 @@ import {
   ElementRef,
   AfterViewInit,
 } from '@angular/core';
-import { Project } from 'app/database/data/models/project';
-import { Task } from 'app/database/data/models/task';
+import { Task } from 'app/database/shared/task/task';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Stage } from 'app/database/data/models/stage';
+import { Stage } from 'app/database/shared/stage/stage';
 import { ProjectDetailsComponent } from 'app/tasks/details-container/project-details/project-details.component';
 import { DetailsContainerComponent } from 'app/tasks/details-container/details-container.component';
 import { ProjectsComponent } from 'app/tasks/lists-container/projects/projects.component';
@@ -21,6 +20,7 @@ import { PomodoroComponent } from 'app/shared/side-container/pomodoro/pomodoro.c
 import { PomodoroSettingsStore } from 'app/pomodoro/pomodoro/settings/settings.storage';
 import { DataService } from 'app/data.service';
 import { LocalDataSource } from 'app/database/local/local.source';
+import { Project } from 'app/database/shared/project/project';
 
 @Component({
   selector: 'app-main',

@@ -1,4 +1,4 @@
-import { Label } from 'app/database/data/models/label';
+import { Label } from 'app/database/shared/label/label';
 import { DataService } from 'app/data.service';
 import { LabelEditingModel } from './label.editing.model';
 import { LabelViewState } from '../common/label_view_state';

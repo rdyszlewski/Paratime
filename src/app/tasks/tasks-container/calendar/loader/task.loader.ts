@@ -1,7 +1,7 @@
 import { DataService } from 'app/data.service';
-import { Project } from 'app/database/data/models/project';
-import { Task } from 'app/database/data/models/task';
-import { TaskFilter } from 'app/database/filter/task.filter';
+import { Project } from 'app/database/shared/project/project';
+import { Task } from 'app/database/shared/task/task';
+import { TaskFilter } from 'app/database/shared/task/task.filter';
 import { ICalendarTasks, TasksModel } from '../models/tasks.model';
 import { TaskDay } from '../task.day';
 import { IDateFilter, NoDateFilter } from './date.filter';

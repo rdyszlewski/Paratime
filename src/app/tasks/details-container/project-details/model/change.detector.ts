@@ -1,5 +1,5 @@
+import { Project } from 'app/database/shared/project/project';
 import { ProjectDetails } from './model';
-import { Project } from 'app/database/data/models/project';
 
 export class ProjectChangeDetector{
 

@@ -2,17 +2,18 @@ import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { AppService } from 'app/core/services/app/app.service';
 import { DataService } from 'app/data.service';
-import { KanbanColumn, KanbanTask } from 'app/database/data/models/kanban';
-import { Project } from 'app/database/data/models/project';
-import { Status } from 'app/database/data/models/status';
-import { Task } from 'app/database/data/models/task';
-import { ITaskItem } from 'app/database/data/models/task.item';
-import { TaskInsertData } from 'app/database/model/task.insert-data';
-import { TaskInsertResult } from 'app/database/model/task.insert-result';
-import { TaskRemoveResult } from 'app/database/model/task.remove-result';
+import { Status } from 'app/database/shared/models/status';
+import { Task } from 'app/database/shared/task/task';
+import { ITaskItem } from 'app/database/shared/task/task.item';
+import { TaskInsertData } from 'app/database/shared/task/task.insert-data';
+import { TaskInsertResult } from 'app/database/shared/task/task.insert-result';
+import { TaskRemoveResult } from 'app/database/shared/task/task.remove-result';
 import { DialogHelper } from 'app/shared/common/dialog';
 import { EventBus } from 'eventbus-ts';
 import { TaskDetailsEvent } from './tasks-container/events/details.event';
+import { KanbanColumn } from 'app/database/shared/kanban-column/kanban-column';
+import { KanbanTask } from 'app/database/shared/kanban-task/kanban-task';
+import { Project } from 'app/database/shared/project/project';
 
 @Injectable({
   providedIn: 'root'

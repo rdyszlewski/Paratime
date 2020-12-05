@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
-import { IDataSource } from './database/common/data.source';
-import { IKanbanColumnService } from './database/common/kanban-column.service';
-import { IKanbanTaskService } from './database/common/kanban-task.service';
-import { ILabelService } from './database/common/label.service';
-import { IPomodoroService } from './database/common/pomodoro.service';
-import { IProjectService } from './database/common/project.service';
-import { IProjectStageService } from './database/common/stage.service';
-import { ISubtaskService } from './database/common/subtask.service';
-import { ITaskService } from './database/common/task.service';
+import { IDataSource } from './database/shared/data.source';
+import { IKanbanColumnService } from './database/shared/kanban-column/kanban-column.service';
+import { IKanbanTaskService } from './database/shared/kanban-task/kanban-task.service';
+import { ILabelService } from './database/shared/label/label.service';
+import { IPomodoroService } from './database/shared/pomodoro/pomodoro.service';
+import { IProjectService } from './database/shared/project/project.service';
+import { IProjectStageService } from './database/shared/stage/stage.service';
+import { ISubtaskService } from './database/shared/subtask/subtask.service';
+import { ITaskService } from './database/shared/task/task.service';
 
 @Injectable({
   providedIn: 'root'

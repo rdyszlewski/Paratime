@@ -1,6 +1,6 @@
 import { MatDialog } from '@angular/material/dialog';
 import { DataService } from 'app/data.service';
-import { Task } from 'app/database/data/models/task';
+import { Task } from 'app/database/shared/task/task';
 import { DialogHelper } from 'app/shared/common/dialog';
 import { DropIdsCreator } from '../calendar/names';
 import { ICalendarTasks } from '../models/tasks.model';

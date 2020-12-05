@@ -1,6 +1,6 @@
-import { Task } from 'app/database/data/models/task';
+import { Task } from 'app/database/shared/task/task';
 import { DataService } from 'app/data.service';
-import { Status } from 'app/database/data/models/status';
+import { Status } from 'app/database/shared/models/status';
 
 export class TaskItemController {
 

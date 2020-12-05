@@ -1,7 +1,7 @@
 import { Component, OnInit } from "@angular/core";
 import { StageDetailsModel } from "./model";
-import { Status } from "app/database/data/models/status";
-import { Stage } from "app/database/data/models/stage";
+import { Status } from "app/database/shared/models/status";
+import { Stage } from "app/database/shared/stage/stage";
 import { DataService } from "app/data.service";
 import { EventBus } from "eventbus-ts";
 import { StageUpdateEvent } from "./events/update.event";

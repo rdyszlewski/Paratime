@@ -1,6 +1,6 @@
 import { LabelAddingModel } from './label.adding.model';
 import { LabelViewState } from '../common/label_view_state';
-import { Label } from 'app/database/data/models/label';
+import { Label } from 'app/database/shared/label/label';
 import { DataService } from 'app/data.service';
 import { LabelsModel } from '../common/list.model';
 import { FocusHelper } from 'app/shared/common/view_helper';
@@ -49,7 +49,7 @@ export class LabelAddingController {
 
   private saveNewLabel(labelToInsert: Label) {
     this.dataService.getLabelService().create(labelToInsert).then(result=>{
-      this.listModel.updateLabels(result.updatedLabels);
+      this.listModel.updateLabels(result.updatedElements);
       this.cancelAddingLabel();
       EventBus.getDefault().post(new LabelsUpdateEvent(null));
     });

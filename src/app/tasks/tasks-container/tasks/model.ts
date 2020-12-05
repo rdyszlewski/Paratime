@@ -1,8 +1,8 @@
-import { Task } from 'app/database/data/models/task';
-import { Project } from 'app/database/data/models/project';
+import { Task } from 'app/database/shared/task/task';
 import { TaskType } from './task.type';
 import { TasksList } from 'app/shared/common/lists/tasks.list';
 import { Values } from 'app/shared/common/values';
+import { Project } from 'app/database/shared/project/project';
 
 export class TasksModel {
   private project: Project = new Project();

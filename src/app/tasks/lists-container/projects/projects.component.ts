@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { ProjectsModel } from './common/model';
-import { Project } from 'app/database/data/models/project';
 import { DataService } from 'app/data.service';
 import { MatDialog } from '@angular/material/dialog';
-import { Status } from 'app/database/data/models/status';
-import { ProjectType } from 'app/database/data/models/project_type';
+import { Status } from 'app/database/shared/models/status';
+import { ProjectType } from 'app/database/shared/project/project_type';
 import { ProjectsViewState } from './common/state';
 import { ProjectsFilteringController } from './filtering/projects.filtering.controller';
 import { ProjectAddingController } from './adding/projects.adding.controller';
@@ -12,6 +11,7 @@ import { ProjectsRemovingController } from './removing/projects.removing.control
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from '@angular/cdk/drag-drop';
 import { EventBus } from 'eventbus-ts';
 import { ProjectLoadEvent, ProjectEditEvent } from './events/project.event';
+import { Project } from 'app/database/shared/project/project';
 
 
 @Component({

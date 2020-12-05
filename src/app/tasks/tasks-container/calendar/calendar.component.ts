@@ -2,10 +2,9 @@ import { CdkDragDrop, moveItemInArray, transferArrayItem } from "@angular/cdk/dr
 import { AfterViewInit, Component, OnInit } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
 import { AppService } from "app/core/services/app/app.service";
-import { Project } from "app/database/data/models/project";
-import { Task } from "app/database/data/models/task";
-import { ITaskContainer } from "app/database/data/models/task.container";
-import { ITaskItem } from "app/database/data/models/task.item";
+import { Task } from "app/database/shared/task/task";
+import { ITaskContainer } from "app/database/shared/task/task.container";
+import { ITaskItem } from "app/database/shared/task/task.item";
 import { ListHelper } from "app/shared/common/lists/list.helper";
 import { DialogModel } from "app/tasks/creating-dialog/dialog.model";
 import { CreatingDialogHelper } from "app/tasks/creating-dialog/helper";
@@ -26,6 +25,7 @@ import { CalendarFilterFactory } from "./loader/filter.factory";
 import { CalendarSettings, DateOption, TaskStatus } from "./loader/calendar.settings";
 import { TaskLoader } from "./loader/task.loader";
 import { DataService } from 'app/data.service';
+import { Project } from 'app/database/shared/project/project';
 
 @Component({
   selector: "app-calendar",

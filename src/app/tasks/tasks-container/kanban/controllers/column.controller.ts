@@ -1,9 +1,9 @@
-import { KanbanColumn } from 'app/database/data/models/kanban';
 import { DataService } from 'app/data.service';
 import { KanbanModel } from '../kanban.model';
 import { MatDialog } from '@angular/material/dialog';
 import { DialogHelper } from 'app/shared/common/dialog';
 import { FocusHelper } from 'app/shared/common/view_helper';
+import { KanbanColumn } from 'app/database/shared/kanban-column/kanban-column';
 
 export class KanbanColumnController{
 

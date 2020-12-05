@@ -1,4 +1,4 @@
-import { Task } from 'app/database/data/models/task';
+import { Task } from 'app/database/shared/task/task';
 import { Pomodorotask } from 'app/pomodoro/pomodoro/model/task';
 
 export class PomodoroAdapter{

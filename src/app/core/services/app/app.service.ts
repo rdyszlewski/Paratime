@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Project } from 'app/database/data/models/project';
-import { Task } from 'app/database/data/models/task';
-import { Pomodorotask } from 'app/pomodoro/pomodoro/model/task';
+import { Project } from 'app/database/shared/project/project';
+import { Task } from 'app/database/shared/task/task';
 import { PomodoroService } from 'app/pomodoro/pomodoro/pomodoro.service';
 import { PomodoroAdapter } from 'app/shared/adapters/pomodoro.adapter';
 

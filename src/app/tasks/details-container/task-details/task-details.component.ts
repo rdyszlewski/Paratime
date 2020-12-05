@@ -1,9 +1,9 @@
 import { Component, OnInit} from '@angular/core';
-import { Status } from 'app/database/data/models/status';
+import { Status } from 'app/database/shared/models/status';
 import { TaskDetails } from './model/model';
-import { Task } from 'app/database/data/models/task';
+import { Task } from 'app/database/shared/task/task';
 import { DataService } from 'app/data.service';
-import { Priority } from 'app/database/data/models/priority';
+import { Priority } from 'app/database/shared/task/priority';
 import { TaskViewState } from './model/state';
 import { TaskValidator } from './model/validator';
 import { TaskChangeDetector } from './model/change.detector';

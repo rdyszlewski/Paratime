@@ -1,10 +1,10 @@
 import { DataService } from "app/data.service";
-import { Project } from "app/database/data/models/project";
 import { TasksModel } from "../model";
 import { SpecialList } from "app/tasks/lists-container/projects/common/special_list";
 import { Values } from "app/shared/common/values";
-import { TaskFilter } from "app/database/filter/task.filter";
-import { Task } from "app/database/data/models/task";
+import { TaskFilter } from "app/database/shared/task/task.filter";
+import { Task } from "app/database/shared/task/task";
+import { Project } from 'app/database/shared/project/project';
 
 export class SpecialListTasks {
   private IMPORTANT_NAME = "Ważne";

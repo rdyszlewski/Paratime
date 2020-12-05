@@ -1,5 +1,5 @@
-import { Status } from 'app/database/data/models/status';
-import { ProjectType } from 'app/database/data/models/project_type';
+import { Status } from 'app/database/shared/models/status';
+import { ProjectType } from 'app/database/shared/project/project_type';
 
 export class ProjectFilterModel{
 

@@ -1,10 +1,9 @@
 import { Component, OnInit} from '@angular/core';
-import { Project } from 'app/database/data/models/project';
-import { ProjectType } from 'app/database/data/models/project_type';
-import { Status } from 'app/database/data/models/status';
+import { ProjectType } from 'app/database/shared/project/project_type';
+import { Status } from 'app/database/shared/models/status';
 import { DataService } from 'app/data.service';
 import { ProjectDetails } from './model/model';
-import { Stage } from 'app/database/data/models/stage';
+import { Stage } from 'app/database/shared/stage/stage';
 import { ProjectDetailsState } from './model/state';
 import { ProjectChangeDetector } from './model/change.detector';
 import { ProjectValidator } from './model/validator';
@@ -18,6 +17,7 @@ import { DateFormatter } from 'app/shared/common/date_formatter';
 import { EventBus } from 'eventbus-ts';
 import { ProjectUpdateEvent } from './events/update.event';
 import { ProjectDetailsCloseEvent } from './events/close.event';
+import { Project } from 'app/database/shared/project/project';
 
 @Component({
   selector: 'app-project-details',

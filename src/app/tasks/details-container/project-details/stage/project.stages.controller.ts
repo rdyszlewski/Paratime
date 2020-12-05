@@ -1,12 +1,12 @@
 import { ProjectStageModel } from './project.stage.model';
-import { Stage } from 'app/database/data/models/stage';
-import { Project } from 'app/database/data/models/project';
+import { Stage } from 'app/database/shared/stage/stage';
 import { DataService } from 'app/data.service';
 import { ProjectDetails } from '../model/model';
 import { EventBus } from 'eventbus-ts';
 import { StageDetailsEvent } from '../events/stage.details.event';
 import { FocusHelper } from 'app/shared/common/view_helper';
 import { EditInputHandler } from 'app/shared/common/edit_input_handler';
+import { Project } from 'app/database/shared/project/project';
 
 export class ProjectStagesController {
   private STAGE_NAME_INPUT = '#new-stage-name';
@@ -36,7 +36,7 @@ export class ProjectStagesController {
 
   private saveStage(stage: Stage) {
     this.dataService.getStageService().create(stage).then(result=>{
-      this.model.updateStages(result.updatedStages);
+      this.model.updateStages(result.updatedElements);
       this.closeAddingNewStage();
     });
   }

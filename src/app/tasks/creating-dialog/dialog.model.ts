@@ -1,4 +1,4 @@
-import { Project } from 'app/database/data/models/project';
+import { Project } from 'app/database/shared/project/project';
 
 type Callback = (IDialogModel)=>void;
 

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { Task } from 'app/database/data/models/task';
-import { PomodoroSummaryAdapter } from 'app/database/data/models/pomodoro.history';
+import { Task } from 'app/database/shared/task/task';
+import { PomodoroSummaryAdapter } from 'app/database/shared/pomodoro/pomodoro.history';
 import { DataService } from 'app/data.service';
 import { State, TimerState, BreakHelper } from 'app/pomodoro/pomodoro/shared/state';
 import { PomodoroService, CallbackType } from 'app/pomodoro/pomodoro/pomodoro.service';

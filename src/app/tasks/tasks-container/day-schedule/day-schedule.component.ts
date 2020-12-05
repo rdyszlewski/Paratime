@@ -3,21 +3,20 @@ import {
   Component,
   HostListener,
   OnInit,
-  Predicate,
   ViewChild,
 } from "@angular/core";
 import { DataService } from "app/data.service";
-import { Project } from "app/database/data/models/project";
-import { Task } from "app/database/data/models/task";
-import { ITaskContainer } from "app/database/data/models/task.container";
-import { ITaskItem } from "app/database/data/models/task.item";
-import { TaskFilter } from 'app/database/filter/task.filter';
+import { Task } from "app/database/shared/task/task";
+import { ITaskContainer } from "app/database/shared/task/task.container";
+import { ITaskItem } from "app/database/shared/task/task.item";
+import { TaskFilter } from 'app/database/shared/task/task.filter';
 import { ITaskList } from "../task.list";
 import { CalendarDay } from "./day";
 import { DaySchedulerComponent } from "./day-scheduler/day-scheduler.component";
 import { ICalendarCallback } from "./mini-calendar/calendar-callback";
 import { MiniCalendarComponent } from "./mini-calendar/mini-calendar.component";
 import { TasksListComponent } from "./tasks-list/tasks-list.component";
+import { Project } from 'app/database/shared/project/project';
 
 @Component({
   selector: "day-schedule",

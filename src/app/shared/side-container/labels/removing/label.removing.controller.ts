@@ -1,4 +1,4 @@
-import { Label } from 'app/database/data/models/label';
+import { Label } from 'app/database/shared/label/label';
 import { MatDialog } from '@angular/material/dialog';
 import { DataService } from 'app/data.service';
 import { LabelsModel } from '../common/list.model';

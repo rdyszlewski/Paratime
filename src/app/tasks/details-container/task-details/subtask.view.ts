@@ -1,6 +1,6 @@
 import { DataService } from 'app/data.service';
-import { Stage } from 'app/database/data/models/stage';
-import { StageFilter } from 'app/database/filter/stage.filter';
+import { Stage } from 'app/database/shared/stage/stage';
+import { StageFilter } from 'app/database/shared/stage/stage.filter';
 
 export class TaskDetailsView {
   private _stages: Stage[] = [];
