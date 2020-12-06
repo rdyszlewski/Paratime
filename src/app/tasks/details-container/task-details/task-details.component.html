@@ -61,8 +61,7 @@
     ></mat-checkbox>
     <span>{{ label.getName() }}</span>
   </div>
-  <!-- <button mat-menu-item *ngFor="let label of getLabels().getModel().getLabels()" class="list-item small-list-item"
-    (click)="getLabels().chooseLabel(label)">{{label.getName()}}</button> -->
+
   <button (click)="getLabels().cancelChoosingLabels()">Anuluj</button>
   <button (click)="getLabels().acceptSelectedLabels()">Gotowe</button>
 </mat-menu>

@@ -4,7 +4,7 @@ import { TaskInsertResult } from 'app/database/shared/task/task.insert-result';
 import { ProjectsModel } from 'app/tasks/lists-container/projects/common/model';
 import { ProjectLoadEvent } from 'app/tasks/lists-container/projects/events/project.event';
 import { EventBus } from 'eventbus-ts';
-import { DataCommand } from '../data-commnad';
+import { DataCommand } from '../../data-commnad';
 
 export class CreateProjectCommand extends DataCommand{
 

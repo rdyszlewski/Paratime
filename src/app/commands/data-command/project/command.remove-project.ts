@@ -1,6 +1,6 @@
 import { Project } from 'app/database/shared/project/project';
 import { ProjectsModel } from 'app/tasks/lists-container/projects/common/model';
-import { DataCommand } from '../data-commnad';
+import { DataCommand } from '../../data-commnad';
 
 export class RemoveProjectCommand extends DataCommand{
   constructor(private _project: Project, private _model: ProjectsModel){
@@ -19,6 +19,7 @@ export class RemoveProjectCommand extends DataCommand{
   }
 
   public getDescription(): string {
+    // TODO: dodać lokalizację
     return `Usunięcię projektu ${this._project.getName()}`;
   }
 }

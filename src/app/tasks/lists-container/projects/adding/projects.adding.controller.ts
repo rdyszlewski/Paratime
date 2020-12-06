@@ -4,7 +4,7 @@ import { ProjectsModel } from '../common/model';
 import { FocusHelper, ScrollBarHelper } from 'app/shared/common/view_helper';
 import { EditInputHandler } from 'app/shared/common/edit_input_handler';
 import { Project } from 'app/database/shared/project/project';
-import { CreateProjectCommand } from 'app/commands/data-command/command.create-project';
+import { CreateProjectCommand } from 'app/commands/data-command/project/command.create-project';
 import { CommandService } from 'app/commands/manager/command.service';
 
 export class ProjectAddingController{
@@ -42,10 +42,6 @@ export class ProjectAddingController{
     public saveProject(){
         const project = new Project();
         project.setName(this.model.getNewProjectName());
-        // this.dataService.getProjectService().create(project).then(result=>{
-        //   this.listModel.updateProjects(result.updatedProjects);
-        //   EventBus.getDefault().post(new ProjectLoadEvent(result.insertedProject));
-        // });
         this.commandService.execute(new CreateProjectCommand(project, this.listModel));
         // TODO: można wstawić jakąś zaślepkę, która będzie chowana dopiero po wstawieniu zadania
         this.closeAddingNewProject();

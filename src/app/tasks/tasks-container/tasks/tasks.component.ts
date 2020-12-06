@@ -19,10 +19,13 @@ import { Subscribe, EventBus } from 'eventbus-ts';
 import { ITaskList } from '../task.list';
 import { SpecialList } from 'app/tasks/lists-container/projects/common/special_list';
 import { AppService } from 'app/core/services/app/app.service';
-import { TaskRemoveEvent } from '../events/remove.event';
 import { TasksService } from 'app/tasks/tasks.service';
 import { TaskFilter } from 'app/database/shared/task/task.filter';
 import { Project } from 'app/database/shared/project/project';
+import { CommandService } from 'app/commands/manager/command.service';
+import { RemoveTaskCommand } from 'app/commands/data-command/task/command.remove-task';
+import { MatDialog } from '@angular/material/dialog';
+import { DialogService } from 'app/ui/widgets/dialog/dialog.service';
 
 @Component({
   selector: 'app-tasks',
@@ -41,10 +44,10 @@ export class TasksComponent implements OnInit, ITaskList {
   private addingController: TaskAddingController;
   private filteringController: TaskFilteringController;
 
-  constructor(private appService: AppService, private tasksService: TasksService, private dataService: DataService) {
+  constructor(private appService: AppService, private tasksService: TasksService, private dataService: DataService, private commandService: CommandService, private dialogService: DialogService) {
     this.model = new TasksModel();
     this.itemInfo = new TaskItemInfo();
-    this.itemController = new TaskItemController(this.dataService);
+    this.itemController = new TaskItemController(this.commandService);
     this.specialListsController = new SpecialListTask(this.model, this.dataService);
     this.addingController = new TaskAddingController(this.model, this.tasksService);
     this.filteringController = new TaskFilteringController(this.model, this.dataService);
@@ -137,10 +140,10 @@ export class TasksComponent implements OnInit, ITaskList {
   }
 
   public removeTask(task: Task): void {
-    this.tasksService.removeTask(task).then(updatedTasks=>{
-      this.model.updateTasks(updatedTasks as Task[]);
-      EventBus.getDefault().post(new TaskRemoveEvent(task));
-    })
+    let message = `Czy na pewno usunąć zadanie ${name}`;
+    this.dialogService.openQuestion(message, ()=>{
+      this.commandService.execute(new RemoveTaskCommand(task, this.model));
+    });
   }
 
   public openDetails(task: Task): void {

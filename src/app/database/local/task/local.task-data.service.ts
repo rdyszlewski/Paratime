@@ -1,3 +1,4 @@
+import { CDK_CONNECTED_OVERLAY_SCROLL_STRATEGY } from '@angular/cdk/overlay/overlay-directives';
 import { InsertResult } from 'app/database/shared/insert-result';
 import { KanbanColumn } from 'app/database/shared/kanban-column/kanban-column';
 import { KanbanTask } from 'app/database/shared/kanban-task/kanban-task';
@@ -98,6 +99,8 @@ export class LocalTaskDataService{
     return this.prepareKanbanColumn(data).then(column=>{
       let kanbanTask = this.getPreparedKanbanTask(data, column.getId());
       return this.createKanbanTask(kanbanTask).then(insertedTask=>{
+        console.log("CreateKanbanTask");
+        console.log(insertedTask);
         return this.kanbanTaskOrderController.insert(insertedTask, null, column.getId()).then(updatedTasks=>{
           let result = new InsertResult(insertedTask, updatedTasks);
           return Promise.resolve(result);
@@ -147,7 +150,10 @@ export class LocalTaskDataService{
   }
 
   private removeKanbanTask(task: Task): Promise<KanbanTask[]>{
+    console.log(task);
+
     return this.kanbanTaskRepository.findByTask(task.getId()).then(kanbanTask=>{
+      console.log(kanbanTask);
       return this.kanbanTaskRepository.remove(kanbanTask).then(()=>{
         return this.kanbanTaskOrderController.remove(kanbanTask);
       })
@@ -164,8 +170,7 @@ export class LocalTaskDataService{
     // TODO: dodać usuwanie zadania kanban
     return Promise.all([
       this.labelService.removeAllAssigningFromTask(taskId),
-      this.subtaskService.removeByTask(taskId),
-      this.kanbanTaskRepository.removeByTask(taskId)
+      this.subtaskService.removeByTask(taskId)
     ]).then(_=>{
       return Promise.resolve(null);
     });

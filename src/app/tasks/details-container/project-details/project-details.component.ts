@@ -15,9 +15,12 @@ import {
 } from '@angular/cdk/drag-drop';
 import { DateFormatter } from 'app/shared/common/date_formatter';
 import { EventBus } from 'eventbus-ts';
-import { ProjectUpdateEvent } from './events/update.event';
 import { ProjectDetailsCloseEvent } from './events/close.event';
 import { Project } from 'app/database/shared/project/project';
+import { CommandService } from 'app/commands/manager/command.service';
+import { UpdateProjectCommand } from 'app/commands/data-command/project/command.update-project';
+import { RemoveStageCommand } from 'app/commands/data-command/stage/command.remove-stage';
+import { ChangeStageOrderCommand } from 'app/commands/data-command/stage/command.change-stage-order';
 
 @Component({
   selector: 'app-project-details',
@@ -36,8 +39,8 @@ export class ProjectDetailsComponent implements OnInit {
   public projectType = ProjectType;
   public status = Status;
 
-  constructor(private dataService: DataService){
-
+  constructor(private commandService: CommandService){
+``
   }
 
   ngOnInit(): void {
@@ -46,7 +49,7 @@ export class ProjectDetailsComponent implements OnInit {
     this.changeDetector = new ProjectChangeDetector(this.model);
     this.validator = new ProjectValidator(this.model);
     this.stageController = new ProjectStagesController(
-      this.model, this.dataService
+      this.model, this.commandService
     );
   }
 
@@ -81,15 +84,11 @@ export class ProjectDetailsComponent implements OnInit {
   }
 
   public updateProject() {
-    this.dataService.getProjectService().update(this.model.getProject()).then(updatedProject=>{
-        EventBus.getDefault().post(new ProjectUpdateEvent(updatedProject));
-    });
+    this.commandService.execute(new UpdateProjectCommand(this.model.getProject()));
   }
 
   public onRemoveStage(stage: Stage) {
-    this.dataService.getStageService().remove(stage.getId()).then(updatedStages=>{
-      this.model.updateStages(updatedStages);
-    });
+    this.commandService.execute(new RemoveStageCommand(stage, this.model));
   }
 
   public closeView() {
@@ -118,10 +117,6 @@ export class ProjectDetailsComponent implements OnInit {
     if (previousIndex == currentIndex) {
       return;
     }
-    const previousStage = this.model.getStageByIndex(previousIndex);
-    const currentStage = this.model.getStageByIndex(currentIndex);
-    this.dataService.getStageService().changeOrder(currentStage, previousStage, currentIndex, previousIndex).then(updatedStages=>{
-      this.model.updateStages(updatedStages);
-    });
+    this.commandService.execute(new ChangeStageOrderCommand(currentIndex, previousIndex, this.model));
   }
 }

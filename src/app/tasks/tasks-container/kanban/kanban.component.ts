@@ -20,6 +20,8 @@ import { TaskRemoveEvent } from '../events/remove.event';
 import { KanbanColumn } from 'app/database/shared/kanban-column/kanban-column';
 import { KanbanTask } from 'app/database/shared/kanban-task/kanban-task';
 import { Project } from 'app/database/shared/project/project';
+import { CommandService } from 'app/commands/manager/command.service';
+import { RemoveTaskCommand } from 'app/commands/data-command/task/command.remove-task';
 
 @Component({
   selector: 'app-kanban',
@@ -36,7 +38,7 @@ export class KanbanComponent implements OnInit, ITaskList {
 
   public status = Status;
 
-  constructor(private dialog: MatDialog, private appService: AppService, private tasksService: TasksService, private dataService: DataService) {}
+  constructor(private dialog: MatDialog, private appService: AppService, private tasksService: TasksService, private dataService: DataService, private commandService: CommandService) {}
 
   close() {
 
@@ -102,10 +104,12 @@ export class KanbanComponent implements OnInit, ITaskList {
   }
 
   public  removeTask(kanbanTask: KanbanTask): void {
+
     this.tasksService.removeTask(kanbanTask.getTask()).then(updatedTasks=>{
       this.model.updateTasks(updatedTasks as KanbanTask[], kanbanTask.getColumnId());
       EventBus.getDefault().post(new TaskRemoveEvent(kanbanTask.getTask()));
     });
+
   }
 
   public closeAddingNewTask() {

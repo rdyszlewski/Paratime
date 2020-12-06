@@ -19,6 +19,9 @@ import { FocusHelper } from 'app/shared/common/view_helper';
 import { EventBus } from 'eventbus-ts';
 import { TaskDetailsCloseEvent } from './events/close.event';
 import { OpenLabelsManagerEvent } from './events/open.labels.event';
+import { CommandService } from 'app/commands/manager/command.service';
+import { UpdateTaskCommand } from 'app/commands/data-command/task/command.update-task';
+import { ChangeSubtaskOrderCommand } from 'app/commands/data-command/subtask/command.change-subtask-order';
 
 @Component({
   selector: 'app-task-details',
@@ -39,7 +42,7 @@ export class TaskDetailsComponent implements OnInit {
   private subtaskController: SubtasksController;
   private labelsController: TaskLabelsController;
 
-  constructor(private dataService: DataService) {}
+  constructor(private dataService: DataService, private commandService: CommandService) {}
 
   ngOnInit(): void {
     this.model = new TaskDetails();
@@ -47,7 +50,7 @@ export class TaskDetailsComponent implements OnInit {
     this.validator = new TaskValidator(this.model);
     this.changeDetector = new TaskChangeDetector(this.model);
     this.subtaskController = new SubtasksController(this.model, this.dataService);
-    this.labelsController = new TaskLabelsController(this.model, this.dataService);
+    this.labelsController = new TaskLabelsController(this.model, this.dataService, this.commandService);
     this.view = new TaskDetailsView(this.dataService);
   }
 
@@ -90,7 +93,7 @@ export class TaskDetailsComponent implements OnInit {
 
   public updateTask() {
     if (this.validator.isValid()) {
-      this.dataService.getTaskService().update(this.model.getTask());
+      this.commandService.execute(new UpdateTaskCommand(this.model.getTask()));
     }
   }
 
@@ -137,11 +140,7 @@ export class TaskDetailsComponent implements OnInit {
     if (previousIndex == currentIndex) {
       return;
     }
-    const previousTask = this.model.getSubtaskByIndex(previousIndex);
-    const currentTask = this.model.getSubtaskByIndex(currentIndex);
-    this.dataService.getSubtaskService().changeOrder(currentTask, previousTask, currentIndex, previousIndex).then(updatedSubtasks=>{
-      this.model.updateSubtasks(updatedSubtasks);
-    });
+    this.commandService.execute(new ChangeSubtaskOrderCommand(currentIndex, previousIndex, this.model));
   }
   // TODO: przerzucić to gdzieś
   public timeChange(time: string) {

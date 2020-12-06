@@ -3,7 +3,7 @@ import { ProjectsModel } from '../common/model';
 import { EventBus, Subscribe } from 'eventbus-ts';
 import { DialogHelper } from 'app/shared/common/dialog';
 import { CommandService } from 'app/commands/manager/command.service';
-import { RemoveProjectCommand } from 'app/commands/data-command/command.remove-project';
+import { RemoveProjectCommand } from 'app/commands/data-command/project/command.remove-project';
 
 export class ProjectsRemovingController{
 
@@ -31,5 +31,4 @@ export class ProjectsRemovingController{
         const message = "Czy na pewno usunąć projekt?";
         return DialogHelper.openDialog(message, this.dialog);
     }
-
 }

@@ -2,10 +2,10 @@ import { Component, OnInit } from "@angular/core";
 import { StageDetailsModel } from "./model";
 import { Status } from "app/database/shared/models/status";
 import { Stage } from "app/database/shared/stage/stage";
-import { DataService } from "app/data.service";
 import { EventBus } from "eventbus-ts";
-import { StageUpdateEvent } from "./events/update.event";
 import { StageDetailsCloseEvent } from "./events/close.event";
+import { CommandService } from 'app/commands/manager/command.service';
+import { UpdateStageCommand } from 'app/commands/data-command/stage/command.update-stage';
 
 @Component({
   selector: "app-stage-details",
@@ -16,7 +16,7 @@ export class StageDetailsComponent implements OnInit {
   public status = Status;
   public model: StageDetailsModel = new StageDetailsModel();
 
-  constructor(private dataService: DataService) {}
+  constructor(private commandService: CommandService) {}
 
   ngOnInit(): void {}
 
@@ -26,12 +26,7 @@ export class StageDetailsComponent implements OnInit {
 
   public updateStage() {
     if (this.model.isValid()) {
-      this.dataService
-        .getStageService()
-        .update(this.model.getStage())
-        .then((updatedStage) => {
-          EventBus.getDefault().post(new StageUpdateEvent(updatedStage));
-        });
+     this.commandService.execute(new UpdateStageCommand(this.model.getStage()));
     }
   }
 
