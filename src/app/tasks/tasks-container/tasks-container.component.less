@@ -1,22 +1,21 @@
+@import '../../../styles.less';
+
+@headerHeight:30px;
+
+.tasks-header{
+  height: @headerHeight;
+}
+
 .task-list{
   width: 100%;
+  height: calc(100% - @headerHeight);
 }
 
 .mode-buttons{
   float: right;
-}
-
-.toolbar-button{
-  width: 30px;
-  height: 30px;
-}
-
-.tasks-container{
-  height: 100%;
-  display: flex;
-  flex-direction: column;
+  .horizontal-container;
 }
 
 .tasks-container-list{
-  height: calc(100% - 30px);
+  width: 100%;
 }

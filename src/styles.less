@@ -15,8 +15,11 @@
 @fontColor: #f1efee;
 
 @fontSize: 10px;
+@smallFontSize: 9px;
 @standardMargin: 5px;
 @standardPadding: 5px;
+@smallMargin: 2px;
+@smallPadding: 2px;
 @borderRadius: 2px;
 
 
@@ -58,6 +61,11 @@
       visibility: visible;
     }
   }
+
+  .list-item-value{
+    width: 100%;
+    .vertical-center;
+  }
 }
 
 .list-item-options {
@@ -69,16 +77,6 @@
     background-color: @color4;
   }
 }
-
-// .list-item-options:hover {
-//   box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14),
-//     0px 1px 5px 0px rgba(0, 0, 0, 0.12);
-//   border-radius: 3px;
-//   cursor: pointer;
-//   width: 20px;
-//   text-align: center;
-// }
-
 
 .create-button {
   background-color: @color1;
@@ -97,6 +95,7 @@
   margin: @standardMargin;
   font-size: @fontSize * 1.1;
   width: 100%;
+  .vertical-center;
 }
 
 .filter-button{
@@ -111,8 +110,69 @@
     0px 1px 5px 0px rgba(0, 0, 0, 0.12);
 }
 
+.insert-buttons-container{
+  .horizontal-container;
+  float:right;
+}
+
+
+
+// ITEMY
+
+.label-element{
+  background-color: @color1;
+  .tasks-element;
+}
+
+.tasks-info-element{
+  background-color: @color4;
+  .tasks-element;
+}
+
+.tasks-element{
+  margin:@smallMargin;
+  @padding: @smallPadding * 3;
+  padding: @smallPadding @padding @smallPadding @padding ;
+  font-size: @smallFontSize;
+  align-self: center;
+  height: @smallFontSize + @smallPadding * 2;
+  min-width: @padding;
+}
+
+
+
+/* FILTROWANIE PROJEKTÓW I ZADAŃ */
+
+.filter-container {
+  .border;
+  padding: @standardPadding;
+}
+
+.filter-group {
+  display: flex;
+  padding: 2px;
+}
+
+.filter-label {
+  width: 60%;
+  float: left;
+  .vertical-center;
+}
+
+.filter-value {
+  scale: 0.8;
+  width: 40%;
+  float: right;
+  .vertical-center;
+
+}
 
 // OGÓLNE
+
+.shadow {
+  box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14),
+    0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+}
 
 .horizontal-container{
   display: flex;
@@ -159,8 +219,34 @@ body {
   }
 }
 
+.tasks-container{
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background-color: @color4;
+  .shadow;
+}
 
+// TODO: zrobić z tym coś później
+.simple-button{
+  border: 1px solid black;
+  border-radius: @borderRadius;
+  padding: @smallPadding * 2;
+  background-color: @color2;
+  color: @itemFontColor;
+  .base-button;
+  &:hover{
+    background-color: @color5;
+  }
+}
 
+.right{
+  float: right;
+}
+
+.left{
+  float:left;
+}
 
 .border {
   border: 1px solid black;
@@ -301,20 +387,13 @@ body {
   display: block;
 }
 
-.list-item-value {
-  margin-top: auto;
-  margin-bottom: auto;
-  width: 100%;
-}
+
 
 .selected-list-item {
   background-color: seashell;
 }
 
-.shadow {
-  box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14),
-    0px 1px 5px 0px rgba(0, 0, 0, 0.12);
-}
+
 
 .button {
   margin-top: 5px;
@@ -383,13 +462,6 @@ body {
   margin-bottom: 0px;
 }
 
-.label-item {
-  padding: 3px;
-  border: 1px solid black;
-  display: flex;
-  margin: 2px;
-}
-
 .tooltip-list {
   list-style: none;
 }
@@ -404,33 +476,6 @@ body {
   color: red;
   font-size: small;
 }
-
-/* FILTROWANIE PROJEKTÓW I ZADAŃ */
-
-.filter-container {
-  border: 1px solid black;
-  padding: 5px;
-}
-
-.filter-group {
-  display: flex;
-  font-size: medium;
-  padding: 2px;
-}
-
-.filter-label {
-  width: 60%;
-  float: left;
-}
-
-.filter-value {
-  width: 40%;
-  float: right;
-}
-
-
-
-
 
 .close-button {
   height: 30px;
@@ -660,8 +705,4 @@ body {
 
 .active-side-item {
   font-weight: bold;
-}
-
-.project-title {
-  min-height: 30px;
 }

@@ -65,8 +65,8 @@
   </div>
 
   <div class="filter-buttons-container">
-    <button class="small-button button" (click)="getFiltering().clearFilter()">Wyczyść</button>
-  <button class="small-button button" (click)="getFiltering().searchFilter()">Szukaj</button>
+    <button class="simple-button" (click)="getFiltering().clearFilter()">Wyczyść</button>
+  <button class="simple-button" (click)="getFiltering().searchFilter()">Szukaj</button>
   </div>
 </ng-template>
 
@@ -112,10 +112,10 @@
   <input type="text" class="form-control" id="new-project-name" autocomplete="off"
         (keyup)="getAdding().handleAddingNewProjectKeyUp($event)"
         [ngModel]="getAdding().getModel().getNewProjectName()" (ngModelChange)="getAdding().getModel().setNewProjectName($event)">
-        <div class="buttons-container">
-            <button class="button small-button insert-button" id="save-subtask-button"
-            (click)="getAdding().addNewProject()">Zapisz</button>
-            <button class="button small-button insert-button" id="cancel-subtask-button"
+        <div class="insert-buttons-container">
+            <button class="simple-button" id="cancel-subtask-button"
             (click)="getAdding().closeAddingNewProject()">Anuluj</button>
+            <button class="simple-button" id="save-subtask-button"
+            (click)="getAdding().addNewProject()">Zapisz</button>
         </div>
 </ng-template>

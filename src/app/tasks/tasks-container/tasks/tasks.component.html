@@ -1,8 +1,8 @@
-<div class="tasks-view shadow app-panel" *ngIf="getModel().isOpen()">
-  <div class="filter-controls">
+<div class="tasks-view" *ngIf="getModel().isOpen()">
+  <div class="horizontal-container">
     <input
       id="task-filter"
-      class="filter border"
+      class="filter"
       placeholder="Wyszukaj zadanie"
       autocomplete="off"
       (input)="getModel().filterTasks($event.target.value)"
@@ -18,9 +18,9 @@
     <ng-container [ngTemplateOutlet]="filter_container"></ng-container>
   </div>
 
-  <div class="status-buttons">
-    <button (click)="loadTasks(taskType.ACTIVE)">Aktywne</button>
-    <button (click)="loadTasks(taskType.FINISHED)">Zakończone</button>
+  <div class="horizontal-container">
+    <div class="simple-button"  (click)="loadTasks(taskType.ACTIVE)">Aktywne</div>
+    <div class="simple-button" (click)="loadTasks(taskType.FINISHED)">Zakończone</div>
   </div>
   <div
     id="tasks-list"
@@ -48,7 +48,7 @@
   </div>
 
   <button
-    class="button border"
+    class="create-button"
     (click)="getAdding().openAddingTask()"
     *ngIf="
       getModel().getProject().getId() != null &&
@@ -134,10 +134,10 @@
   </div>
 
   <div class="filter-buttons-container">
-    <button class="small-button button" (click)="getFiltering().clearFilter()">
+    <button class="simple-button" (click)="getFiltering().clearFilter()">
       Wyczyść
     </button>
-    <button class="small-button button" (click)="getFiltering().searchFilter()">
+    <button class="simple-button" (click)="getFiltering().searchFilter()">
       Szukaj
     </button>
   </div>
@@ -166,7 +166,7 @@
     </div>
     <div class="task-info">
       <div class="labels-container">
-        <div *ngFor="let label of task.getLabels()" class="label-item border">
+        <div *ngFor="let label of task.getLabels()" class="label-element">
           {{ label.getName() }}
         </div>
       </div>
@@ -188,7 +188,7 @@
 <ng-template #task_details let-task>
   <div
     *ngIf="task.getDescription() != null"
-    class="task-description-icon info-icon"
+    class="tasks-info-element"
     tooltip="{{ task.getDescription() }}"
     autoplacement="true"
     placement="bottom"
@@ -196,19 +196,19 @@
 
   <div
     *ngIf="task.getEndDate() != null"
-    class="task-enddate-icon info-icon"
+    class="tasks-info-element"
     tooltip="{{ getInfo().getEndDateText(task) }}"
     autoplacement="true"
     placement="bottom"
   ></div>
 
-  <div *ngIf="task.getPriority() != null" class="task-priority-icon info-icon">
+  <div *ngIf="task.getPriority() != null" class="tasks-info-element">
     {{ getInfo().getPriorityText(task) }}
   </div>
 
   <div
     *ngIf="task.getSubtasks().length != 0"
-    class="info-icon task-subtask"
+    class="tasks-info-element"
     tooltip="{{ getInfo().getSubtasksList(task) }}"
     autoplacement="true"
     placement="bottom"
@@ -260,20 +260,21 @@
     [ngModel]="getAdding().getModel().getNewTaskName()"
     (ngModelChange)="getAdding().getModel().setNewTaskName($event)"
   />
-  <div class="buttons-container">
+  <!-- TODO: wykorzystać to w wielu miejscach -->
+  <div class="insert-buttons-container">
     <button
-      class="button small-button insert-button"
-      id="save-subtask-button"
-      (click)="getAdding().addNewTask()"
-    >
-      Zapisz
-    </button>
-    <button
-      class="button small-button insert-button"
+      class="simple-button"
       id="cancel-subtask-button"
       (click)="getAdding().closeAddingNewTask()"
     >
       Anuluj
+    </button>
+    <button
+      class="simple-button"
+      id="save-subtask-button"
+      (click)="getAdding().addNewTask()"
+    >
+      Zapisz
     </button>
   </div>
 </ng-template>

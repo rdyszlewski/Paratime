@@ -1,30 +1,18 @@
 <div class="tasks-container">
-  <div class="project-title">
-    <span class="project-name">{{getProjectName()}}</span>
+  <div class="tasks-header">
+    <span class="project-name">{{ getProjectName() }}</span>
     <span class="mode-buttons">
-      <button class="toolbar-button" (click)="changeTaskMode(taskMode.LIST)">L</button>
-      <button class="toolbar-button" (click)="changeTaskMode(taskMode.KANBAN)">K</button>
-      <button class="toolbar-button" (click)="changeTaskMode(taskMode.CALENDAR)">C</button>
-      <button class="toolbar-button" (click)="changeTaskMode(taskMode.DAY_SCHEDULE)">D</button>
+      <div class="icon-button" (click)="changeTaskMode(taskMode.LIST)">L</div>
+      <div class="icon-button" (click)="changeTaskMode(taskMode.KANBAN)">K</div>
+      <div class="icon-button" (click)="changeTaskMode(taskMode.CALENDAR)">C</div>
+      <div class="icon-button" (click)="changeTaskMode(taskMode.DAY_SCHEDULE)">D</div>
     </span>
   </div>
 
-  <div class="tasks-container-list">
-    <!-- TODO: dokończyć i pododawać wszystko -->
-    <app-tasks class="task-list"
-      [hidden]="mode!=taskMode.LIST"
-      >
-    </app-tasks>
-    <app-kanban class="task-list"
-      [hidden]="mode!=taskMode.KANBAN"
-      >
-    </app-kanban>
+  <app-tasks class="task-list" [hidden]="mode != taskMode.LIST"> </app-tasks>
+  <app-kanban class="task-list" [hidden]="mode != taskMode.KANBAN"> </app-kanban>
 
-    <app-calendar class="task-list" [hidden]="mode!=taskMode.CALENDAR">
+  <app-calendar class="task-list" [hidden]="mode != taskMode.CALENDAR"> </app-calendar>
 
-    </app-calendar>
-
-    <day-schedule class="task-list" [hidden]="mode!=taskMode.DAY_SCHEDULE"></day-schedule>
-
-  </div>
+  <day-schedule class="task-list" [hidden]="mode != taskMode.DAY_SCHEDULE"></day-schedule>
 </div>
