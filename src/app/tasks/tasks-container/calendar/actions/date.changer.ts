@@ -1,8 +1,11 @@
 import { MatDialog } from '@angular/material/dialog';
-import { DataService } from 'app/data.service';
+import { UpdateTaskCommand } from 'app/commands/data-command/task/command.update-task';
+import { CommandService } from 'app/commands/manager/command.service';
 import { Task } from 'app/database/shared/task/task';
 import { DialogHelper } from 'app/shared/common/dialog';
+import { DialogService } from 'app/ui/widgets/dialog/dialog.service';
 import { DropIdsCreator } from '../calendar/names';
+import { ChangeDateDialog } from '../dialog/dialog.calendar.change-date';
 import { ICalendarTasks } from '../models/tasks.model';
 import { ICalendarView } from '../models/view.model';
 import { CalendarValues } from '../values';
@@ -10,7 +13,7 @@ import { CalendarValues } from '../values';
 export class DateChanger{
 
 
-  constructor(private _tasksModel: ICalendarTasks, private _viewModel: ICalendarView, private _idsCreator: DropIdsCreator, private _dialog: MatDialog, private dataService: DataService){
+  constructor(private _tasksModel: ICalendarTasks, private _viewModel: ICalendarView, private _idsCreator: DropIdsCreator, private dialogService: DialogService, private commandService: CommandService){
 
   }
 
@@ -20,16 +23,13 @@ export class DateChanger{
         task.setDate(null);
         break;
       case CalendarValues.CURRENT_TASKS:
-        console.log("CURRENT TASKS");
-        console.log(this._viewModel.selectedDay);
         const currentCell = this._idsCreator.getCellId(this._viewModel.selectedDay);
-        console.log(currentCell);
         this.changeTaskDate(task, currentCell); // TODO: trzeba sobie to sprawdzić
         break;
       default:
         this.changeTaskDate(task, cellName);
     }
-    this.dataService.getTaskService().update(task);
+    this.commandService.execute(new UpdateTaskCommand(task));
   }
 
   private changeTaskDate(task:Task, cellName: string){
@@ -48,19 +48,11 @@ export class DateChanger{
 
   // TODO: sprawdzić, czy czegoś tutaj nie zmienić, żeby było bardziej czytelne
   public changeDateManyTasks(previousCellId: string, currentCellId: string){
-    this.showMoveAllTasksQuestion(previousCellId, currentCellId).then(answer=>{
-      if(answer){
-        this.changeDateAllTasksFromCells(previousCellId, currentCellId);
-      }
-    });
-  }
-
-  private showMoveAllTasksQuestion(previousCellId: string, currentCellId: string):Promise<boolean>{
     const previousDate = this.createDateFromCellId(previousCellId);
     const currentDate = this.createDateFromCellId(currentCellId);
-    const message = "Czy na pewno przełożyć wszystkie zadania z dnia: " + previousDate.toLocaleDateString()
-      + " na dzień: " + currentDate.toLocaleDateString() + " ?";
-    return DialogHelper.openDialog(message, this._dialog).toPromise();
+    ChangeDateDialog.showManyDatesQuestion(previousDate, currentDate, this.dialogService, ()=>{
+      this.changeDateAllTasksFromCells(previousCellId, currentCellId);
+    })
   }
 
   private changeDateAllTasksFromCells(previousCellId:string, currentCellId:string){

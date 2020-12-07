@@ -5,16 +5,17 @@ import { ITaskItem } from 'app/database/shared/task/task.item';
 import { TaskRemoveResult } from 'app/database/shared/task/task.remove-result';
 import { TaskRemoveEvent } from 'app/tasks/tasks-container/events/remove.event';
 import { EventBus } from 'eventbus-ts';
+import { IRemoveTaskCallback } from './callback.remove-task';
 
 export class RemoveTaskCommand extends DataCommand{
 
-  private callback: (result:TaskRemoveResult)=>void;
+  private callback: IRemoveTaskCallback;
 
   constructor(private task: Task){
     super();
   }
 
-  public setCallback(callback: (result: TaskRemoveResult)=>void): RemoveTaskCommand{
+  public setCallback(callback: IRemoveTaskCallback): RemoveTaskCommand{
     this.callback = callback;
     return this;
   }
@@ -23,7 +24,7 @@ export class RemoveTaskCommand extends DataCommand{
     this.removeTaskFromDatabase(this.task).then(result=>{
       // TODO: prawdopdobnie tutaj będzie trzeba zrobić callback
       if(this.callback){
-        this.callback(result);
+        this.callback.execute([result]);
       }
       EventBus.getDefault().post(new TaskRemoveEvent(this.task));
     });
@@ -42,6 +43,6 @@ export class RemoveTaskCommand extends DataCommand{
   }
 
   getDescription(): string {
-    return `Usunięto zadanie ${this.task.getName()}`;
+    return `Usuwanie zadania ${this.task.getName()}`;
   }
 }

@@ -13,7 +13,6 @@ import { TaskItemInfo } from '../tasks/common/task.item.info';
 import { AppService } from 'app/core/services/app/app.service';
 import { FocusHelper } from 'app/shared/common/view_helper';
 import { EditInputHandler } from 'app/shared/common/edit_input_handler';
-import { TasksService } from 'app/tasks/tasks.service';
 import { KanbanColumn } from 'app/database/shared/kanban-column/kanban-column';
 import { KanbanTask } from 'app/database/shared/kanban-task/kanban-task';
 import { Project } from 'app/database/shared/project/project';
@@ -22,9 +21,11 @@ import { RemoveTaskCommand } from 'app/commands/data-command/task/command.remove
 import { TaskInsertResult } from 'app/database/shared/task/task.insert-result';
 import { CreateTaskCommand } from 'app/commands/data-command/task/command.create-task';
 import { FinishTaskCommand } from 'app/commands/data-command/task/command.finish-task';
-import { TaskRemoveResult } from 'app/database/shared/task/task.remove-result';
 import { TaskRemoveDialog } from '../tasks/dialog/task.remove-dialog';
 import { DialogService } from 'app/ui/widgets/dialog/dialog.service';
+import { RemoveKanbanTaskCallback } from 'app/commands/data-command/task/clalback.kanban.remove-task';
+import { EventBus } from 'eventbus-ts';
+import { TaskDetailsEvent } from '../events/details.event';
 
 @Component({
   selector: 'app-kanban',
@@ -41,7 +42,7 @@ export class KanbanComponent implements OnInit, ITaskList {
 
   public status = Status;
 
-  constructor(private dialogService: DialogService, private appService: AppService, private tasksService: TasksService, private dataService: DataService, private commandService: CommandService) {}
+  constructor(private dialogService: DialogService, private appService: AppService, private dataService: DataService, private commandService: CommandService) {}
 
   close() {
 
@@ -74,11 +75,11 @@ export class KanbanComponent implements OnInit, ITaskList {
   }
 
   public taskDrop(event: CdkDragDrop<Task[]>) {
-    KanbanTaskOrderController.drop(event, this.model, this.dataService);
+    KanbanTaskOrderController.drop(event, this.model, this.commandService);
   }
 
   public columnDrop(event: CdkDragDrop<Task[]>) {
-   KanbanColumnOrderController.drop(event, this.model, this.dataService);
+   KanbanColumnOrderController.drop(event, this.model, this.commandService);
   }
 
   public addColumn() {
@@ -108,8 +109,8 @@ export class KanbanComponent implements OnInit, ITaskList {
 
   public  removeTask(kanbanTask: KanbanTask): void {
     let task = kanbanTask.getTask();
-    TaskRemoveDialog.show(task, this.dialogService, ()=>{
-      let callback = (result:TaskRemoveResult)=>this.model.updateTasks(result.updatedKanbanTasks, kanbanTask.getColumnId());
+    TaskRemoveDialog.showSingleRemoveQuestion(task, this.dialogService, ()=>{
+      let callback = new RemoveKanbanTaskCallback(this.model, kanbanTask);
       this.commandService.execute(new RemoveTaskCommand(task).setCallback(callback))
     })
   }
@@ -133,7 +134,7 @@ export class KanbanComponent implements OnInit, ITaskList {
   }
 
   public openDetails(kanbanTask: KanbanTask) {
-    this.tasksService.openDetails(kanbanTask.getTask());
+    EventBus.getDefault().post(new TaskDetailsEvent(kanbanTask.getTask()));
   }
 
   public setCurrentTask(task: KanbanTask) {

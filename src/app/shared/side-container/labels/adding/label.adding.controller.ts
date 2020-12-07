@@ -1,12 +1,11 @@
 import { LabelAddingModel } from './label.adding.model';
 import { LabelViewState } from '../common/label_view_state';
 import { Label } from 'app/database/shared/label/label';
-import { DataService } from 'app/data.service';
 import { LabelsModel } from '../common/list.model';
 import { FocusHelper } from 'app/shared/common/view_helper';
 import { EditInputHandler } from 'app/shared/common/edit_input_handler';
-import { EventBus } from 'eventbus-ts';
-import { LabelsUpdateEvent } from '../events/update.event';
+import { CommandService } from 'app/commands/manager/command.service';
+import { CreateLabelCommand } from 'app/commands/data-command/label/command.create-label';
 
 export class LabelAddingController {
   private LABEL_INPUT_ID = '#label';
@@ -17,7 +16,7 @@ export class LabelAddingController {
   constructor(
     private state: LabelViewState,
     private listModel: LabelsModel,
-    private dataService: DataService
+    private commandService: CommandService
   ) {
     this.state = state;
     this.listModel = listModel;
@@ -47,12 +46,9 @@ export class LabelAddingController {
     this.saveNewLabel(labelToInsert);
   }
 
-  private saveNewLabel(labelToInsert: Label) {
-    this.dataService.getLabelService().create(labelToInsert).then(result=>{
-      this.listModel.updateLabels(result.updatedElements);
-      this.cancelAddingLabel();
-      EventBus.getDefault().post(new LabelsUpdateEvent(null));
-    });
+  private saveNewLabel(label: Label) {
+    this.commandService.execute(new CreateLabelCommand(label, this.listModel));
+    this.cancelAddingLabel();
   }
 
   public handleKeysOnNewLabelInput(event: KeyboardEvent) {

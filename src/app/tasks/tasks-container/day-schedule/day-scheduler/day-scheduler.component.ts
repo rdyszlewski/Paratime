@@ -1,4 +1,6 @@
 import { AfterViewInit, Component, OnInit, HostListener } from "@angular/core";
+import { UpdateTaskCommand } from 'app/commands/data-command/task/command.update-task';
+import { CommandService } from 'app/commands/manager/command.service';
 import { DataService } from 'app/data.service';
 import { Status } from "app/database/shared/models/status";
 import { Task } from "app/database/shared/task/task";
@@ -32,13 +34,12 @@ export class DaySchedulerComponent implements OnInit, AfterViewInit {
     return this._draggingController;
   }
 
-  constructor(private dataService: DataService){
+  constructor(private dataService: DataService, private commandService: CommandService){
 
   }
 
   @HostListener("window:resize", ["$event"])
   onResize(event) {
-    console.log("Resize");
     setTimeout(() => {
       this._scaler.scale();
     });
@@ -71,8 +72,7 @@ export class DaySchedulerComponent implements OnInit, AfterViewInit {
   }
 
   private onTaskChanged(taskContainer: TaskContainer){
-    console.log(taskContainer.task);
-    this.dataService.getTaskService().update(taskContainer.task);
+    this.commandService.execute(new UpdateTaskCommand(taskContainer.task));
     this._scaler.scaleTask(taskContainer);
   }
 
