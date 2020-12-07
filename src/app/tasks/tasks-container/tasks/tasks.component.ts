@@ -1,5 +1,4 @@
 import { Component, OnInit} from '@angular/core';
-
 import { Task } from 'app/database/shared/task/task';
 import { Status } from 'app/database/shared/models/status';
 import { TasksModel } from './model';
@@ -19,10 +18,15 @@ import { Subscribe, EventBus } from 'eventbus-ts';
 import { ITaskList } from '../task.list';
 import { SpecialList } from 'app/tasks/lists-container/projects/common/special_list';
 import { AppService } from 'app/core/services/app/app.service';
-import { TaskRemoveEvent } from '../events/remove.event';
-import { TasksService } from 'app/tasks/tasks.service';
 import { TaskFilter } from 'app/database/shared/task/task.filter';
 import { Project } from 'app/database/shared/project/project';
+import { CommandService } from 'app/commands/manager/command.service';
+import { RemoveTaskCommand } from 'app/commands/data-command/task/command.remove-task';
+import { DialogService } from 'app/ui/widgets/dialog/dialog.service';
+import { FinishTaskCommand } from 'app/commands/data-command/task/command.finish-task';
+import { TaskRemoveDialog } from './dialog/task.remove-dialog';
+import { RemoveTaskCallback } from 'app/commands/data-command/task/calback.task.remove-task';
+import { TaskDetailsEvent } from '../events/details.event';
 
 @Component({
   selector: 'app-tasks',
@@ -41,12 +45,12 @@ export class TasksComponent implements OnInit, ITaskList {
   private addingController: TaskAddingController;
   private filteringController: TaskFilteringController;
 
-  constructor(private appService: AppService, private tasksService: TasksService, private dataService: DataService) {
+  constructor(private appService: AppService, private dataService: DataService, private commandService: CommandService, private dialogService: DialogService) {
     this.model = new TasksModel();
     this.itemInfo = new TaskItemInfo();
-    this.itemController = new TaskItemController(this.dataService);
+    this.itemController = new TaskItemController(this.commandService);
     this.specialListsController = new SpecialListTask(this.model, this.dataService);
-    this.addingController = new TaskAddingController(this.model, this.tasksService);
+    this.addingController = new TaskAddingController(this.model, commandService);
     this.filteringController = new TaskFilteringController(this.model, this.dataService);
 
     EventBus.getDefault().register(this);
@@ -128,7 +132,7 @@ export class TasksComponent implements OnInit, ITaskList {
   }
 
   public onDrop(event: CdkDragDrop<string[]>) {
-    TaskOrderController.onDrop(event, this.model.getTasks(), this.dataService);
+    TaskOrderController.onDrop(event, this.model.getTasks(), this.commandService);
   }
 
   // MENU
@@ -137,14 +141,15 @@ export class TasksComponent implements OnInit, ITaskList {
   }
 
   public removeTask(task: Task): void {
-    this.tasksService.removeTask(task).then(updatedTasks=>{
-      this.model.updateTasks(updatedTasks as Task[]);
-      EventBus.getDefault().post(new TaskRemoveEvent(task));
-    })
+    TaskRemoveDialog.showSingleRemoveQuestion(task, this.dialogService, ()=>{
+      let callback = new RemoveTaskCallback(this.model);
+      this.commandService.execute(new RemoveTaskCommand(task).setCallback(callback));
+    });
   }
 
   public openDetails(task: Task): void {
-    this.tasksService.openDetails(task);
+    // TODO: można to przenieść do polecenia
+    EventBus.getDefault().post(new TaskDetailsEvent(task));
   }
 
   public setActiveTask(task: Task){
@@ -160,9 +165,7 @@ export class TasksComponent implements OnInit, ITaskList {
   }
 
   public finishTask(task:Task){
-    this.tasksService.finishTask(task).then(updatedTasks=>{
-      this.model.updateTasks(updatedTasks);
-    });
+    this.commandService.execute(new FinishTaskCommand(task, this.appService, (tasks)=>this.model.updateTasks(tasks)));
   }
 
   // TODO: to może zostać przeniesione do ListsContainer. Trzeba będzie pobrać zadania i je ustawić

@@ -80,6 +80,15 @@ export class LocalLabelService implements ILabelService{
     });
   }
 
+  public setAssignedLabels(taskId: number, labels: Label[]): Promise<LabelsTask[]>{
+    /// first we remvoe all assigned labels, later add new collection of labels.
+    // This is nessessery, to not checking which label is already assinged and wchich is not anymore assgined
+    return this.removeAllAssigningFromTask(taskId).then(_=>{
+      let actions = labels.map(label=>this.assginLabel(taskId, label.getId()));
+      return Promise.all(actions);
+    });
+  }
+
   public getLabelsByTask(taskId: number): Promise<Label[]> {
     return this.taskLabelsRepository.findByTaskId(taskId).then((entries)=>{
       let promises = entries.map(entry=>this.repository.findById(entry.getLabelId()));

@@ -1,11 +1,10 @@
 import { Label } from 'app/database/shared/label/label';
-import { DataService } from 'app/data.service';
 import { LabelEditingModel } from './label.editing.model';
 import { LabelViewState } from '../common/label_view_state';
 import { EditInputHandler } from 'app/shared/common/edit_input_handler';
 import { FocusHelper } from 'app/shared/common/view_helper';
-import { EventBus } from 'eventbus-ts';
-import { LabelsUpdateEvent } from '../events/update.event';
+import { CommandService } from 'app/commands/manager/command.service';
+import { UpdateLabeLCommand } from 'app/commands/data-command/label/command.update-label';
 
 export class LabelEditingController{
 
@@ -13,7 +12,7 @@ export class LabelEditingController{
 
     private model: LabelEditingModel = new LabelEditingModel();
 
-    constructor(private state: LabelViewState, private dataService: DataService){
+    constructor(private state: LabelViewState, private commandService: CommandService){
       this.state = state;
     }
 
@@ -46,10 +45,8 @@ export class LabelEditingController{
     }
 
     private updateLabel(label: Label) {
-        this.dataService.getLabelService().update(label).then(_=>{
-          this.state.closeEditingLabel();
-          EventBus.getDefault().post(new LabelsUpdateEvent(null));
-        });
+      this.commandService.execute(new UpdateLabeLCommand(label));
+      this.state.closeEditingLabel();
     }
 
     public handleKeysOnEditLabel(event:KeyboardEvent, label:Label){

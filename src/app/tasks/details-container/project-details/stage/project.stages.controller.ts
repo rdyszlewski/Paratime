@@ -7,6 +7,8 @@ import { StageDetailsEvent } from '../events/stage.details.event';
 import { FocusHelper } from 'app/shared/common/view_helper';
 import { EditInputHandler } from 'app/shared/common/edit_input_handler';
 import { Project } from 'app/database/shared/project/project';
+import { CommandService } from 'app/commands/manager/command.service';
+import { CreateStageCommand } from 'app/commands/data-command/stage/command.create-stage';
 
 export class ProjectStagesController {
   private STAGE_NAME_INPUT = '#new-stage-name';
@@ -15,7 +17,7 @@ export class ProjectStagesController {
   private model: ProjectDetails;
   private project: Project;
 
-  constructor(model: ProjectDetails, private dataService: DataService) {
+  constructor(model: ProjectDetails, private commandService: CommandService) {
     this.model = model;
   }
 
@@ -35,10 +37,7 @@ export class ProjectStagesController {
   }
 
   private saveStage(stage: Stage) {
-    this.dataService.getStageService().create(stage).then(result=>{
-      this.model.updateStages(result.updatedElements);
-      this.closeAddingNewStage();
-    });
+    this.commandService.execute(new CreateStageCommand(stage, this.model, ()=>this.closeAddingNewStage()));
   }
 
   public closeAddingNewStage() {

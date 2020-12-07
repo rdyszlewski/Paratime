@@ -11,6 +11,8 @@ import {
   moveItemInArray,
   transferArrayItem,
 } from '@angular/cdk/drag-drop';
+import { CommandService } from 'app/commands/manager/command.service';
+import { ChangeLabelsOrderCommand } from 'app/commands/data-command/label/command.change-labels-order';
 
 @Component({
   selector: 'app-labels',
@@ -26,12 +28,12 @@ export class LabelsComponent implements OnInit {
   private addingManager: LabelAddingController;
   private removingManager: LabelRemovingController;
 
-  constructor(public dialog: MatDialog, private dataService: DataService) {}
+  constructor(public dialog: MatDialog, private dataService: DataService, private commandService: CommandService) {}
 
   ngOnInit(): void {
-    this.editingManager = new LabelEditingController(this.state, this.dataService);
-    this.addingManager = new LabelAddingController(this.state, this.model, this.dataService);
-    this.removingManager = new LabelRemovingController(this.model, this.dialog, this.dataService);
+    this.editingManager = new LabelEditingController(this.state, this.commandService);
+    this.addingManager = new LabelAddingController(this.state, this.model, this.commandService);
+    this.removingManager = new LabelRemovingController(this.model, this.dialog, this.commandService);
     this.loadLabels();
   }
 
@@ -75,10 +77,6 @@ export class LabelsComponent implements OnInit {
     if (previousIndex == currentIndex) {
       return;
     }
-    const previousLabel = this.model.getLabelByIndex(previousIndex);
-    const currentLabel = this.model.getLabelByIndex(currentIndex);
-    this.dataService.getLabelService().changeOrder(currentLabel, previousLabel, currentIndex, previousIndex).then(updatedLabels=>{
-      this.model.updateLabels(updatedLabels);
-    });
+    this.commandService.execute(new ChangeLabelsOrderCommand(currentIndex, previousIndex, this.model));
   }
 }

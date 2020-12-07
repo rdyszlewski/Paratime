@@ -31,8 +31,8 @@ export class LocalProjectRepository extends OrderRepository<Project>{
     return this.table.add(preparedProject);
   }
 
-  public remove(id: number): Promise<void>{
-    return this.table.delete(id);
+  public remove(project: Project): Promise<void>{
+    return this.table.delete(project.getId());
   }
 
   public update(project:Project):Promise<number>{

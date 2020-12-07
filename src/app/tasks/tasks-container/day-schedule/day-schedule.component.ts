@@ -168,7 +168,6 @@ class CalendarCallback implements ICalendarCallback {
   private loadTasks(day: CalendarDay, projectId: number, withTime: boolean):Promise<Task[]>{
     let date = new Date(day.year, day.month, day.day);
     let filter = TaskFilter.getBuilder().setProject(projectId).setStartDate(date).setHasStartTime(withTime).build();
-    console.log("loadChedulerTasks2");
     return this.dataService.getTaskService().getByFilter(filter)
   }
 }

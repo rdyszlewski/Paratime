@@ -5,10 +5,8 @@ import { AppService } from "app/core/services/app/app.service";
 import { Task } from "app/database/shared/task/task";
 import { ITaskContainer } from "app/database/shared/task/task.container";
 import { ITaskItem } from "app/database/shared/task/task.item";
-import { ListHelper } from "app/shared/common/lists/list.helper";
 import { DialogModel } from "app/tasks/creating-dialog/dialog.model";
 import { CreatingDialogHelper } from "app/tasks/creating-dialog/helper";
-import { TasksService } from "app/tasks/tasks.service";
 import { ITaskList } from "../task.list";
 import { CalendarCreator } from "./calendar/calendar.creator";
 import { DateChanger } from "./actions/date.changer";
@@ -26,6 +24,17 @@ import { CalendarSettings, DateOption, TaskStatus } from "./loader/calendar.sett
 import { TaskLoader } from "./loader/task.loader";
 import { DataService } from 'app/data.service';
 import { Project } from 'app/database/shared/project/project';
+import { CommandService } from 'app/commands/manager/command.service';
+import { CreateTaskCommand } from 'app/commands/data-command/task/command.create-task';
+import { TaskInsertResult } from 'app/database/shared/task/task.insert-result';
+import { FinishTaskCommand } from 'app/commands/data-command/task/command.finish-task';
+import { RemoveTaskCommand } from 'app/commands/data-command/task/command.remove-task';
+import { RemoveCalendarTaskCallback } from 'app/commands/data-command/task/callback.calendar.remove-task';
+import { TaskRemoveDialog } from '../tasks/dialog/task.remove-dialog';
+import { RemoveManyTasksCommand } from 'app/commands/data-command/task/command.remove-many-tasks';
+import { DialogService } from 'app/ui/widgets/dialog/dialog.service';
+import { EventBus } from 'eventbus-ts';
+import { TaskDetailsEvent } from '../events/details.event';
 
 @Component({
   selector: "app-calendar",
@@ -86,8 +95,9 @@ export class CalendarComponent implements OnInit, ITaskList, AfterViewInit {
 
   constructor(
     private appService: AppService,
-    private tasksService: TasksService,
     private dialog: MatDialog,
+    private dialogService: DialogService,
+    private commandService: CommandService,
     private dataService: DataService
   ) {
     this._currentDate = new Date();
@@ -103,8 +113,8 @@ export class CalendarComponent implements OnInit, ITaskList, AfterViewInit {
       this._tasksModel,
       this._viewModel,
       this._dropIdsCreator,
-      dialog,
-      dataService
+      dialogService,
+      this.commandService
     );
 
     this._taskLoader = new TaskLoader(dataService);
@@ -134,46 +144,22 @@ export class CalendarComponent implements OnInit, ITaskList, AfterViewInit {
     });
   }
 
-  public removeTask(task: ITaskItem): void {
-    this.tasksService.removeTask(task).then((updatedTasks) => {
-      if (updatedTasks != null) {
-        this.removeTaskFromDay(task as Task);
-      }
-    });
-  }
-
-  private removeTaskFromDay(task: Task) {
-    if (task.getDate() != null) {
-      const cell = this._tasksModel.findCell(task.getDate());
-      if (cell) {
-        ListHelper.remove(task, cell.tasks);
-      } else {
-        const selectedDay = this._viewModel.selectedDay;
-        if (selectedDay && this.isCorrectCell(selectedDay, task.getDate())) {
-          ListHelper.remove(task, selectedDay.tasks);
-        }
-      }
-    } else {
-      ListHelper.remove(task, this._tasksModel.tasksWithoutDate);
-    }
-  }
-
-  private isCorrectCell(x: TaskDay, date: Date): boolean {
-    return x.month == date.getMonth() && x.day == date.getDate() && x.year == date.getFullYear();
+  public removeTask(task: Task): void {
+    let callback = new RemoveCalendarTaskCallback(this._tasksModel, this._viewModel, [task]);
+    this.commandService.execute(new RemoveTaskCommand(task).setCallback(callback));
   }
 
   public removeManyTasks() {
     const tasksToRemove = this._selectionManager.getSelectedTasks(null);
-    this.tasksService.removeManyTasks(tasksToRemove).then((updated) => {
-      tasksToRemove.forEach((task) => {
-        this.removeTaskFromDay(task);
-      });
+    let callback = new RemoveCalendarTaskCallback(this._tasksModel, this._viewModel, tasksToRemove);
+    TaskRemoveDialog.showManyRemoveQuestion(tasksToRemove, this.dialogService, ()=>{
+      this.commandService.execute(new RemoveManyTasksCommand(tasksToRemove).setCallback(callback));
+      this._selectionManager.deselectAll();
     });
-    this._selectionManager.deselectAll();
   }
 
   public openDetails(task: Task): void {
-    this.tasksService.openDetails(task);
+    EventBus.getDefault().post(new TaskDetailsEvent(task));
   }
 
   // TODO: zastanowić się, czy to powinno wyglądać w ten sposób. Czy to daje nam jakieś korzyści
@@ -232,17 +218,16 @@ export class CalendarComponent implements OnInit, ITaskList, AfterViewInit {
   }
 
   public finishTask(task: Task) {
-    this.tasksService.finishTask(task).then((updatedTasks) => {
-      // TODO: zastanowić się i zaktualizować widok
-    });
+    let callback = updatedTasks => {};
+    this.commandService.execute(new FinishTaskCommand(task, this.appService, callback));
   }
 
   public openCreatingDialog(cell: TaskDay) {
     const data = new DialogModel("", this._project, this.getDate(cell), (model) => {
       if (model) {
-        this.tasksService.addTask(model.name, model.project, null, model.date).then((result) => {
-          cell.addTask(result.insertedElement);
-        });
+        let callback = (result: TaskInsertResult) => cell.addTask(result.insertedElement);
+        let command  = new CreateTaskCommand(model.name, model.project).setDate(model.date).setCallback(callback);
+        this.commandService.execute(command);
       }
     });
     CreatingDialogHelper.openDialog(data, this.dialog);

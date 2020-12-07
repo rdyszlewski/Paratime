@@ -1,58 +1,36 @@
-import { DataService } from 'app/data.service';
 import { KanbanModel } from '../kanban.model';
-import { MatDialog } from '@angular/material/dialog';
-import { DialogHelper } from 'app/shared/common/dialog';
 import { FocusHelper } from 'app/shared/common/view_helper';
 import { KanbanColumn } from 'app/database/shared/kanban-column/kanban-column';
+import { RemoveColumnDialog } from '../dialog/kanban.remove-column';
+import { DialogService } from 'app/ui/widgets/dialog/dialog.service';
+import { CommandService } from 'app/commands/manager/command.service';
+import { RemoveKanbanColumnCommand } from 'app/commands/data-command/kanban/command.remove-column';
+import { UpdateColumnCommand } from 'app/commands/data-command/kanban/command.update-column';
+import { CreateColumnCommand } from 'app/commands/data-command/kanban/command.create-column';
 
 export class KanbanColumnController{
 
-  constructor(private model: KanbanModel,private dialog: MatDialog, private dataService: DataService){
+  constructor(private model: KanbanModel,private dialogService: DialogService, private commandService: CommandService){
   }
 
-  // ADDING
   public addColumn() {
-    console.log(this.model.getColumnName());
     const columnName = this.model.getColumnName();
     if (!columnName || columnName == '') {
       this.model.setColumnNameValid(false);
       FocusHelper.focus('#new-column-input');
       return;
     }
-    const kanbanColumn = new KanbanColumn();
-    kanbanColumn.setDefault(false);
-    kanbanColumn.setProjectId(this.model.getProject().getId());
-    kanbanColumn.setName(this.model.getColumnName());
-
-    this.dataService.getKanbanColumnService().create(kanbanColumn).then(result=>{
-      this.model.addColumn(result.insertedElement);
-      this.model.updateColumns(result.updatedElements);
-      this.model.setColumnNameValid(true);
-      this.model.closeAdddingColumn();
-    });
+    this.commandService.execute(new CreateColumnCommand(this.model));
   }
 
-  // REMOVING
   public removeColumn(column: KanbanColumn) {
-    const message = 'Czy na pewno usunąć kolumnę?';
-    DialogHelper.openDialog(message, this.dialog).subscribe((result) => {
-      if (result) {
-        this.removeColumnFromStore(column);
-      }
+    RemoveColumnDialog.show(column, this.dialogService, ()=>{
+      this.commandService.execute(new RemoveKanbanColumnCommand(column, this.model));
     });
   }
 
-  private removeColumnFromStore(column: KanbanColumn) {
-    this.dataService.getKanbanColumnService().remove(column).then(updatedColumns=>{
-      this.model.updateColumns(updatedColumns);
-    });
-  }
-
-  //RENAME
   public updateColumnName() {
     this.model.getEditedColumn().setName(this.model.getColumnName());
-    this.dataService.getKanbanColumnService().update(this.model.getEditedColumn()).then(updatedColumn=>{
-      this.model.updateColumns([updatedColumn]);
-    });
+    this.commandService.execute(new UpdateColumnCommand(this.model.getEditedColumn(), this.model));
   }
 }

@@ -3,13 +3,16 @@ import { TaskDetails } from '../model/model';
 import { Label } from 'app/database/shared/label/label';
 import { TaskLabelsModel } from './task.label.model';
 import { LabelsTask } from 'app/database/shared/label/labels-task';
+import { CommandService } from 'app/commands/manager/command.service';
+import { RemoveLabelAssignignCommand } from 'app/commands/data-command/label/command.remove-label-assigning';
+import { AssingLabelCommand } from 'app/commands/data-command/label/command.assign-label';
 
 export class TaskLabelsController{
 
     private model: TaskLabelsModel;
     private selectedLabels: Label[] = [];
 
-    constructor(private mainModel:TaskDetails, private dataService: DataService){
+    constructor(private mainModel:TaskDetails, private dataService: DataService, private commandService: CommandService){
         this.model = new TaskLabelsModel(mainModel);
         this.init();
     }
@@ -61,18 +64,9 @@ export class TaskLabelsController{
       if(!this.isChanged()){
         return;
       }
-      const selected = [];
-      this.selectedLabels.forEach(label=>selected.push(label));
-      return this.removeAllLabels().then(()=>{
-        const promises = [];
-        selected.forEach(label=>{
-          promises.push(this.saveLabel(label));
-        })
-        return Promise.all(promises).then(()=>{
-          this.mainModel.getTask().setLabels(selected);
-          this.selectedLabels=[];
-        });
-      })
+      const selected = this.selectedLabels.map(label=>label)
+      this.selectedLabels = [];
+      this.commandService.execute(new AssingLabelCommand(selected, this.mainModel.getTask()));
     }
 
     private isChanged(){
@@ -90,28 +84,11 @@ export class TaskLabelsController{
       return false;
     }
 
-    private removeAllLabels():Promise<number>{
-      // TODO: coś tutaj jest nie tak. Z nazwami funkcji w LabelStore
-      return this.dataService.getLabelService().removeAllAssigningFromTask(this.mainModel.getTask().getId());
-    }
-
-    private saveLabel(label:Label):Promise<LabelsTask>{
-      return this.dataService.getLabelService().assginLabel(this.mainModel.getTask().getId(), label.getId() );
-    }
-
     public cancelChoosingLabels(){
       this.selectedLabels = [];
     }
 
-    public chooseLabel(label:Label){
-        this.saveLabel(label).then(_=>{
-          this.mainModel.getTask().addLabel(label);
-        })
-      }
-
-      public removeLabel(label:Label){
-        this.dataService.getLabelService().removeAssigning(this.mainModel.getTask().getId(), label.getId()).then(()=>{
-          this.mainModel.getTask().removeLabel(label);
-        });
-      }
+    public removeLabel(label:Label){
+      this.commandService.execute(new RemoveLabelAssignignCommand(this.mainModel.getTask(), label));
+    }
 }
