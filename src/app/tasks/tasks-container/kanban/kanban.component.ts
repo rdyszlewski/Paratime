@@ -30,7 +30,7 @@ import { TaskDetailsEvent } from '../events/details.event';
 @Component({
   selector: 'app-kanban',
   templateUrl: './kanban.component.html',
-  styleUrls: ['./kanban.component.css'],
+  styleUrls: ['./kanban.component.less'],
 })
 export class KanbanComponent implements OnInit, ITaskList {
 

@@ -1,7 +1,6 @@
 import { Component, OnInit} from '@angular/core';
 import { ProjectType } from 'app/database/shared/project/project_type';
 import { Status } from 'app/database/shared/models/status';
-import { DataService } from 'app/data.service';
 import { ProjectDetails } from './model/model';
 import { Stage } from 'app/database/shared/stage/stage';
 import { ProjectDetailsState } from './model/state';
@@ -25,7 +24,7 @@ import { ChangeStageOrderCommand } from 'app/commands/data-command/stage/command
 @Component({
   selector: 'app-project-details',
   templateUrl: './project-details.component.html',
-  styleUrls: ['./project-details.component.css'],
+  styleUrls: ['./project-details.component.less'],
 })
 export class ProjectDetailsComponent implements OnInit {
 

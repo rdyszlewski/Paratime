@@ -18,7 +18,7 @@ import { ChangeProjectkOrderCommand } from "app/commands/data-command/project/co
 @Component({
   selector: "app-projects",
   templateUrl: "./projects.component.html",
-  styleUrls: ["./projects.component.css"],
+  styleUrls: ["./projects.component.less"],
 })
 export class ProjectsComponent implements OnInit {
   private model: ProjectsModel;

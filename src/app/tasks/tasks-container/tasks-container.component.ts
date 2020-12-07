@@ -12,7 +12,7 @@ import { Project } from 'app/database/shared/project/project';
 @Component({
   selector: 'app-tasks-container',
   templateUrl: './tasks-container.component.html',
-  styleUrls: ['./tasks-container.component.css']
+  styleUrls: ['./tasks-container.component.less']
 })
 export class TasksContainerComponent implements OnInit, AfterViewInit {
 

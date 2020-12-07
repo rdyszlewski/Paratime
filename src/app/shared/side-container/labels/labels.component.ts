@@ -17,7 +17,7 @@ import { ChangeLabelsOrderCommand } from 'app/commands/data-command/label/comman
 @Component({
   selector: 'app-labels',
   templateUrl: './labels.component.html',
-  styleUrls: ['./labels.component.css'],
+  styleUrls: ['./labels.component.less'],
 })
 export class LabelsComponent implements OnInit {
 

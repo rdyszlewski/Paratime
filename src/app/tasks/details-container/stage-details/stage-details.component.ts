@@ -10,7 +10,7 @@ import { UpdateStageCommand } from 'app/commands/data-command/stage/command.upda
 @Component({
   selector: "app-stage-details",
   templateUrl: "./stage-details.component.html",
-  styleUrls: ["./stage-details.component.css"],
+  styleUrls: ["./stage-details.component.less"],
 })
 export class StageDetailsComponent implements OnInit {
   public status = Status;

@@ -7,7 +7,7 @@ import { SpecialList } from '../projects/common/special_list';
 @Component({
   selector: 'app-special-lists',
   templateUrl: './special-lists.component.html',
-  styleUrls: ['./special-lists.component.css']
+  styleUrls: ['./special-lists.component.less']
 })
 export class SpecialListsComponent implements OnInit {
 

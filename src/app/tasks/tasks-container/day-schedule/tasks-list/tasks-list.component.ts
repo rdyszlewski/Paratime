@@ -7,7 +7,7 @@ import { IDraggingController } from './draggine-controller';
 @Component({
   selector: 'app-tasks-list',
   templateUrl: './tasks-list.component.html',
-  styleUrls: ['./tasks-list.component.css']
+  styleUrls: ['./tasks-list.component.less']
 })
 export class TasksListComponent implements OnInit {
 

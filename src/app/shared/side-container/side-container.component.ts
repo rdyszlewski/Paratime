@@ -10,7 +10,7 @@ export enum Mode{
 @Component({
   selector: 'app-side-container',
   templateUrl: './side-container.component.html',
-  styleUrls: ['./side-container.component.css']
+  styleUrls: ['./side-container.component.less']
 })
 export class SideContainerComponent implements OnInit, AfterViewInit {
 

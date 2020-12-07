@@ -6,7 +6,7 @@ import { DialogModel } from './dialog.model';
 @Component({
   selector: 'app-creating-dialog',
   templateUrl: './creating-dialog.component.html',
-  styleUrls: ['./creating-dialog.component.css']
+  styleUrls: ['./creating-dialog.component.less']
 })
 export class CreatingDialogComponent implements OnInit {
 

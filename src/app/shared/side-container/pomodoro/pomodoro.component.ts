@@ -15,7 +15,7 @@ import { PomodoroAdapter } from 'app/shared/adapters/pomodoro.adapter';
 @Component({
   selector: 'app-pomodoro',
   templateUrl: './pomodoro.component.html',
-  styleUrls: ['./pomodoro.component.css']
+  styleUrls: ['./pomodoro.component.less']
 })
 export class PomodoroComponent implements OnInit {
 

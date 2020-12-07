@@ -26,7 +26,7 @@ import { ChangeSubtaskOrderCommand } from 'app/commands/data-command/subtask/com
 @Component({
   selector: 'app-task-details',
   templateUrl: './task-details.component.html',
-  styleUrls: ['./task-details.component.css'],
+  styleUrls: ['./task-details.component.less'],
 })
 export class TaskDetailsComponent implements OnInit {
   private TASK_NAME_ID = '#task-name';

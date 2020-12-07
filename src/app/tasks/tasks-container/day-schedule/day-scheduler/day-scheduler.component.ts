@@ -14,7 +14,7 @@ import { TaskContainer } from "./task-container";
 @Component({
   selector: "app-day-scheduler",
   templateUrl: "./day-scheduler.component.html",
-  styleUrls: ["./day-scheduler.component.css"],
+  styleUrls: ["./day-scheduler.component.less"],
 })
 export class DaySchedulerComponent implements OnInit, AfterViewInit {
   private _hours: Hour[];
