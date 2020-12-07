@@ -6,7 +6,6 @@ import {
 import { Task } from 'app/database/shared/task/task';
 import { DataService } from 'app/data.service';
 import { Status } from 'app/database/shared/models/status';
-import { MatDialog } from '@angular/material/dialog';
 import { KanbanTaskOrderController, KanbanColumnOrderController } from './controllers/order.controller';
 import { KanbanColumnController } from './controllers/column.controller';
 import { ITaskList } from '../task.list';
@@ -14,14 +13,18 @@ import { TaskItemInfo } from '../tasks/common/task.item.info';
 import { AppService } from 'app/core/services/app/app.service';
 import { FocusHelper } from 'app/shared/common/view_helper';
 import { EditInputHandler } from 'app/shared/common/edit_input_handler';
-import { EventBus } from 'eventbus-ts';
 import { TasksService } from 'app/tasks/tasks.service';
-import { TaskRemoveEvent } from '../events/remove.event';
 import { KanbanColumn } from 'app/database/shared/kanban-column/kanban-column';
 import { KanbanTask } from 'app/database/shared/kanban-task/kanban-task';
 import { Project } from 'app/database/shared/project/project';
 import { CommandService } from 'app/commands/manager/command.service';
 import { RemoveTaskCommand } from 'app/commands/data-command/task/command.remove-task';
+import { TaskInsertResult } from 'app/database/shared/task/task.insert-result';
+import { CreateTaskCommand } from 'app/commands/data-command/task/command.create-task';
+import { FinishTaskCommand } from 'app/commands/data-command/task/command.finish-task';
+import { TaskRemoveResult } from 'app/database/shared/task/task.remove-result';
+import { TaskRemoveDialog } from '../tasks/dialog/task.remove-dialog';
+import { DialogService } from 'app/ui/widgets/dialog/dialog.service';
 
 @Component({
   selector: 'app-kanban',
@@ -38,14 +41,14 @@ export class KanbanComponent implements OnInit, ITaskList {
 
   public status = Status;
 
-  constructor(private dialog: MatDialog, private appService: AppService, private tasksService: TasksService, private dataService: DataService, private commandService: CommandService) {}
+  constructor(private dialogService: DialogService, private appService: AppService, private tasksService: TasksService, private dataService: DataService, private commandService: CommandService) {}
 
   close() {
 
   }
 
   ngOnInit(): void {
-    this.columnController = new KanbanColumnController(this.model, this.dialog, this.dataService);
+    this.columnController = new KanbanColumnController(this.model, this.dialogService, this.commandService);
   }
 
   public getModel() {
@@ -97,19 +100,18 @@ export class KanbanComponent implements OnInit, ITaskList {
   public addTask(column: KanbanColumn) {
     const name = this.model.getNewTaskName();
     const project = this.model.getProject();
-    this.tasksService.addTask(name, project, column).then(result=>{
-      this.model.updateTasks(result.updatedKanbanTasks, column.getId());
-    });
+    let callback = (result:TaskInsertResult) => this.model.updateTasks(result.updatedKanbanTasks, column.getId());
+    let command = new CreateTaskCommand(name, project).setColumn(column).setCallback(callback)
+    this.commandService.execute(command);
     this.closeAddingNewTask();
   }
 
   public  removeTask(kanbanTask: KanbanTask): void {
-
-    this.tasksService.removeTask(kanbanTask.getTask()).then(updatedTasks=>{
-      this.model.updateTasks(updatedTasks as KanbanTask[], kanbanTask.getColumnId());
-      EventBus.getDefault().post(new TaskRemoveEvent(kanbanTask.getTask()));
-    });
-
+    let task = kanbanTask.getTask();
+    TaskRemoveDialog.show(task, this.dialogService, ()=>{
+      let callback = (result:TaskRemoveResult)=>this.model.updateTasks(result.updatedKanbanTasks, kanbanTask.getColumnId());
+      this.commandService.execute(new RemoveTaskCommand(task).setCallback(callback))
+    })
   }
 
   public closeAddingNewTask() {
@@ -147,9 +149,8 @@ export class KanbanComponent implements OnInit, ITaskList {
   }
 
   public finishTask(kanbanTask: KanbanTask): void {
-    this.tasksService.finishTask(kanbanTask.getTask()).then(updatedTasks=>{
-      // TODO: odpowiednio zaktualizować interfejs
-    });
+    let callback = updatedTasks => {}
+    this.commandService.execute(new FinishTaskCommand(kanbanTask.getTask(), this.appService, callback));
   }
 
   public handleAddingNewColumn(event: KeyboardEvent) {

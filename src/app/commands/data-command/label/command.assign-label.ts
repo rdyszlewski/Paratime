@@ -21,5 +21,4 @@ export class AssingLabelCommand extends DataCommand{
   getDescription(): string {
     return `Ustawienie etykiet dla zadania ${this.task.getName()}`;
   }
-
 }

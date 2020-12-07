@@ -2,18 +2,13 @@ import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { AppService } from 'app/core/services/app/app.service';
 import { DataService } from 'app/data.service';
-import { Status } from 'app/database/shared/models/status';
 import { Task } from 'app/database/shared/task/task';
 import { ITaskItem } from 'app/database/shared/task/task.item';
-import { TaskInsertData } from 'app/database/shared/task/task.insert-data';
-import { TaskInsertResult } from 'app/database/shared/task/task.insert-result';
 import { TaskRemoveResult } from 'app/database/shared/task/task.remove-result';
 import { DialogHelper } from 'app/shared/common/dialog';
 import { EventBus } from 'eventbus-ts';
 import { TaskDetailsEvent } from './tasks-container/events/details.event';
-import { KanbanColumn } from 'app/database/shared/kanban-column/kanban-column';
 import { KanbanTask } from 'app/database/shared/kanban-task/kanban-task';
-import { Project } from 'app/database/shared/project/project';
 
 @Injectable({
   providedIn: 'root'
@@ -22,7 +17,8 @@ export class TasksService {
 
   constructor(private dialog: MatDialog, private appService: AppService, private dataService: DataService) { }
 
-  public removeTask(task: ITaskItem): Promise<ITaskItem[]>{
+  // TODO: cholera, to będzie trzeba trochę zmienić
+  public removeTask(task: ITaskItem): Promise<TaskRemoveResult>{
     // TODO: to powinno być zrobione jakoś inaczej. Pytanie raczej powinno postawić się w innym miejscu
     return this.showMessage(task).then(answer=>{
       if(answer){
@@ -64,29 +60,5 @@ export class TasksService {
 
   public openDetails(task: ITaskItem): void {
     EventBus.getDefault().post(new TaskDetailsEvent(task as Task));
-  }
-
-  public finishTask(task: Task): Promise<Task[]>{
-    return this.dataService.getTaskService().changeStatus(task, Status.ENDED).then(updatedTasks=>{
-      if(this.appService.getCurrentTask() == task){
-        this.appService.setCurrentTask(null);
-      }
-      return Promise.resolve(updatedTasks);
-    });
-  }
-
-  public addTask(name:string, project:Project = null, column: KanbanColumn=null, date: Date = null):Promise<TaskInsertResult>{
-    const task = this.prepareTaskToInsert(name, project, date);
-    let data = new TaskInsertData(task, column, project.getId());
-    return this.dataService.getTaskService().create(data);
-  }
-
-  private prepareTaskToInsert(name: string, project: Project = null, date:Date=null){
-    const task = new Task();
-    task.setName(name);
-    task.setProject(project as Project);
-    task.setDate(date);
-    task.setStatus(Status.STARTED);
-    return task;
   }
 }

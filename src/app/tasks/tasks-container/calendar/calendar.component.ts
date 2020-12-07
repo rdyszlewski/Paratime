@@ -26,6 +26,10 @@ import { CalendarSettings, DateOption, TaskStatus } from "./loader/calendar.sett
 import { TaskLoader } from "./loader/task.loader";
 import { DataService } from 'app/data.service';
 import { Project } from 'app/database/shared/project/project';
+import { CommandService } from 'app/commands/manager/command.service';
+import { CreateTaskCommand } from 'app/commands/data-command/task/command.create-task';
+import { TaskInsertResult } from 'app/database/shared/task/task.insert-result';
+import { FinishTaskCommand } from 'app/commands/data-command/task/command.finish-task';
 
 @Component({
   selector: "app-calendar",
@@ -88,7 +92,8 @@ export class CalendarComponent implements OnInit, ITaskList, AfterViewInit {
     private appService: AppService,
     private tasksService: TasksService,
     private dialog: MatDialog,
-    private dataService: DataService
+    private dataService: DataService,
+    private commandService: CommandService
   ) {
     this._currentDate = new Date();
     this._cellDraggingController = new CellDraging((previousId, currentId) => {
@@ -232,17 +237,16 @@ export class CalendarComponent implements OnInit, ITaskList, AfterViewInit {
   }
 
   public finishTask(task: Task) {
-    this.tasksService.finishTask(task).then((updatedTasks) => {
-      // TODO: zastanowić się i zaktualizować widok
-    });
+    let callback = updatedTasks => {};
+    this.commandService.execute(new FinishTaskCommand(task, this.appService, callback));
   }
 
   public openCreatingDialog(cell: TaskDay) {
     const data = new DialogModel("", this._project, this.getDate(cell), (model) => {
       if (model) {
-        this.tasksService.addTask(model.name, model.project, null, model.date).then((result) => {
-          cell.addTask(result.insertedElement);
-        });
+        let callback = (result: TaskInsertResult) => cell.addTask(result.insertedElement);
+        let command  = new CreateTaskCommand(model.name, model.project).setDate(model.date).setCallback(callback);
+        this.commandService.execute(command);
       }
     });
     CreatingDialogHelper.openDialog(data, this.dialog);

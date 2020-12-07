@@ -1,11 +1,14 @@
 import { SubtasksEditingModel } from './subtasks.editing.model';
 import { Status } from 'app/database/shared/models/status';
 import { Task } from 'app/database/shared/task/task';
-import { DataService } from 'app/data.service';
 import { TaskDetails } from '../model/model';
 import { FocusHelper, ScrollBarHelper } from 'app/shared/common/view_helper';
 import { EditInputHandler } from 'app/shared/common/edit_input_handler';
 import { Subtask } from 'app/database/shared/subtask/subtask';
+import { CommandService } from 'app/commands/manager/command.service';
+import { CreateSubtaskCommand } from 'app/commands/data-command/subtask/command.create-subtask';
+import { UpdateSubtaskCommand } from 'app/commands/data-command/subtask/command.update-subtask';
+import { RemoveSubtaskCommand } from 'app/commands/data-command/subtask/command.removeSubtask';
 
 export class SubtasksController{
 
@@ -16,7 +19,7 @@ export class SubtasksController{
     private editingModel: SubtasksEditingModel = new SubtasksEditingModel();
     private task: Task;
 
-    constructor(private model: TaskDetails, private dataService: DataService){
+    constructor(private model: TaskDetails,private commandService: CommandService){
     }
 
     public getModel():SubtasksEditingModel{
@@ -48,9 +51,7 @@ export class SubtasksController{
     }
 
     private saveNewSubtask(subtask: Subtask) {
-        this.dataService.getSubtaskService().create(subtask).then(result=>{
-          this.model.updateSubtasks(result.updatedElements);
-        })
+      this.commandService.execute(new CreateSubtaskCommand(subtask, this.model));
     }
 
     public openEditingSubtask(subtask:Subtask){
@@ -73,15 +74,11 @@ export class SubtasksController{
     }
 
     private updateSubtask(subtask: Subtask) {
-        this.dataService.getSubtaskService().update(subtask).then(updatedSubtask=>{
-          this.closeEditingSubtask();
-        });
+      this.commandService.execute(new UpdateSubtaskCommand(subtask, ()=>this.closeEditingSubtask()))
     }
 
     public removeSubtask(subtask:Subtask){
-        this.dataService.getSubtaskService().remove(subtask).then(updatedSubtasks=>{
-          this.model.updateSubtasks(updatedSubtasks);
-        });
+        this.commandService.execute(new RemoveSubtaskCommand(subtask, this.model));
     }
 
     public toggleSubtaskStatus(subtask:Subtask){

@@ -4,19 +4,27 @@ import { Task } from 'app/database/shared/task/task';
 import { ITaskItem } from 'app/database/shared/task/task.item';
 import { TaskRemoveResult } from 'app/database/shared/task/task.remove-result';
 import { TaskRemoveEvent } from 'app/tasks/tasks-container/events/remove.event';
-import { TasksModel } from 'app/tasks/tasks-container/tasks/model';
 import { EventBus } from 'eventbus-ts';
 
 export class RemoveTaskCommand extends DataCommand{
 
+  private callback: (result:TaskRemoveResult)=>void;
 
-  constructor(private task: Task, private model: TasksModel){
+  constructor(private task: Task){
     super();
+  }
+
+  public setCallback(callback: (result: TaskRemoveResult)=>void): RemoveTaskCommand{
+    this.callback = callback;
+    return this;
   }
 
   execute() {
     this.removeTaskFromDatabase(this.task).then(result=>{
-      this.model.updateTasks(result.updatedTasks);
+      // TODO: prawdopdobnie tutaj będzie trzeba zrobić callback
+      if(this.callback){
+        this.callback(result);
+      }
       EventBus.getDefault().post(new TaskRemoveEvent(this.task));
     });
   }
