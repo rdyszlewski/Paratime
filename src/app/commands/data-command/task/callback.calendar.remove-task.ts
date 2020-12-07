@@ -9,15 +9,12 @@ import { IRemoveTaskCallback } from './callback.remove-task';
 export class RemoveCalendarTaskCallback implements IRemoveTaskCallback{
   // TODO: prawdopodobnie tę klasę lepiej będzie przenieść do folderu z komponentami
   constructor(private tasksModel: ICalendarTasks, private viewModel: ICalendarView, private removedTasks: Task[]=null){
-
   }
-
 
   public execute(results: TaskRemoveResult[]){
     if(this.removedTasks!=null){
       this.removedTasks.forEach(task=>this.removeTaskFromDay(task));
     }
-    // TODO: cholera, usuwanie pojedyńczego zadania mogło wyglądać trochę inaczej
   }
 
   private removeTaskFromDay(task: Task) {
