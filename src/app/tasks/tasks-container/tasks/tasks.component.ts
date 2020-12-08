@@ -1,4 +1,4 @@
-import { Component, OnInit} from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
 import { Task } from 'app/database/shared/task/task';
 import { Status } from 'app/database/shared/models/status';
 import { TasksModel } from './model';
@@ -12,7 +12,6 @@ import {
 import { DataService } from 'app/data.service';
 import { TaskType } from './task.type';
 import { ITaskContainer } from 'app/database/shared/task/task.container';
-import { TaskAddingController } from './adding/task.adding.controller';
 import { TaskOrderController } from './controllers/order.controller';
 import { Subscribe, EventBus } from 'eventbus-ts';
 import { ITaskList } from '../task.list';
@@ -27,6 +26,10 @@ import { FinishTaskCommand } from 'app/commands/data-command/task/command.finish
 import { TaskRemoveDialog } from './dialog/task.remove-dialog';
 import { RemoveTaskCallback } from 'app/commands/data-command/task/calback.task.remove-task';
 import { TaskDetailsEvent } from '../events/details.event';
+import { CreateTaskCommand } from 'app/commands/data-command/task/command.create-task';
+import { ScrollBarHelper } from 'app/shared/common/view_helper';
+import { InsertingTemplateComponent } from 'app/tasks/shared/inserting-template/inserting-template.component';
+import { TaskInsertResult } from 'app/database/shared/task/task.insert-result';
 
 @Component({
   selector: 'app-tasks',
@@ -34,6 +37,10 @@ import { TaskDetailsEvent } from '../events/details.event';
   styleUrls: ['./tasks.component.less'],
 })
 export class TasksComponent implements OnInit, ITaskList {
+  private TASK_LIST = "#tasks-list";
+
+  @ViewChild(InsertingTemplateComponent, {static:false})
+  private insertingTemplate: InsertingTemplateComponent;
 
   public status = Status;
   public taskType = TaskType;
@@ -42,7 +49,6 @@ export class TasksComponent implements OnInit, ITaskList {
   private itemInfo: TaskItemInfo; // TODO: przerobić metody dostepowe
   private itemController: TaskItemController; // TODO: tutaj będzie trzeba zmienić nazwę
   private specialListsController: SpecialListTask; // TODO: to na razie zostawimy
-  private addingController: TaskAddingController;
   private filteringController: TaskFilteringController;
 
   constructor(private appService: AppService, private dataService: DataService, private commandService: CommandService, private dialogService: DialogService) {
@@ -50,7 +56,6 @@ export class TasksComponent implements OnInit, ITaskList {
     this.itemInfo = new TaskItemInfo();
     this.itemController = new TaskItemController(this.commandService);
     this.specialListsController = new SpecialListTask(this.model, this.dataService);
-    this.addingController = new TaskAddingController(this.model, commandService);
     this.filteringController = new TaskFilteringController(this.model, this.dataService);
 
     EventBus.getDefault().register(this);
@@ -76,10 +81,6 @@ export class TasksComponent implements OnInit, ITaskList {
 
   public getSpecialList() {
     return this.specialListsController;
-  }
-
-  public getAdding() {
-    return this.addingController;
   }
 
   public getFiltering() {
@@ -172,5 +173,28 @@ export class TasksComponent implements OnInit, ITaskList {
   @Subscribe("SpecialListEvent")
   public onSpecialListLoad(type: SpecialList){
     this.specialListsController.setSpecialList(type)
+  }
+
+  public openInserting(){
+    this.insertingTemplate.open();
+  }
+
+  public addNewTask(name: string){
+    const project = this.model.getProject();
+    let callback = (result) => this.updateViewAfterInserting(result);
+    this.commandService.execute(new CreateTaskCommand(name, project).setCallback(callback));
+  }
+
+  public isInsertingOpen():boolean{
+    if(this.insertingTemplate){
+      return this.insertingTemplate.visible;
+    }
+    return false;
+  }
+
+  private updateViewAfterInserting(result: TaskInsertResult) {
+    this.model.updateTasks(result.updatedElements);
+    this.model.addTask(result.insertedElement);
+    ScrollBarHelper.moveToBottom(this.TASK_LIST);
   }
 }

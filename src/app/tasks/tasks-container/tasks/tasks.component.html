@@ -41,18 +41,15 @@
         [ngTemplateOutletContext]="{ $implicit: task }"
       ></ng-container>
     </div>
-
-    <div *ngIf="getAdding().getModel().isAddingOpen()">
-      <ng-container [ngTemplateOutlet]="new_task"></ng-container>
-    </div>
+    <inserting-template (acceptEvent)="addNewTask($event)"></inserting-template>
   </div>
 
   <button
     class="create-button"
-    (click)="getAdding().openAddingTask()"
+    (click)="openInserting()"
     *ngIf="
       getModel().getProject().getId() != null &&
-      !getAdding().getModel().isAddingOpen() &&
+      !isInsertingOpen() &&
       getModel().isActiveTaskType()
     "
   >
@@ -248,33 +245,4 @@
     </mat-menu>
     ...
   </span>
-</ng-template>
-
-<ng-template #new_task>
-  <input
-    type="text"
-    class="form-control"
-    id="new-task-name"
-    autocomplete="off"
-    (keyup)="getAdding().handleAddingNewTaskKeyUp($event)"
-    [ngModel]="getAdding().getModel().getNewTaskName()"
-    (ngModelChange)="getAdding().getModel().setNewTaskName($event)"
-  />
-  <!-- TODO: wykorzystać to w wielu miejscach -->
-  <div class="insert-buttons-container">
-    <button
-      class="simple-button"
-      id="cancel-subtask-button"
-      (click)="getAdding().closeAddingNewTask()"
-    >
-      Anuluj
-    </button>
-    <button
-      class="simple-button"
-      id="save-subtask-button"
-      (click)="getAdding().addNewTask()"
-    >
-      Zapisz
-    </button>
-  </div>
 </ng-template>
