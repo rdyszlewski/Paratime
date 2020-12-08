@@ -1,15 +1,10 @@
-/* @import '../../../../styles.less'; */
+@import "../../../../styles.less";
 
-.calendar-view{
-  display: flex;
-    flex-direction: column;
-    padding: 5px;
-    width: 100%;
-    height: 100%;
-    box-sizing: border-box;
-}
-
-.grid{
+@borderSize: 1px;
+@borderColor: @color3;
+@tasksContainerWidth: 200px;
+@minCalendarDateWidth: 100px;
+.grid {
   display: grid;
   grid-template-columns: 14% 14% 14% 14% 14% 14% 14%;
   grid-gap: 5px;
@@ -21,112 +16,103 @@
   grid-template-rows: 16% 16% 16% 16% 16% 16%;
 }
 
-.grid-week-days{
+.grid-week-days {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
 }
 
-.week-day{
+.week-day {
   text-align: center;
 }
 
-.day-cell{
-  background-color: aqua;
+.day-cell {
+  background-color: @color2;
   width: 100%;
   height: 100%;
-  border: 1px solid black;
+  border: @borderSize solid @borderColor;
   display: flex;
   flex-direction: column;
+
+  &.active-day {
+    font-weight: bold;
+    &:hover {
+      background-color: @color4;
+    }
+  }
+
+  &.inactive-day {
+    background-color: @color5;
+  }
 }
 
-.day-cell.active-day:hover{
-  background-color: aliceblue;
-}
-
-.active-day{
-  font-weight: bold;
-}
-
-.calendar-controls{
+.calendar-controls {
   display: flex;
   margin-right: 0;
   margin-left: auto;
 }
 
-.date-control{
+.date-control {
   display: flex;
-
 }
 
-.date-control-value{
+.date-control-value {
   min-width: 100px;
   text-align: center;
 }
 
-.task-item{
-  border: 1px solid black;
-  font-size: small;
-  display: flex;
-
+.task-item {
+  .list-item;
+  background-color: @color1;
+  margin-bottom: 2px;
+  @margin: @standardMargin;
+  margin-left: @margin;
+  margin-right: @margin;
+  width: calc(100% - @margin * 4);
+  &:hover {
+    background-color: @color2;
+  }
 }
 
-.tasks-list{
+.tasks-list {
   height: 100%;
 }
 
-/* .cdk-drag-preview {
-  box-sizing: border-box;
-  box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
-              0 8px 10px 1px rgba(0, 0, 0, 0.14),
-              0 3px 14px 2px rgba(0, 0, 0, 0.12);
-  border-radius: 20px;
-}
-
-.cdk-drag-placeholder {
-  opacity: 0;
-}
-
-.cdk-drag-animating {
-  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
-}
-
-.item-list.cdk-drop-list-dragging .item-box:not(.cdk-drag-placeholder) {
-  transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
-} */
-
-.calendar-tasks{
-  width: 100px;
-  height: 100%;
-}
-
-.calendar-container{
+.calendar-container {
   display: flex;
   height: 100%;
-}
-
-.calendar{
   width: 100%;
 }
 
-.calendar-tasks-container{
+.calendar {
+  width: 100%;
+}
+
+.tasks-container {
+  .vertical-container;
+  width: @tasksContainerWidth;
   height: 100%;
-  display: flex;
-  flex-direction: column;
+  margin-left: @standardMargin;
+  margin-right: @standardMargin;
 }
 
-.calendar-top-bar{
+.calendar-top-bar {
+  display: flex;
   display: flex;
 }
 
-.day-number{
+.day-number {
   float: left;
 }
 
-.day-tasks{
+.day-tasks {
   float: right;
+  background-color: @color1;
+  border-radius: 30px;
+  width: 8px;
+  height: 8px;
 }
 
-.cell-info{
+.cell-info {
   font-size: x-small;
   width: fit-content;
   border-radius: 10px;
@@ -134,35 +120,18 @@
   text-align: center;
 }
 
-.list-item-options{
-  width: 22px;
-  height: 100%;
-  background-color: azure;
-  visibility: visible;
-}
-
-.task-name{
+.task-name {
   width: 100%;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
 }
 
-.current-day{
-  border: 2px solid blue;
+.current-day {
+  border: 2px solid @color1;
   box-sizing: border-box;
 }
 
-.dragging{
-  border: 2px solid green;
-  box-sizing: border-box;
-}
-
-.selected{
-  background-color: burlywood;
-}
-
-.tasks-panel{
-  display: flex;
-  flex-direction: column;
+.selected {
+  background-color: @color5;
 }

@@ -49,6 +49,7 @@
   overflow-x: hidden;
   overflow-y: auto;
   background-color: @color2;
+  height: 100%;
 }
 
 .standard-list-item{
@@ -219,8 +220,11 @@
 
 .container-view{
   .base-view;
-  padding: 5px;
-  // width: 100%;
+  padding-left: @standardPadding;
+  padding-right: @standardPadding;
+  padding-top: 0;
+  padding-bottom: 0;
+  width: 100%;
   height: 100%;
   box-sizing: border-box;
   .shadow;
@@ -241,6 +245,7 @@
 
 .vertical-container{
   display: flex;
+  width: 100%;
   flex-direction: column;
   padding: 0;
   margin: 0;
@@ -253,6 +258,7 @@ body {
   background-color: @color3;
   color: @fontColor;
   font-size: @fontSize;
+  overflow: hidden;
 }
 
 .icon-button{
@@ -657,11 +663,7 @@ body {
   cursor: default;
 }
 
-.task-main {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-}
+
 
 .task-info {
   display: flex;

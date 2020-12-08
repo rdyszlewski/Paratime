@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { KanbanModel } from './kanban.model';
 import {
   CdkDragDrop,
@@ -26,6 +26,7 @@ import { DialogService } from 'app/ui/widgets/dialog/dialog.service';
 import { RemoveKanbanTaskCallback } from 'app/commands/data-command/task/clalback.kanban.remove-task';
 import { EventBus } from 'eventbus-ts';
 import { TaskDetailsEvent } from '../events/details.event';
+import { InsertingTemplateComponent } from 'app/tasks/shared/inserting-template/inserting-template.component';
 
 @Component({
   selector: 'app-kanban',
@@ -33,6 +34,9 @@ import { TaskDetailsEvent } from '../events/details.event';
   styleUrls: ['./kanban.component.less'],
 })
 export class KanbanComponent implements OnInit, ITaskList {
+
+  @ViewChild(InsertingTemplateComponent)
+  private insertingTemplateComponent: InsertingTemplateComponent;
 
   private columnController: KanbanColumnController;
 
@@ -82,8 +86,8 @@ export class KanbanComponent implements OnInit, ITaskList {
    KanbanColumnOrderController.drop(event, this.model, this.commandService);
   }
 
-  public addColumn() {
-   this.columnController.addColumn();
+  public addColumn(name: string) {
+   this.columnController.addColumn(name);
   }
 
   public isOpen(): boolean {
@@ -154,13 +158,6 @@ export class KanbanComponent implements OnInit, ITaskList {
     this.commandService.execute(new FinishTaskCommand(kanbanTask.getTask(), this.appService, callback));
   }
 
-  public handleAddingNewColumn(event: KeyboardEvent) {
-    EditInputHandler.handleKeyEvent(
-      event,
-      () => this.addColumn(),
-      () => this.model.closeAdddingColumn()
-    );
-  }
 
   public handleAddingNewTask(event: KeyboardEvent) {
     EditInputHandler.handleKeyEvent(
@@ -195,5 +192,15 @@ export class KanbanComponent implements OnInit, ITaskList {
 
   public onColumnRemove(column: KanbanColumn) {
     this.columnController.removeColumn(column);
+  }
+
+  public openColumnInserting(){
+    this.insertingTemplateComponent.open();
+  }
+
+  public isColumnInsertingOpen():boolean{
+    if(this.insertingTemplateComponent){
+      return this.insertingTemplateComponent.visible;
+    }
   }
 }

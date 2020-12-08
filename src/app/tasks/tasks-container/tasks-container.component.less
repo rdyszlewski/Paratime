@@ -3,12 +3,23 @@
 @headerHeight:30px;
 
 .tasks-header{
-  height: @headerHeight;
   .horizontal-container;
+  height: @headerHeight;
+  margin: 0;
+
+}
+.task-list{
+  height: calc(100% - @headerHeight - @standardMargin * 2);
 }
 
 .mode-buttons{
   float: right;
   justify-content: right;
   .horizontal-container;
+}
+
+.tasks.container{
+  height: 100%;
+  display: flex;
+  flex-direction: column;
 }

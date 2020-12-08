@@ -1,5 +1,14 @@
 @import '../../../../styles.less';
 
+@columnWidth: 250px;
+@maxColumnWidth: @columnWidth;
+@minColumnWidth: @columnWidth;
+@headerHeight: 25px;
+@columnBorderSize: 1px;
+
+// TODO: usunąć niepotrzebne i spóbować to odpowiednio przerobić
+
+
 .kanban-view{
     display: flex;
     flex-direction: column;
@@ -24,24 +33,48 @@
     overflow-y: hidden;
 }
 
-.column{
-    border: 1px solid black;
-    /* margin: 10px; */
-
-    min-width: 200px;
-    max-width: 200px;
-    margin: 3px;
-    height: fit-content;
+.kanban-task{
+  .list-item;
+  background-color: @color4;
+  @margin: @standardMargin;
+  margin: @margin;
+  width: calc(100% - @margin * 4);
 }
 
-.column-add-button{
-  width: 100%;
+.column{
+    border: @columnBorderSize solid @color3;
+    .column-width;
+    margin: 3px;
+    height: fit-content;
+    background-color: @color2;
+}
+
+.add-column-button{
+  .create-button;
+  width: @columnWidth /2;
+  height: @headerHeight /2;
+  max-height: @headerHeight;
+  box-sizing: content-box;
+}
+
+.column-width{
+  width: @columnWidth;
+  min-width: @minColumnWidth;
+  max-width: @maxColumnWidth;
+}
+
+.add-task-button{
+  .create-button;
+  width:  calc(100% - @standardMargin * 2.2);
 }
 
 .column-header{
-  border: 1px solid black;
-  padding: 5px;
+  height: @headerHeight;
+  padding: @standardPadding;
   display: flex;
+  font-size: @fontSize * 1.2;
+  text-align: center;
+  font-weight: bold;
 }
 
 .column-name{
@@ -51,12 +84,6 @@
 .column-content{
   height: 100%;
   padding: 3px;
-}
-
-.task-item{
-    border: 1px solid black;
-    padding: 5px;
-    margin: 3px;
 }
 
 .default-column-container{
@@ -75,7 +102,7 @@
     box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
                 0 8px 10px 1px rgba(0, 0, 0, 0.14),
                 0 3px 14px 2px rgba(0, 0, 0, 0.12);
-    border-radius: 20px;
+    border-radius: @borderRadius;
   }
 
   .cdk-drag-placeholder {
