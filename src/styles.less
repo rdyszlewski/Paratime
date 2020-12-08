@@ -61,7 +61,9 @@
   background-color: @color2;
   color: @itemFontColor;
   display: flex;
-  padding: 4px;
+  @padding: 4px;
+  padding: @padding;
+  width:  calc(100% - @padding * 2.2);
   margin: 0;
   font-size: @fontSize * 1.2;
   &:hover {
@@ -79,6 +81,13 @@
     width: 100%;
     .vertical-center;
   }
+}
+
+.item-input{
+  width: 100%;
+  font-size: @fontSize;
+  padding: 3px;
+  cursor: default;
 }
 
 .list-item-options {
@@ -256,8 +265,9 @@ body {
 }
 
 .item-icon{
-  width: 25px;
-  height: 25px;
+  width: 15px;
+  height: 15px;
+  box-sizing: content-box;
   .full-image;
   padding: @standardPadding;
   border: none;
@@ -457,8 +467,6 @@ body {
   border-radius: 8px;
   border: 1px solid black;
 }
-
-
 
 .list::-webkit-scrollbar {
   width: 10px;

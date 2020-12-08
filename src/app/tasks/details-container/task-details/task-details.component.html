@@ -223,7 +223,7 @@
       <span class="label-name">
         {{ label.getName() }}
       </span>
-      <span class="remove-label" (click)="getLabels().removeLabel(label)"></span>
+      <span class="remove-icon" (click)="getLabels().removeLabel(label)"></span>
     </div>
   </div>
   <button
@@ -284,10 +284,10 @@
 <ng-template #subtask_item let-subtask>
   <div
     [ngClass]="{
-      'subtask-checkbox-icon': subtask.getStatus() == status.STARTED,
+      'subtask-active-icon': subtask.getStatus() == status.STARTED,
       'subtask-done-icon': subtask.getStatus() == status.ENDED,
       'subtask-icon': true,
-      checkbox: true
+      'checkbox': true
     }"
     (click)="getSubtask().toggleSubtaskStatus(subtask)"
   ></div>
@@ -302,7 +302,7 @@
 
 <ng-template #subtask_edit let-subtask>
   <input
-    class="subtask-name"
+    class="item-input"
     value="{{ subtask.getName() }}"
     [id]="'subtask-name-input_' + subtask.getId()"
     autocomplete="off"
@@ -311,21 +311,21 @@
     (ngModelChange)="getSubtask().getModel().setEditingSubtaskName($event)"
     (keyup)="getSubtask().handleKeysOnEditSubtask($event, subtask)"
   />
-  <div class="subtask-item-buttons">
+  <div class="item-list-buttons">
     <div
-      class="list-item-options edit-button small-accept-button"
+      class="edit-item-icon"
       (click)="getSubtask().openEditingSubtask(subtask)"
       *ngIf="!getSubtask().getModel().isEditingSubtask(subtask)"
     ></div>
     <div
-      class="list-item-options remove-button small-accept-button"
+      class="remove-item-icon"
       (click)="getSubtask().removeSubtask(subtask)"
       *ngIf="!getSubtask().getModel().isEditingSubtask(subtask)"
     ></div>
   </div>
 
   <div
-    class="list-item-options accept-button small-accept-button"
+    class="accept-item-icon"
     (click)="getSubtask().acceptEditingSubtask(subtask)"
     *ngIf="getSubtask().getModel().isEditingSubtask(subtask)"
   ></div>

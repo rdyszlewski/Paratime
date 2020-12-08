@@ -1,23 +1,23 @@
 <div class="panel">
-  <mat-expansion-panel [expanded]="true">
-    <mat-expansion-panel-header> Główne </mat-expansion-panel-header>
-    <ng-container [ngTemplateOutlet]="project_main_group"></ng-container>
-  </mat-expansion-panel>
+    <mat-expansion-panel [expanded]="true">
+      <mat-expansion-panel-header> Główne </mat-expansion-panel-header>
+      <ng-container [ngTemplateOutlet]="project_main_group"></ng-container>
+    </mat-expansion-panel>
 
-  <mat-expansion-panel>
-    <mat-expansion-panel-header> Informacje </mat-expansion-panel-header>
-    <ng-container [ngTemplateOutlet]="project_info_group"></ng-container>
-  </mat-expansion-panel>
+    <mat-expansion-panel>
+      <mat-expansion-panel-header> Informacje </mat-expansion-panel-header>
+      <ng-container [ngTemplateOutlet]="project_info_group"></ng-container>
+    </mat-expansion-panel>
 
-  <mat-expansion-panel>
-    <mat-expansion-panel-header> Czas </mat-expansion-panel-header>
-    <ng-container [ngTemplateOutlet]="project_time_group"></ng-container>
-  </mat-expansion-panel>
+    <mat-expansion-panel>
+      <mat-expansion-panel-header> Czas </mat-expansion-panel-header>
+      <ng-container [ngTemplateOutlet]="project_time_group"></ng-container>
+    </mat-expansion-panel>
 
-  <mat-expansion-panel [expanded]="getModel().getProject().getStages().length > 0">
-    <mat-expansion-panel-header> Etapy </mat-expansion-panel-header>
-    <ng-container [ngTemplateOutlet]="project_stages"></ng-container>
-  </mat-expansion-panel>
+    <mat-expansion-panel [expanded]="getModel().getProject().getStages().length > 0">
+      <mat-expansion-panel-header> Etapy </mat-expansion-panel-header>
+      <ng-container [ngTemplateOutlet]="project_stages"></ng-container>
+    </mat-expansion-panel>
 </div>
 
 <ng-template #project_main_group>
@@ -175,12 +175,11 @@
 </ng-template>
 
 <ng-template #stage_item let-stage>
-  <div class="stage-main">
+  <div class="list-item">
     <div class="list-item-value">{{ stage.getName() }}</div>
-    <div class="stage-info-icons">
       <div
         *ngIf="stage.getDescription() != null"
-        class="task-description-icon info-icon"
+        class="info-element"
         tooltip="{{ stage.getDescription() }}"
         autoplacement="true"
         placement="bottom"
@@ -188,13 +187,12 @@
 
       <div
         *ngIf="stage.getEndDate() != null"
-        class="task-enddate-icon info-icon"
+        class="info-element"
         tooltip="{{ getDateText(stage.getEndDate()) }}"
         autoplacement="true"
         placement="bottom"
       ></div>
     </div>
-  </div>
   <ng-container
     [ngTemplateOutlet]="stage_options"
     [ngTemplateOutletContext]="{ $implicit: stage }"
