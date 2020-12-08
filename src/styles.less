@@ -25,6 +25,9 @@
 @borderSize: 1px;
 @separatorColor: @color5;
 
+@editIcon:url("./assets/icons/edit-icon.png");
+@removeIcon: url("./assets/icons/remove-icon.png");
+@acceptIcon: url("./assets/icons/accept-icon.png");
 // LISTA
 
 .panel-header {
@@ -43,8 +46,8 @@
 }
 
 .list {
-  overflow: auto;
-  /* TODO: wstawić tutaj kolor dodatkowy */
+  overflow-x: hidden;
+  overflow-y: auto;
   background-color: @color2;
 }
 
@@ -67,6 +70,9 @@
     .list-item-options {
       visibility: visible;
     }
+    .item-list-buttons{
+      visibility: visible;
+    }
   }
 
   .list-item-value{
@@ -83,6 +89,33 @@
   &:hover{
     background-color: @color4;
   }
+}
+
+.edit-item-icon{
+  background: @editIcon;
+  .item-icon;
+}
+
+.remove-item-icon{
+  background: @removeIcon;
+  .item-icon;
+}
+
+.accept-item-icon{
+  background: @acceptIcon;
+  .item-icon;
+}
+
+.item-list-buttons{
+  display: flex;
+  float: right;
+  visibility: hidden;
+  .right;
+  margin-right: @standardMargin;
+}
+
+.item-list-icon{
+  .icon-button;
 }
 
 .create-button {
@@ -169,14 +202,18 @@
 
 // OGÓLNE
 
-.container-view{
+.base-view{
+  background-color: @color4;
   display: flex;
   flex-direction: column;
+}
+
+.container-view{
+  .base-view;
   padding: 5px;
-  width: 100%;
+  // width: 100%;
   height: 100%;
   box-sizing: border-box;
-  background-color: @color4;
   .shadow;
 }
 
@@ -188,6 +225,7 @@
 .horizontal-container{
   display: flex;
   flex-direction: row;
+  width: 100%;
   padding: 0;
   margin: 0;
 }
@@ -211,13 +249,29 @@ body {
 .icon-button{
   width: 20px;
   height: 20px;
+  .full-image;
+  padding: @standardPadding;
+
+  .base-button;
+}
+
+.item-icon{
+  width: 25px;
+  height: 25px;
+  .full-image;
+  padding: @standardPadding;
+  border: none;
+  &:hover{
+    background-color: @color4;
+    cursor: pointer;
+  }
+}
+
+.full-image{
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
   background-origin: content-box;
-  padding: @standardPadding;
-
-  .base-button;
 }
 
 .center {
@@ -253,6 +307,8 @@ body {
 
 .right{
   float: right;
+  margin-right: 0;
+  margin-left: auto;
 }
 
 .left{
@@ -490,7 +546,7 @@ body {
     0px 1px 5px 0px rgba(0, 0, 0, 0.12);
   width: 15px;
   height: 15px;
-  background-color: aqua;
+  background-color: @color1;
   margin: 2px;
 }
 
@@ -706,6 +762,8 @@ body {
   cursor: pointer;
 }
 
+// TODO: zrobić boczne elementy
+
 .action-label {
   font-size: 24px;
   align-items: center;
@@ -722,16 +780,16 @@ body {
 }
 
 .action-label:hover {
-  border: 1px solid black;
+  border: 1px solid @borderColor;
 }
 
 .badge {
-  background-color: aqua;
+  background-color: @color1;
   position: absolute;
   z-index: 1;
   top: 0;
   bottom: 0;
-  margin: auto;
+  rgin: auto;
   left: 0;
   width: 4px;
   height: 100%;

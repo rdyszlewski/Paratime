@@ -1,10 +1,14 @@
 
 @import '../../../../styles.less';
 
-
+#project-filter{
+  .filter;
+  width: auto;
+}
 
 #labels-container{
     height: 100%;
+    width: 300px;
 }
 
 .label-name{
@@ -37,14 +41,13 @@
     background-color: brown;
 }
 
+
 .buttons-container{
     float: right;
 }
 
-.label-item-buttons{
-    display: flex;
-    visibility: collapse;
-}
+// TODO: przerobić to na jakąś ogólnę regułę
+
 
 .label-item:hover .label-item-buttons{
     visibility: visible;
