@@ -21,7 +21,9 @@
 @smallMargin: 2px;
 @smallPadding: 2px;
 @borderRadius: 2px;
-
+@borderColor: @color3;
+@borderSize: 1px;
+@separatorColor: @color5;
 
 // LISTA
 
@@ -32,7 +34,6 @@
   margin-top: 2px;
   margin-bottom: 2px;
 }
-
 
 .list-panel {
   background-color: @color4;
@@ -45,6 +46,12 @@
   overflow: auto;
   /* TODO: wstawić tutaj kolor dodatkowy */
   background-color: @color2;
+}
+
+.standard-list-item{
+  .list-item;
+  background-color: #2661ce;
+
 }
 
 .list-item {
@@ -162,6 +169,17 @@
 
 // OGÓLNE
 
+.container-view{
+  display: flex;
+  flex-direction: column;
+  padding: 5px;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  background-color: @color4;
+  .shadow;
+}
+
 .shadow {
   box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14),
     0px 1px 5px 0px rgba(0, 0, 0, 0.12);
@@ -219,13 +237,6 @@ body {
   }
 }
 
-.tasks-container{
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  background-color: @color4;
-  .shadow;
-}
 
 // TODO: zrobić z tym coś później
 .simple-button{
@@ -263,6 +274,93 @@ body {
   border-radius: 3px;
 }
 
+.app-panel {
+  height: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+.panel{
+  height: 100%;
+  margin: @standardMargin;
+}
+
+
+// EDYCJA
+
+
+.mat-expansion-panel {
+  padding: 0px !important;
+  background-color: @color4;
+  color: @fontColor;
+  border-bottom: @borderSize solid @separatorColor;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.mat-expansion-panel-body {
+  padding: 0px !important;
+}
+
+.mat-expansion-panel-content {
+  padding: 4px;
+}
+
+.mat-expansion-panel-header{
+  padding: 5px !important;
+  height: auto !important;
+}
+
+.form-control {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 5px;
+  border-radius: @borderRadius;
+  border: @borderSize solid @borderColor;
+  background-color: @color2;
+  color: @fontColor;
+}
+// TODO: zropbić obramówkę
+
+.form-label{
+  font-size: @fontSize
+}
+
+.details{
+  position: absolute;
+  right: 48px;
+  width: 50%;
+  overflow: auto;
+}
+
+.close-button {
+  .icon-button;
+  background: url("./assets/icons/close-icon.png");
+  border: transparent;
+  border-radius: 4px;
+  margin-top: auto;
+  margin-bottom: auto;
+  float: right;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // .list-item:hover{
 
 //   z-index: 100;
@@ -275,33 +373,7 @@ body {
 /* html, body { height: 100%; } */
 /* body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; } */
 
-.form-group {
-  display: block;
-  /* width: 100%; */
-  /* padding: 10px; */
-  box-sizing: border-box;
-  /* border: 1px solid black; */
-  border-bottom: 1px solid black;
-  border-radius: 3px;
-}
 
-.form-control {
-  width: 100%;
-  box-sizing: border-box;
-  padding: 5px;
-  border-radius: 3px;
-  background-color: white;
-  border: 1px solid black;
-}
-
-.form-label {
-  font-size: small;
-  margin-bottom: 0px;
-}
-
-.form-container {
-  margin-top: 5px;
-}
 
 .datepicker-container {
   display: flex;
@@ -330,12 +402,7 @@ body {
   border: 1px solid black;
 }
 
-.app-panel {
-  height: 100%;
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-}
+
 
 .list::-webkit-scrollbar {
   width: 10px;
@@ -431,25 +498,6 @@ body {
   cursor: default;
 }
 
-.mat-expansion-panel-body {
-  padding: 0px !important;
-  border-radius: 3px;
-}
-
-.mat-expansion-panel-content {
-  background-color: aliceblue;
-  padding: 4px;
-}
-
-.mat-expansion-panel {
-  padding: 0px !important;
-}
-
-.form-group-header {
-  padding: 5px !important;
-  height: auto !important;
-}
-
 .insert-button {
   float: right;
 }
@@ -475,20 +523,6 @@ body {
 .invalid-feedback {
   color: red;
   font-size: small;
-}
-
-.close-button {
-  height: 30px;
-  width: 30px;
-  background: url("./assets/icons/close-icon.png");
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-origin: content-box;
-  border: transparent;
-  border-radius: 4px;
-  margin-top: auto;
-  margin-bottom: auto;
 }
 
 .close-button:hover {

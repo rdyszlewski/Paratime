@@ -30,7 +30,7 @@ export class InsertingTemplateComponent implements OnInit {
 
   public handleKeyUp(event:KeyboardEvent){
     EditInputHandler.handleKeyEvent(event,
-        ()=>this.accept,
+        ()=>this.accept(),
         ()=>this.close()
     );
   }

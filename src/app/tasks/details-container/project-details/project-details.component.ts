@@ -20,6 +20,8 @@ import { CommandService } from 'app/commands/manager/command.service';
 import { UpdateProjectCommand } from 'app/commands/data-command/project/command.update-project';
 import { RemoveStageCommand } from 'app/commands/data-command/stage/command.remove-stage';
 import { ChangeStageOrderCommand } from 'app/commands/data-command/stage/command.change-stage-order';
+import { InsertingTemplateComponent } from 'app/tasks/shared/inserting-template/inserting-template.component';
+import { ViewChild } from '@angular/core';
 
 @Component({
   selector: 'app-project-details',
@@ -27,6 +29,9 @@ import { ChangeStageOrderCommand } from 'app/commands/data-command/stage/command
   styleUrls: ['./project-details.component.less'],
 })
 export class ProjectDetailsComponent implements OnInit {
+
+  @ViewChild(InsertingTemplateComponent)
+  private insertingTemplateComponent: InsertingTemplateComponent;
 
   private model: ProjectDetails;
   private state: ProjectDetailsState;
@@ -118,4 +123,9 @@ export class ProjectDetailsComponent implements OnInit {
     }
     this.commandService.execute(new ChangeStageOrderCommand(currentIndex, previousIndex, this.model));
   }
+
+  public openStageInserting(){
+    this.insertingTemplateComponent.open();
+  }
+
 }

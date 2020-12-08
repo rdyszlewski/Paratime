@@ -1,11 +1,9 @@
 import { ProjectStageModel } from './project.stage.model';
 import { Stage } from 'app/database/shared/stage/stage';
-import { DataService } from 'app/data.service';
 import { ProjectDetails } from '../model/model';
 import { EventBus } from 'eventbus-ts';
 import { StageDetailsEvent } from '../events/stage.details.event';
 import { FocusHelper } from 'app/shared/common/view_helper';
-import { EditInputHandler } from 'app/shared/common/edit_input_handler';
 import { Project } from 'app/database/shared/project/project';
 import { CommandService } from 'app/commands/manager/command.service';
 import { CreateStageCommand } from 'app/commands/data-command/stage/command.create-stage';
@@ -29,9 +27,10 @@ export class ProjectStagesController {
     return this.stageModel;
   }
 
-  public addNewStage() {
+  public addNewStage(name:string){
+    console.log(name);
     const stage = new Stage();
-    stage.setName(this.stageModel.getNewStageName());
+    stage.setName(name);
     stage.setProject(this.project);
     this.saveStage(stage);
   }
@@ -48,14 +47,6 @@ export class ProjectStagesController {
     this.stageModel.openAddingStage();
     this.stageModel.setNewStageName('');
     FocusHelper.focus(this.STAGE_NAME_INPUT);
-  }
-
-  public handleAddingNewStageKeyUp(event: KeyboardEvent) {
-    EditInputHandler.handleKeyEvent(
-      event,
-      () => this.addNewStage(),
-      () => this.closeAddingNewStage()
-    );
   }
 
   public onStageMenuClick(event: MouseEvent, stage: Stage) {

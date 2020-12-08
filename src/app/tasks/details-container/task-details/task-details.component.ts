@@ -1,4 +1,4 @@
-import { Component, OnInit} from '@angular/core';
+import { Component, OnInit, ViewChild} from '@angular/core';
 import { Status } from 'app/database/shared/models/status';
 import { TaskDetails } from './model/model';
 import { Task } from 'app/database/shared/task/task';
@@ -22,6 +22,7 @@ import { OpenLabelsManagerEvent } from './events/open.labels.event';
 import { CommandService } from 'app/commands/manager/command.service';
 import { UpdateTaskCommand } from 'app/commands/data-command/task/command.update-task';
 import { ChangeSubtaskOrderCommand } from 'app/commands/data-command/subtask/command.change-subtask-order';
+import { InsertingTemplateComponent } from 'app/tasks/shared/inserting-template/inserting-template.component';
 
 @Component({
   selector: 'app-task-details',
@@ -30,6 +31,9 @@ import { ChangeSubtaskOrderCommand } from 'app/commands/data-command/subtask/com
 })
 export class TaskDetailsComponent implements OnInit {
   private TASK_NAME_ID = '#task-name';
+
+  @ViewChild(InsertingTemplateComponent)
+  public insertingTemplateComponent: InsertingTemplateComponent;
 
   public status = Status;
   public priority = Priority;
@@ -171,5 +175,9 @@ export class TaskDetailsComponent implements OnInit {
     // TODO: prawdopodobnie potrzebne będzie tutaj jakieś formatowanie
     let result = hours.toString() + ":" + minutes.toString();
     return result;
+  }
+
+  public openStepsInserting(){
+    this.insertingTemplateComponent.open();
   }
 }
