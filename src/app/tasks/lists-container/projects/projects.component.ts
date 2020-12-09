@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ViewChild } from "@angular/core";
 import { ProjectsModel } from "./common/model";
 import { DataService } from "app/data.service";
 import { MatDialog } from "@angular/material/dialog";
@@ -6,7 +6,6 @@ import { Status } from "app/database/shared/models/status";
 import { ProjectType } from "app/database/shared/project/project_type";
 import { ProjectsViewState } from "./common/state";
 import { ProjectsFilteringController } from "./filtering/projects.filtering.controller";
-import { ProjectAddingController } from "./adding/projects.adding.controller";
 import { ProjectsRemovingController } from "./removing/projects.removing.controller";
 import { CdkDragDrop, moveItemInArray, transferArrayItem } from "@angular/cdk/drag-drop";
 import { EventBus } from "eventbus-ts";
@@ -14,17 +13,22 @@ import { ProjectLoadEvent, ProjectEditEvent } from "./events/project.event";
 import { Project } from "app/database/shared/project/project";
 import { CommandService } from "app/commands/manager/command.service";
 import { ChangeProjectkOrderCommand } from "app/commands/data-command/project/command.change-project-order";
+import { InsertingTemplateComponent } from 'app/tasks/shared/inserting-template/inserting-template.component';
+import { CreateProjectCommand } from 'app/commands/data-command/project/command.create-project';
 
 @Component({
   selector: "app-projects",
   templateUrl: "./projects.component.html",
-  styleUrls: ["./projects.component.css"],
+  styleUrls: ["./projects.component.less"],
 })
 export class ProjectsComponent implements OnInit {
+
+  @ViewChild(InsertingTemplateComponent)
+  private insertingComponent: InsertingTemplateComponent;
+
   private model: ProjectsModel;
   private state: ProjectsViewState;
   private filteringController: ProjectsFilteringController;
-  private addingController: ProjectAddingController;
   private removingController: ProjectsRemovingController;
 
   public status = Status;
@@ -40,11 +44,6 @@ export class ProjectsComponent implements OnInit {
     this.model = new ProjectsModel();
     this.state = new ProjectsViewState();
     this.filteringController = new ProjectsFilteringController(this.model, this.dataService);
-    this.addingController = new ProjectAddingController(
-      this.state,
-      this.model,
-      this.commandService,
-    );
     this.removingController = new ProjectsRemovingController(
       this.model,
       this.dialog,
@@ -63,10 +62,6 @@ export class ProjectsComponent implements OnInit {
 
   public getFiltering(): ProjectsFilteringController {
     return this.filteringController;
-  }
-
-  public getAdding(): ProjectAddingController {
-    return this.addingController;
   }
 
   public getRemoving(): ProjectsRemovingController {
@@ -145,5 +140,15 @@ export class ProjectsComponent implements OnInit {
     this.commandService.execute(
       new ChangeProjectkOrderCommand(currentIndex, previousIndex, this.model),
     );
+  }
+
+  public openInserting(){
+    this.insertingComponent.open();
+  }
+
+  public addNewProject(name: string){
+    const project = new Project();
+    project.setName(name);
+    this.commandService.execute(new CreateProjectCommand(project, this.model));
   }
 }

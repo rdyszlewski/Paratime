@@ -25,7 +25,7 @@
             ],
             "styles": [
               "src/custom-theme.scss",
-              "src/styles.css"
+              "src/styles.less"
             ],
             "scripts": []
           },
@@ -89,7 +89,7 @@
               "src/assets"
             ],
             "styles": [
-              "src/styles.css"
+              "src/styles.less"
             ],
             "scripts": []
           }
@@ -122,5 +122,10 @@
       }
     }
   },
-  "defaultProject": "paratime"
+  "defaultProject": "paratime",
+  "schematics": {
+    "@schematics/angular:component": {
+      "styleext": "less"
+    }
+  }
 }

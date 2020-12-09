@@ -16,7 +16,7 @@ export enum DetailsType{
 @Component({
   selector: 'app-details-container',
   templateUrl: './details-container.component.html',
-  styleUrls: ['./details-container.component.css']
+  styleUrls: ['./details-container.component.less']
 })
 export class DetailsContainerComponent implements OnInit {
 

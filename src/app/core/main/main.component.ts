@@ -17,7 +17,6 @@ import { TasksMode, AppService } from '../services/app/app.service';
 import { LocalDatabase } from 'app/database/local/database';
 import { TimeService } from '../services/time/time.service';
 import { PomodoroComponent } from 'app/shared/side-container/pomodoro/pomodoro.component';
-import { PomodoroSettingsStore } from 'app/pomodoro/pomodoro/settings/settings.storage';
 import { DataService } from 'app/data.service';
 import { LocalDataSource } from 'app/database/local/local.source';
 import { Project } from 'app/database/shared/project/project';
@@ -25,7 +24,7 @@ import { Project } from 'app/database/shared/project/project';
 @Component({
   selector: 'app-main',
   templateUrl: './main.component.html',
-  styleUrls: ['./main.component.css'],
+  styleUrls: ['./main.component.less'],
 })
 export class MainComponent implements OnInit, AfterViewInit {
   public taskMode = TasksMode;

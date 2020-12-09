@@ -10,7 +10,7 @@ import { DataService } from 'app/data.service';
 @Component({
   selector: 'app-pomodoro-statistics',
   templateUrl: './pomodoro-statistics.component.html',
-  styleUrls: ['./pomodoro-statistics.component.css']
+  styleUrls: ['./pomodoro-statistics.component.less']
 })
 export class PomodoroStatisticsComponent implements AfterViewInit, OnInit {
 

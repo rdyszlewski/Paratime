@@ -1,5 +1,5 @@
-<div class="shadow app-panel">
-  <select (change)="changeScale($event)">
+<div class="panel">
+  <select (change)="changeScale($event)" class="item-input">
     <option [value]="100" default>100%</option>
     <option [value]="200">200%</option>
     <option [value]="300">300</option>
@@ -39,7 +39,7 @@
           'upper-task-cell': hour.mainHour,
           'bottom-task-cell': !hour.mainHour && !hour.lastHour,
           'last-task-cell': hour.lastHour,
-          'middle-task-cell':hour.middleHour,
+          'middle-task-cell': hour.middleHour,
           'task-cell': true
         }"
       >
@@ -55,12 +55,11 @@
           [style.z-index]="t.position"
           [style.top.px]="t.offset"
         >
-          <div *cdkDragPlaceholder class="drag-placeholder"
-          [style.height.px]="t.size"></div>
+          <div *cdkDragPlaceholder class="drag-placeholder" [style.height.px]="t.size"></div>
           <div
             [id]="'top_handler_' + t.task.getId()"
             cdkDragLockAxis="y"
-            class="dragHandle top"
+            class="drag-handle top"
             cdkDrag
             (cdkDragMoved)="resizer.dragMove($event, t)"
             (cdkDragStarted)="dragginController.dragStarted($event, t)"
@@ -69,7 +68,7 @@
           <div
             [id]="'bottom_handler_' + t.task.getId()"
             cdkDragLockAxis="y"
-            class="dragHandle bottom"
+            class="drag-handle bottom"
             cdkDrag
             (cdkDragMoved)="resizer.dragMove($event, t)"
           ></div>

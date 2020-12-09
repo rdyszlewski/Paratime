@@ -21,7 +21,7 @@ import { Project } from 'app/database/shared/project/project';
 @Component({
   selector: "day-schedule",
   templateUrl: "./day-schedule.component.html",
-  styleUrls: ["./day-schedule.component.css"],
+  styleUrls: ["./day-schedule.component.less"],
 })
 export class DayScheduleComponent implements OnInit, ITaskList, AfterViewInit {
   @ViewChild(MiniCalendarComponent)

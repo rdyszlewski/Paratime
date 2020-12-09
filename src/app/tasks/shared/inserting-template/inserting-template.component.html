@@ -1,0 +1,24 @@
+<div *ngIf="visible" class="inserting-container">
+  <input
+    type="text"
+    class="inserting-input"
+    id="new-project-name"
+    autocomplete="off"
+    (keyup)="handleKeyUp($event)"
+    [ngModel]="taskName"
+    (ngModelChange)="taskName=$event"
+  />
+  <div class="insert-buttons-container">
+    <button
+      class="simple-button"
+      id="cancel-subtask-button"
+      (click)="close()"
+    >
+      Anuluj
+    </button>
+    <button class="simple-button" id="save-subtask-button" (click)="accept()">
+      Zapisz
+    </button>
+  </div>
+</div>
+

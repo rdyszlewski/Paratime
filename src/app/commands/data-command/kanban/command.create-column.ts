@@ -4,7 +4,7 @@ import { KanbanModel } from "app/tasks/tasks-container/kanban/kanban.model";
 
 export class CreateColumnCommand extends DataCommand {
 
-  constructor(private model: KanbanModel) {
+  constructor(private name ,private model: KanbanModel) {
     super();
   }
 
@@ -12,7 +12,7 @@ export class CreateColumnCommand extends DataCommand {
     const kanbanColumn = new KanbanColumn();
     kanbanColumn.setDefault(false);
     kanbanColumn.setProjectId(this.model.getProject().getId());
-    kanbanColumn.setName(this.model.getColumnName());
+    kanbanColumn.setName(this.name);
 
     this._dataService
       .getKanbanColumnService()
@@ -28,6 +28,6 @@ export class CreateColumnCommand extends DataCommand {
     throw new Error("Method not implemented.");
   }
   getDescription(): string {
-    return `Tworzenie kolumny ${this.model.getColumnName()}`;
+    return `Tworzenie kolumny ${this.name}`;
   }
 }

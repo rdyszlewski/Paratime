@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';
 @Component({
   selector: 'para-timepicker',
   templateUrl: './timepicker.component.html',
-  styleUrls: ['./timepicker.component.css']
+  styleUrls: ['./timepicker.component.less']
 })
 export class TimepickerComponent implements OnInit {
 

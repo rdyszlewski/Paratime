@@ -13,14 +13,18 @@ export class KanbanColumnController{
   constructor(private model: KanbanModel,private dialogService: DialogService, private commandService: CommandService){
   }
 
-  public addColumn() {
-    const columnName = this.model.getColumnName();
-    if (!columnName || columnName == '') {
+  public addColumn(name: string) {
+    console.log(name);
+
+    if (!name || name == '') {
+      console.log("nieudane");
+
       this.model.setColumnNameValid(false);
       FocusHelper.focus('#new-column-input');
       return;
     }
-    this.commandService.execute(new CreateColumnCommand(this.model));
+    console.log("Zapisywanie");
+    this.commandService.execute(new CreateColumnCommand(name, this.model));
   }
 
   public removeColumn(column: KanbanColumn) {

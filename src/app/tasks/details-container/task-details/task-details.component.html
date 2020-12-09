@@ -1,64 +1,43 @@
-<div class="app-panel shadow">
-  <form
-    class="form"
-    id="list-details-form"
-    (keydown.enter)="$event.preventDefault()"
-  >
-    <mat-expansion-panel class="form-group" [expanded]="true">
-      <mat-expansion-panel-header class="form-group-header">
-        Główne
-      </mat-expansion-panel-header>
-      <ng-container [ngTemplateOutlet]="main_group"></ng-container>
-    </mat-expansion-panel>
+<div class="panel">
+  <mat-expansion-panel [expanded]="true">
+    <mat-expansion-panel-header> Główne </mat-expansion-panel-header>
+    <ng-container [ngTemplateOutlet]="main_group"></ng-container>
+  </mat-expansion-panel>
 
-    <mat-expansion-panel class="form-group">
-      <mat-expansion-panel-header class="form-group-header">
-        Informacje
-      </mat-expansion-panel-header>
-      <ng-container [ngTemplateOutlet]="info_group"></ng-container>
-    </mat-expansion-panel>
+  <mat-expansion-panel>
+    <mat-expansion-panel-header> Informacje </mat-expansion-panel-header>
+    <ng-container [ngTemplateOutlet]="info_group"></ng-container>
+  </mat-expansion-panel>
 
-    <mat-expansion-panel class="form-group">
-      <mat-expansion-panel-header class="form-group-header">
-        Czas
-      </mat-expansion-panel-header>
-      <ng-container [ngTemplateOutlet]="time_group"></ng-container>
-    </mat-expansion-panel>
+  <mat-expansion-panel>
+    <mat-expansion-panel-header> Czas </mat-expansion-panel-header>
+    <ng-container [ngTemplateOutlet]="time_group"></ng-container>
+  </mat-expansion-panel>
 
-    <mat-expansion-panel
-      class="form-group"
-      [expanded]="getState().isLabelsExtended()"
-    >
-      <mat-expansion-panel-header class="form-group-header">
-        Etykiety ({{ getModel().getTask().getLabels().length }})
-      </mat-expansion-panel-header>
-      <ng-container [ngTemplateOutlet]="task_labels_group"></ng-container>
-    </mat-expansion-panel>
+  <mat-expansion-panel [expanded]="getState().isLabelsExtended()">
+    <mat-expansion-panel-header>
+      Etykiety ({{ getModel().getTask().getLabels().length }})
+    </mat-expansion-panel-header>
+    <ng-container [ngTemplateOutlet]="task_labels_group"></ng-container>
+  </mat-expansion-panel>
 
-    <mat-expansion-panel
-      class="form-group"
-      [expanded]="getState().isSubtasksExtended()"
-    >
-      <mat-expansion-panel-header class="form-group-header">
-        Kroki ({{ getFinishedSubtasks(getModel().getTask()) }} /
-        {{ getModel().getTask().getSubtasks().length }})
-      </mat-expansion-panel-header>
-      <ng-container [ngTemplateOutlet]="task_subtasks_group"></ng-container>
-    </mat-expansion-panel>
-  </form>
+  <mat-expansion-panel [expanded]="getState().isSubtasksExtended()">
+    <mat-expansion-panel-header>
+      Kroki ({{ getFinishedSubtasks(getModel().getTask()) }} /
+      {{ getModel().getTask().getSubtasks().length }})
+    </mat-expansion-panel-header>
+    <ng-container [ngTemplateOutlet]="task_subtasks_group"></ng-container>
+  </mat-expansion-panel>
 </div>
 
 <mat-menu #appMenu="matMenu" class="my-menu">
   <div
     mat-menu-item
     *ngFor="let label of getLabels().getModel().getLabels()"
-    class="list-item small-list-item"
+    class="list-item"
     (click)="getLabels().selectLabel(label, $event)"
   >
-    <mat-checkbox
-      type="checkbox"
-      [checked]="getLabels().isLabelSelected(label)"
-    ></mat-checkbox>
+    <mat-checkbox type="checkbox" [checked]="getLabels().isLabelSelected(label)"></mat-checkbox>
     <span>{{ label.getName() }}</span>
   </div>
 
@@ -85,7 +64,6 @@
 </ng-template>
 
 <ng-template #task_name_group>
-  <div class="form-container">
     <input
       type="text"
       class="form-control"
@@ -99,13 +77,10 @@
       (focusout)="updateTask()"
     />
     <span
-      *ngIf="
-        !getValidator().isNameValid() && getChangeDetector().isNameChanged()
-      "
+      *ngIf="!getValidator().isNameValid() && getChangeDetector().isNameChanged()"
       class="invalid-feedback"
       >Nazwa nie może być pusta</span
     >
-  </div>
 </ng-template>
 
 <ng-template #task_description>
@@ -143,141 +118,116 @@
 </ng-template>
 
 <ng-template #task_priority>
-  <div class="form-container">
-    <label class="form-label"> Priorytet</label>
-    <select
-      class="form-control"
-      id="task-priority"
-      name="priority"
-      [ngModel]="getModel().getTask().getPriority()"
-      (ngModelChange)="getModel().getTask().setPriority($event)"
-      (change)="updateTask()"
-    >
-      <option [ngValue]="null"></option>
-      <option [ngValue]="priority.LEVEL_1">1</option>
-      <option [ngValue]="priority.LEVEL_2">2</option>
-      <option [ngValue]="priority.LEVEL_3">3</option>
-      <option [ngValue]="priority.LEVEL_4">4</option>
-      <option [ngValue]="priority.LEVEL_5">5</option>
-    </select>
-  </div>
+  <label class="form-label"> Priorytet</label>
+  <select
+    class="form-control"
+    id="task-priority"
+    name="priority"
+    [ngModel]="getModel().getTask().getPriority()"
+    (ngModelChange)="getModel().getTask().setPriority($event)"
+    (change)="updateTask()"
+  >
+    <option [ngValue]="null"></option>
+    <option [ngValue]="priority.LEVEL_1">1</option>
+    <option [ngValue]="priority.LEVEL_2">2</option>
+    <option [ngValue]="priority.LEVEL_3">3</option>
+    <option [ngValue]="priority.LEVEL_4">4</option>
+    <option [ngValue]="priority.LEVEL_5">5</option>
+  </select>
 </ng-template>
 
 <ng-template #task_date>
-  <div class="form-container">
-    <label class="form-label">Data</label>
-    <div class="datepicker-container">
-      <input
-        matInput
-        class="form-control"
-        id="task-date"
-        name="date"
-        autocomplete="off"
-        [matDatepicker]="datePicker"
-        [ngModel]="getModel().getTask().getDate()"
-        (ngModelChange)="getModel().getTask().setDate($event)"
-        (dateChange)="updateTask()"
-      />
-      <mat-datepicker-toggle
-        [for]="datePicker"
-        class="datepicker"
-      ></mat-datepicker-toggle>
-      <mat-datepicker #datePicker></mat-datepicker>
-    </div>
+  <label class="form-label">Data</label>
+  <div class="datepicker-container">
+    <input
+      matInput
+      class="form-control"
+      id="task-date"
+      name="date"
+      autocomplete="off"
+      [matDatepicker]="datePicker"
+      [ngModel]="getModel().getTask().getDate()"
+      (ngModelChange)="getModel().getTask().setDate($event)"
+      (dateChange)="updateTask()"
+    />
+    <mat-datepicker-toggle [for]="datePicker" class="datepicker"></mat-datepicker-toggle>
+    <mat-datepicker #datePicker></mat-datepicker>
   </div>
 </ng-template>
 
 <ng-template #task_time>
-  <div class="form-container">
-    <label class="form-label">Godzina</label>
-    <div class="time-container">
-      <input paraInput class="form-control" [paraTimepickerTrigger]="picker" />
-      <para-timepicker
-        #picker
-        [time]="getTime()"
-        (timeChange)="timeChange($event)"
-      ></para-timepicker>
-    </div>
+  <label class="form-label">Godzina</label>
+  <div class="time-container">
+    <input paraInput class="form-control" [paraTimepickerTrigger]="picker" />
+    <para-timepicker #picker [time]="getTime()" (timeChange)="timeChange($event)"></para-timepicker>
   </div>
 </ng-template>
 
 <ng-template #task_end_date>
-  <div class="form-container">
-    <label class="form-label">Data końcowa</label>
-    <div class="datepicker-container">
-      <input
-        matInput
-        class="form-control"
-        id="task-end-date"
-        name="end-date"
-        autocomplete="off"
-        [matDatepicker]="endDatePicker"
-        [ngModel]="getModel().getTask().getEndDate()"
-        (ngModelChange)="getModel().getTask().setEndDate($event)"
-        (dateChange)="updateTask()"
-      />
-      <mat-datepicker-toggle
-        [for]="endDatePicker"
-        class="datepicker"
-      ></mat-datepicker-toggle>
-      <mat-datepicker #endDatePicker></mat-datepicker>
-    </div>
+  <label class="form-label">Data końcowa</label>
+  <div class="datepicker-container">
+    <input
+      matInput
+      class="form-control"
+      id="task-end-date"
+      name="end-date"
+      autocomplete="off"
+      [matDatepicker]="endDatePicker"
+      [ngModel]="getModel().getTask().getEndDate()"
+      (ngModelChange)="getModel().getTask().setEndDate($event)"
+      (dateChange)="updateTask()"
+    />
+    <mat-datepicker-toggle [for]="endDatePicker" class="datepicker"></mat-datepicker-toggle>
+    <mat-datepicker #endDatePicker></mat-datepicker>
   </div>
 </ng-template>
 
 <ng-template #task_planned_time>
-  <div class="form-container">
-    <label class="form-label">Planowany czas</label>
-    <input
-      type="number"
-      class="form-control"
-      id="task-planned_time"
-      name="planned_time"
-      autocomplete="off"
-      min="1"
-      (keyup.enter)="updateTask()"
-      (focusout)="updateTask()"
-      [ngModel]="getModel().getTask().getPlannedTime()"
-      (ngModelChange)="getModel().getTask().setPlannedTime($event)"
-    />
-  </div>
+  <label class="form-label">Planowany czas</label>
+  <input
+    type="number"
+    class="form-control"
+    id="task-planned_time"
+    name="planned_time"
+    autocomplete="off"
+    min="1"
+    (keyup.enter)="updateTask()"
+    (focusout)="updateTask()"
+    [ngModel]="getModel().getTask().getPlannedTime()"
+    (ngModelChange)="getModel().getTask().setPlannedTime($event)"
+  />
 </ng-template>
 
 <ng-template #task_stage>
-  <div class="form-container">
-    <label class="form-label">Etap</label>
-    <select
-      class="form-control"
-      name="task-stage"
-      [ngModel]="getModel().getTask().getProjectStageID()"
-      (ngModelChange)="getModel().getTask().setProjectStageID($event)"
-      (change)="updateTask()"
-    >
-      <option [ngValue]="null"></option>
-      <option *ngFor="let stage of getView().stages" [ngValue]="stage.getId()">
-        {{ stage.getName() }}
-      </option>
-    </select>
-  </div>
+  <label class="form-label">Etap</label>
+  <select
+    class="form-control"
+    name="task-stage"
+    [ngModel]="getModel().getTask().getProjectStageID()"
+    (ngModelChange)="getModel().getTask().setProjectStageID($event)"
+    (change)="updateTask()"
+  >
+    <option [ngValue]="null"></option>
+    <option *ngFor="let stage of getView().stages" [ngValue]="stage.getId()">
+      {{ stage.getName() }}
+    </option>
+  </select>
 </ng-template>
 
 <ng-template #task_labels_group>
   <div class="labels-list">
     <div
       *ngFor="let label of getModel().getTask().getLabels()"
-      class="label-item transparent-border"
+      class="label-item"
     >
       <span class="label-name">
         {{ label.getName() }}
       </span>
-      <span
-        class="remove-label"
-        (click)="getLabels().removeLabel(label)"
-      ></span>
+      <span class="remove-icon" (click)="getLabels().removeLabel(label)"></span>
     </div>
   </div>
   <button
-    class="form-control button small-button"
+    class="create-button"
     id="task-labels"
     name="labels"
     [matMenuTriggerFor]="appMenu"
@@ -288,7 +238,7 @@
   </button>
   <!-- TODO: można to zrobić w ten sposób, że ostatnią pozycją będzie dodaj inną -->
   <button
-    class="form-control button small-button"
+    class="simple-button"
     id="manage-label-button"
     (click)="openLabelsManager()"
   >
@@ -307,7 +257,7 @@
   >
     <div
       *ngFor="let subtask of getModel().getFilteredSubtasks()"
-      class="list-item small-list-item transparent-border"
+      class="list-item transparent-border"
       cdkDrag
     >
       <ng-container
@@ -319,17 +269,25 @@
         [ngTemplateOutletContext]="{ $implicit: subtask }"
       ></ng-container>
     </div>
-    <ng-container [ngTemplateOutlet]="new_subtask"></ng-container>
+    <inserting-template (acceptEvent)="getSubtask().addNewSubtask($event)"></inserting-template>
   </div>
+  <button
+      class="create-button"
+      id="add-subtask-button"
+      [hidden]="getSubtask().getModel().isAddingSubtask()"
+      (click)="openStepsInserting()"
+    >
+      Dodaj
+    </button>
 </ng-template>
 
 <ng-template #subtask_item let-subtask>
   <div
     [ngClass]="{
-      'subtask-checkbox-icon': subtask.getStatus() == status.STARTED,
+      'subtask-active-icon': subtask.getStatus() == status.STARTED,
       'subtask-done-icon': subtask.getStatus() == status.ENDED,
       'subtask-icon': true,
-      checkbox: true
+      'checkbox': true
     }"
     (click)="getSubtask().toggleSubtaskStatus(subtask)"
   ></div>
@@ -344,7 +302,7 @@
 
 <ng-template #subtask_edit let-subtask>
   <input
-    class="subtask-name"
+    class="item-input"
     value="{{ subtask.getName() }}"
     [id]="'subtask-name-input_' + subtask.getId()"
     autocomplete="off"
@@ -353,61 +311,22 @@
     (ngModelChange)="getSubtask().getModel().setEditingSubtaskName($event)"
     (keyup)="getSubtask().handleKeysOnEditSubtask($event, subtask)"
   />
-  <div class="subtask-item-buttons">
+  <div class="item-list-buttons">
     <div
-      class="list-item-options edit-button small-accept-button"
+      class="edit-item-icon"
       (click)="getSubtask().openEditingSubtask(subtask)"
       *ngIf="!getSubtask().getModel().isEditingSubtask(subtask)"
     ></div>
     <div
-      class="list-item-options remove-button small-accept-button"
+      class="remove-item-icon"
       (click)="getSubtask().removeSubtask(subtask)"
       *ngIf="!getSubtask().getModel().isEditingSubtask(subtask)"
     ></div>
   </div>
 
   <div
-    class="list-item-options accept-button small-accept-button"
+    class="accept-item-icon"
     (click)="getSubtask().acceptEditingSubtask(subtask)"
     *ngIf="getSubtask().getModel().isEditingSubtask(subtask)"
   ></div>
-</ng-template>
-
-<ng-template #new_subtask>
-  <input
-    type="text"
-    class="form-control"
-    id="subtask-input"
-    autocomplete="off"
-    [hidden]="!getSubtask().getModel().isAddingSubtask()"
-    [ngModel]="getSubtask().getModel().getNewSubtaskName()"
-    (ngModelChange)="getSubtask().getModel().setNewSubtaskName($event)"
-    (keyup)="getSubtask().handleKeysOnNewSubtaskInput($event)"
-  />
-  <div class="buttons-container">
-    <button
-      class="button small-button insert-button"
-      id="add-subtask-button"
-      [hidden]="getSubtask().getModel().isAddingSubtask()"
-      (click)="getSubtask().openAddingSubtask()"
-    >
-      Dodaj
-    </button>
-    <button
-      class="button small-button insert-button"
-      id="save-subtask-button"
-      [hidden]="!getSubtask().getModel().isAddingSubtask()"
-      (click)="getSubtask().addNewSubtask()"
-    >
-      Zapisz
-    </button>
-    <button
-      class="button small-button insert-button"
-      id="cancel-subtask-button"
-      [hidden]="!getSubtask().getModel().isAddingSubtask()"
-      (click)="getSubtask().closeAddingSubtask()"
-    >
-      Anuluj
-    </button>
-  </div>
 </ng-template>

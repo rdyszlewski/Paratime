@@ -1,7 +1,6 @@
 import { Component, OnInit} from '@angular/core';
 import { ProjectType } from 'app/database/shared/project/project_type';
 import { Status } from 'app/database/shared/models/status';
-import { DataService } from 'app/data.service';
 import { ProjectDetails } from './model/model';
 import { Stage } from 'app/database/shared/stage/stage';
 import { ProjectDetailsState } from './model/state';
@@ -21,13 +20,18 @@ import { CommandService } from 'app/commands/manager/command.service';
 import { UpdateProjectCommand } from 'app/commands/data-command/project/command.update-project';
 import { RemoveStageCommand } from 'app/commands/data-command/stage/command.remove-stage';
 import { ChangeStageOrderCommand } from 'app/commands/data-command/stage/command.change-stage-order';
+import { InsertingTemplateComponent } from 'app/tasks/shared/inserting-template/inserting-template.component';
+import { ViewChild } from '@angular/core';
 
 @Component({
   selector: 'app-project-details',
   templateUrl: './project-details.component.html',
-  styleUrls: ['./project-details.component.css'],
+  styleUrls: ['./project-details.component.less'],
 })
 export class ProjectDetailsComponent implements OnInit {
+
+  @ViewChild(InsertingTemplateComponent)
+  private insertingTemplateComponent: InsertingTemplateComponent;
 
   private model: ProjectDetails;
   private state: ProjectDetailsState;
@@ -119,4 +123,9 @@ export class ProjectDetailsComponent implements OnInit {
     }
     this.commandService.execute(new ChangeStageOrderCommand(currentIndex, previousIndex, this.model));
   }
+
+  public openStageInserting(){
+    this.insertingTemplateComponent.open();
+  }
+
 }

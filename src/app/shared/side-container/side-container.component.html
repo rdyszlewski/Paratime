@@ -17,13 +17,13 @@
 
     </ul>
   </div>
-  <div id="side-space" class="app-panel shadow">
+  <div id="side-space" class="base-view">
     <div class="side-header">
       <h4 class="panel-header" [ngSwitch]="currentMode">
         <a *ngSwitchCase="mode.LABELS">Etykiety</a>
         <a *ngSwitchCase="mode.POMODORO">Pomodoro</a>
       </h4>
-      <button class="side-close-button" *ngIf="currentMode != null" (click)="closeSidePanel()">X</button>
+      <button class="close-button" *ngIf="currentMode != null" (click)="closeSidePanel()">X</button>
     </div>
     <app-labels [hidden]="currentMode != mode.LABELS"></app-labels>
     <app-pomodoro [hidden]="currentMode != mode.POMODORO"></app-pomodoro>
