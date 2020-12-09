@@ -34,7 +34,7 @@
   <div
     mat-menu-item
     *ngFor="let label of getLabels().getModel().getLabels()"
-    class="list-item small-list-item"
+    class="list-item"
     (click)="getLabels().selectLabel(label, $event)"
   >
     <mat-checkbox type="checkbox" [checked]="getLabels().isLabelSelected(label)"></mat-checkbox>
@@ -218,7 +218,7 @@
   <div class="labels-list">
     <div
       *ngFor="let label of getModel().getTask().getLabels()"
-      class="label-item transparent-border"
+      class="label-item"
     >
       <span class="label-name">
         {{ label.getName() }}
@@ -238,7 +238,7 @@
   </button>
   <!-- TODO: można to zrobić w ten sposób, że ostatnią pozycją będzie dodaj inną -->
   <button
-    class="form-control button small-button"
+    class="simple-button"
     id="manage-label-button"
     (click)="openLabelsManager()"
   >
@@ -257,7 +257,7 @@
   >
     <div
       *ngFor="let subtask of getModel().getFilteredSubtasks()"
-      class="list-item small-list-item transparent-border"
+      class="list-item transparent-border"
       cdkDrag
     >
       <ng-container

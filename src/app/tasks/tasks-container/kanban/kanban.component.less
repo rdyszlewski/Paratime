@@ -75,6 +75,22 @@
   font-size: @fontSize * 1.2;
   text-align: center;
   font-weight: bold;
+
+  &:hover
+  {
+    .list-item-options {
+      visibility: visible;
+    }
+  }
+}
+
+.insert-input{
+  .item-input;
+  @margin: @standardMargin;
+  margin-left: @margin;
+  margin-right: @margin;
+  // TODO: sprawdzić, jak to zostało wylioczne
+  width: calc(100% - @margin * 6);
 }
 
 .column-name{

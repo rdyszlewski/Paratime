@@ -25,7 +25,7 @@
 @borderSize: 1px;
 @separatorColor: @color5;
 
-@editIcon:url("./assets/icons/edit-icon.png");
+@editicon:url ("./assets/icons/edit-icon.png");
 @removeIcon: url("./assets/icons/remove-icon.png");
 @acceptIcon: url("./assets/icons/accept-icon.png");
 // LISTA
@@ -39,10 +39,13 @@
 }
 
 .list-panel {
+  .shadow;
   background-color: @color4;
   width: 260px;
-  .shadow;
-  .app-panel;
+  height: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
 }
 
 .list {
@@ -52,10 +55,9 @@
   height: 100%;
 }
 
-.standard-list-item{
+.standard-list-item {
   .list-item;
   background-color: #2661ce;
-
 }
 
 .list-item {
@@ -64,7 +66,7 @@
   display: flex;
   @padding: 4px;
   padding: @padding;
-  width:  calc(100% - @padding * 2.2);
+  width: calc(100% - @padding * 2.2);
   margin: 0;
   font-size: @fontSize * 1.2;
   &:hover {
@@ -73,18 +75,18 @@
     .list-item-options {
       visibility: visible;
     }
-    .item-list-buttons{
+    .item-list-buttons {
       visibility: visible;
     }
   }
 
-  .list-item-value{
+  .list-item-value {
     width: 100%;
     .vertical-center;
   }
 }
 
-.item-input{
+.item-input {
   width: 100%;
   font-size: @fontSize;
   padding: 3px;
@@ -96,27 +98,27 @@
   padding-left: @standardPadding;
   padding-right: @standardPadding;
   .base-button;
-  &:hover{
+  &:hover {
     background-color: @color4;
   }
 }
 
-.edit-item-icon{
+.edit-item-icon {
   background: @editIcon;
   .item-icon;
 }
 
-.remove-item-icon{
+.remove-item-icon {
   background: @removeIcon;
   .item-icon;
 }
 
-.accept-item-icon{
+.accept-item-icon {
   background: @acceptIcon;
   .item-icon;
 }
 
-.item-list-buttons{
+.item-list-buttons {
   display: flex;
   float: right;
   visibility: hidden;
@@ -124,7 +126,7 @@
   margin-right: @standardMargin;
 }
 
-.item-list-icon{
+.item-list-icon {
   .icon-button;
 }
 
@@ -141,19 +143,18 @@
   }
 }
 
-.filter{
+.filter {
   margin: @standardMargin;
   font-size: @fontSize * 1.1;
   width: 100%;
   .vertical-center;
 }
 
-.filter-button{
+.filter-button {
   background: url("./assets/icons/filter-icon.png");
   .icon-button;
   .vertical-center;
 }
-
 
 .filter-button:hover {
   box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14),
@@ -162,27 +163,25 @@
 
 // ITEMY
 
-.label-element{
+.label-element {
   background-color: @color1;
   .tasks-element;
 }
 
-.tasks-info-element{
+.tasks-info-element {
   background-color: @color4;
   .tasks-element;
 }
 
-.tasks-element{
-  margin:@smallMargin;
+.tasks-element {
+  margin: @smallMargin;
   @padding: @smallPadding * 3;
-  padding: @smallPadding @padding @smallPadding @padding ;
+  padding: @smallPadding @padding @smallPadding @padding;
   font-size: @smallFontSize;
   align-self: center;
   height: @smallFontSize + @smallPadding * 2;
   min-width: @padding;
 }
-
-
 
 /* FILTROWANIE PROJEKTÓW I ZADAŃ */
 
@@ -207,18 +206,17 @@
   width: 40%;
   float: right;
   .vertical-center;
-
 }
 
 // OGÓLNE
 
-.base-view{
+.base-view {
   background-color: @color4;
   display: flex;
   flex-direction: column;
 }
 
-.container-view{
+.container-view {
   .base-view;
   padding-left: @standardPadding;
   padding-right: @standardPadding;
@@ -235,7 +233,7 @@
     0px 1px 5px 0px rgba(0, 0, 0, 0.12);
 }
 
-.horizontal-container{
+.horizontal-container {
   display: flex;
   flex-direction: row;
   width: 100%;
@@ -243,14 +241,14 @@
   margin: 0;
 }
 
-.full-horizontal-container{
+.full-horizontal-container {
   // .horizontal-container;
   display: flex;
   flex-direction: row;
   height: 100%;
 }
 
-.vertical-container{
+.vertical-container {
   display: flex;
   width: 100%;
   flex-direction: column;
@@ -268,7 +266,7 @@ body {
   overflow: hidden;
 }
 
-.icon-button{
+.icon-button {
   width: 20px;
   height: 20px;
   .full-image;
@@ -277,20 +275,20 @@ body {
   .base-button;
 }
 
-.item-icon{
+.item-icon {
   width: 15px;
   height: 15px;
   box-sizing: content-box;
   .full-image;
   padding: @standardPadding;
   border: none;
-  &:hover{
+  &:hover {
     background-color: @color4;
     cursor: pointer;
   }
 }
 
-.full-image{
+.full-image {
   background-position: center;
   background-repeat: no-repeat;
   background-size: cover;
@@ -302,40 +300,39 @@ body {
   margin-right: auto;
 }
 
-.vertical-center{
+.vertical-center {
   margin-top: auto;
   margin-bottom: auto;
 }
 
-.base-button{
-  &:hover{
+.base-button {
+  &:hover {
     cursor: pointer;
     background-color: @color5;
   }
 }
 
-
 // TODO: zrobić z tym coś później
-.simple-button{
+.simple-button {
   border: 1px solid black;
   border-radius: @borderRadius;
   padding: @smallPadding * 2;
   background-color: @color2;
   color: @itemFontColor;
   .base-button;
-  &:hover{
+  &:hover {
     background-color: @color5;
   }
 }
 
-.right{
+.right {
   float: right;
   margin-right: 0;
   margin-left: auto;
 }
 
-.left{
-  float:left;
+.left {
+  float: left;
 }
 
 .border {
@@ -346,28 +343,12 @@ body {
   border-radius: 3px;
 }
 
-.transparent-border {
-  border: 1px solid transparent;
-  box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14),
-    0px 1px 5px 0px rgba(0, 0, 0, 0.12);
-  border-radius: 3px;
-}
-
-.app-panel {
-  height: 100%;
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-}
-
-.panel{
+.panel {
   height: 100%;
   margin: @standardMargin;
 }
 
-
 // EDYCJA
-
 
 .mat-expansion-panel {
   padding: 0px !important;
@@ -386,7 +367,7 @@ body {
   padding: 4px;
 }
 
-.mat-expansion-panel-header{
+.mat-expansion-panel-header {
   padding: 5px !important;
   height: auto !important;
 }
@@ -402,11 +383,11 @@ body {
 }
 // TODO: zropbić obramówkę
 
-.form-label{
-  font-size: @fontSize
+.form-label {
+  font-size: @fontSize;
 }
 
-.details{
+.details {
   position: absolute;
   right: 48px;
   width: 50%;
@@ -423,37 +404,6 @@ body {
   float: right;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// .list-item:hover{
-
-//   z-index: 100;
-// }
-
-.column-header:hover .list-item-options {
-  visibility: visible;
-}
-
-/* html, body { height: 100%; } */
-/* body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; } */
-
-
-
 .datepicker-container {
   display: flex;
 }
@@ -462,23 +412,6 @@ body {
   width: 20px !important;
   height: 20px !important;
   line-height: 20px !important;
-}
-
-#description {
-  height: 5em;
-}
-
-.form {
-  margin-bottom: 0px;
-  margin-top: auto;
-}
-
-.form-button {
-  margin: 10px;
-  height: 3em;
-  width: 10em;
-  border-radius: 8px;
-  border: 1px solid black;
 }
 
 .list::-webkit-scrollbar {
@@ -493,51 +426,13 @@ body {
   border-radius: 3px; /* roundness of the scroll thumb */
 }
 
-.border-radius {
-  border-radius: 3px;
-}
-
-/* TODO: spradzić jak to rozdzielić z tym co jest wyżej */
-.task-list-item {
-  border: 1px solid trainsparent;
-  padding: 5px;
-  margin: 0;
-}
-
-.small-list-item {
-  font-size: small;
-  padding: 4px;
-}
-
 .small-list-item .list-item-value {
   font-size: small;
 }
 
-.small-list-item-icon {
-  display: flex;
-  padding: 2px;
-  font-size: small;
-  /* border-radius: 4px; */
-  width: 15px;
-  height: 15px;
-  margin: 2px;
-  margin-top: auto;
-  margin-bottom: auto;
-  margin-right: auto;
-  margin-left: auto;
-}
-
-.block {
-  display: block;
-}
-
-
-
 .selected-list-item {
   background-color: seashell;
 }
-
-
 
 .button {
   margin-top: 5px;
@@ -602,58 +497,6 @@ body {
   font-size: small;
 }
 
-.close-button:hover {
-  cursor: pointer;
-  box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14),
-    0px 1px 5px 0px rgba(0, 0, 0, 0.12);
-}
-
-.edit-button {
-  background: url("./assets/icons/edit-icon.png");
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-origin: content-box;
-  border: transparent;
-  border-radius: 4px;
-  margin-top: auto;
-  margin-bottom: auto;
-}
-
-.small-item-button {
-  width: 23px;
-  height: 23px;
-}
-
-.small-accept-button {
-  width: 20px;
-  height: 20px;
-}
-
-.remove-button {
-  background: url("./assets/icons/remove-icon.png");
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-origin: content-box;
-  border: transparent;
-  border-radius: 4px;
-  margin-top: auto;
-  margin-bottom: auto;
-}
-
-.accept-button {
-  background: url("./assets/icons/accept-icon.png");
-  background-position: center;
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-origin: content-box;
-  border: transparent;
-  border-radius: 4px;
-  margin-top: auto;
-  margin-bottom: auto;
-}
-
 /* ================================== */
 /* ELEMENT ZADANIA  */
 .task-list-item {
@@ -669,8 +512,6 @@ body {
 .list-item-value:hover {
   cursor: default;
 }
-
-
 
 .task-info {
   display: flex;
@@ -711,35 +552,9 @@ body {
   width: auto;
 }
 
-.task-menu-button {
-  visibility: collapse;
-}
-
-.task:hover .task-menu-button {
-  visibility: visible;
-}
-
 .task-checkbox {
   margin-top: auto;
   margin-bottom: auto;
-}
-
-.task {
-  display: flexbox;
-  width: 100%;
-  box-sizing: border-box;
-  padding: 5px;
-  border-bottom: 1px solid black;
-  border-radius: 8px;
-}
-
-.task:hover {
-  cursor: pointer;
-  background-color: antiquewhite;
-}
-
-.task-detauls-container {
-  display: flex;
 }
 
 /* TABS */
