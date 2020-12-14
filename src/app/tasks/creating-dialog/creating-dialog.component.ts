@@ -1,12 +1,12 @@
 import { Component, Inject, OnInit, Optional } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { Task } from 'app/database/data/models/task';
+import { Task } from 'app/database/shared/task/task';
 import { DialogModel } from './dialog.model';
 
 @Component({
   selector: 'app-creating-dialog',
   templateUrl: './creating-dialog.component.html',
-  styleUrls: ['./creating-dialog.component.css']
+  styleUrls: ['./creating-dialog.component.less']
 })
 export class CreatingDialogComponent implements OnInit {
 

@@ -1,8 +1,6 @@
-import { Component, OnInit} from '@angular/core';
-
-import { Task } from 'app/database/data/models/task';
-import { Project } from 'app/database/data/models/project';
-import { Status } from 'app/database/data/models/status';
+import { AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
+import { Task } from 'app/database/shared/task/task';
+import { Status } from 'app/database/shared/models/status';
 import { TasksModel } from './model';
 import { TaskItemInfo } from './common/task.item.info';
 import { TaskItemController } from './common/task.item.controller';
@@ -13,22 +11,36 @@ import {
 } from '@angular/cdk/drag-drop';
 import { DataService } from 'app/data.service';
 import { TaskType } from './task.type';
-import { ITaskContainer } from 'app/database/data/models/task.container';
-import { TaskAddingController } from './adding/task.adding.controller';
+import { ITaskContainer } from 'app/database/shared/task/task.container';
 import { TaskOrderController } from './controllers/order.controller';
 import { Subscribe, EventBus } from 'eventbus-ts';
 import { ITaskList } from '../task.list';
 import { SpecialList } from 'app/tasks/lists-container/projects/common/special_list';
 import { AppService } from 'app/core/services/app/app.service';
-import { TaskRemoveEvent } from '../events/remove.event';
-import { TasksService } from 'app/tasks/tasks.service';
+import { TaskFilter } from 'app/database/shared/task/task.filter';
+import { Project } from 'app/database/shared/project/project';
+import { CommandService } from 'app/commands/manager/command.service';
+import { RemoveTaskCommand } from 'app/commands/data-command/task/command.remove-task';
+import { DialogService } from 'app/ui/widgets/dialog/dialog.service';
+import { FinishTaskCommand } from 'app/commands/data-command/task/command.finish-task';
+import { TaskRemoveDialog } from './dialog/task.remove-dialog';
+import { RemoveTaskCallback } from 'app/commands/data-command/task/calback.task.remove-task';
+import { TaskDetailsEvent } from '../events/details.event';
+import { CreateTaskCommand } from 'app/commands/data-command/task/command.create-task';
+import { ScrollBarHelper } from 'app/shared/common/view_helper';
+import { InsertingTemplateComponent } from 'app/tasks/shared/inserting-template/inserting-template.component';
+import { TaskInsertResult } from 'app/database/shared/task/task.insert-result';
 
 @Component({
   selector: 'app-tasks',
   templateUrl: './tasks.component.html',
-  styleUrls: ['./tasks.component.css'],
+  styleUrls: ['./tasks.component.less'],
 })
 export class TasksComponent implements OnInit, ITaskList {
+  private TASK_LIST = "#tasks-list";
+
+  @ViewChild(InsertingTemplateComponent, {static:false})
+  private insertingTemplate: InsertingTemplateComponent;
 
   public status = Status;
   public taskType = TaskType;
@@ -37,16 +49,14 @@ export class TasksComponent implements OnInit, ITaskList {
   private itemInfo: TaskItemInfo; // TODO: przerobić metody dostepowe
   private itemController: TaskItemController; // TODO: tutaj będzie trzeba zmienić nazwę
   private specialListsController: SpecialListTask; // TODO: to na razie zostawimy
-  private addingController: TaskAddingController;
   private filteringController: TaskFilteringController;
 
-  constructor(private appService: AppService, private tasksService: TasksService) {
+  constructor(private appService: AppService, private dataService: DataService, private commandService: CommandService, private dialogService: DialogService) {
     this.model = new TasksModel();
     this.itemInfo = new TaskItemInfo();
-    this.itemController = new TaskItemController();
-    this.specialListsController = new SpecialListTask(this.model);
-    this.addingController = new TaskAddingController(this.model, this.tasksService);
-    this.filteringController = new TaskFilteringController(this.model);
+    this.itemController = new TaskItemController(this.commandService);
+    this.specialListsController = new SpecialListTask(this.model, this.dataService);
+    this.filteringController = new TaskFilteringController(this.model, this.dataService);
 
     EventBus.getDefault().register(this);
   }
@@ -73,10 +83,6 @@ export class TasksComponent implements OnInit, ITaskList {
     return this.specialListsController;
   }
 
-  public getAdding() {
-    return this.addingController;
-  }
-
   public getFiltering() {
     return this.filteringController;
   }
@@ -94,23 +100,28 @@ export class TasksComponent implements OnInit, ITaskList {
     const currentProject = project
       ? project
       : this.appService.getCurrentProject();
-    this.loadProjectTasks(currentProject, taskType).then((tasks) => {
+    let filterBuilder = TaskFilter.getBuilder().setProject(currentProject.getId());
+    if(taskType == TaskType.ACTIVE){
+      filterBuilder.setActive(true);
+    } else if(taskType == TaskType.FINISHED){
+      filterBuilder.setFinished(true);
+    }
+    let filter = filterBuilder.build();
+    this.dataService.getTaskService().getByFilter(filter).then(tasks=>{
       this.model.setTasks(tasks);
       this.model.setTaskType(taskType);
-      this.model.isOpen
+      this.model.isOpen // TODO: co to tutaj robi?!!!!
     });
   }
 
   private loadProjectTasks(project: Project, taskType: TaskType) {
     switch (taskType) {
       case TaskType.ACTIVE:
-        return DataService.getStoreManager()
-          .getTaskStore()
-          .getActiveTasks(project.getId());
+        let activeFilter = TaskFilter.getBuilder().setProject(project.getId()).setActive(true).build();
+        return this.dataService.getTaskService().getByFilter(activeFilter);
       case TaskType.FINISHED:
-        return DataService.getStoreManager()
-          .getTaskStore()
-          .getFinishedTasks(project.getId());
+        let finishedFilter = TaskFilter.getBuilder().setProject(project.getId()).setFinished(true).build();
+        return this.dataService.getTaskService().getByFilter(finishedFilter);
     }
   }
 
@@ -122,7 +133,7 @@ export class TasksComponent implements OnInit, ITaskList {
   }
 
   public onDrop(event: CdkDragDrop<string[]>) {
-    TaskOrderController.onDrop(event, this.model.getTasks());
+    TaskOrderController.onDrop(event, this.model.getTasks(), this.commandService);
   }
 
   // MENU
@@ -131,15 +142,15 @@ export class TasksComponent implements OnInit, ITaskList {
   }
 
   public removeTask(task: Task): void {
-    this.tasksService.removeTask(task).then(updatedTasks=>{
-      this.model.removeTask(task);
-      this.model.updateTasks(updatedTasks as Task[]);
-      EventBus.getDefault().post(new TaskRemoveEvent(task));
-    })
+    TaskRemoveDialog.showSingleRemoveQuestion(task, this.dialogService, ()=>{
+      let callback = new RemoveTaskCallback(this.model);
+      this.commandService.execute(new RemoveTaskCommand(task).setCallback(callback));
+    });
   }
 
   public openDetails(task: Task): void {
-    this.tasksService.openDetails(task);
+    // TODO: można to przenieść do polecenia
+    EventBus.getDefault().post(new TaskDetailsEvent(task));
   }
 
   public setActiveTask(task: Task){
@@ -155,14 +166,35 @@ export class TasksComponent implements OnInit, ITaskList {
   }
 
   public finishTask(task:Task){
-    this.tasksService.finishTask(task).then(updatedTasks=>{
-      this.model.updateTasks(updatedTasks);
-    });
+    this.commandService.execute(new FinishTaskCommand(task, this.appService, (tasks)=>this.model.updateTasks(tasks)));
   }
 
   // TODO: to może zostać przeniesione do ListsContainer. Trzeba będzie pobrać zadania i je ustawić
   @Subscribe("SpecialListEvent")
   public onSpecialListLoad(type: SpecialList){
     this.specialListsController.setSpecialList(type)
+  }
+
+  public openInserting(){
+    this.insertingTemplate.open();
+  }
+
+  public addNewTask(name: string){
+    const project = this.model.getProject();
+    let callback = (result) => this.updateViewAfterInserting(result);
+    this.commandService.execute(new CreateTaskCommand(name, project).setCallback(callback));
+  }
+
+  public isInsertingOpen():boolean{
+    if(this.insertingTemplate){
+      return this.insertingTemplate.visible;
+    }
+    return false;
+  }
+
+  private updateViewAfterInserting(result: TaskInsertResult) {
+    this.model.updateTasks(result.updatedElements);
+    this.model.addTask(result.insertedElement);
+    ScrollBarHelper.moveToBottom(this.TASK_LIST);
   }
 }

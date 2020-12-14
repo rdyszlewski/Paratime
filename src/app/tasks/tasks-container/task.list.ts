@@ -1,6 +1,6 @@
-import { Project } from 'app/database/data/models/project';
-import { ITaskItem } from 'app/database/data/models/task.item';
-import { ITaskContainer } from 'app/database/data/models/task.container';
+import { ITaskItem } from 'app/database/shared/task/task.item';
+import { ITaskContainer } from 'app/database/shared/task/task.container';
+import { Project } from 'app/database/shared/project/project';
 
 // TODO: dodać jakiś typ do tych elementów i usunąć lub
 export interface ITaskList{

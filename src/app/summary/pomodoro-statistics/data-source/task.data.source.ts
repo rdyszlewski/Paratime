@@ -11,6 +11,10 @@ export class TaskDataSource implements DataSource<TaskEntry> {
 
   public loading = this.loadingSubject.asObservable();
 
+  constructor(private dataService: DataService){
+
+  }
+
   connect(collectionViewer: CollectionViewer): Observable<TaskEntry[]> {
     return this.tasksSubject.asObservable();
   }
@@ -22,18 +26,12 @@ export class TaskDataSource implements DataSource<TaskEntry> {
 
   loadTasks(filter = "", sortActive = "time", sortDirection = "asc") {
     this.loadingSubject.next(true);
-
-    // TODO: zrobić, żeby pobierało z określonego miesiąca
-    DataService.getStoreManager()
-      .getPomodoroStore()
-      .getAll()
-      .then((results) => {
-        console.log(results);
-        TaskEntryCreator.create(results).then((entries) => {
+    this.dataService.getPomodoroService().getAll().then(results=>{
+      TaskEntryCreator.create(results, this.dataService).then(entries=>{
           let result = entries.filter((x) => x.getTask().getName().includes(filter));
           result = TaskDataSorter.sort(sortActive, sortDirection, result);
           this.tasksSubject.next(result);
-        });
-      });
+      })
+    })
   }
 }

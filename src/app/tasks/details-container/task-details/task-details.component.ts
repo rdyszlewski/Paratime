@@ -1,9 +1,9 @@
-import { Component, OnInit} from '@angular/core';
-import { Status } from 'app/database/data/models/status';
+import { Component, OnInit, ViewChild} from '@angular/core';
+import { Status } from 'app/database/shared/models/status';
 import { TaskDetails } from './model/model';
-import { Task } from 'app/database/data/models/task';
+import { Task } from 'app/database/shared/task/task';
 import { DataService } from 'app/data.service';
-import { Priority } from 'app/database/data/models/priority';
+import { Priority } from 'app/database/shared/task/priority';
 import { TaskViewState } from './model/state';
 import { TaskValidator } from './model/validator';
 import { TaskChangeDetector } from './model/change.detector';
@@ -19,14 +19,21 @@ import { FocusHelper } from 'app/shared/common/view_helper';
 import { EventBus } from 'eventbus-ts';
 import { TaskDetailsCloseEvent } from './events/close.event';
 import { OpenLabelsManagerEvent } from './events/open.labels.event';
+import { CommandService } from 'app/commands/manager/command.service';
+import { UpdateTaskCommand } from 'app/commands/data-command/task/command.update-task';
+import { ChangeSubtaskOrderCommand } from 'app/commands/data-command/subtask/command.change-subtask-order';
+import { InsertingTemplateComponent } from 'app/tasks/shared/inserting-template/inserting-template.component';
 
 @Component({
   selector: 'app-task-details',
   templateUrl: './task-details.component.html',
-  styleUrls: ['./task-details.component.css'],
+  styleUrls: ['./task-details.component.less'],
 })
 export class TaskDetailsComponent implements OnInit {
   private TASK_NAME_ID = '#task-name';
+
+  @ViewChild(InsertingTemplateComponent)
+  public insertingTemplateComponent: InsertingTemplateComponent;
 
   public status = Status;
   public priority = Priority;
@@ -39,16 +46,16 @@ export class TaskDetailsComponent implements OnInit {
   private subtaskController: SubtasksController;
   private labelsController: TaskLabelsController;
 
-  constructor() {}
+  constructor(private dataService: DataService, private commandService: CommandService) {}
 
   ngOnInit(): void {
     this.model = new TaskDetails();
     this.state = new TaskViewState(this.model);
     this.validator = new TaskValidator(this.model);
     this.changeDetector = new TaskChangeDetector(this.model);
-    this.subtaskController = new SubtasksController(this.model);
-    this.labelsController = new TaskLabelsController(this.model);
-    this.view = new TaskDetailsView();
+    this.subtaskController = new SubtasksController(this.model, this.commandService);
+    this.labelsController = new TaskLabelsController(this.model, this.dataService, this.commandService);
+    this.view = new TaskDetailsView(this.dataService);
   }
 
   public getModel(): TaskDetails {
@@ -90,10 +97,7 @@ export class TaskDetailsComponent implements OnInit {
 
   public updateTask() {
     if (this.validator.isValid()) {
-      DataService.getStoreManager()
-        .getTaskStore()
-        .update(this.model.getTask())
-        .then(() => {});
+      this.commandService.execute(new UpdateTaskCommand(this.model.getTask()));
     }
   }
 
@@ -136,26 +140,18 @@ export class TaskDetailsComponent implements OnInit {
     }
   }
 
-  // TODO: przenieść to w jakieś inne miejsce. Połączyć ze zmianą kolejności w zadaniach
   private changeSubtasksOrder(previousIndex: number, currentIndex: number) {
     if (previousIndex == currentIndex) {
       return;
     }
-    const previousTask = this.model.getSubtaskByIndex(previousIndex);
-    const currentTask = this.model.getSubtaskByIndex(currentIndex);
-    DataService.getStoreManager()
-      .getSubtaskStore()
-      .move(previousTask, currentTask, previousIndex > currentIndex)
-      .then((updatedSubtasks) => {
-        this.model.updateSubtasks(updatedSubtasks);
-      });
+    this.commandService.execute(new ChangeSubtaskOrderCommand(currentIndex, previousIndex, this.model));
   }
   // TODO: przerzucić to gdzieś
   public timeChange(time: string) {
     const values = time.split(':');
     const hours = Number.parseInt(values[0]);
     const minutes = Number.parseInt(values[1]);
-    this.model.getTask().setTime(this.getTimeValue(hours, minutes));
+    this.model.getTask().setStartTime(this.getTimeValue(hours, minutes));
     this.updateTask();
   }
 
@@ -164,7 +160,7 @@ export class TaskDetailsComponent implements OnInit {
   }
 
   public getTime(): string {
-    const value = this.model.getTask().getTime();
+    const value = this.model.getTask().getStartTime();
     let hours;
     let minutes;
     if (value) {
@@ -179,5 +175,9 @@ export class TaskDetailsComponent implements OnInit {
     // TODO: prawdopodobnie potrzebne będzie tutaj jakieś formatowanie
     let result = hours.toString() + ":" + minutes.toString();
     return result;
+  }
+
+  public openStepsInserting(){
+    this.insertingTemplateComponent.open();
   }
 }

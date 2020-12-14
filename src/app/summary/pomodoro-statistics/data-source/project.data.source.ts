@@ -12,6 +12,10 @@ export class ProjectDataSource implements DataSource<ProjectEntry>{
 
     public loading = this.loadingSubject.asObservable();
 
+    constructor(private dataService: DataService){
+
+    }
+
     connect(collectionViewer: CollectionViewer): Observable<ProjectEntry[]> {
         return this.projectsSubjects.asObservable();
     }
@@ -22,14 +26,14 @@ export class ProjectDataSource implements DataSource<ProjectEntry>{
 
     public loadProjects(filter="", sortActive="time", sortDirection="asc"){
         this.loadingSubject.next(true);
-
-        DataService.getStoreManager().getPomodoroStore().getAll().then(results=>{
-            ProjectEntryCreator.create(results).then(entries=>{
+        // TODO: pomyśleć, w jaki sposób można zmienić to getAll. Tak będzie za dużo pobierania
+        this.dataService.getPomodoroService().getAll().then(results=>{
+              ProjectEntryCreator.create(results, this.dataService).then(entries=>{
                 let resultEntries = entries.filter(x=>x.getProject().getName().includes(filter));
                 resultEntries = ProjectDataSorter.sort(sortActive, sortDirection, resultEntries);
                 this.projectsSubjects.next(resultEntries);
             })
-        });
+        })
     }
-    
+
 }

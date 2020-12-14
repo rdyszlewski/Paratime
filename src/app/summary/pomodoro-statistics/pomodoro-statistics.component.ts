@@ -5,11 +5,12 @@ import { ProjectDataSource } from './data-source/project.data.source';
 import { MatTabChangeEvent } from '@angular/material/tabs';
 import { fromEvent } from 'rxjs';
 import { debounceTime, distinctUntilChanged, tap } from 'rxjs/operators';
+import { DataService } from 'app/data.service';
 
 @Component({
   selector: 'app-pomodoro-statistics',
   templateUrl: './pomodoro-statistics.component.html',
-  styleUrls: ['./pomodoro-statistics.component.css']
+  styleUrls: ['./pomodoro-statistics.component.less']
 })
 export class PomodoroStatisticsComponent implements AfterViewInit, OnInit {
 
@@ -23,11 +24,11 @@ export class PomodoroStatisticsComponent implements AfterViewInit, OnInit {
   @ViewChild('projectInput') projectFilter: ElementRef;
 
 
-  constructor() { }
+  constructor(private dataService:DataService) { }
 
   ngOnInit(): void {
-    this.taskDataSource = new TaskDataSource();
-    this.projectDataSource = new ProjectDataSource();
+    this.taskDataSource = new TaskDataSource(this.dataService);
+    this.projectDataSource = new ProjectDataSource(this.dataService);
   }
 
   ngAfterViewInit(): void {

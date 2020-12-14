@@ -1,6 +1,6 @@
-import { Status } from 'app/database/data/models/status';
-import { Stage } from 'app/database/data/models/stage';
-import { Label } from 'app/database/data/models/label';
+import { Status } from 'app/database/shared/models/status';
+import { Stage } from 'app/database/shared/stage/stage';
+import { Label } from 'app/database/shared/label/label';
 
 export class TaskFilterModel{
 

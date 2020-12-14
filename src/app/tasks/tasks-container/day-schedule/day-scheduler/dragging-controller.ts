@@ -1,5 +1,5 @@
 import { CdkDrag, CdkDragDrop, moveItemInArray, transferArrayItem } from "@angular/cdk/drag-drop";
-import { Task } from "app/database/data/models/task";
+import { Task } from "app/database/shared/task/task";
 import { SchedulerTaskResizer } from "./scheduler-resizer";
 import { TaskContainer } from "./task-container";
 
@@ -56,7 +56,7 @@ export class DraggingController {
   private updateStartTime(timeId: string, taskContainer: TaskContainer) {
     let splitted = timeId.split(":");
     let timeValue = Number.parseInt(splitted[0]) * 100 + Number.parseInt(splitted[1]);
-    taskContainer.task.setTime(timeValue);
+    taskContainer.task.setStartTime(timeValue);
   }
 
   public dragStarted(event: CdkDrag, taskContainer: TaskContainer) {

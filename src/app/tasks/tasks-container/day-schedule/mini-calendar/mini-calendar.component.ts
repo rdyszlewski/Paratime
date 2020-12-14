@@ -6,7 +6,7 @@ import { CalendarCreator } from "./calendar-creator";
 @Component({
   selector: "app-mini-calendar",
   templateUrl: "./mini-calendar.component.html",
-  styleUrls: ["./mini-calendar.component.css"],
+  styleUrls: ["./mini-calendar.component.less"],
 })
 export class MiniCalendarComponent implements OnInit {
   private _month: number;

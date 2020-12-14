@@ -8,7 +8,7 @@ export enum ListType{
 @Component({
   selector: 'app-lists-container',
   templateUrl: './lists-container.component.html',
-  styleUrls: ['./lists-container.component.css']
+  styleUrls: ['./lists-container.component.less']
 })
 export class ListsContainerComponent implements OnInit {
 

@@ -1,12 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { Status } from 'app/database/data/models/status';
-import { Task } from 'app/database/data/models/task';
+import { DataService } from 'app/data.service';
+import { Status } from 'app/database/shared/models/status';
+import { Task } from 'app/database/shared/task/task';
 import { IDraggingController } from './draggine-controller';
 
 @Component({
   selector: 'app-tasks-list',
   templateUrl: './tasks-list.component.html',
-  styleUrls: ['./tasks-list.component.css']
+  styleUrls: ['./tasks-list.component.less']
 })
 export class TasksListComponent implements OnInit {
 
@@ -53,7 +54,7 @@ export class TasksListComponent implements OnInit {
     this._dragginController = controller;
   }
 
-  constructor() {
+  constructor(private dataService: DataService) {
   }
 
   public initDropList(id: string, connectedLists: string[], onDrop: (task: Task)=>void){
@@ -64,6 +65,7 @@ export class TasksListComponent implements OnInit {
 
   ngOnInit(): void {
     // this.addTestTasks();
+
   }
 
   private addTestTasks(){

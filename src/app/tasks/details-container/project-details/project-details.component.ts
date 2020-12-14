@@ -1,10 +1,8 @@
 import { Component, OnInit} from '@angular/core';
-import { Project } from 'app/database/data/models/project';
-import { ProjectType } from 'app/database/data/models/project_type';
-import { Status } from 'app/database/data/models/status';
-import { DataService } from 'app/data.service';
+import { ProjectType } from 'app/database/shared/project/project_type';
+import { Status } from 'app/database/shared/models/status';
 import { ProjectDetails } from './model/model';
-import { Stage } from 'app/database/data/models/stage';
+import { Stage } from 'app/database/shared/stage/stage';
 import { ProjectDetailsState } from './model/state';
 import { ProjectChangeDetector } from './model/change.detector';
 import { ProjectValidator } from './model/validator';
@@ -16,15 +14,24 @@ import {
 } from '@angular/cdk/drag-drop';
 import { DateFormatter } from 'app/shared/common/date_formatter';
 import { EventBus } from 'eventbus-ts';
-import { ProjectUpdateEvent } from './events/update.event';
 import { ProjectDetailsCloseEvent } from './events/close.event';
+import { Project } from 'app/database/shared/project/project';
+import { CommandService } from 'app/commands/manager/command.service';
+import { UpdateProjectCommand } from 'app/commands/data-command/project/command.update-project';
+import { RemoveStageCommand } from 'app/commands/data-command/stage/command.remove-stage';
+import { ChangeStageOrderCommand } from 'app/commands/data-command/stage/command.change-stage-order';
+import { InsertingTemplateComponent } from 'app/tasks/shared/inserting-template/inserting-template.component';
+import { ViewChild } from '@angular/core';
 
 @Component({
   selector: 'app-project-details',
   templateUrl: './project-details.component.html',
-  styleUrls: ['./project-details.component.css'],
+  styleUrls: ['./project-details.component.less'],
 })
 export class ProjectDetailsComponent implements OnInit {
+
+  @ViewChild(InsertingTemplateComponent)
+  private insertingTemplateComponent: InsertingTemplateComponent;
 
   private model: ProjectDetails;
   private state: ProjectDetailsState;
@@ -36,13 +43,17 @@ export class ProjectDetailsComponent implements OnInit {
   public projectType = ProjectType;
   public status = Status;
 
+  constructor(private commandService: CommandService){
+``
+  }
+
   ngOnInit(): void {
     this.model = new ProjectDetails();
     this.state = new ProjectDetailsState(this.model);
     this.changeDetector = new ProjectChangeDetector(this.model);
     this.validator = new ProjectValidator(this.model);
     this.stageController = new ProjectStagesController(
-      this.model
+      this.model, this.commandService
     );
   }
 
@@ -77,21 +88,11 @@ export class ProjectDetailsComponent implements OnInit {
   }
 
   public updateProject() {
-    DataService.getStoreManager()
-      .getProjectStore()
-      .updateProject(this.model.getProject())
-      .then(() => {
-        EventBus.getDefault().post(new ProjectUpdateEvent(this.model.getProject()));
-      });
+    this.commandService.execute(new UpdateProjectCommand(this.model.getProject()));
   }
 
   public onRemoveStage(stage: Stage) {
-    DataService.getStoreManager()
-      .getStageStore()
-      .removeStage(stage.getId())
-      .then(updatedStages => {
-        this.model.updateStages(updatedStages);
-      });
+    this.commandService.execute(new RemoveStageCommand(stage, this.model));
   }
 
   public closeView() {
@@ -120,13 +121,11 @@ export class ProjectDetailsComponent implements OnInit {
     if (previousIndex == currentIndex) {
       return;
     }
-    const previousStage = this.model.getStageByIndex(previousIndex);
-    const currentStage = this.model.getStageByIndex(currentIndex);
-    DataService.getStoreManager()
-      .getStageStore()
-      .move(previousStage, currentStage, previousIndex > currentIndex)
-      .then((updatedStages) => {
-        this.model.updateStages(updatedStages);
-      });
+    this.commandService.execute(new ChangeStageOrderCommand(currentIndex, previousIndex, this.model));
   }
+
+  public openStageInserting(){
+    this.insertingTemplateComponent.open();
+  }
+
 }

@@ -1,70 +1,40 @@
-import { KanbanColumn } from 'app/database/data/models/kanban';
-import { DataService } from 'app/data.service';
 import { KanbanModel } from '../kanban.model';
-import { MatDialog } from '@angular/material/dialog';
-import { DialogHelper } from 'app/shared/common/dialog';
 import { FocusHelper } from 'app/shared/common/view_helper';
+import { KanbanColumn } from 'app/database/shared/kanban-column/kanban-column';
+import { RemoveColumnDialog } from '../dialog/kanban.remove-column';
+import { DialogService } from 'app/ui/widgets/dialog/dialog.service';
+import { CommandService } from 'app/commands/manager/command.service';
+import { RemoveKanbanColumnCommand } from 'app/commands/data-command/kanban/command.remove-column';
+import { UpdateColumnCommand } from 'app/commands/data-command/kanban/command.update-column';
+import { CreateColumnCommand } from 'app/commands/data-command/kanban/command.create-column';
 
 export class KanbanColumnController{
 
-  private model: KanbanModel;
-  private dialog: MatDialog;
-
-  constructor(model: KanbanModel, dialog: MatDialog){
-    this.model = model;
-    this.dialog = dialog;
+  constructor(private model: KanbanModel,private dialogService: DialogService, private commandService: CommandService){
   }
 
-  // ADDING
-  public addColumn() {
-    console.log(this.model.getColumnName());
-    const columnName = this.model.getColumnName();
-    if (!columnName || columnName == '') {
+  public addColumn(name: string) {
+    console.log(name);
+
+    if (!name || name == '') {
+      console.log("nieudane");
+
       this.model.setColumnNameValid(false);
       FocusHelper.focus('#new-column-input');
       return;
     }
-    const kanbanColumn = new KanbanColumn();
-    kanbanColumn.setDefault(false);
-    kanbanColumn.setProjectId(this.model.getProject().getId());
-    kanbanColumn.setName(this.model.getColumnName());
-
-    DataService.getStoreManager()
-      .getKanbanColumnStore()
-      .create(kanbanColumn)
-      .then((result) => {
-        this.model.addColumn(kanbanColumn);
-        this.model.updateColumns(result.updatedColumns);
-        this.model.setColumnNameValid(true);
-        this.model.closeAdddingColumn();
-      });
+    console.log("Zapisywanie");
+    this.commandService.execute(new CreateColumnCommand(name, this.model));
   }
 
-  // REMOVING
   public removeColumn(column: KanbanColumn) {
-    const message = 'Czy na pewno usunąć kolumnę?';
-    DialogHelper.openDialog(message, this.dialog).subscribe((result) => {
-      if (result) {
-        this.removeColumnFromStore(column);
-      }
+    RemoveColumnDialog.show(column, this.dialogService, ()=>{
+      this.commandService.execute(new RemoveKanbanColumnCommand(column, this.model));
     });
   }
 
-  private removeColumnFromStore(column: KanbanColumn) {
-    // TODO: zastanowić się, czy przenieść wszystkie zadania do nieprzypisanych, czy usunąć
-    DataService.getStoreManager()
-      .getKanbanColumnStore()
-      .remove(column.getId())
-      .then((updatedColumns) => {
-        this.model.updateColumns(updatedColumns);
-      });
-  }
-
-  //RENAME
   public updateColumnName() {
     this.model.getEditedColumn().setName(this.model.getColumnName());
-    DataService.getStoreManager()
-      .getKanbanColumnStore()
-      .update(this.model.getEditedColumn());
+    this.commandService.execute(new UpdateColumnCommand(this.model.getEditedColumn(), this.model));
   }
 }

@@ -1,0 +1,632 @@
+// @color1: #5D5C61;
+// @color2: #938e94;
+// @color3: #7395AE;
+// @color4: #557a95;
+// @color5: #B1A296;
+
+@color1: #2661ce; // item
+@color2: #193675; // list
+@color3: #222629; //background
+@color4: #474b4f; //foreground
+@color5: #6b6e70; // selected
+
+@iconColor: #f1efee;
+@itemFontColor: #f1efee;
+@fontColor: #f1efee;
+
+@fontSize: 10px;
+@smallFontSize: 9px;
+@standardMargin: 5px;
+@standardPadding: 5px;
+@smallMargin: 2px;
+@smallPadding: 2px;
+@borderRadius: 2px;
+@borderColor: @color3;
+@borderSize: 1px;
+@separatorColor: @color5;
+
+@editIcon: url("./assets/icons/edit-icon.png");
+@removeIcon: url("./assets/icons/remove-icon.png");
+@acceptIcon: url("./assets/icons/accept-icon.png");
+// LISTA
+
+.panel-header {
+  .center;
+  font-size: @fontSize * 1.5;
+  font-weight: normal;
+  margin-top: 2px;
+  margin-bottom: 2px;
+}
+
+.list-panel {
+  .shadow;
+  background-color: @color4;
+  width: 260px;
+  height: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+.list {
+  overflow-x: hidden;
+  overflow-y: auto;
+  background-color: @color2;
+  height: 100%;
+}
+
+.standard-list-item {
+  .list-item;
+  background-color: #2661ce;
+}
+
+.list-item {
+  background-color: @color2;
+  color: @itemFontColor;
+  display: flex;
+  @padding: 4px;
+  padding: @padding;
+  width: calc(100% - @padding * 2.2);
+  margin: 0;
+  font-size: @fontSize * 1.2;
+  &:hover {
+    background-color: @color5;
+    cursor: pointer;
+    .list-item-options {
+      visibility: visible;
+    }
+    .item-list-buttons {
+      visibility: visible;
+    }
+  }
+
+  .list-item-value {
+    width: 100%;
+    .vertical-center;
+  }
+}
+
+.item-input {
+  width: 100%;
+  font-size: @fontSize;
+  padding: 3px;
+  cursor: default;
+}
+
+.list-item-options {
+  visibility: hidden;
+  padding-left: @standardPadding;
+  padding-right: @standardPadding;
+  .base-button;
+  &:hover {
+    background-color: @color4;
+  }
+}
+
+.edit-item-icon {
+  background: @editIcon;
+  .item-icon;
+}
+
+.remove-item-icon {
+  background: @removeIcon;
+  .item-icon;
+}
+
+.accept-item-icon {
+  background: @acceptIcon;
+  .item-icon;
+}
+
+.item-list-buttons {
+  display: flex;
+  float: right;
+  visibility: hidden;
+  .right;
+  margin-right: @standardMargin;
+}
+
+.item-list-icon {
+  .icon-button;
+}
+
+.create-button {
+  background-color: @color1;
+  color: @fontColor;
+  margin: @standardMargin;
+  padding: @standardPadding;
+  border: 2px solid @color2;
+  border-radius: @borderRadius;
+  .base-button;
+  &:hover {
+    background-color: @color5;
+  }
+}
+
+.filter {
+  margin: @standardMargin;
+  font-size: @fontSize * 1.1;
+  width: 100%;
+  .vertical-center;
+}
+
+.filter-button {
+  background: url("./assets/icons/filter-icon.png");
+  .icon-button;
+  .vertical-center;
+}
+
+.filter-button:hover {
+  box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14),
+    0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+}
+
+// ITEMY
+
+.label-element {
+  background-color: @color1;
+  .tasks-element;
+}
+
+.tasks-info-element {
+  background-color: @color4;
+  .tasks-element;
+}
+
+.tasks-element {
+  margin: @smallMargin;
+  @padding: @smallPadding * 3;
+  padding: @smallPadding @padding @smallPadding @padding;
+  font-size: @smallFontSize;
+  align-self: center;
+  height: @smallFontSize + @smallPadding * 2;
+  min-width: @padding;
+}
+
+/* FILTROWANIE PROJEKTÓW I ZADAŃ */
+
+.filter-container {
+  .border;
+  padding: @standardPadding;
+}
+
+.filter-group {
+  display: flex;
+  padding: 2px;
+}
+
+.filter-label {
+  width: 60%;
+  float: left;
+  .vertical-center;
+}
+
+.filter-value {
+  scale: 0.8;
+  width: 40%;
+  float: right;
+  .vertical-center;
+}
+
+// OGÓLNE
+
+.base-view {
+  background-color: @color4;
+  display: flex;
+  flex-direction: column;
+}
+
+.container-view {
+  .base-view;
+  padding-left: @standardPadding;
+  padding-right: @standardPadding;
+  padding-top: 0;
+  padding-bottom: 0;
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
+  .shadow;
+}
+
+.shadow {
+  box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14),
+    0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+}
+
+.horizontal-container {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+}
+
+.full-horizontal-container {
+  // .horizontal-container;
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+}
+
+.vertical-container {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  padding: 0;
+  margin: 0;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0px;
+  background-color: @color3;
+  color: @fontColor;
+  font-size: @fontSize;
+  overflow: hidden;
+}
+
+.icon-button {
+  width: 20px;
+  height: 20px;
+  .full-image;
+  padding: @standardPadding;
+
+  .base-button;
+}
+
+.item-icon {
+  width: 15px;
+  height: 15px;
+  box-sizing: content-box;
+  .full-image;
+  padding: @standardPadding;
+  border: none;
+  &:hover {
+    background-color: @color4;
+    cursor: pointer;
+  }
+}
+
+.full-image {
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-origin: content-box;
+}
+
+.center {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.vertical-center {
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+.base-button {
+  &:hover {
+    cursor: pointer;
+    background-color: @color5;
+  }
+}
+
+// TODO: zrobić z tym coś później
+.simple-button {
+  border: 1px solid black;
+  border-radius: @borderRadius;
+  padding: @smallPadding * 2;
+  background-color: @color2;
+  color: @itemFontColor;
+  .base-button;
+  &:hover {
+    background-color: @color5;
+  }
+}
+
+.right {
+  float: right;
+  margin-right: 0;
+  margin-left: auto;
+}
+
+.left {
+  float: left;
+}
+
+.border {
+  border: 1px solid black;
+  /* border: 1px solid transparent; */
+  box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14),
+    0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+  border-radius: 3px;
+}
+
+.panel {
+  height: 100%;
+  margin: @standardMargin;
+}
+
+// EDYCJA
+
+.mat-expansion-panel {
+  padding: 0px !important;
+  background-color: @color4;
+  color: @fontColor;
+  border-bottom: @borderSize solid @separatorColor;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.mat-expansion-panel-body {
+  padding: 0px !important;
+}
+
+.mat-expansion-panel-content {
+  padding: 4px;
+}
+
+.mat-expansion-panel-header {
+  padding: 5px !important;
+  height: auto !important;
+}
+
+.form-control {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 5px;
+  border-radius: @borderRadius;
+  border: @borderSize solid @borderColor;
+  background-color: @color2;
+  color: @fontColor;
+}
+// TODO: zropbić obramówkę
+
+.form-label {
+  font-size: @fontSize;
+}
+
+.details {
+  position: absolute;
+  right: 48px;
+  width: 50%;
+  overflow: auto;
+}
+
+.close-button {
+  .icon-button;
+  background: url("./assets/icons/close-icon.png");
+  border: transparent;
+  border-radius: 4px;
+  margin-top: auto;
+  margin-bottom: auto;
+  float: right;
+}
+
+.datepicker-container {
+  display: flex;
+}
+
+.datepicker button {
+  width: 20px !important;
+  height: 20px !important;
+  line-height: 20px !important;
+}
+
+.list::-webkit-scrollbar {
+  width: 10px;
+}
+
+.list::-webkit-scrollbar-track {
+  background: orange; /* color of the tracking area */
+}
+.list::-webkit-scrollbar-thumb {
+  background-color: blue; /* color of the scroll thumb */
+  border-radius: 3px; /* roundness of the scroll thumb */
+}
+
+.small-list-item .list-item-value {
+  font-size: small;
+}
+
+.selected-list-item {
+  background-color: seashell;
+}
+
+.button {
+  margin-top: 5px;
+  margin-bottom: 5px;
+  height: 2em;
+  border-radius: 3px;
+}
+
+.small-button {
+  margin-top: 5px;
+  margin-bottom: 5px;
+  height: 1.8em;
+  border-radius: 3px;
+}
+
+.button:hover {
+  cursor: pointer;
+  background-color: aliceblue;
+}
+
+.info-icon {
+  display: flex;
+  padding: 2px;
+  font-size: small;
+  border-radius: 4px;
+  box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14),
+    0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+  width: 15px;
+  height: 15px;
+  background-color: @color1;
+  margin: 2px;
+}
+
+.info-icon {
+  cursor: default;
+}
+
+.insert-button {
+  float: right;
+}
+
+.form-buttons-section {
+  float: right;
+  margin-right: auto;
+  margin-left: auto;
+  margin-top: auto;
+  margin-bottom: 0px;
+}
+
+.tooltip-list {
+  list-style: none;
+}
+
+.tool-panel {
+  display: flex;
+  justify-content: flex-end;
+  padding-right: 5px;
+}
+
+.invalid-feedback {
+  color: red;
+  font-size: small;
+}
+
+/* ================================== */
+/* ELEMENT ZADANIA  */
+.task-list-item {
+  display: flex;
+}
+
+.task-checkbox {
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+}
+
+.list-item-value:hover {
+  cursor: default;
+}
+
+.task-info {
+  display: flex;
+}
+
+.task-name {
+  width: 100%;
+  text-decoration: none;
+}
+
+.labels-container {
+  /* width: 100%; */
+  font-size: small;
+  display: flex;
+  flex-wrap: wrap;
+  box-sizing: border-box;
+}
+
+.label-item {
+  width: fit-content;
+  padding-top: 1px;
+  padding-bottom: 1px;
+}
+
+.label-item:hover {
+  cursor: default;
+}
+
+.task-info-icon {
+  display: flex;
+  flex-wrap: wrap;
+  width: fit-content;
+  margin-right: 0px;
+  margin-left: auto;
+}
+
+.task-subtask {
+  width: auto;
+}
+
+.task-checkbox {
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+/* TABS */
+
+.mat-tab-body-wrapper {
+  height: 100% !important;
+}
+
+/* TODO: zmienić w przypadku dodania nowych tabel */
+#mat-tab-label-0-0 {
+  margin-left: auto;
+}
+
+#mat-tab-label-0-2 {
+  margin-right: auto;
+}
+
+/* LISTY */
+
+/* PANELE BOCZNE */
+.lists-options {
+  display: inline-block;
+  margin: 0 auto;
+  padding: 0;
+  width: 100%;
+  justify-content: flex-end;
+}
+
+.action-item {
+  display: block;
+  position: relative;
+  margin-bottom: 4px;
+  box-sizing: border-box;
+}
+
+.action-item:hover {
+  cursor: pointer;
+}
+
+// TODO: zrobić boczne elementy
+
+.action-label {
+  font-size: 24px;
+  align-items: center;
+  justify-content: center;
+
+  position: relative;
+  z-index: 1;
+  display: flex;
+  overflow: hidden;
+  height: 48px;
+  width: 48px;
+  margin-right: 0;
+  box-sizing: border-box;
+}
+
+.action-label:hover {
+  border: 1px solid @borderColor;
+}
+
+.badge {
+  background-color: @color1;
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  bottom: 0;
+  rgin: auto;
+  left: 0;
+  width: 4px;
+  height: 100%;
+}
+
+.active-side-item {
+  font-weight: bold;
+}

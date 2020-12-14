@@ -5,12 +5,16 @@ import { MiniCalendarComponent } from './tasks-container/day-schedule/mini-calen
 import { TasksListComponent } from './tasks-container/day-schedule/tasks-list/tasks-list.component';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { DaySchedulerComponent } from './tasks-container/day-schedule/day-scheduler/day-scheduler.component';
+import { InsertingTemplateComponent } from './shared/inserting-template/inserting-template.component';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
-  declarations: [DayScheduleComponent, MiniCalendarComponent, TasksListComponent, DaySchedulerComponent],
+  declarations: [DayScheduleComponent, MiniCalendarComponent, TasksListComponent, DaySchedulerComponent, InsertingTemplateComponent],
   imports: [
     CommonModule,
-    DragDropModule
-  ]
+    DragDropModule,
+    FormsModule
+  ],
+  exports: [InsertingTemplateComponent]
 })
 export class TasksModule { }

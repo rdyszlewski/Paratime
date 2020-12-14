@@ -1,8 +1,7 @@
-import { Task } from 'app/database/data/models/task';
-import { Project } from 'app/database/data/models/project';
-import { PomodoroHistory } from 'app/database/data/models/pomodoro.history';
+import { Task } from 'app/database/shared/task/task';
+import { PomodoroHistory } from 'app/database/shared/pomodoro/pomodoro.history';
 import { DataService } from 'app/data.service';
-import { createUrlResolverWithoutPackagePrefix } from '@angular/compiler';
+import { Project } from 'app/database/shared/project/project';
 
 export class PomodoroStatisticsModel{
     private tasksEntries: TaskEntry[] = [];
@@ -89,9 +88,9 @@ export class ProjectEntry{
 
 export class TaskEntryCreator{
 
-    public static create(history: PomodoroHistory[]):Promise<TaskEntry[]>{
+    public static create(history: PomodoroHistory[], dataService: DataService):Promise<TaskEntry[]>{
         const map = this.prepareMap(history);
-        return this.createTasksEntries(map);
+        return this.createTasksEntries(map, dataService);
     }
 
     private static prepareMap(history:PomodoroHistory[]):Map<number, PomodoroHistory[]>{
@@ -111,12 +110,13 @@ export class TaskEntryCreator{
         return map;
     }
 
-    private static createTasksEntries(map:Map<number, PomodoroHistory[]>):Promise<TaskEntry[]>{
+    // TODO: obmyślić to jakoś inaczej
+    private static createTasksEntries(map:Map<number, PomodoroHistory[]>, dataService: DataService):Promise<TaskEntry[]>{
         const result = [];
         const promises = [];
         map.forEach((list, taskId)=>{
           if(taskId>=0){
-            const promise = this.getTask(taskId).then(task=>{
+            const promise = dataService.getTaskService().getById(taskId).then(task=>{
                 if(task){
                     const entry = this.createTaskEntry(task, list);
                     result.push(entry);
@@ -133,10 +133,6 @@ export class TaskEntryCreator{
         return Promise.all(promises).then(()=>{
             return Promise.resolve(result);
         });
-    }
-
-    private static getTask(taskId:number):Promise<Task>{
-        return DataService.getStoreManager().getTaskStore().getById(taskId);
     }
 
     private static createTaskEntry(task:Task, list:PomodoroHistory[]){
@@ -160,9 +156,9 @@ export class TaskEntryCreator{
 
 export class ProjectEntryCreator{
 
-    public static create(history: PomodoroHistory[]):Promise<ProjectEntry[]>{
+    public static create(history: PomodoroHistory[], dataService: DataService):Promise<ProjectEntry[]>{
         const map = this.prepareMap(history);
-        return this.createProjectsEntries(map);
+        return this.createProjectsEntries(map, dataService);
     }
 
     // TODO: wspólna metoda z TaskEntryCreator
@@ -180,25 +176,23 @@ export class ProjectEntryCreator{
         return map;
     }
 
-    private static createProjectsEntries(map:Map<number, PomodoroHistory[]>):Promise<ProjectEntry[]>{
+    private static createProjectsEntries(map:Map<number, PomodoroHistory[]>, dataService: DataService):Promise<ProjectEntry[]>{
         const result = [];
         const promises = [];
+
         map.forEach((list, projectId)=>{
-            const promise = this.getProject(projectId).then(project=>{
-                if(project){
-                    const entry = this.createProjectEntry(project, list);
-                    result.push(entry);
-                }
+            let promise = dataService.getProjectService().getById(projectId).then(project=>{
+              if(project){
+                let entry = this.createProjectEntry(project, list);
+                result.push(entry);
+              }
+              return Promise.resolve(null);
             });
             promises.push(promise);
         });
         return Promise.all(promises).then(()=>{
             return Promise.resolve(result);
         });
-    }
-
-    private static getProject(projectId: number): Promise<Project>{
-        return DataService.getStoreManager().getProjectStore().getProjectById(projectId);
     }
 
     private static createProjectEntry(project:Project, list:PomodoroHistory[]){

@@ -1,18 +1,16 @@
-import { Label } from 'app/database/data/models/label';
+import { Label } from 'app/database/shared/label/label';
 import { MatDialog } from '@angular/material/dialog';
-import { DataService } from 'app/data.service';
 import { LabelsModel } from '../common/list.model';
 import { DialogHelper } from 'app/shared/common/dialog';
-import { EventBus } from 'eventbus-ts';
-import { LabelsUpdateEvent } from '../events/update.event';
+import { CommandService } from 'app/commands/manager/command.service';
+import { RemoveLabelCommand } from 'app/commands/data-command/label/command.remove-label';
 
 export class LabelRemovingController {
-  private dialog: MatDialog;
-  private listModel: LabelsModel;
 
   constructor(
-    listModel: LabelsModel,
-    dialog: MatDialog
+    private listModel: LabelsModel,
+    private dialog: MatDialog,
+    private commandService: CommandService
   ) {
     this.listModel = listModel;
     this.dialog = dialog;
@@ -28,12 +26,6 @@ export class LabelRemovingController {
   }
 
   private removeLabel(label: Label) {
-    DataService.getStoreManager()
-      .getLabelStore()
-      .removeLabel(label.getId())
-      .then((updatedLabels) => {
-        this.listModel.updateLabels(updatedLabels);
-        EventBus.getDefault().post(new LabelsUpdateEvent(null));
-      });
+    this.commandService.execute(new RemoveLabelCommand(label, this.listModel));
   }
 }

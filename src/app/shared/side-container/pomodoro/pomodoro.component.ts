@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { Task } from 'app/database/data/models/task';
-import { PomodoroSummaryAdapter } from 'app/database/data/models/pomodoro.history';
+import { Task } from 'app/database/shared/task/task';
+import { PomodoroSummaryAdapter } from 'app/database/shared/pomodoro/pomodoro.history';
 import { DataService } from 'app/data.service';
 import { State, TimerState, BreakHelper } from 'app/pomodoro/pomodoro/shared/state';
 import { PomodoroService, CallbackType } from 'app/pomodoro/pomodoro/pomodoro.service';
@@ -15,7 +15,7 @@ import { PomodoroAdapter } from 'app/shared/adapters/pomodoro.adapter';
 @Component({
   selector: 'app-pomodoro',
   templateUrl: './pomodoro.component.html',
-  styleUrls: ['./pomodoro.component.css']
+  styleUrls: ['./pomodoro.component.less']
 })
 export class PomodoroComponent implements OnInit {
 
@@ -23,7 +23,7 @@ export class PomodoroComponent implements OnInit {
   public state = State;
   public timerState = TimerState;
 
-  constructor(private pomodoroService: PomodoroService, private dialog: MatDialog) { }
+  constructor(private pomodoroService: PomodoroService, private dialog: MatDialog, private dataService: DataService) { }
 
   ngOnInit(): void {
     this.pomodoroService.setSaveSummaryCallback(summary=>this.saveSummary(summary));
@@ -43,9 +43,7 @@ export class PomodoroComponent implements OnInit {
 private saveSummary(summary: PomodoroSummary){
     console.log("Zapisywanie pomodoro");
     const history = PomodoroSummaryAdapter.createHistory(summary);
-    DataService.getStoreManager().getPomodoroStore().create(history).then(savedSummary=>{
-      console.log(savedSummary);
-    });
+    this.dataService.getPomodoroService().create(history);
 
   }
 

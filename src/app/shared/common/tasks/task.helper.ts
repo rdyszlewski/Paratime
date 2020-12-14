@@ -1,5 +1,5 @@
-import { Status } from 'app/database/data/models/status';
-import { Task } from 'app/database/data/models/task';
+import { Status } from 'app/database/shared/models/status';
+import { Task } from 'app/database/shared/task/task';
 
 export class TaskHelper{
   public static isActive(task: Task){

@@ -47,6 +47,7 @@ import { DayScheduleComponent } from './tasks/tasks-container/day-schedule/day-s
 import { MiniCalendarComponent } from './tasks/tasks-container/day-schedule/mini-calendar/mini-calendar.component';
 import { TasksListComponent } from './tasks/tasks-container/day-schedule/tasks-list/tasks-list.component';
 import { DaySchedulerComponent } from './tasks/tasks-container/day-schedule/day-scheduler/day-scheduler.component';
+import { InsertingTemplateComponent } from './tasks/shared/inserting-template/inserting-template.component';
 
 @NgModule({
   declarations: [
@@ -73,7 +74,8 @@ import { DaySchedulerComponent } from './tasks/tasks-container/day-schedule/day-
     DayScheduleComponent,
     MiniCalendarComponent,
     TasksListComponent,
-    DaySchedulerComponent
+    DaySchedulerComponent,
+    InsertingTemplateComponent
   ],
   imports: [
     BrowserModule,

@@ -1,6 +1,4 @@
-<div class="main">
-  <!-- <app-top-bar id="top-bar"></app-top-bar> -->
-  <!-- in case of adding new tabs, change last element style in styles.css. mat-tab-label-0-x -->
+<!-- <div class="main">
   <div id="top-bar">
     <div id="left-info">
       <div id="time">{{getPomodoroTime()}}</div>
@@ -15,6 +13,9 @@
       <mat-tab label="Ustawienia">Ustawienia</mat-tab>
     </mat-tab-group>
   </div>
+</div> -->
+<div class="main">
+  <ng-container [ngTemplateOutlet]="tasks"></ng-container>
 </div>
 
 <ng-template #tasks>

@@ -6,7 +6,7 @@ import { PomodoroSettingsStore } from 'app/pomodoro/pomodoro/settings/settings.s
 @Component({
   selector: 'app-pomodoro-settings',
   templateUrl: './pomodoro-settings.component.html',
-  styleUrls: ['./pomodoro-settings.component.css']
+  styleUrls: ['./pomodoro-settings.component.less']
 })
 export class PomodoroSettingsComponent implements OnInit {
 

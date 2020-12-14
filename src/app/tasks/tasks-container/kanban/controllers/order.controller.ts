@@ -3,15 +3,19 @@ import {
   moveItemInArray,
   transferArrayItem,
 } from '@angular/cdk/drag-drop';
-import { Task } from 'app/database/data/models/task';
-import { DataService } from 'app/data.service';
+import { Task } from 'app/database/shared/task/task';
 import { KanbanModel } from '../kanban.model';
+import { CommandService } from 'app/commands/manager/command.service';
+import { ChangeKanbanTaskOrderCommand } from 'app/commands/data-command/kanban/command.change-kanban-task-order';
+import { ChangeKanbanColumnOrderCommand } from 'app/commands/data-command/kanban/command.change-kanban-column';
 
+// TODO: sprawdzić, czy to jest gdzieś wykorzystywane
 export class KanbanTaskOrderController {
-  public static drop(event: CdkDragDrop<Task[]>, model: KanbanModel) {
+
+  public static drop(event: CdkDragDrop<Task[]>, model: KanbanModel, commandService: CommandService) {
     if (event.previousContainer === event.container) {
       this.changeTasksOrder(event.container.id, event.previousIndex,
-        event.currentIndex, model );
+        event.currentIndex, model , commandService);
       moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
     } else {
       this.moveTaskToColumn(
@@ -19,7 +23,8 @@ export class KanbanTaskOrderController {
         event.container.id,
         event.previousIndex,
         event.currentIndex,
-        model
+        model,
+        commandService
       );
       transferArrayItem(
         event.previousContainer.data,
@@ -34,23 +39,10 @@ export class KanbanTaskOrderController {
     column: string,
     previousIndex: number,
     currentIndex: number,
-    model: KanbanModel
+    model: KanbanModel,
+    commandService: CommandService
   ) {
-    const currentColumn = model.getColumnById(Number.parseInt(column));
-    const previousTask = model.getTaskByIndex(
-      previousIndex,
-      currentColumn.getId()
-    );
-    const currentTask = model.getTaskByIndex(
-      currentIndex,
-      currentColumn.getId()
-    );
-    DataService.getStoreManager()
-      .getKanbanTaskStore()
-      .move(previousTask, currentTask, previousIndex > currentIndex)
-      .then((updatedTask) => {
-        model.updateTasks(updatedTask, currentColumn.getId());
-      });
+    commandService.execute(new ChangeKanbanTaskOrderCommand(currentIndex, previousIndex, column,column, model));
   }
 
   private static moveTaskToColumn(
@@ -58,35 +50,17 @@ export class KanbanTaskOrderController {
     currentColumnId: string,
     previousIndex: number,
     currentIndex: number,
-    model: KanbanModel
+    model: KanbanModel,
+    commandService: CommandService
   ) {
-    const previousColumn = model.getColumnById(
-      Number.parseInt(previousColumnId)
-    );
-    const currentColumn = model.getColumnById(Number.parseInt(currentColumnId));
-    const previousTask = model.getTaskByIndex(
-      previousIndex,
-      previousColumn.getId()
-    );
-    let currentTask = model.getTaskByIndex(currentIndex, currentColumn.getId());
-    if (previousTask == currentTask) {
-      currentTask = null;
-    }
-
-    DataService.getStoreManager()
-      .getKanbanTaskStore()
-      .changeContainer(previousTask, currentTask, currentColumn.getId())
-      .then((updatedTask) => {
-        model.updateTasks(updatedTask, currentColumn.getId());
-        model.updateTasks(updatedTask, previousColumn.getId());
-      });
+    commandService.execute(new ChangeKanbanTaskOrderCommand(currentIndex, previousIndex, currentColumnId, previousColumnId, model));
   }
 }
 
 export class KanbanColumnOrderController {
-  public static drop(event: CdkDragDrop<Task[]>, model: KanbanModel) {
+  public static drop(event: CdkDragDrop<Task[]>, model: KanbanModel, commandService: CommandService) {
     if (event.previousContainer === event.container) {
-      this.changeColumnsOrder(event.previousIndex, event.currentIndex, model);
+      this.changeColumnsOrder(event.previousIndex, event.currentIndex, model, commandService);
       moveItemInArray(
         event.container.data,
         event.previousIndex,
@@ -105,21 +79,12 @@ export class KanbanColumnOrderController {
   private static changeColumnsOrder(
     previousIndex: number,
     currentIndex: number,
-    model: KanbanModel
+    model: KanbanModel,
+    commandService: CommandService
   ) {
     if (previousIndex == currentIndex) {
       return;
     }
-    const previousColumn = model.getColumnByIndex(previousIndex);
-    const currentColumn = model.getColumnByIndex(currentIndex);
-    if (previousColumn.isDefault() || currentColumn.isDefault()) {
-      return;
-    }
-    DataService.getStoreManager()
-      .getKanbanColumnStore()
-      .move(previousColumn, currentColumn, previousIndex > currentIndex)
-      .then((updatedColumns) => {
-        model.updateColumns(updatedColumns);
-      });
+    commandService.execute(new ChangeKanbanColumnOrderCommand(currentIndex, previousIndex, model));
   }
 }
