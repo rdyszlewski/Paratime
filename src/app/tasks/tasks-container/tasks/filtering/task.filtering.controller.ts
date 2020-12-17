@@ -25,9 +25,9 @@ export class TaskFilteringController {
   }
 
   private loadLabels() {
-    this.dataService.getLabelService().getAll().then(labels=>{
-      this.model.setLabels(labels);
-    });
+    // this.dataService.getLabelService().getAll().then(labels=>{
+    //   this.model.setLabels(labels);
+    // });
   }
 
   public clearFilter() {

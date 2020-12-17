@@ -18,7 +18,8 @@ export class TaskLabelsController{
     }
 
     private init():void{
-        this.loadLabels();
+      // TODO: odkomentować to
+        // this.loadLabels();
     }
 
     public loadLabels(){

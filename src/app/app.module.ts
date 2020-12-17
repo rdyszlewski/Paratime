@@ -48,6 +48,7 @@ import { MiniCalendarComponent } from './tasks/tasks-container/day-schedule/mini
 import { TasksListComponent } from './tasks/tasks-container/day-schedule/tasks-list/tasks-list.component';
 import { DaySchedulerComponent } from './tasks/tasks-container/day-schedule/day-scheduler/day-scheduler.component';
 import { InsertingTemplateComponent } from './tasks/shared/inserting-template/inserting-template.component';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -103,6 +104,7 @@ import { InsertingTemplateComponent } from './tasks/shared/inserting-template/in
     NgbModule,
     WidgetsModule,
     MatTabsModule,
+    HttpClientModule
   ],
   entryComponents:[
     DialogComponent

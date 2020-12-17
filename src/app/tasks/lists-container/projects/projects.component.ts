@@ -74,6 +74,10 @@ export class ProjectsComponent implements OnInit {
       .getProjectService()
       .getAll()
       .then((projects) => {
+        console.log("Projekty");
+        console.log(projects);
+
+
         this.model.setProjects(projects);
       });
   }

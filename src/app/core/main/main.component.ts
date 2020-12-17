@@ -4,6 +4,7 @@ import {
   ViewChild,
   ElementRef,
   AfterViewInit,
+  Inject,
 } from '@angular/core';
 import { Task } from 'app/database/shared/task/task';
 import { MatSnackBar } from '@angular/material/snack-bar';
@@ -20,6 +21,8 @@ import { PomodoroComponent } from 'app/shared/side-container/pomodoro/pomodoro.c
 import { DataService } from 'app/data.service';
 import { LocalDataSource } from 'app/database/local/local.source';
 import { Project } from 'app/database/shared/project/project';
+import { RemoteDataSource } from 'app/database/remote/remote.source';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-main',
@@ -27,6 +30,7 @@ import { Project } from 'app/database/shared/project/project';
   styleUrls: ['./main.component.less'],
 })
 export class MainComponent implements OnInit, AfterViewInit {
+
   public taskMode = TasksMode;
 
   // TODO: usprawnić zarządzanie widokami
@@ -64,7 +68,7 @@ export class MainComponent implements OnInit, AfterViewInit {
   public pomodoroTime: string;
 
   constructor(private appService: AppService, public snakBar: MatSnackBar,
-    private timeService: TimeService, private dataService: DataService) {}
+    private timeService: TimeService, private dataService: DataService, private httpClient: HttpClient) {}
 
   ngAfterViewInit(): void {
     console.log("Inicjalizacja tyknięcia");
@@ -73,7 +77,9 @@ export class MainComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    this.dataService.setSource(new LocalDataSource());
+    // this.dataService.setSource(new LocalDataSource());
+    this.dataService.setSource(new RemoteDataSource(this.httpClient));
+
     // PomodoroSettingsStore.removeSettings();
     // this.deleteDatabase();
     // this.configureDexie();
