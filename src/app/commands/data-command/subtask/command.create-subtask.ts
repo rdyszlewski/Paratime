@@ -19,6 +19,6 @@ export class CreateSubtaskCommand extends DataCommand{
   }
 
   public getDescription(): string {
-    return `Dodano podzadanie ${this.subtask.getName()}`;
+    return `Dodano podzadanie ${this.subtask.name}`;
   }
 }

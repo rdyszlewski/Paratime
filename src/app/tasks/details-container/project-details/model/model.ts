@@ -15,7 +15,8 @@ export class ProjectDetails {
 
   public updateStages(stages: Stage[]) {
     this.stages.updateItems(stages);
-    this.project.setStages(this.stages.getAllItems());
+    this.project.stages = this.stages.getAllItems();
+
   }
 
   public getStageByIndex(index: number){
@@ -29,12 +30,9 @@ export class ProjectDetails {
 
   public setProject(project: Project) {
     if (project) {
-      console.log(project);
-      console.log(project.getStages());
       this.project = project;
-      this.stages.setContainerId(project.getId());
-      this.stages.setItems(project.getStages());
-      console.log(this.stages.getItems());
+      this.stages.setContainerId(project.id);
+      this.stages.setItems(project.stages);
     }
   }
 

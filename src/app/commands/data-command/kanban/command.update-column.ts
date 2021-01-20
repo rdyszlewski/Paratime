@@ -19,6 +19,6 @@ export class UpdateColumnCommand extends DataCommand{
   }
 
   getDescription(): string {
-    return `Aktualizacja kolumny ${this.column.getName()}`;
+    return `Aktualizacja kolumny ${this.column.name}`;
   }
 }

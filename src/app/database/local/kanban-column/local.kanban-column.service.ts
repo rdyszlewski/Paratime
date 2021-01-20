@@ -21,8 +21,8 @@ export class LocalKanbanColumnService implements IKanbanColumnService{
   }
 
   private fetchColumn(column: KanbanColumn):Promise<KanbanColumn>{
-    return this.kanbanTaskService.getByColumn(column.getId()).then(tasks=>{
-      column.setKanbanTasks(tasks);
+    return this.kanbanTaskService.getByColumn(column.id).then(tasks=>{
+      column.kanbanTasks = tasks;
       return Promise.resolve(column);
     });
   }
@@ -52,13 +52,13 @@ export class LocalKanbanColumnService implements IKanbanColumnService{
   }
 
   private orderInsertColumn(insertedColumn: KanbanColumn):Promise<InsertResult<KanbanColumn>>{
-    return this.orderController.insert(insertedColumn, null, insertedColumn.getProjectId()).then(updatedColumns=>{
+    return this.orderController.insert(insertedColumn, null, insertedColumn.projectId).then(updatedColumns=>{
       return Promise.resolve(new InsertResult(insertedColumn, updatedColumns));
     })
   }
 
   public remove(column: KanbanColumn): Promise<KanbanColumn[]> {
-    return this.kanbanTaskService.removeByColumn(column.getId()).then(()=>{
+    return this.kanbanTaskService.removeByColumn(column.id).then(()=>{
       return this.repository.remove(column).then(()=>{
         return this.orderController.remove(column);
       });

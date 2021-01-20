@@ -25,10 +25,10 @@ export class LocalKanbanColumnRepository extends OrderRepository<KanbanColumn>{
   }
 
   public remove(column:KanbanColumn):Promise<void>{
-    return this.table.delete(column.getId());
+    return this.table.delete(column.id);
   }
 
   public update(column:KanbanColumn):Promise<number>{
-    return this.table.update(column.getId(), column);
+    return this.table.update(column.id, column);
   }
 }

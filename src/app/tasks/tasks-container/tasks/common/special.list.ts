@@ -51,8 +51,8 @@ export class SpecialListTasks {
 
   private createSpecialProject(name: string, tasks: Task[]): Project {
     let project = new Project(name);
-    project.setId(Values.SPECIAL_LIST_ID);
-    project.setTasks(tasks);
+    project.id = Values.SPECIAL_LIST_ID;
+    project.tasks = tasks;
     return project;
   }
 }

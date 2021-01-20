@@ -16,6 +16,6 @@ export class UpdateTaskCommand extends DataCommand{
   }
 
   public getDescription(): string {
-    return `Aktualizacja zadania ${this.task.getName()}`;
+    return `Aktualizacja zadania ${this.task.name}`;
   }
 }

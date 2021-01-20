@@ -20,7 +20,7 @@ export class UpdateStageCommand extends DataCommand{
   }
 
   public getDescription(): string {
-    return `Aktualizacja etapu ${this.stage.getName()}`;
+    return `Aktualizacja etapu ${this.stage.name}`;
   }
 
 }

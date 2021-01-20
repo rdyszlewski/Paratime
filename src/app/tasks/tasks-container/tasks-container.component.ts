@@ -54,7 +54,7 @@ export class TasksContainerComponent implements OnInit, AfterViewInit {
 
   public getProjectName(){
     if(this._project != null){
-      return this._project.getName();
+      return this._project.name;
     }
   }
 

@@ -34,21 +34,21 @@ export class LocalProjectStageRepository extends OrderRepository<Stage>{
 
   public update(stage: Stage): Promise<number>{
     let preparedStage = this.getPreparedStage(stage);
-    return this.table.update(stage.getId(), preparedStage);
+    return this.table.update(stage.id, preparedStage);
   }
 
   private getPreparedStage(stage: Stage): Stage{
     const newStage = new Stage();
-    if (stage.getId()) {
-      newStage.setId(stage.getId());
+    if (stage.id) {
+      newStage.id = stage.id;
     }
-    newStage.setName(stage.getName());
-    newStage.setDescription(stage.getDescription());
-    newStage.setEndDate(stage.getEndDate());
-    newStage.setStatus(stage.getStatus());
-    newStage.setProjectID(stage.getProjectID());
-    newStage.setPosition(stage.getPosition());
-    newStage.setSuccessorId(stage.getSuccessorId());
+    newStage.name = stage.name;
+    newStage.description = stage.description;
+    newStage.endDate = stage.endDate;
+    newStage.status = stage.status;
+    newStage.projectID = stage.projectID;
+    newStage.position = stage.position;
+    newStage.successorId = stage.successorId;
 
     return newStage;
   }

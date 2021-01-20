@@ -23,6 +23,6 @@ export class FinishTaskCommand extends DataCommand{
   }
 
   getDescription(): string {
-    return `Zakończono zadanie ${this.task.getName()}`;
+    return `Zakończono zadanie ${this.task.name}`;
   }
 }

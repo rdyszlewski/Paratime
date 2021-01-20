@@ -13,7 +13,7 @@ export class TaskDetails {
 
   public updateSubtasks(subtasks: Subtask[]) {
     this.subtasks.updateItems(subtasks);
-    this.task.setSubtasks(this.subtasks.getAllItems());
+    this.task.subtasks = this.subtasks.getAllItems();
   }
 
   public getFilteredSubtasks() {
@@ -26,8 +26,8 @@ export class TaskDetails {
 
   public setTask(task: Task) {
     this.task = task;
-    this.subtasks.setContainerId(task.getId());
-    this.subtasks.setItems(task.getSubtasks());
+    this.subtasks.setContainerId(task.id);
+    this.subtasks.setItems(task.subtasks);
   }
 
   public getTask(): Task {
@@ -35,7 +35,7 @@ export class TaskDetails {
   }
 
   public toggleTaskImportance() {
-    this.task.setImportant(!this.task.isImportant());
+    this.task.important = !this.task.important;
   }
 
   public getSubtaskByIndex(index: number) {

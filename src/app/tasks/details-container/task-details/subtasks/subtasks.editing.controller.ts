@@ -44,7 +44,7 @@ export class SubtasksController{
     public addNewSubtask(){
         // TODO: określenie pozycji
         const subtask = new Subtask(this.editingModel.getNewSubtaskName(), Status.STARTED);
-        subtask.setTaskId(this.task.getId());
+        subtask.taskId = this.task.id;
         this.saveNewSubtask(subtask);
         this.closeAddingSubtask();
         ScrollBarHelper.moveToBottom(this.LIST_DETAILS_FORM);
@@ -55,7 +55,7 @@ export class SubtasksController{
     }
 
     public openEditingSubtask(subtask:Subtask){
-        this.editingModel.setEditingSubtaskName(subtask.getName());
+        this.editingModel.setEditingSubtaskName(subtask.name);
         this.editingModel.openEditingSubtask(subtask);
         FocusHelper.focus(this.getSubtaskItemId(subtask));
     }
@@ -65,11 +65,11 @@ export class SubtasksController{
     }
 
     private getSubtaskItemId(subtask: Subtask):string{
-        return this.SUBTASK_ITEM_ID + subtask.getId();
+        return this.SUBTASK_ITEM_ID + subtask.id;
     }
 
     public acceptEditingSubtask(subtask:Subtask){
-        subtask.setName(this.editingModel.getEditingSubtaskName());
+        subtask.name = this.editingModel.getEditingSubtaskName();
         this.updateSubtask(subtask);
     }
 
@@ -82,13 +82,13 @@ export class SubtasksController{
     }
 
     public toggleSubtaskStatus(subtask:Subtask){
-        switch(subtask.getStatus()){
+        switch(subtask.status){
             case Status.STARTED:
-            subtask.setStatus(Status.ENDED);
-            break;
+              subtask.status = Status.ENDED;
+              break;
             case Status.ENDED:
-            subtask.setStatus(Status.STARTED);
-            break;
+              subtask.status = Status.STARTED;
+              break;
         }
     }
 

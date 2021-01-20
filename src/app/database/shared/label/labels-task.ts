@@ -1,27 +1,27 @@
 
 export class LabelsTask{
 
-    private taskId: number;
-    private labelId: number;
+    private _taskId: number;
+    private _labelId: number;
 
     constructor(taskId: number, labelId:number){
-        this.taskId = taskId;
-        this.labelId = labelId;
+        this._taskId = taskId;
+        this._labelId = labelId;
     }
 
-    public getTaskId(){
-        return this.taskId;
+    public get taskId(){
+        return this._taskId;
     }
 
-    public setTaskId(id: number){
-        this.taskId = id;
+    public set taskId(id: number){
+        this._taskId = id;
     }
 
-    public getLabelId(){
-        return this.labelId;
+    public get labelId(){
+        return this._labelId;
     }
 
-    public setLabelId(id: number){
-        this.labelId = id;
+    public set labelId(id: number){
+        this._labelId = id;
     }
 }

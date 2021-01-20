@@ -11,7 +11,7 @@ export class RemoveKanbanTaskCallback implements IRemoveTaskCallback{
 
   execute(results: TaskRemoveResult[]) {
     results.forEach(result=>{
-      this.model.updateTasks(result.updatedKanbanTasks, this.kanbanTask.getColumnId());
+      this.model.updateTasks(result.updatedKanbanTasks, this.kanbanTask.id);
     });
   }
 

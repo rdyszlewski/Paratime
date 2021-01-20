@@ -3,62 +3,62 @@ import { PomodoroSummary } from 'app/pomodoro/pomodoro/statistics/summary';
 
 export class PomodoroHistory {
 
-    private id: number;
-    private time: number;
-    private state: State;
-    private taskId: number;
-    private projectId: number;
-    private startDate: Date;
-    private finishDate: Date;
+    private _id: number;
+    private _time: number;
+    private _state: State;
+    private _taskId: number;
+    private _projectId: number;
+    private _startDate: Date;
+    private _finishDate: Date;
     // TODO: można coś pomyśleć, jak to zapisać w inny sposób
 
-    public getId():number{
-      return this.id;
+    public get id():number{
+      return this._id;
     }
-    public setId(id: number):void{
-      this.id = id;
-    }
-
-    public getTime(): number{
-      return this.time;
-    }
-    public setTime(time: number){
-      this.time = time;
+    public set id(id: number){
+      this._id = id;
     }
 
-    public getState():State{
-      return this.state;
+    public get time(): number{
+      return this._time;
     }
-    public setState(state: State){
-      this.state = state;
-    }
-
-    public getTaskId():number{
-      return this.taskId;
-    }
-    public setTaskId(taskId:number){
-      this.taskId = taskId;
+    public set time(time: number){
+      this._time = time;
     }
 
-    public getProjectId(){
-      return this.projectId;
+    public get state():State{
+      return this._state;
     }
-    public setProjectId(projectId: number){
-      this.projectId = projectId;
-    }
-
-    public getStartDate():Date{
-      return this.startDate;
-    }
-    public setStartDate(date: Date): void{
-      this.startDate = date;
+    public set state(state: State){
+      this._state = state;
     }
 
-    public getFinishDate():Date{
-      return this.finishDate;
+    public get taskId():number{
+      return this._taskId;
     }
-    public setFinishDate(date: Date){
-      this.finishDate = date;
+    public set taskId(taskId:number){
+      this._taskId = taskId;
+    }
+
+    public get projectId(){
+      return this._projectId;
+    }
+    public set projectId(projectId: number){
+      this._projectId = projectId;
+    }
+
+    public get startDate():Date{
+      return this._startDate;
+    }
+    public set startDate(date: Date){
+      this._startDate = date;
+    }
+
+    public get finishDate():Date{
+      return this._finishDate;
+    }
+    public set finishDate(date: Date){
+      this._finishDate = date;
     }
 }
 
@@ -66,12 +66,12 @@ export class PomodoroSummaryAdapter{
 
   public static createHistory(summary: PomodoroSummary){
     const history = new PomodoroHistory();
-    history.setState(summary.state);
-    history.setTime(summary.time);
-    history.setTaskId(summary.taskId);
-    history.setProjectId(summary.projectId);
-    history.setStartDate(summary.startDate);
-    history.setFinishDate(summary.finishDate);
+    history.state = summary.state;
+    history.time = summary.time;
+    history.taskId = summary.taskId;
+    history.projectId = summary.projectId;
+    history.startDate = summary.startDate;
+    history.finishDate = summary.finishDate;
 
     return history;
   }

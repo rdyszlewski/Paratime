@@ -1,6 +1,5 @@
 import { Project } from 'app/database/shared/project/project';
 import { ProjectInsertResult } from 'app/database/shared/project/project.insert-result';
-import { TaskInsertResult } from 'app/database/shared/task/task.insert-result';
 import { ProjectsModel } from 'app/tasks/lists-container/projects/common/model';
 import { ProjectLoadEvent } from 'app/tasks/lists-container/projects/events/project.event';
 import { EventBus } from 'eventbus-ts';
@@ -30,6 +29,6 @@ export class CreateProjectCommand extends DataCommand{
   }
 
   public getDescription(): string {
-    return `Dodanie projektu ${this._project.getName()}`;
+    return `Dodanie projektu ${this._project.name}`;
   }
 }

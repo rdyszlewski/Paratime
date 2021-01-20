@@ -22,7 +22,7 @@ export class LocalSubtaskService implements ISubtaskService{
 
   public create(subtask: Subtask): Promise<InsertResult<Subtask>> {
     return this.insertSubtask(subtask).then(insertedSubtask=>{
-      return this.orderController.insert(insertedSubtask, null, insertedSubtask.getContainerId()).then(updatedSubtasks=>{
+      return this.orderController.insert(insertedSubtask, null, insertedSubtask.containerId).then(updatedSubtasks=>{
         return Promise.resolve(new InsertResult(insertedSubtask, updatedSubtasks));
       })
     })

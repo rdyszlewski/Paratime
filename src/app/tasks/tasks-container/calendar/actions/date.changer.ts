@@ -20,7 +20,7 @@ export class DateChanger{
   public changeDate(task: Task, cellName: string){
     switch(cellName){
       case CalendarValues.WITHOUT_DATE:
-        task.setDate(null);
+        task.date = null;
         break;
       case CalendarValues.CURRENT_TASKS:
         const currentCell = this._idsCreator.getCellId(this._viewModel.selectedDay);
@@ -33,8 +33,7 @@ export class DateChanger{
   }
 
   private changeTaskDate(task:Task, cellName: string){
-    const newDate = this.createDateFromCellId(cellName);
-    task.setDate(newDate);
+    task.date = this.createDateFromCellId(cellName);
   }
 
   private createDateFromCellId(cellId: string) {

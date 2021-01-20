@@ -20,7 +20,7 @@ export class CreateStageCommand extends DataCommand{
   }
 
   getDescription(): string {
-    return `Dodanie etapu ${this.stage.getName()}`;
+    return `Dodanie etapu ${this.stage.name}`;
   }
 
 }

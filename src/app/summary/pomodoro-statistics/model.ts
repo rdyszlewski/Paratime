@@ -96,7 +96,7 @@ export class TaskEntryCreator{
     private static prepareMap(history:PomodoroHistory[]):Map<number, PomodoroHistory[]>{
         const map = new Map<number, PomodoroHistory[]>();
         history.forEach(entry=>{
-            let taskId = entry.getTaskId();
+            let taskId = entry.taskId;
             if(!taskId){
               taskId = -1;
             }
@@ -145,7 +145,7 @@ export class TaskEntryCreator{
 
     private static calculateTime(list:PomodoroHistory[]){
         let sumTime = 0;
-        list.forEach(element=>sumTime+= element.getTime());
+        list.forEach(element=>sumTime+= element.time);
         return sumTime;
     }
 
@@ -165,7 +165,7 @@ export class ProjectEntryCreator{
     private static prepareMap(history:PomodoroHistory[]):Map<number, PomodoroHistory[]>{
         const map = new Map<number, PomodoroHistory[]>();
         history.forEach(entry=>{
-            const projectId = entry.getProjectId();
+            const projectId = entry.projectId;
             if(projectId){
                 if(!map.has(projectId)){
                     map.set(projectId, []);
@@ -205,7 +205,7 @@ export class ProjectEntryCreator{
 
     private static calculateTime(list:PomodoroHistory[]){
         let sumTime = 0;
-        list.forEach(element=>sumTime+= element.getTime());
+        list.forEach(element=>sumTime+= element.time);
         return sumTime;
     }
 

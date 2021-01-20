@@ -32,26 +32,26 @@ export class LocalProjectRepository extends OrderRepository<Project>{
   }
 
   public remove(project: Project): Promise<void>{
-    return this.table.delete(project.getId());
+    return this.table.delete(project.id);
   }
 
   public update(project:Project):Promise<number>{
     let preparedProject = this.getPreparedProject(project);
-    return this.table.update(project.getId(), preparedProject);
+    return this.table.update(project.id, preparedProject);
   }
 
   // TODO: sprawdzić, czy z następnikami i tak dalej wszystko będzie działać poprawnie
 
   private getPreparedProject(project: Project): Project{
     // TODO: pomyśleć, jak to można obejść
-    let newProject = new Project(project.getName(), project.getDescription(), project.getStatus(), project.getType());
-    if(project.getId()){
-        newProject.setId(project.getId());
+    let newProject = new Project(project.name, project.description, project.status, project.type);
+    if(project.id){
+      newProject.id = project.id;
     }
-    newProject.setStartDate(project.getStartDate());
-    newProject.setEndDate(project.getEndDate());
-    newProject.setSuccessorId(project.getSuccessorId());
-    newProject.setPosition(project.getPosition());
+    newProject.startDate = project.startDate;
+    newProject.endDate = project.endDate;
+    newProject.successorId = project.successorId;
+    newProject.position = project.position;
 
     return newProject;
   }

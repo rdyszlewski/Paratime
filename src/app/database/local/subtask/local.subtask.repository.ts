@@ -20,10 +20,10 @@ export class LocalSubtaskRepository extends OrderRepository<Subtask>{
   }
 
   public remove(subtask: Subtask): Promise<void>{
-    return this.table.delete(subtask.getId());
+    return this.table.delete(subtask.id);
   }
 
   public update(subtask: Subtask): Promise<number>{
-    return this.table.update(subtask.getId(), subtask);
+    return this.table.update(subtask.id, subtask);
   }
 }

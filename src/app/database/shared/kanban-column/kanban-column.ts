@@ -4,59 +4,60 @@ import { KanbanTask } from '../kanban-task/kanban-task';
 
 export class KanbanColumn extends OrderableItem implements ITaskContainer{
   // TODO: przetestować, czy nie będzie to sprawiało problemów
-  private projectId: number;
-  private name: string;
-  private default: number = 0;
-  private kanbanTasks: KanbanTask[];
+  private _projectId: number;
+  private _name: string;
+  private _default: boolean;
+  private _kanbanTasks: KanbanTask[];
 
-  public getId(): number {
-    return this.id;
+  public get id(): number {
+    return this._id;
   }
 
-  public setId(id: number) {
-    this.id = id;
+  public set id(id: number) {
+    this._id = id;
   }
 
-  public getProjectId(): number {
-    return this.projectId;
+  public get projectId(): number {
+    return this._projectId;
   }
 
-  public setProjectId(projectId: number) {
-    this.projectId = projectId;
+  public set projectId(value: number) {
+    this._projectId = value;
   }
 
-  public getName(): string {
-    if (this.name) {
-      return this.name;
+  public get name(): string {
+    if (this._name) {
+      return this._name;
     }
     // TODO: przenieść to albo jakoś zmienić
     return 'Nieprzypisane';
   }
 
-  public setName(name: string) {
-    this.name = name;
+  public set name(name: string) {
+    this._name = name;
   }
 
-  public isDefault(): boolean {
-    return this.default == 1;
+  public get default(): boolean {
+    return this._default;
   }
 
-  public setDefault(def: boolean) {
-    this.default = def ? 1 : 0;
+  public set default(value: boolean) {
+    // this._default = value ? 1 : 0;
+    this._default = value;
   }
 
-  public getKanbanTasks(): KanbanTask[] {
-    return this.kanbanTasks;
+  public get kanbanTasks(): KanbanTask[] {
+    return this._kanbanTasks;
   }
 
-  public setKanbanTasks(kanbanTasks: KanbanTask[]) {
-    this.kanbanTasks = kanbanTasks;
+  public set kanbanTasks(value: KanbanTask[]) {
+    this._kanbanTasks = value;
   }
 
-  public getContainerId(): number {
-    return this.getProjectId();
+  public get containerId(): number {
+    return this._projectId;
   }
-  public setContainerId(id: number): void {
-    this.setProjectId(id);
+  public set containerId(value: number) {
+    this._projectId = value;
   }
 }

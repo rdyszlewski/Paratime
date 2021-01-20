@@ -49,7 +49,7 @@ export class LocalLabelService implements ILabelService{
   }
 
   public remove(label: Label): Promise<Label[]> {
-    return this.orderRemoveStage(label.getId()).then(updatedLabels=>{
+    return this.orderRemoveStage(label.id).then(updatedLabels=>{
       return this.repository.remove(label).then(()=>{
         return Promise.resolve(updatedLabels);
       });
@@ -84,14 +84,14 @@ export class LocalLabelService implements ILabelService{
     /// first we remvoe all assigned labels, later add new collection of labels.
     // This is nessessery, to not checking which label is already assinged and wchich is not anymore assgined
     return this.removeAllAssigningFromTask(taskId).then(_=>{
-      let actions = labels.map(label=>this.assginLabel(taskId, label.getId()));
+      let actions = labels.map(label=>this.assginLabel(taskId, label.id));
       return Promise.all(actions);
     });
   }
 
   public getLabelsByTask(taskId: number): Promise<Label[]> {
     return this.taskLabelsRepository.findByTaskId(taskId).then((entries)=>{
-      let promises = entries.map(entry=>this.repository.findById(entry.getLabelId()));
+      let promises = entries.map(entry=>this.repository.findById(entry.labelId));
       return Promise.all(promises);
     })
   }

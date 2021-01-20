@@ -40,30 +40,33 @@ export class LocalTaskRepository extends OrderRepository<Task>{
   }
 
   public remove(task: Task): Promise<void>{
-    return this.table.delete(task.getId());
+    return this.table.delete(task.id);
   }
 
   public update(task:Task):Promise<number>{
     let preparedTask = this.getPreparedTask(task);
-    return this.table.update(task.getId(), preparedTask);
+    return this.table.update(task.id, preparedTask);
   }
 
   private getPreparedTask(task: Task): Task{
-    let newTask = new Task(task.getName(), task.getDescription(), task.getStatus());
-    if(task.getId()){
-        newTask.setId(task.getId());
-    }
-    newTask.setImportant(task.isImportant());
-    newTask.setDate(task.getDate());
-    newTask.setStartTime(task.getStartTime());
-    newTask.setEndDate(task.getEndDate());
-    newTask.setPlannedTime(task.getPlannedTime());
-    newTask.setProgress(task.getProgress());
-    newTask.setProjectID(task.getProjectID());
-    newTask.setPriority(task.getPriority());
-    newTask.setProjectStageID(task.getProjectStageID());
-    newTask.setSuccessorId(task.getSuccessorId());
-    newTask.setPosition(task.getPosition());
-    return newTask;
+    // TODO: uzupełnić to
+    return task;
+
+    // let newTask = new Task(task.name(), task.description(), task.status());
+    // if(task.getId()){
+    //     newTask.setId(task.getId());
+    // }
+    // newTask.important(task.important());
+    // newTask.date(task.date());
+    // newTask.startTime(task.startTime());
+    // newTask.endDate(task.endDate());
+    // newTask.plannedTime(task.plannedTime());
+    // newTask.progress(task.progress());
+    // newTask.projectID(task.projectID());
+    // newTask.priority(task.priority());
+    // newTask.projectStageID(task.projectStageID());
+    // newTask.setSuccessorId(task.getSuccessorId());
+    // newTask.setPosition(task.getPosition());
+    // return newTask;
   }
 }

@@ -1,7 +1,7 @@
 import { ProjectDetails } from './model';
 
 export class ProjectValidator{
-    
+
     private model: ProjectDetails;
 
     constructor(model: ProjectDetails){
@@ -9,14 +9,14 @@ export class ProjectValidator{
     }
 
     public isNameValid():boolean{
-        return this.model.getProject().getName() != null 
-        && this.model.getProject().getName()!= "";
+        return this.model.getProject().name != null
+        && this.model.getProject().name!= "";
     }
 
     public isEndDateValid():boolean{
         const project = this.model.getProject();
-        if(project.getStartDate() != null && project.getEndDate() != null){
-            return project.getEndDate() >= project.getStartDate(); 
+        if(project.startDate != null && project.endDate != null){
+            return project.endDate >= project.startDate;
         }
         return true;
     }

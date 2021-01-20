@@ -9,17 +9,17 @@
       cdkDropListOrientation="horizontal"
     >
       <ng-container *ngFor="let column of getModel().getColumns()">
-        <div class="column" cdkDrag [hidden]="column.isDefault()">
+        <div class="column" cdkDrag [hidden]="column.default">
           <div class="column-header">
             <div
               class="column-name"
               *ngIf="getModel().getEditedColumn() != column"
             >
-              {{ column.getName() }}
+              {{ column.name }}
             </div>
             <input
               class="column-name"
-              id="column-name-{{ column.getId() }}"
+              id="column-name-{{ column.id }}"
               *ngIf="getModel().getEditedColumn() == column"
               [ngModel]="getModel().getColumnName()"
               (ngModelChange)="getModel().setColumnName($event)"
@@ -68,7 +68,7 @@
         <div class="column-x">
           <div class="column-header">
             <span class="column-name">{{
-              getModel().getDefaultColumn().getName()
+              getModel().getDefaultColumn().name
             }}</span>
             <button (click)="toggleOpenDefautlColumn()">></button>
           </div>
@@ -287,7 +287,7 @@
       class="column-add-button"
       (click)="getModel().openAddingColumn()"
       *ngIf="
-        getModel().getProject().getId() != null && !getModel().isAddingOpen()
+        getModel().getProject().id != null && !getModel().isAddingOpen()
       "
     >
       Dodaj kolumne

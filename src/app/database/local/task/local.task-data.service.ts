@@ -1,4 +1,3 @@
-import { CDK_CONNECTED_OVERLAY_SCROLL_STRATEGY } from '@angular/cdk/overlay/overlay-directives';
 import { InsertResult } from 'app/database/shared/insert-result';
 import { KanbanColumn } from 'app/database/shared/kanban-column/kanban-column';
 import { KanbanTask } from 'app/database/shared/kanban-task/kanban-task';
@@ -32,7 +31,7 @@ export class LocalTaskDataService{
     return this.insertTask(data.task).then(insertedTask=>{
       return Promise.all([
         this.insertTaskProperties(data.task, insertedTask),
-        this.taskOrderController.insert(insertedTask, null, insertedTask.getContainerId()),
+        this.taskOrderController.insert(insertedTask, null, insertedTask.containerId),
         this.insertKanbanTask(insertedTask, data.column, data.projectId)
       ]).then(results=>{
         let filledTask = results[0];
@@ -54,27 +53,27 @@ export class LocalTaskDataService{
 
   private insertTaskProperties(taskModel: Task, insertedTask: Task): Promise<Task>{
     let actions: [Promise<Subtask[]>, Promise<Label[]>] = [
-      this.insertSubtasks(taskModel, insertedTask.getId()),
-      this.insertTaskLabels(taskModel, insertedTask.getId())
+      this.insertSubtasks(taskModel, insertedTask.id,),
+      this.insertTaskLabels(taskModel, insertedTask.id)
     ]
     return Promise.all(actions).then(results=>{
       // TODO: tutaj może przyda się stworzenie nowe
       let subtasks = results[0];
       let labels = results[1];
-      insertedTask.setSubtasks(subtasks);
-      insertedTask.setLabels(labels);
+      insertedTask.subtasks = subtasks;
+      insertedTask.labels = labels;
 
       return Promise.resolve(insertedTask);
     });
   }
 
   private insertSubtasks(task: Task, insertedId: number): Promise<Subtask[]>{
-    if(task.getSubtasks().length == 0){
+    if(task.subtasks.length == 0){
       return Promise.resolve([]);
     }
     let actions = [];
-    task.getSubtasks().forEach(subtask=>{
-      subtask.setTaskId(insertedId);
+    task.subtasks.forEach(subtask=>{
+      subtask.taskId = insertedId;
       // TODo: sprawdzić, jak to rozwiązać
       actions.push(this.subtaskService.create(subtask));
     })
@@ -84,24 +83,22 @@ export class LocalTaskDataService{
   }
 
   private insertTaskLabels(task: Task, insertedId: number): Promise<Label[]>{
-    if(task.getLabels().length==0){
+    if(task.labels.length==0){
       return Promise.resolve([]);
     }
-    let actions = task.getLabels().map(label=>this.labelService.assginLabel(insertedId, label.getId()));
+    let actions = task.labels.map(label=>this.labelService.assginLabel(insertedId, label.id));
     return Promise.all(actions).then(results=>{
-      let labelsIds = results.map(result=>result.getLabelId())
+      let labelsIds = results.map(result=>result.labelId);
       return Promise.all(labelsIds.map(id => this.labelService.getById(id)));
-    })
+    });
   }
 
   private insertKanbanTask(insertedTask: Task, column: KanbanColumn, projectId: number ): Promise<InsertResult<KanbanTask>>{
     let data = new TaskInsertData(insertedTask, column, projectId);
     return this.prepareKanbanColumn(data).then(column=>{
-      let kanbanTask = this.getPreparedKanbanTask(data, column.getId());
+      let kanbanTask = this.getPreparedKanbanTask(data, column.id);
       return this.createKanbanTask(kanbanTask).then(insertedTask=>{
-        console.log("CreateKanbanTask");
-        console.log(insertedTask);
-        return this.kanbanTaskOrderController.insert(insertedTask, null, column.getId()).then(updatedTasks=>{
+        return this.kanbanTaskOrderController.insert(insertedTask, null, column.id).then(updatedTasks=>{
           let result = new InsertResult(insertedTask, updatedTasks);
           return Promise.resolve(result);
         })
@@ -122,8 +119,9 @@ export class LocalTaskDataService{
   private getPreparedKanbanTask(data: TaskInsertData, columnId: number): KanbanTask{
     let kanbanTask = new KanbanTask();
     // TODO: to trzeba to prześledzić
-    kanbanTask.setTask(data.task);
-    kanbanTask.setColumnId(columnId);
+    kanbanTask.task = data.task;
+    kanbanTask.columnId = columnId;;
+
     return kanbanTask;
   }
 
@@ -137,7 +135,7 @@ export class LocalTaskDataService{
 
   public remove(task: Task): Promise<TaskRemoveResult>{
     return Promise.all([
-      this.removeTaskConnections(task.getId()),
+      this.removeTaskConnections(task.id),
       this.removeKanbanTask(task)
     ]).then(results=>{
       let updatedKanbanTasks = results[1];
@@ -152,7 +150,7 @@ export class LocalTaskDataService{
   private removeKanbanTask(task: Task): Promise<KanbanTask[]>{
     console.log(task);
 
-    return this.kanbanTaskRepository.findByTask(task.getId()).then(kanbanTask=>{
+    return this.kanbanTaskRepository.findByTask(task.id).then(kanbanTask=>{
       console.log(kanbanTask);
       return this.kanbanTaskRepository.remove(kanbanTask).then(()=>{
         return this.kanbanTaskOrderController.remove(kanbanTask);
@@ -183,13 +181,13 @@ export class LocalTaskDataService{
     // -- być moze etap projektu
     // -- być może projekt
     return Promise.all([
-      this.subtaskService.getByTask(task.getId()),
-      this.labelService.getLabelsByTask(task.getId())
+      this.subtaskService.getByTask(task.id),
+      this.labelService.getLabelsByTask(task.id)
     ]).then(results=>{
       let subtasks = results[0];
-      task.setSubtasks(subtasks);
+      task.subtasks = subtasks;
       let labels = results[1];
-      task.setLabels(labels);
+      task.labels = labels;
       return Promise.resolve(task);
     })
   }

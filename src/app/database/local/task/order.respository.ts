@@ -32,8 +32,8 @@ export class OrderRepository<T extends OrderableItem>{
 
   public findLast(containerId: number, exceptItem: number = -1): Promise<T>{
     if(containerId){
-      return this.table.where({"successor":-1, [this.containerColumn]: containerId,}).and(x=>x["id"]!=exceptItem).first()
+      return this.table.where({"successor":-1, [this.containerColumn]: containerId,}).and(x=>x["_id"]!=exceptItem).first()
     }
-    return this.table.where({"successor":-1}).and(x=>x["id"]!=exceptItem).first();
+    return this.table.where({"successor":-1}).and(x=>x["_id"]!=exceptItem).first();
   }
 }

@@ -41,7 +41,7 @@ export class ProjectAddingController{
 
     public saveProject(){
         const project = new Project();
-        project.setName(this.model.getNewProjectName());
+        project.name = this.model.getNewProjectName();
         this.commandService.execute(new CreateProjectCommand(project, this.listModel));
         // TODO: można wstawić jakąś zaślepkę, która będzie chowana dopiero po wstawieniu zadania
         this.closeAddingNewProject();

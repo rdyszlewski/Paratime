@@ -21,13 +21,13 @@ export class RemoveCalendarTaskCallback implements IRemoveTaskCallback{
   }
 
   private removeTaskFromDay(task: Task) {
-    if (task.getDate() != null) {
-      const cell = this.tasksModel.findCell(task.getDate());
+    if (task.date != null) {
+      const cell = this.tasksModel.findCell(task.date);
       if (cell) {
         ListHelper.remove(task, cell.tasks);
       } else {
         const selectedDay = this.viewModel.selectedDay;
-        if (selectedDay && this.isCorrectCell(selectedDay, task.getDate())) {
+        if (selectedDay && this.isCorrectCell(selectedDay, task.date)) {
           ListHelper.remove(task, selectedDay.tasks);
         }
       }

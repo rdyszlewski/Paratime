@@ -25,14 +25,14 @@ export class LabelEditingController{
     }
 
     public openEditingLabel(label:Label){
-        this.model.setEditingLabelName(label.getName());
+        this.model.setEditingLabelName(label.name);
         this.state.openEditingLabel(label);
         FocusHelper.focus(this.getLabelItemId(label));
     }
 
     // TODO: ta metoda pojawia się kilka razy
     private getLabelItemId(label:Label):string{
-        return this.LABEL_ITEM_ID+label.getId();
+        return this.LABEL_ITEM_ID+label.id;
     }
 
     private closeEditingLabel(){
@@ -40,7 +40,7 @@ export class LabelEditingController{
     }
 
     public acceptEditingLabel(label:Label){
-        label.setName(this.model.getEditingLabelName());
+      label.name = this.model.getEditingLabelName();
         this.updateLabel(label);
     }
 

@@ -14,15 +14,15 @@ export class TaskDataSorter{
                  return this.sortByIntervals(direction, entries);
         }
     }
- 
+
     private static sortByName(direction, entries:TaskEntry[]){
          if(direction == "asc"){
-             return entries.sort((a,b)=>(a.getTask().getName()>b.getTask().getName())? 1: -1);
+             return entries.sort((a,b)=>(a.getTask().name>b.getTask().name)? 1: -1);
          } else {
-             return entries.sort((a,b)=>(a.getTask().getName()>b.getTask().getName())? -1: 1);
+             return entries.sort((a,b)=>(a.getTask().name>b.getTask().name)? -1: 1);
          }
     }
- 
+
     private static sortByTime(direction, entries:TaskEntry[]){
          if(direction == "asc"){
              return entries.sort((a,b)=>(a.getTime() > b.getTime())? 1: -1);
@@ -30,7 +30,7 @@ export class TaskDataSorter{
              return entries.sort((a,b)=>(a.getTime() > b.getTime())? -1: 1);
          }
     }
- 
+
     private static sortByIntervals(direction, entries:TaskEntry[]){
      if(direction == "asc"){
          return entries.sort((a,b)=>(a.getIntervals() > b.getIntervals())? 1: -1);

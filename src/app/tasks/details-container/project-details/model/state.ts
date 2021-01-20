@@ -9,26 +9,26 @@ export class ProjectDetailsState{
     }
 
     public isDescriptionExpanded():boolean{
-        return this.model.getProject().getDescription() != null;
+        return this.model.getProject().description != null;
     }
 
     public isTypeExpanded():boolean{
-        return this.model.getProject().getType != null;
+        return this.model.getProject().type != null;
     }
 
     public isStateExpanded():boolean{
-        return this.model.getProject().getStatus() != null;
+        return this.model.getProject().status != null;
     }
 
     public isStartDateExpanded():boolean{
-        return this.model.getProject().getStartDate() != null;
+        return this.model.getProject().startDate != null;
     }
 
     public isEndDateExpanded():boolean{
-        return this.model.getProject().getEndDate() != null;
+        return this.model.getProject().endDate != null;
     }
 
     public isStagesExpanded():boolean{
-        return this.model.getProject().getStages().length > 0;
+        return this.model.getProject().stages.length > 0;
     }
 }

@@ -7,8 +7,8 @@ export class TaskItemInfo{
       // TODO: przenieść to do html
     public getSubtasksList(task:Task){
         let text = "<ul class='tooltip-list'>";
-        task.getSubtasks().forEach(subtask=>{
-          text += "<li>"+ subtask.getName()+"</li>"
+        task.subtasks.forEach(subtask=>{
+          text += "<li>"+ subtask.name+"</li>"
         });
         text+= "</ul>";
         return text;
@@ -16,7 +16,7 @@ export class TaskItemInfo{
 
     public getPriorityText(task:Task):string{
         // TODO: pomyśleć nad oznaczeniem ważnośći zadania
-        switch(task.getPriority()){
+        switch(task.priority){
           case Priority.LEVEL_1:
             return '1';
           case Priority.LEVEL_2:
@@ -33,6 +33,6 @@ export class TaskItemInfo{
       }
 
     public getEndDateText(task:Task){
-        return DateFormatter.format(task.getEndDate());
+        return DateFormatter.format(task.endDate);
     }
 }

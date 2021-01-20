@@ -33,9 +33,9 @@ export class LocalProjectService implements IProjectService{
     if(!project){
       return Promise.resolve(null);
     }
-    let stageFiler = StageFilter.getBuilder().setProjectId(project.getId()).build();
+    let stageFiler = StageFilter.getBuilder().setProjectId(project.id).build();
     return this.stageRepository.findByFilter(stageFiler).then(stages=>{
-      project.setStages(stages);
+      project.stages = stages;
       return Promise.resolve(project);
     });
   }
@@ -64,7 +64,7 @@ export class LocalProjectService implements IProjectService{
      return this.insertNewProject(project).then(insertedProject=>{
       return Promise.all([
         this.orderController.insert(insertedProject, null, null),
-        this.insertDefaultKanbanColumn(insertedProject.getId())
+        this.insertDefaultKanbanColumn(insertedProject.id)
       ]).then(results=>{
         console.log(results);
         return this.createInsertResult(insertedProject, results[0], results[1]);
@@ -82,8 +82,8 @@ export class LocalProjectService implements IProjectService{
 
   private insertDefaultKanbanColumn(projectId: number): Promise<InsertResult<KanbanColumn>>{
     let defaultColumn = new KanbanColumn();
-    defaultColumn.setProjectId(projectId);
-    defaultColumn.setDefault(true);
+    defaultColumn.projectId = projectId;
+    defaultColumn.default = true;
     return this.kanbanColumnService.create(defaultColumn);
   }
 
@@ -100,7 +100,7 @@ export class LocalProjectService implements IProjectService{
     // TODO: usuwanie kolumn
     // TODO: usunięcie projektu
     // TODO: ustawienie kolejności
-    let id = project.getId();
+    let id = project.id;
     return this.removeElementsOfProject(id).then(()=>{
       return this.orderRemovedProject(id).then(updatedProjects=>{
         return this.repository.remove(project).then(()=>{

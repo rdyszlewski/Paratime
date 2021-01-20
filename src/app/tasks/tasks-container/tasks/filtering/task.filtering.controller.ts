@@ -40,27 +40,27 @@ export class TaskFilteringController {
     let resultFilter = this.mainModel.getTasks();
     const filter = this.getFilter();
     if (filter.isImportant()) {
-      resultFilter = resultFilter.filter((x) => x.isImportant());
+      resultFilter = resultFilter.filter((x) => x.important);
     }
     if (filter.isWithEndDate()) {
-      resultFilter = resultFilter.filter((x) => x.getEndDate() != null);
+      resultFilter = resultFilter.filter((x) => x.endDate != null);
     }
     if (filter.getStatus() != null) {
       resultFilter = resultFilter.filter(
-        (x) => x.getStatus() == filter.getStatus()
+        (x) => x.status == filter.getStatus()
       );
     }
     if (filter.getStage() != null) {
       resultFilter = resultFilter.filter(
-        (x) => x.getProjectStageID() == filter.getStage().getId()
+        (x) => x.projectStageID == filter.getStage().id
       );
     }
     if (filter.getLabel() != null) {
       // TODO: spróbować to napisać jakoś lepiej
       resultFilter = resultFilter.filter((x) => {
         let indices = [];
-        x.getLabels().forEach((label) => indices.push(label.getId()));
-        return indices.includes(filter.getLabel().getId());
+        x.labels.forEach((label) => indices.push(label.id));
+        return indices.includes(filter.getLabel().id);
       });
     }
 

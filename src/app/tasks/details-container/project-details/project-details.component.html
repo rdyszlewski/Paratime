@@ -23,7 +23,7 @@
 
     <mat-expansion-panel
       class="form-group"
-      [expanded]="getModel().getProject().getStages().length > 0"
+      [expanded]="getModel().getProject().stages.length > 0"
     >
       <mat-expansion-panel-header class="form-group-header">
         Etapy
@@ -57,8 +57,8 @@
       name="name"
       autocomplete="off"
       placeholder="Nazwa"
-      [ngModel]="getModel().getProject().getName()"
-      (ngModelChange)="getModel().getProject().setName($event)"
+      [ngModel]="getModel().getProject().name"
+      (ngModelChange)="getModel().getProject().name = $event"
       (keyup.enter)="updateProject()"
       (focusout)="updateProject()"
     />
@@ -81,8 +81,8 @@
       name="description"
       rows="4"
       placeholder="Opis"
-      [ngModel]="getModel().getProject().getDescription()"
-      (ngModelChange)="getModel().getProject().setDescription($event)"
+      [ngModel]="getModel().getProject().description"
+      (ngModelChange)="getModel().getProject().description = $event"
       (keyup.enter)="updateProject()"
       (focusout)="updateProject()"
     >
@@ -97,8 +97,8 @@
       class="form-control"
       id="project-type"
       name="type"
-      [ngModel]="getModel().getProject().getType()"
-      (ngModelChange)="getModel().getProject().setType($event)"
+      [ngModel]="getModel().getProject().type"
+      (ngModelChange)="getModel().getProject().type  =$event"
       (change)="updateProject()"
     >
       <option [ngValue]="projectType.DEFAULT">Nieokreślony</option>
@@ -116,8 +116,8 @@
       class="form-control"
       id="project-status"
       name="status"
-      [ngModel]="getModel().getProject().getStatus()"
-      (ngModelChange)="getModel().getProject().setStatus($event)"
+      [ngModel]="getModel().getProject().status"
+      (ngModelChange)="getModel().getProject().status = $event"
       (change)="updateProject()"
     >
       <option [ngValue]="status.STARTED">Aktywny</option>
@@ -138,8 +138,8 @@
         name="start-date"
         autocomplete="off"
         [matDatepicker]="startDatePicker"
-        [ngModel]="getModel().getProject().getStartDate()"
-        (ngModelChange)="getModel().getProject().setStartDate($event)"
+        [ngModel]="getModel().getProject().startDate"
+        (ngModelChange)="getModel().getProject().startDate = $event"
         (dateChange)="updateProject()"
       />
       <mat-datepicker-toggle
@@ -162,8 +162,8 @@
         name="end-date"
         autocomplete="off"
         [matDatepicker]="endDatePicker"
-        [ngModel]="getModel().getProject().getEndDate()"
-        (ngModelChange)="getModel().getProject().setEndDate($event)"
+        [ngModel]="getModel().getProject().endDate"
+        (ngModelChange)="getModel().getProject().endDate = $event"
         (dateChange)="updateProject()"
       />
       <mat-datepicker-toggle

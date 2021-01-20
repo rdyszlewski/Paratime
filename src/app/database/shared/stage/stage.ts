@@ -3,73 +3,75 @@ import { OrderableItem } from '../models/orderable.item';
 import { Project } from '../project/project';
 
 export class Stage extends OrderableItem {
-  private name: string;
-  private description: string;
-  private startDate: Date;
-  private endDate: Date;
-  private status: Status;
-  private project: Project;
-  private projectID: number;
+  private _name: string;
+  private _description: string;
+  // TODO: sprawdzić, jak zostają zapisane daty w bazie danych
+  private _startDate: Date;
+  private _endDate: Date;
+  private _status: Status;
+  private _project: Project;
+  private _projectID: number; // TODO: sprawdzić, czy to jest potrzebne i w jaki sposób można to zastąpić
 
-  public getName(): string {
-    return this.name;
+  public get name(): string {
+    return this._name;
   }
 
-  public setName(name: string): void {
-    this.name = name;
+  public set name(value: string){
+    this._name = value;
   }
 
-  public getDescription(): string {
-    return this.description;
+  public get description(): string {
+    return this._description;
   }
 
-  public setDescription(description: string): void {
-    this.description = description;
+  public set description(value: string){
+    this._description = value;
   }
 
-  public getStartDate(): Date{
-    return this.startDate;
+  public get startDate(): Date{
+    return this._startDate;
   }
 
-  public setStartDate(date: Date){
-    this.startDate = date;
+  public set startDate(value: Date){
+    this._startDate = value;
   }
 
-  public getEndDate(): Date {
-    return this.endDate;
+  public get endDate(): Date {
+    return this._endDate;
   }
 
-  public setEndDate(date: Date) {
-    this.endDate = date;
+  public set endDate(value: Date) {
+    this._endDate = value;
   }
 
-  public getStatus(): Status {
-    return this.status;
+  public get status(): Status {
+    return this._status;
   }
 
-  public setStatus(status: Status): void {
-    this.status = status;
+  public set status (value: Status){
+    this._status = value;
   }
 
-  public setProject(project: Project): void {
-    this.project = project;
-    if (project) {
-      this.projectID = project.getId();
+  public set project(value: Project) {
+    this._project = value;
+    // TODO: sprawdzić, czy to powinno być w ten sposób
+    if (value) {
+      this._projectID = value.id;
     }
   }
 
-  public getProjectID(): number {
-    return this.projectID;
+  public get projectID(): number {
+    return this._projectID;
   }
 
-  public setProjectID(id: number) {
-    this.projectID = id;
+  public set projectID(id: number) {
+    this._projectID = id;
   }
 
-  public getContainerId(): number {
-    return this.getProjectID();
+  public get containerId(): number {
+    return this._projectID;
   }
-  public setContainerId(id: number): void {
-    this.setProjectID(id);
+  public set containerId(value: number){
+    this._projectID = value;
   }
 }

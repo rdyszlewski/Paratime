@@ -20,7 +20,7 @@ export class UpdateProjectCommand extends DataCommand{
   }
 
   getDescription(): string {
-    return `Aktualizacja projektu ${this.project.getName()}`;
+    return `Aktualizacja projektu ${this.project.name}`;
   }
 
 }

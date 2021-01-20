@@ -3,56 +3,57 @@ import { OrderableItem } from '../models/orderable.item';
 import { Task } from '../task/task';
 import { ITaskItem } from '../task/task.item';
 
-export class KanbanTask extends OrderableItem implements IFilterable, ITaskItem{
+export class KanbanTask extends OrderableItem implements ITaskItem, IFilterable {
 
-  private taskId: number;
-  private columnId: number;
-  private task: Task;
+  private _taskId: number;
+  private _columnId: number;
+  private _task: Task;
 
-  public getTaskId(): number {
-    return this.taskId;
+  public get id(): number {
+    return this._taskId;
   }
 
-  public setTaskId(taskId: number) {
-    this.taskId = taskId;
+  public set id(taskId: number) {
+    this._taskId = taskId;
   }
 
-  public getName(): string {
-    if (this.task) {
-      return this.task.getName();
+  public get name(): string{
+    if(this._task){
+      return this._task.name;
+    }
+    return null;
+  }
+
+  public set name(value: string){
+    if(this._task){
+      this._task.name = value;
     }
   }
 
-  public setName(name: string): void {
-    if(this.task){
-      this.task.setName(name);
-    }
+  public get columnId(): number {
+    return this._columnId;
   }
 
-  public getColumnId(): number {
-    return this.columnId;
+  public set columnId(columnId: number) {
+    this._columnId = columnId;
   }
 
-  public setColumnId(columnId: number) {
-    this.columnId = columnId;
+  public get task() {
+    return this._task;
   }
 
-  public getTask() {
-    return this.task;
-  }
-
-  public setTask(task: Task) {
-    this.task = task;
+  public set task(task: Task) {
+    this._task = task;
     if (task) {
-      this.taskId = task.getId();
+      this._taskId = task.id;
     }
   }
 
-  public getContainerId(): number {
-    return this.getColumnId();
+  public get containerId(): number {
+    return this._columnId;
   }
 
-  public setContainerId(id: number): void {
-    this.setColumnId(id);
+  public set containerId(id: number) {
+    this._columnId = id;
   }
 }

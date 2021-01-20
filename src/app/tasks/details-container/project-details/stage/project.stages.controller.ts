@@ -31,8 +31,8 @@ export class ProjectStagesController {
 
   public addNewStage() {
     const stage = new Stage();
-    stage.setName(this.stageModel.getNewStageName());
-    stage.setProject(this.project);
+    stage.name = this.stageModel.getNewStageName();
+    stage.project = this.project;
     this.saveStage(stage);
   }
 

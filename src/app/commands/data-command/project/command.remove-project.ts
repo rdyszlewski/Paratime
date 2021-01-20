@@ -20,6 +20,6 @@ export class RemoveProjectCommand extends DataCommand{
 
   public getDescription(): string {
     // TODO: dodać lokalizację
-    return `Usunięcię projektu ${this._project.getName()}`;
+    return `Usunięcię projektu ${this._project.name}`;
   }
 }

@@ -12,10 +12,10 @@ export class StageDetailsModel{
 
     private copyStage(stage:Stage):Stage{
         const newStage = new Stage();
-        newStage.setId(stage.getId());
-        newStage.setName(stage.getName());
-        newStage.setDescription(stage.getDescription());
-        newStage.setEndDate(stage.getEndDate());
+        newStage.id = stage.id;
+        newStage.name = stage.name;
+        newStage.description = stage.description;
+        newStage.endDate = stage.endDate;
 
         return newStage;
     }
@@ -25,12 +25,12 @@ export class StageDetailsModel{
     }
 
     public isNameValid(){
-        return this.stage.getName() != null && this.stage.getName() != "";
+        return this.stage.name != null && this.stage.name != "";
     }
 
     public isNameChanged(){
         if(this.stage != null && this.originStage != null){
-            return this.stage.getName() != this.originStage.getName() != null;
+            return this.stage.name != this.originStage.name != null;
         }
         return false;
     }

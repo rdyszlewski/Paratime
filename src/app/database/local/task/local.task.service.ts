@@ -67,13 +67,13 @@ export class LocalTaskService extends LocalTaskDataService implements ITaskServi
     updated.add(task);
     return this.taskOrderController.remove(task).then(updatedItems=>{
       updatedItems.forEach(item=>updated.add(item));
-      let filter = TaskFilter.getBuilder().setProject(task.getProjectID()).setFirst(true).setStatus(status).build();
+      let filter = TaskFilter.getBuilder().setProject(task.projectID).setFirst(true).setStatus(status).build();
       return this.taskRepository.findByFilter(filter).then(tasks=>{
         if(tasks.length>0){
           let firstTask = tasks[0];
-          task.setStatus(status);
-          task.setPosition(Position.HEAD);
-          return this.taskOrderController.insert(task, firstTask, task.getContainerId()).then(updatedItems=>{
+          task.status = status;
+          task.position = Position.HEAD;
+          return this.taskOrderController.insert(task, firstTask, task.containerId).then(updatedItems=>{
             updatedItems.forEach(item=>updated.add(item));
             return Promise.resolve(Array.from(updated));
           });

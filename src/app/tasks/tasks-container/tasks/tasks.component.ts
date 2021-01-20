@@ -87,7 +87,7 @@ export class TasksComponent implements OnInit, ITaskList {
   }
 
   public openProject(project: Project): void {
-    if (!project || project.getId() < 0) {
+    if (!project || project.id < 0) {
       return;
     }
     this.model.setProject(project);
@@ -116,17 +116,17 @@ export class TasksComponent implements OnInit, ITaskList {
   private loadProjectTasks(project: Project, taskType: TaskType) {
     switch (taskType) {
       case TaskType.ACTIVE:
-        let activeFilter = TaskFilter.getBuilder().setProject(project.getId()).setActive(true).build();
+        let activeFilter = TaskFilter.getBuilder().setProject(project.id).setActive(true).build();
         return this.dataService.getTaskService().getByFilter(activeFilter);
       case TaskType.FINISHED:
-        let finishedFilter = TaskFilter.getBuilder().setProject(project.getId()).setFinished(true).build();
+        let finishedFilter = TaskFilter.getBuilder().setProject(project.id).setFinished(true).build();
         return this.dataService.getTaskService().getByFilter(finishedFilter);
     }
   }
 
   // TODO: sprawdzić, czy to jest gdziekoleiek wykorzystywane
   public addTask(task: Task, container: ITaskContainer = null) {
-    if (task.getProjectID() == this.model.getProject().getId()) {
+    if (task.projectID == this.model.getProject().id) {
       this.model.addTask(task);
     }
   }

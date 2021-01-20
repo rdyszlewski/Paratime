@@ -1,228 +1,218 @@
+import { Label } from "../label/label";
+import { Priority } from "./priority";
+import { Stage } from "../stage/stage";
+import { OrderableItem } from "../models/orderable.item";
+import { ITaskItem } from "./task.item";
+import { IFilterable } from "app/shared/common/filter/filterable";
+import { Status } from "../models/status";
+import { Project } from "../project/project";
+import { Subtask } from "../subtask/subtask";
 
-import { Label } from '../label/label';
-import { Priority } from './priority';
-import { Stage } from '../stage/stage';
-import { OrderableItem } from '../models/orderable.item';
-import { ITaskItem } from './task.item';
-import { IFilterable } from 'app/shared/common/filter/filterable';
-import { DateAdapter } from '../models/date.adapter';
-import { Status } from '../models/status';
-import { Project } from '../project/project';
-import { Subtask } from '../subtask/subtask';
+export class Task extends OrderableItem implements IFilterable, ITaskItem {
+  // TODO: przejrzeć wszystkie zmienne i zobaczyć, czy wszystko jest ok
 
-export class Task extends OrderableItem implements IFilterable, ITaskItem{
+  private _name: string = null;
+  private _description: string = null;
+  private _important: number = 0;
+  private _labels: Label[] = [];
+  // private date: string = null; // TODO: wstawić to do modelu zapisywanego w bazie dexie
+  private _date: Date = null;
+  // tasks start time (format HHMM) H * 100 + M
+  private _startTime: number = null;
+  private _endTime: number = null;
+  // private endDate: string = null;
+  private _endDate: Date = null;
+  private _plannedTime: number = null;
+  private _subtasks: Subtask[] = [];
+  private _status: Status = Status.STARTED;
+  private _progress: number = null;
+  private _project: Project = null;
+  private _projectID: number; // TODO: to może być tylko w bazie. Sprawdzić to
+  private _priority: Priority = null;
+  private _projectStage: Stage = null;
+  private _projectStageID: number = null; // TODO: sprawdzić, czy nie da się poradzić bez tego
 
-    // TODO: przejrzeć wszystkie zmienne i zobaczyć, czy wszystko jest ok
+  constructor(name = null, description = null, status = null) {
+    super();
+    this._name = name;
+    this._description = description;
+    this._status = status;
+  }
 
-    private name: string = null;
-    private description: string = null;
-    private important: number = 0;
-    private labels: Label[] = [];
-    private date: string = null;
-    private _date: Date = null;
-    // tasks start time (format HHMM) H * 100 + M
-    private startTime: number = null;
-    private endTime: number = null;
-    private endDate: string = null;
-    private _endDate: Date = null;
-    private plannedTime: number = null;
-    private subtasks: Subtask[] = []
-    private status: Status = Status.STARTED;
-    private progress: number = null;
-    private project: Project = null;
-    private projectID;
-    private priority: Priority = null;
-    private projectStage: Stage = null;
-    private projectStageID: number = null;
+  public get name(): string {
+    return this._name;
+  }
 
-    constructor(name=null, description=null, status=null){
-      super();
-      this.name = name;
-      this.description = description;
-      this.status = status;
+  public set name(value: string) {
+    this._name = value;
+  }
+
+  public get description() {
+    return this._description;
+  }
+
+  public set description(description: string) {
+    this._description = description;
+  }
+
+  public get important(): boolean {
+    return this._important == 1;
+  }
+
+  public set important(important: boolean) {
+    this._important = important ? 1 : 0;
+  }
+
+  public get labels() {
+    return this._labels;
+  }
+
+  public addLabel(label: Label) {
+    if (!this._labels.includes(label)) {
+      this._labels.push(label);
     }
+  }
 
-    public getName(){
-        return this.name;
+  public removeLabel(label: Label) {
+    const index = this._labels.indexOf(label);
+    if (index >= 0) {
+      this._labels.splice(index, 1);
     }
+  }
 
-    public setName(name:string){
-        this.name = name;
-    }
+  public set labels(labels: Label[]) {
+    this._labels = labels;
+  }
 
-    public getDescription(){
-        return this.description;
-    }
+  public get date(): Date {
+    return this._date;
+  }
 
-    public setDescription(description: string){
-        this.description = description;
-    }
+  public set date(date: Date){
+    this._date = date;
+  }
 
-    public isImportant():boolean{
-        return this.important == 1;
-    }
+  public get startTime(): number {
+    return this._startTime;
+  }
 
-    public getImportant():number{
-        return this.important? 1: 0;
-    }
+  public set startTime(time: number){
+    this._startTime = time;
+  }
 
-    public setImportant(important:boolean){
-        this.important = important ? 1 : 0;
-    }
+  public get endTime(): number {
+    return this._endTime;
+  }
 
-    public getLabels(){
-        return this.labels;
-    }
+  public set endTime(time: number) {
+    this._endTime = time;
+  }
 
-    public addLabel(label:Label){
-        if(!this.labels.includes(label)){
-            this.labels.push(label);
-        }
-    }
+  public get endDate(): Date {
+    return this._endDate;
+  }
 
-    public setLabels(labels:Label[]){
-        this.labels = labels;
-    }
+  public set endDate(date: Date) {
+    this._endDate = date;
+  }
 
-    public removeLabel(label: Label){
-        const index = this.labels.indexOf(label);
-        if(index >= 0){
-            this.labels.splice(index, 1);
-        }
-    }
+  public get plannedTime() {
+    return this._plannedTime;
+  }
 
-    public getDate():Date{
-      return this._date;
-    }
+  public set plannedTime(time: number) {
+    this._plannedTime = time;
+  }
 
-    public setDate(date:Date):void{
-      this._date = date;
-      this.date = DateAdapter.getText(date);
-    }
+  public get subtasks() {
+    return this._subtasks;
+  }
 
-    public getStartTime():number{
-        return this.startTime;
-    }
+  public set subtasks(subtasks: Subtask[]) {
+    this._subtasks = subtasks;
+  }
 
-    public setStartTime(time:number):void{
-        this.startTime = time;
-    }
+  public addSubtask(subtask: Subtask) {
+    this._subtasks.push(subtask);
+  }
 
-    public getEndTimer():number{
-      return this.endTime;
+  public removeSubtask(subtask: Subtask) {
+    const index = this._subtasks.indexOf(subtask);
+    if (index >= 0) {
+      this._subtasks.splice(index, 1);
     }
+  }
 
-    public setEndTime(time: number){
-      this.endTime = time;
-    }
+  public get status() {
+    return this._status;
+  }
 
-    public getEndDate():Date{
-      return this._endDate;
-    }
+  public set status(value: Status) {
+    this._status = value;
+  }
 
-    public setEndDate(date: Date){
-      this._endDate = date;
-      this.endDate = DateAdapter.getText(date);
-    }
+  public get progress() {
+    return this._progress;
+  }
 
-    public getPlannedTime(){
-        return this.plannedTime;
-    }
+  public set progress(value: number) {
+    this._progress = value;
+  }
 
-    public setPlannedTime(time: number){
-        this.plannedTime = time;
-    }
+  public get project() {
+    return this._project;
+  }
 
-    public getSubtasks(){
-        return this.subtasks;
-    }
+  public set project(value: Project) {
+    this._project = value;
+  }
 
-    public setSubtasks(subtasks: Subtask[]){
-        this.subtasks = subtasks;
-    }
+  public get projectID() {
+    return this._projectID;
+  }
 
-    public addSubtask(subtask: Subtask){
-        this.subtasks.push(subtask);
-    }
+  public set projectID(value: number) {
+    this._projectID = value;
+  }
 
-    public removeSubtask(subtask: Subtask){
-        const index = this.subtasks.indexOf(subtask);
-        if (index >= 0){
-            this.subtasks.splice(index, 1);
-        }
-    }
+  public getNumberOfSubtaskWithStatus(status: Status) {
+    let finishedSubtask = this._subtasks.filter((x) => x.status == status);
+    return finishedSubtask.length;
+  }
 
-    public getStatus(){
-        return this.status;
-    }
+  public get priority(): Priority {
+    return this._priority;
+  }
 
-    public setStatus(status: Status){
-        this.status = status;
-    }
+  public set priority(priority: Priority) {
+    this._priority = priority;
+  }
 
-    public getProgress(){
-        return this.progress;
-    }
+  public get projectStage(): Stage {
+    return this._projectStage;
+  }
 
-    public setProgress(progress: number){
-        this.progress = progress;
+  public set projectStage(projectStage: Stage) {
+    this._projectStage = projectStage;
+    if (this._projectStage) {
+      this._projectStageID = this._projectStage.id;
     }
+  }
 
-    public getProject(){
-        return this.project;
-    }
+  public get projectStageID(): number {
+    return this._projectStageID;
+  }
 
-    public setProject(project: Project){
-        this.project = project;
-        this.projectID = project.getId();
-    }
+  public set projectStageID(id: number) {
+    this._projectStageID = id;
+  }
 
-    public getProjectID(){
-        return this.projectID;
-    }
+  public get containerId(): number {
+    return this._projectID;
+  }
 
-    public setProjectID(id: number){
-        this.projectID = id;
-    }
-
-    public getNumberOfSubtaskWithStatus(status:Status){
-        let finishedSubtask = this.getSubtasks().filter(x=>x.getStatus()==status);
-        return finishedSubtask.length;
-    }
-
-    public getPriority():Priority{
-        return this.priority;
-    }
-
-    public setPriority(priority:Priority){
-        this.priority = priority;
-    }
-
-    public getProjectStage():Stage{
-        return this.projectStage;
-    }
-
-    public setProjectStage(projectStage: Stage){
-        this.projectStage = projectStage;
-        if(this.projectStage){
-            this.projectStageID = this.projectStage.getId();
-        }
-    }
-
-    public getProjectStageID():number{
-        return this.projectStageID;
-    }
-
-    public setProjectStageID(id:number){
-        this.projectStageID = id;
-    }
-
-    public getContainerId():number{
-      return this.getProjectID();
-    }
-
-    public setContainerId(id:number):void{
-      // TODO: sprawdzić, czy ustawianie tylko id czegoś nie popsuje
-      this.setProjectID(id);
-    }
+  public set containerId(id: number){
+    // TODO: sprawdzić, czy tak to powinno być. Czy coś się przypadkiem nie zepsuje, jeśli będziemy zapisywać wyłącznie id
+    this._projectID = id;
+  }
 }

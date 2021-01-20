@@ -16,15 +16,15 @@ export class TaskItemOrderer <T extends OrderableItem>{
         if(!currentItem){
           return orderedItems;
         }
-        let lastItemId = currentItem.getId();
+        let lastItemId = currentItem.id;
         while(currentItem!=null){
           orderedItems.push(currentItem);
-          currentItem = itemsMap.get(currentItem.getSuccessorId());
+          currentItem = itemsMap.get(currentItem.successorId);
           if(currentItem){
-            if(currentItem.getId() == lastItemId){
+            if(currentItem.id == lastItemId){
               return orderedItems;
             } else {
-              lastItemId = currentItem.getId();
+              lastItemId = currentItem.id;
             }
           }
         }
@@ -34,7 +34,7 @@ export class TaskItemOrderer <T extends OrderableItem>{
     private getItemsMap(items:T[]):Map<number, T>{
       const map = new Map<number, T>();
       items.forEach(item=>{
-        map.set(item.getId(), item);
+        map.set(item.id, item);
       });
       return map;
     }

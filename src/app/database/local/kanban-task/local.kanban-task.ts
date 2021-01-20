@@ -26,7 +26,7 @@ export class LocalKanbanTaskRepository extends OrderRepository<KanbanTask>{
   }
 
   public remove(task: KanbanTask): Promise<void>{
-    return this.table.delete(task.getId());
+    return this.table.delete(task.id);
   }
 
   public removeAllFromColumn(columnId: number): Promise<number>{
@@ -38,7 +38,7 @@ export class LocalKanbanTaskRepository extends OrderRepository<KanbanTask>{
   }
 
   public update(task: KanbanTask): Promise<number>{
-    return this.table.update(task.getId(), task);
+    return this.table.update(task.id, task);
   }
 
 }

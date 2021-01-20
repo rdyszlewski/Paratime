@@ -30,7 +30,7 @@ export class KanbanColumnController{
   }
 
   public updateColumnName() {
-    this.model.getEditedColumn().setName(this.model.getColumnName());
+    this.model.getEditedColumn().name = this.model.getColumnName();
     this.commandService.execute(new UpdateColumnCommand(this.model.getEditedColumn(), this.model));
   }
 }

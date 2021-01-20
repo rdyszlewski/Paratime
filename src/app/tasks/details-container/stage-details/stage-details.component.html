@@ -16,8 +16,8 @@
       id="stage-name"
       name="name"
       autocomplete="off"
-      [ngModel]="model.getStage().getName()"
-      (ngModelChange)="model.getStage().setName($event)"
+      [ngModel]="model.getStage().name"
+      (ngModelChange)="model.getStage().name = $event"
       (keyup.enter)="updateStage()"
       (focusout)="updateStage()"
     />
@@ -38,8 +38,8 @@
       id="stage-description"
       name="description"
       rows="4"
-      [ngModel]="model.getStage().getDescription()"
-      (ngModelChange)="model.getStage().setDescription($event)"
+      [ngModel]="model.getStage().description"
+      (ngModelChange)="model.getStage().description = $event"
       (keyup.enter)="updateStage()"
       (focusout)="updateStage()"
     >
@@ -54,8 +54,8 @@
       class="form-control"
       id="stage-status"
       name="status"
-      [ngModel]="model.getStage().getStatus()"
-      (ngModelChange)="model.getStage().setStatus($event)"
+      [ngModel]="model.getStage().status"
+      (ngModelChange)="model.getStage().status = $event"
       (change)="updateStage()"
     >
       <option [ngValue]="status.STARTED">Aktywny</option>
@@ -77,8 +77,8 @@
         name="end-date"
         autocomplete="off"
         [matDatepicker]="endDatePicker"
-        [ngModel]="model.getStage().getEndDate()"
-        (ngModelChange)="model.getStage().setEndDate($event)"
+        [ngModel]="model.getStage().endDate"
+        (ngModelChange)="model.getStage().endDate =$event"
         (dateChange)="updateStage()"
       />
       <mat-datepicker-toggle

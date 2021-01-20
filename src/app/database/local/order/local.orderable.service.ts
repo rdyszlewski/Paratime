@@ -12,7 +12,7 @@ export class LocalOrderController<T extends OrderableItem> {
   public move(currentItem: T, previousItem: T, currentIndex: number, previousIndex: number): Promise<T[]> {
     let moveUp = currentIndex < previousIndex;
     return this.remove(previousItem).then(updatedItems1=>{
-      const updatedCurrentItem = updatedItems1.filter(x=>x.getId()==currentItem.getId());
+      const updatedCurrentItem = updatedItems1.filter(x=>x.id==currentItem.id);
       let newCurrentItem = updatedCurrentItem.length>0? updatedCurrentItem[0]: currentItem;
       return this.insertItemToList(previousItem, newCurrentItem, moveUp).then(updatedItems2=>{
         const result = this.joinItemsToUpdate(updatedItems1, updatedItems2);
@@ -26,10 +26,10 @@ export class LocalOrderController<T extends OrderableItem> {
     if(moveUp){
       beforeItemPromise = Promise.resolve(currentItem);
     } else {
-      beforeItemPromise = this.repository.findById(currentItem.getSuccessorId());
+      beforeItemPromise = this.repository.findById(currentItem.successorId);
     }
     return beforeItemPromise.then(beforeItem=>{
-      return this.insert(previousItem, beforeItem, previousItem.getContainerId());
+      return this.insert(previousItem, beforeItem, previousItem.containerId);
     });
   }
 
@@ -39,9 +39,9 @@ export class LocalOrderController<T extends OrderableItem> {
 
     items.reverse().forEach(itemsToUpdate=>{
       itemsToUpdate.reverse().forEach(item=>{
-        if(!used.has(item.getId())){
+        if(!used.has(item.id)){
           toUpdate.push(item);
-          used.add(item.getId());
+          used.add(item.id);
         }
       });
     });
@@ -56,7 +56,7 @@ export class LocalOrderController<T extends OrderableItem> {
   }
 
   public changeContainer(item: T, currentItem: T, currentContainerId: number): Promise<T[]> {
-    item.setContainerId(currentContainerId);
+    item.containerId = currentContainerId;
     return this.remove(item).then(updatedTasks1=>{
       return this.insert(item, currentItem, currentContainerId).then(updatedTasks2=>{
         return this.updateItems([item]).then(updatedTasks3=>{
@@ -76,18 +76,18 @@ export class LocalOrderController<T extends OrderableItem> {
   private insertItemBefore(item: T, currentItem: T):Promise<T[]>{
     // TODO: refaktoryzacja
     const toUpdate = [];
-    item.setSuccessorId(currentItem.getId());
-    return this.repository.findBySuccessor(currentItem.getId()).then(prevCurrent=>{
+    item.successorId = currentItem.id;
+    return this.repository.findBySuccessor(currentItem.id).then(prevCurrent=>{
       if(prevCurrent){
-        prevCurrent.setSuccessorId(item.getId());
-        item.setPosition(Position.NORMAL);
+        prevCurrent.successorId = item.id;
+        item.position = Position.NORMAL;
         toUpdate.push(prevCurrent);
       }
       toUpdate.push(item);
 
       if(currentItem && currentItem.isHead()){
-        currentItem.setPosition(Position.NORMAL);
-        item.setPosition(Position.HEAD);
+        currentItem.position = Position.NORMAL;
+        item.position = Position.HEAD;
         toUpdate.push(currentItem);
       }
       return this.updateItems(toUpdate);
@@ -99,25 +99,25 @@ export class LocalOrderController<T extends OrderableItem> {
     // TODO: tutaj jest błąd, który powoduje
     return this.getLast(item, containerId).then(lastItem=>{
       if(lastItem){
-        lastItem.setSuccessorId(item.getId());
-        item.setPosition(Position.NORMAL);
+        lastItem.successorId = item.id;
+        item.position = Position.NORMAL;
         toUpdate.push(lastItem);
       } else { // first element
-        item.setPosition(Position.HEAD);
+        item.position = Position.HEAD;
       }
-      item.setSuccessorId(OrderValues.DEFAULT_ORDER);
+      item.successorId = OrderValues.DEFAULT_ORDER;
       toUpdate.push(item);
       return this.updateItems(toUpdate);
     });
   }
 
   protected getLast(item: T, containerId: number): Promise<T>{
-    return this.repository.findLast(containerId, item.getId());
+    return this.repository.findLast(containerId, item.id);
   }
 
   public remove(item: T): Promise<T[]> {
     const toUpdate = [];
-    return this.repository.findBySuccessor(item.getId()).then(previousItem=>{
+    return this.repository.findBySuccessor(item.id).then(previousItem=>{
       if(item.isHead()){
         return this.removeHead(item, toUpdate);
       } else {
@@ -127,9 +127,9 @@ export class LocalOrderController<T extends OrderableItem> {
   }
 
   private removeHead(item: T, toUpdate: any[]): T[] | PromiseLike<T[]> {
-    return this.repository.findById(item.getSuccessorId()).then(nextItem => {
+    return this.repository.findById(item.successorId).then(nextItem => {
       if (nextItem) {
-        nextItem.setPosition(Position.HEAD);
+        nextItem.position = Position.HEAD;
         toUpdate.push(nextItem);
       }
       return this.updateItems(toUpdate);
@@ -137,7 +137,7 @@ export class LocalOrderController<T extends OrderableItem> {
   }
 
   private removeNotHead(previousItem: T, item: T, toUpdate: any[]) {
-    previousItem.setSuccessorId(item.getSuccessorId());
+    previousItem.successorId = item.successorId;
     toUpdate.push(previousItem);
     return this.updateItems(toUpdate);
   }

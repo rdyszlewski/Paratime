@@ -2,7 +2,7 @@ import { ProjectEntry } from '../model';
 
 export class ProjectDataSorter{
 
-    
+
     // TODO: sortowanie powinno być przeniesione na stronę serwera
    // TODO: poprawić całe to sortowanie
    public static sort(field:string, direction: string, entries:ProjectEntry[]):ProjectEntry[]{
@@ -18,9 +18,9 @@ export class ProjectDataSorter{
 
     private static sortByName(direction, entries:ProjectEntry[]){
         if(direction == "asc"){
-            return entries.sort((a,b)=>(a.getProject().getName()>b.getProject().getName())? 1: -1);
+            return entries.sort((a,b)=>(a.getProject().name>b.getProject().name)? 1: -1);
         } else {
-            return entries.sort((a,b)=>(a.getProject().getName()>b.getProject().getName())? -1: 1);
+            return entries.sort((a,b)=>(a.getProject().name>b.getProject().name)? -1: 1);
         }
     }
 

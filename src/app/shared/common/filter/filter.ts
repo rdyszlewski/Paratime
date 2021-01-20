@@ -12,7 +12,7 @@ export class Filter<T extends IFilterable>{
 
     const result = [];
     items.forEach(item=>{
-      if(item.getName().includes(filterValue)){
+      if(item.name.includes(filterValue)){
         result.push(item);
       }
     });

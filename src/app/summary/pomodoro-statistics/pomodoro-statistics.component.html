@@ -8,17 +8,17 @@
                 #tasksSort="matSort" matSort matSortActive="name" matSortActive="time" matSortDirection="desc" >
                 <ng-container matColumnDef="name">
                     <mat-header-cell *matHeaderCellDef mat-sort-header>Zadanie</mat-header-cell>
-                    <mat-cell class="name-cell" *matCellDef="let entry">{{entry.getTask().getName()}}</mat-cell>
+                    <mat-cell class="name-cell" *matCellDef="let entry">{{entry.task.name}}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="time">
                     <mat-header-cell *matHeaderCellDef mat-sort-header>Czas</mat-header-cell>
-                    <mat-cell class="time-cell" *matCellDef="let entry">{{entry.getTime()}}</mat-cell>
+                    <mat-cell class="time-cell" *matCellDef="let entry">{{entry.time}}</mat-cell>
                 </ng-container>
 
                 <ng-container matColumnDef="intervals">
                     <mat-header-cell *matHeaderCellDef mat-sort-header>Interwały</mat-header-cell>
-                    <mat-cell class="intervals-cell" *matCellDef="let entry">{{entry.getIntervals()}}</mat-cell>
+                    <mat-cell class="intervals-cell" *matCellDef="let entry">{{entry.intervals}}</mat-cell>
                 </ng-container>
 
                 <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
@@ -33,17 +33,17 @@
                 #projectsSort="matSort" matSort matSortActive="name" matSortActive="time" matSortDirection="desc" >
             <ng-container matColumnDef="name">
                 <mat-header-cell *matHeaderCellDef mat-sort-header>Projekt</mat-header-cell>
-                <mat-cell class="name-cell" *matCellDef="let entry">{{entry.getProject().getName()}}</mat-cell>
+                <mat-cell class="name-cell" *matCellDef="let entry">{{entry.project.name}}</mat-cell>
             </ng-container>
 
             <ng-container matColumnDef="time">
                 <mat-header-cell *matHeaderCellDef mat-sort-header>Czas</mat-header-cell>
-                <mat-cell class="time-cell" *matCellDef="let entry">{{entry.getTime()}}</mat-cell>
+                <mat-cell class="time-cell" *matCellDef="let entry">{{entry.time}}</mat-cell>
             </ng-container>
 
             <ng-container matColumnDef="intervals">
                 <mat-header-cell *matHeaderCellDef mat-sort-header>Interwały</mat-header-cell>
-                <mat-cell class="intervals-cell" *matCellDef="let entry">{{entry.getIntervals()}}</mat-cell>
+                <mat-cell class="intervals-cell" *matCellDef="let entry">{{entry.intervals}}</mat-cell>
             </ng-container>
 
             <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>

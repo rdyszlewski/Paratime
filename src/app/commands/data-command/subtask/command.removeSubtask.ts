@@ -19,6 +19,6 @@ export class RemoveSubtaskCommand extends DataCommand{
   }
 
   public getDescription(): string {
-    return `Usunięto zadanie ${this.subtask.getName()}`;
+    return `Usunięto zadanie ${this.subtask.name}`;
   }
 }

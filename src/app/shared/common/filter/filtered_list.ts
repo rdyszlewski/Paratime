@@ -17,7 +17,7 @@ export class FilteredList<T extends IFilterable>{
 
     public filter(filterValue:string):void{
         this.list = [];
-        this.source.filter(x=>x.getName().includes(filterValue)).forEach(project=>{
+        this.source.filter(x=>x.name().includes(filterValue)).forEach(project=>{
             this.list.push(project);
         });
         this.lastFilter = filterValue;

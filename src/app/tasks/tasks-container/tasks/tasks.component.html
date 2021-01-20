@@ -51,7 +51,7 @@
     class="button border"
     (click)="getAdding().openAddingTask()"
     *ngIf="
-      getModel().getProject().getId() != null &&
+      getModel().getProject().id != null &&
       !getAdding().getModel().isAddingOpen() &&
       getModel().isActiveTaskType()
     "
@@ -107,7 +107,7 @@
     >
       <option [ngValue]="null">Wszystkie</option>
       <option
-        *ngFor="let stage of getModel().getProject().getStages()"
+        *ngFor="let stage of getModel().getProject().stages"
         [ngValue]="stage"
       >
         {{ stage.getName() }}
@@ -128,7 +128,7 @@
         *ngFor="let label of getFiltering().getModel().getLabels()"
         [ngValue]="label"
       >
-        {{ label.getName() }}
+        {{ label.name}}
       </option>
     </select>
   </div>

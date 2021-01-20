@@ -9,8 +9,8 @@ export class AssingLabelCommand extends DataCommand{
   }
 
   execute() {
-    this._dataService.getLabelService().setAssignedLabels(this.task.getId(), this.labels).then(taskLabels=>{
-      this.task.setLabels(this.labels);
+    this._dataService.getLabelService().setAssignedLabels(this.task.id, this.labels).then(taskLabels=>{
+      this.task.labels = this.labels;
     });
   }
 
@@ -19,6 +19,6 @@ export class AssingLabelCommand extends DataCommand{
   }
 
   getDescription(): string {
-    return `Ustawienie etykiet dla zadania ${this.task.getName()}`;
+    return `Ustawienie etykiet dla zadania ${this.task.name}`;
   }
 }

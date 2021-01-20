@@ -28,6 +28,6 @@ export class LabelViewState{
     }
 
     public isEditingLabel(label:Label){
-        return this.editedLabel && this.editedLabel.getId() == label.getId();
+        return this.editedLabel && this.editedLabel.id == label.id;
     }
 }

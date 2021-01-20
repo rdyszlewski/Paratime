@@ -22,9 +22,9 @@ export class LocalKanbanTaskService extends LocalTaskDataService implements IKan
   }
 
   private fetchKanbanTask(kanbanTask: KanbanTask): Promise<KanbanTask>{
-    return this.taskRepository.findById(kanbanTask.getTaskId()).then(task=>{
+    return this.taskRepository.findById(kanbanTask.id).then(task=>{
       return this.fetchTask(task).then(fetchedTask=>{
-        kanbanTask.setTask(fetchedTask);
+        kanbanTask.task = fetchedTask;
         return Promise.resolve(kanbanTask);
       })
     })

@@ -115,7 +115,7 @@ export class ProjectsComponent implements OnInit {
   public onEditProject() {
     this.dataService
       .getProjectService()
-      .getById(this.model.getProjectWithOpenMenu().getId())
+      .getById(this.model.getProjectWithOpenMenu().id)
       .then((loadedProject) => {
         EventBus.getDefault().post(new ProjectEditEvent(loadedProject));
         this.model.setSelectedProject(this.model.getProjectWithOpenMenu());

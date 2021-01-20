@@ -8,7 +8,7 @@ export abstract class TaskSelectionBase implements ITaskSelection{
   protected _lastSelected: Task;
 
   public selectTask(task: Task): void {
-    if(this._selectedIds.has(task.getId())){
+    if(this._selectedIds.has(task.id)){
       this.deselectTask(task);
     } else {
       this.handleAddingTask(task);
@@ -19,13 +19,13 @@ export abstract class TaskSelectionBase implements ITaskSelection{
   protected abstract handleAddingTask(task: Task);
 
   protected addSelectedTask(task: Task){
-    this._selectedIds.add(task.getId());
+    this._selectedIds.add(task.id);
     this._selectedTasks.push(task);
     this._lastSelected = task;
   }
 
   private deselectTask(task: Task){
-    this._selectedIds.delete(task.getId());
+    this._selectedIds.delete(task.id);
     this.removeTask(task);
     if(task == this._lastSelected){
       this._lastSelected = null;
@@ -38,7 +38,7 @@ export abstract class TaskSelectionBase implements ITaskSelection{
   }
 
   public isSelected(task: Task): boolean {
-    return this._selectedIds.has(task.getId());
+    return this._selectedIds.has(task.id);
   }
 
   public deselectAll(): void {

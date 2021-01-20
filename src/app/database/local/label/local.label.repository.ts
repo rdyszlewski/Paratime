@@ -25,11 +25,11 @@ export class LocalLabelRepository extends OrderRepository<Label>{
   }
 
   public remove(label: Label): Promise<void>{
-    return this.table.delete(label.getId());
+    return this.table.delete(label.id);
   }
 
   public update(label: Label): Promise<number>{
-    return this.table.update(label.getId(), label);
+    return this.table.update(label.id, label);
   }
 
 }

@@ -10,9 +10,9 @@ export class CreateColumnCommand extends DataCommand {
 
   execute() {
     const kanbanColumn = new KanbanColumn();
-    kanbanColumn.setDefault(false);
-    kanbanColumn.setProjectId(this.model.getProject().getId());
-    kanbanColumn.setName(this.model.getColumnName());
+    kanbanColumn.default = false;
+    kanbanColumn.projectId = this.model.getProject().id;
+    kanbanColumn.name = this.model.getColumnName();
 
     this._dataService
       .getKanbanColumnService()

@@ -39,7 +39,7 @@ export class LocalProjectStageService implements IProjectStageService{
   }
 
   private orderInsertedStage(stage: Stage): Promise<InsertResult<Stage>>{
-    return this.orderController.insert(stage, null, stage.getContainerId()).then(updatedStages=>{
+    return this.orderController.insert(stage, null, stage.containerId).then(updatedStages=>{
       let result = new InsertResult(stage);
       result.updatedElements = updatedStages;
       return Promise.resolve(result);

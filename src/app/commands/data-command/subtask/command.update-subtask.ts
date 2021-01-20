@@ -18,6 +18,6 @@ export class UpdateSubtaskCommand extends DataCommand{
   }
 
   getDescription(): string {
-    return `Zaktualizowano podzadanie ${this.subtask.getName()}`;
+    return `Zaktualizowano podzadanie ${this.subtask.name}`;
   }
 }

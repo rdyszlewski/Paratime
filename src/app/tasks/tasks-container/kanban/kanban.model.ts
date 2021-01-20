@@ -25,7 +25,7 @@ export class KanbanModel {
   }
 
   public getDefaultColumn(): KanbanColumn {
-    return this.columns.getItems().filter((x) => x.isDefault())[0];
+    return this.columns.getItems().filter((x) => x.default)[0];
   }
 
   public getColumnName(): string {
@@ -44,14 +44,14 @@ export class KanbanModel {
     console.log(columns);
     this.columns.setItems(columns);
     columns.forEach((column) => {
-      this.tasks.set(column.getId(), new TasksList(column.getId()));
-      this.tasks.get(column.getId()).setItems(column.getKanbanTasks());
+      this.tasks.set(column.id, new TasksList(column.id));
+      this.tasks.get(column.id).setItems(column.kanbanTasks);
     });
     // TODO: ten sposób możę być bardziej wymagający
   }
 
   public getColumnById(columnId: number): KanbanColumn {
-    return this.columns.getItems().find((x) => x.getId() == columnId);
+    return this.columns.getItems().find((x) => x.id == columnId);
   }
 
   public getProject(): Project {
@@ -60,7 +60,7 @@ export class KanbanModel {
 
   public setProject(project: Project) {
     if (project) {
-      this.columns.setContainerId(project.getId());
+      this.columns.setContainerId(project.id);
     }
     this.project = project;
   }
@@ -70,7 +70,7 @@ export class KanbanModel {
   }
 
   public getTasks(column: KanbanColumn) {
-    const tasks = this.tasks.get(column.getId());
+    const tasks = this.tasks.get(column.id);
     if (tasks) {
       return tasks.getItems();
     }
@@ -83,7 +83,7 @@ export class KanbanModel {
   }
 
   public addTask(task:KanbanTask):void{
-    this.tasks.get(task.getColumnId()).addItem(task);
+    this.tasks.get(task.columnId).addItem(task);
   }
 
   public removeTask(task: KanbanTask, columnId: number) {
@@ -102,25 +102,25 @@ export class KanbanModel {
   public addColumn(kanbanColumn: KanbanColumn) {
     // this.columns.addItem(kanbanColumn);
 
-    this.tasks.set(kanbanColumn.getId(), new TasksList(kanbanColumn.getId()));
+    this.tasks.set(kanbanColumn.id, new TasksList(kanbanColumn.id));
     this.tasks
-      .get(kanbanColumn.getId())
-      .setItems(kanbanColumn.getKanbanTasks());
+      .get(kanbanColumn.id)
+      .setItems(kanbanColumn.kanbanTasks);
   }
 
   public getColumnsNames(): string[] {
     const names = [];
     this.columns.getItems().forEach((item) => {
-      if (item.getId()) {
-        names.push(item.getId().toString());
+      if (item.id) {
+        names.push(item.id.toString());
       }
     });
     return names;
   }
 
   public getColumnIdText(column: KanbanColumn) {
-    if (column.getId()) {
-      return column.getId().toString();
+    if (column.id) {
+      return column.id.toString();
     }
     return null;
   }

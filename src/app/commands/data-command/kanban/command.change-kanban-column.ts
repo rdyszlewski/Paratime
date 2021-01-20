@@ -12,7 +12,7 @@ export class ChangeKanbanColumnOrderCommand extends DataCommand{
     const previousColumn = this.model.getColumnByIndex(this.previousIndex);
     const currentColumn = this.model.getColumnByIndex(this.currentIndex);
     // TODO: może zrobić coś, co będzie sprawdzało, czy zdarzenie zostało wykoanene czy nie
-    if (previousColumn.isDefault() || currentColumn.isDefault()) {
+    if (previousColumn.default || currentColumn.default) {
       return;
     }
     this._dataService.getKanbanColumnService().changeOrder(currentColumn, previousColumn, this.currentIndex, this.previousIndex).then(updatedColumns=>{
