@@ -1,6 +1,6 @@
 import { OrderableItem, Position } from 'app/database/shared/models/orderable.item';
 import { OrderValues } from 'app/shared/common/values';
-import { IOrderableRepository } from '../task/order.respository';
+import { IOrderableRepository, IOrderRepository } from '../task/order.respository';
 
 // TODO: refaktoryzacja
 export class LocalOrderController<T extends OrderableItem> {

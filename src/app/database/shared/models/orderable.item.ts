@@ -1,3 +1,5 @@
+// TODO: może zrobić interfejs z tego?
+
 export abstract class OrderableItem{
   // TODO: chyba lepiej będzie to przenieść gdzies do zarzadzania bazą
   protected _id: number;

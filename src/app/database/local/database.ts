@@ -9,6 +9,7 @@ import { PomodoroHistory } from '../shared/pomodoro/pomodoro.history';
 import { Project } from '../shared/project/project';
 import { Stage } from '../shared/stage/stage';
 import { Subtask } from '../shared/subtask/subtask';
+import { DexieTaskDTO } from './task/local.task';
 
 export class LocalDatabase extends Dexie {
   private dbVersion = 1;
@@ -65,7 +66,7 @@ export class LocalDatabase extends Dexie {
 
   private mapToClasses() {
     this.projectsTable.mapToClass(Project);
-    this.tasksTable.mapToClass(Task);
+    this.tasksTable.mapToClass(DexieTaskDTO);
     this.subtasksTable.mapToClass(Subtask);
     this.labelsTable.mapToClass(Label);
     this.taskTagsTable.mapToClass(LabelsTask);

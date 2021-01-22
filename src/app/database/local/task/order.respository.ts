@@ -1,14 +1,24 @@
 import { OrderableItem, Position } from 'app/database/shared/models/orderable.item';
 
-export interface IOrderableRepository<T extends OrderableItem>{
-  findById(id:number):Promise<T>;
+export interface IOrderRepository<T extends OrderableItem>{
+  // findById(id:number):Promise<T>;
   findBySuccessor(successorId:number):Promise<T>;
   findFirst(containerId: number):Promise<T>;
   findLast(containerId: number, exceptItem: number):Promise<T>;
-  update(item:T):Promise<number>;
+  // update(item:T):Promise<number>;
 }
 
-export class OrderRepository<T extends OrderableItem>{
+export interface IRepository<T>{
+  findById(id: number): Promise<T>;
+  update(item: T): Promise<number>;
+  // TODO: możliwe, że coś tutaj można dodać
+}
+
+export interface IOrderableRepository<T extends OrderableItem> extends IRepository<T>, IOrderRepository<T>{
+
+}
+
+export class OrderRepository<T extends OrderableItem> implements IOrderRepository<T>{
 
   protected table: Dexie.Table<T, number>;
   protected containerColumn: string;
