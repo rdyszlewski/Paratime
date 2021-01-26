@@ -99,7 +99,7 @@ export class TasksComponent implements OnInit, ITaskList {
     const currentProject = project
       ? project
       : this.appService.getCurrentProject();
-    let filterBuilder = TaskFilter.getBuilder().setProject(currentProject.getId());
+    let filterBuilder = TaskFilter.getBuilder().setProject(currentProject.id);
     if(taskType == TaskType.ACTIVE){
       filterBuilder.setActive(true);
     } else if(taskType == TaskType.FINISHED){

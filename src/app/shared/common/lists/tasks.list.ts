@@ -55,9 +55,10 @@ export class TasksList<T extends IFilterable & OrderableItem>
   }
 
   private refresh(order: boolean=true) {
-    if(order){
-      this.order();
-    }
+    // TODO: zastanowić się, co z tym zrobić
+    // if(order){
+    //   this.order();
+    // }
     this.itemFilter.filter(null, this.items);
   }
 
