@@ -1,7 +1,7 @@
 import { Project } from 'app/database/shared/project/project';
 import { ProjectFilter } from 'app/database/shared/project/project.filter';
 import { OrderDTORepository } from '../task/order.repository.dto';
-import { IOrderableRepository, OrderRepository } from '../task/order.respository';
+import { IOrderableRepository } from '../task/order.respository';
 import { DexieProjectDTO } from './local.project';
 import { ProjectRepositoryFilter } from './local.project.filter';
 
@@ -23,7 +23,10 @@ export class LocalProjectRepository extends OrderDTORepository<Project, DexiePro
   }
 
   private mapToProject(dtoPromise: Promise<DexieProjectDTO[]>): Promise<Project[]>{
+    console.log("Siemano");
+
     return dtoPromise.then(tasks=>{
+      console.log(tasks);
       let mappedTasks = tasks.map(x=>x.getModel());
       return Promise.resolve(mappedTasks);
     })

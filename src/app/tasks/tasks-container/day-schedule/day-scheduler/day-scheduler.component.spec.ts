@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { DaySchedulerComponent } from './day-scheduler.component';
 
@@ -6,7 +6,7 @@ describe('DaySchedulerComponent', () => {
   let component: DaySchedulerComponent;
   let fixture: ComponentFixture<DaySchedulerComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ DaySchedulerComponent ]
     })

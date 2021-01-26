@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { PomodoroStatisticsComponent } from './pomodoro-statistics.component';
 
@@ -6,7 +6,7 @@ describe('PomodoroStatisticsComponent', () => {
   let component: PomodoroStatisticsComponent;
   let fixture: ComponentFixture<PomodoroStatisticsComponent>;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       declarations: [ PomodoroStatisticsComponent ]
     })
