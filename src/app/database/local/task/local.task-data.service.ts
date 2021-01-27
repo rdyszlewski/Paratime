@@ -12,27 +12,30 @@ import { TaskRemoveResult } from 'app/database/shared/task/task.remove-result';
 import { LocalKanbanColumnRepository } from '../kanban-column/local.kanban-column.repository';
 import { LocalKanbanTaskRepository } from '../kanban-task/local.kanban-task';
 import { LocalOrderController } from '../order/local.orderable.service';
+import { DexieTaskDTO } from './local.task';
 import { LocalTaskRepository } from './local.task.repository';
 
 export class LocalTaskDataService{
 
-  protected taskOrderController: LocalOrderController<Task>;
+  protected taskOrderController: LocalOrderController<DexieTaskDTO>;
   protected kanbanTaskOrderController: LocalOrderController<KanbanTask>;
 
 
   constructor(protected taskRepository: LocalTaskRepository, protected kanbanTaskRepository: LocalKanbanTaskRepository,
-    protected kanbanColumnRepository: LocalKanbanColumnRepository,
+    protected kanbanColumnRepository : LocalKanbanColumnRepository,
     protected subtaskService: ISubtaskService, protected labelService: ILabelService){
       this.taskOrderController = new LocalOrderController(taskRepository);
       this.kanbanTaskOrderController = new LocalOrderController(kanbanTaskRepository);
   }
 
   public create(data: TaskInsertData): Promise<TaskInsertResult>{
-    return this.insertTask(data.task).then(insertedTask=>{
+    let taskDTO = new DexieTaskDTO(data.task);
+    return this.insertTask(taskDTO).then(insertedTask=>{
       return Promise.all([
-        this.insertTaskProperties(data.task, insertedTask),
-        this.taskOrderController.insert(insertedTask, null, insertedTask.containerId),
-        this.insertKanbanTask(insertedTask, data.column, data.projectId)
+        this.insertTaskProperties(insertedTask.id, data.task),
+        // TODO: sprawdzić, czy to jest poprawne
+        this.taskOrderController.insert(new DexieTaskDTO(data.task), null, insertedTask.containerId),
+        this.insertKanbanTask(data.task, data.column, data.projectId)
       ]).then(results=>{
         let filledTask = results[0];
         let updatedTasks = results[1];
@@ -45,34 +48,37 @@ export class LocalTaskDataService{
     });
   }
 
-  private insertTask(task: Task): Promise<Task>{
+  private insertTask(task: DexieTaskDTO): Promise<DexieTaskDTO>{
     return this.taskRepository.insert(task).then(insertedId=>{
       return this.taskRepository.findById(insertedId);
     })
   }
 
-  private insertTaskProperties(taskModel: Task, insertedTask: Task): Promise<Task>{
+  // TODO: jak to powinno wyglądać
+  private insertTaskProperties(insertedId: number, task: Task): Promise<Task>{
     let actions: [Promise<Subtask[]>, Promise<Label[]>] = [
-      this.insertSubtasks(taskModel, insertedTask.id,),
-      this.insertTaskLabels(taskModel, insertedTask.id)
+      this.insertSubtasks(insertedId, task.subtasks),
+      this.insertTaskLabels(insertedId, task.labels)
     ]
     return Promise.all(actions).then(results=>{
       // TODO: tutaj może przyda się stworzenie nowe
       let subtasks = results[0];
       let labels = results[1];
-      insertedTask.subtasks = subtasks;
-      insertedTask.labels = labels;
+      task.subtasks = subtasks;
+      task.labels = labels;
+      // TODO: sprawdzić, czy zwracać ten sam model, czy inny
+      task.id = insertedId;
 
-      return Promise.resolve(insertedTask);
+      return Promise.resolve(task);
     });
   }
 
-  private insertSubtasks(task: Task, insertedId: number): Promise<Subtask[]>{
-    if(task.subtasks.length == 0){
+  private insertSubtasks(insertedId: number, subtasks: Subtask[]): Promise<Subtask[]>{
+    if(subtasks.length == 0){
       return Promise.resolve([]);
     }
     let actions = [];
-    task.subtasks.forEach(subtask=>{
+    subtasks.forEach(subtask=>{
       subtask.taskId = insertedId;
       // TODo: sprawdzić, jak to rozwiązać
       actions.push(this.subtaskService.create(subtask));
@@ -82,20 +88,24 @@ export class LocalTaskDataService{
     })
   }
 
-  private insertTaskLabels(task: Task, insertedId: number): Promise<Label[]>{
-    if(task.labels.length==0){
+  private insertTaskLabels(insertedId: number, labels: Label[]): Promise<Label[]>{
+    if(labels.length==0){
       return Promise.resolve([]);
     }
-    let actions = task.labels.map(label=>this.labelService.assginLabel(insertedId, label.id));
+    let actions = labels.map(label=>this.labelService.assginLabel(insertedId, label.id));
     return Promise.all(actions).then(results=>{
       let labelsIds = results.map(result=>result.labelId);
       return Promise.all(labelsIds.map(id => this.labelService.getById(id)));
     });
   }
 
-  private insertKanbanTask(insertedTask: Task, column: KanbanColumn, projectId: number ): Promise<InsertResult<KanbanTask>>{
+  private insertKanbanTask(insertedTask: Task, column: KanbanColumn, projectId: number): Promise<InsertResult<KanbanTask>>{
+    console.log("InsertKanbanTask");
+    console.log(insertedTask);
     let data = new TaskInsertData(insertedTask, column, projectId);
     return this.prepareKanbanColumn(data).then(column=>{
+      console.log(column);
+      // TODO: tutaj istnieje problem z column. Z jakiegoś powodu zwraca undefined
       let kanbanTask = this.getPreparedKanbanTask(data, column.id);
       return this.createKanbanTask(kanbanTask).then(insertedTask=>{
         return this.kanbanTaskOrderController.insert(insertedTask, null, column.id).then(updatedTasks=>{
@@ -109,9 +119,20 @@ export class LocalTaskDataService{
   private prepareKanbanColumn(data: TaskInsertData):Promise<KanbanColumn>{
     let columnPromise:Promise<KanbanColumn>;
     if(data.column != null){
+      console.log("Kolumna istnieje");
+
         columnPromise = Promise.resolve(data.column);
     } else {
-      columnPromise = this.kanbanColumnRepository.findDefaultColumn(data.projectId);
+      console.log("Szukanie domyslnej kolumny");
+      console.log(data);
+
+      // TODO: nie znajduje domyślej kolumny
+      columnPromise = this.kanbanColumnRepository.findDefaultColumn(data.projectId).then((result=>{
+        console.log("Domyslna kolumna");
+        console.log(result);
+
+        return Promise.resolve(result.getModel());
+      }));
     }
     return columnPromise;
   }
@@ -160,8 +181,15 @@ export class LocalTaskDataService{
 
   private removeTask(task: Task): Promise<Task[]>{
     return this.taskRepository.remove(task).then(()=>{
-      return this.taskOrderController.remove(task);
+      let promise = this.taskOrderController.remove(new DexieTaskDTO(task));
+      return this.mapToTaskPromise(promise);
     });
+  }
+
+  private mapToTaskPromise(dtoPromise: Promise<DexieTaskDTO[]>): Promise<Task[]>{
+    return dtoPromise.then(result=>{
+      return Promise.resolve(result.map(x=>x.getModel()));
+    })
   }
 
   private removeTaskConnections(taskId: number): Promise<void>{
@@ -174,16 +202,17 @@ export class LocalTaskDataService{
     });
   }
 
-  protected fetchTask(task: Task): Promise<Task>{
+  protected fetchTask(taskDto: DexieTaskDTO): Promise<Task>{
     // TODO: do fetchowania:
     // -- podzadania
     // -- etykiety
     // -- być moze etap projektu
     // -- być może projekt
     return Promise.all([
-      this.subtaskService.getByTask(task.id),
-      this.labelService.getLabelsByTask(task.id)
+      this.subtaskService.getByTask(taskDto.id),
+      this.labelService.getLabelsByTask(taskDto.id)
     ]).then(results=>{
+      let task = taskDto.getModel();
       let subtasks = results[0];
       task.subtasks = subtasks;
       let labels = results[1];

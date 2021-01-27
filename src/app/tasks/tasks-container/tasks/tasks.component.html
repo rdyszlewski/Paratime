@@ -153,11 +153,11 @@
   />
   <div class="task-main">
     <div class="list-item-top">
-      <div class="list-item-value">{{ task.getName() }}</div>
+      <div class="list-item-value">{{ task.name }}</div>
       <mat-icon
         [ngClass]="{
-          'important-star': task.isImportant(),
-          'not-important-star': !task.isImportant(),
+          'important-star': task.important,
+          'not-important-star': !task.important,
           star: true
         }"
         (click)="getItem().toggleTaskImportance(task, $event)"
@@ -166,8 +166,8 @@
     </div>
     <div class="task-info">
       <div class="labels-container">
-        <div *ngFor="let label of task.getLabels()" class="label-item border">
-          {{ label.getName() }}
+        <div *ngFor="let label of task.labels" class="label-item border">
+          {{ label.name}}
         </div>
       </div>
 
@@ -187,34 +187,34 @@
 
 <ng-template #task_details let-task>
   <div
-    *ngIf="task.getDescription() != null"
+    *ngIf="task.description != null"
     class="task-description-icon info-icon"
-    tooltip="{{ task.getDescription() }}"
+    tooltip="{{ task.description}}"
     autoplacement="true"
     placement="bottom"
   ></div>
 
   <div
-    *ngIf="task.getEndDate() != null"
+    *ngIf="task.endDate != null"
     class="task-enddate-icon info-icon"
     tooltip="{{ getInfo().getEndDateText(task) }}"
     autoplacement="true"
     placement="bottom"
   ></div>
 
-  <div *ngIf="task.getPriority() != null" class="task-priority-icon info-icon">
+  <div *ngIf="task.priority != null" class="task-priority-icon info-icon">
     {{ getInfo().getPriorityText(task) }}
   </div>
 
   <div
-    *ngIf="task.getSubtasks().length != 0"
+    *ngIf="task.subtasks != null && task.subtasks.length != 0"
     class="info-icon task-subtask"
     tooltip="{{ getInfo().getSubtasksList(task) }}"
     autoplacement="true"
     placement="bottom"
   >
     {{ task.getNumberOfSubtaskWithStatus(status.ENDED) }} /
-    {{ task.getSubtasks().length }}
+    {{ task.substaks.length }}
   </div>
 </ng-template>
 

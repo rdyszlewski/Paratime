@@ -129,7 +129,11 @@ export class Task extends OrderableItem implements IFilterable, ITaskItem {
   }
 
   public set subtasks(subtasks: Subtask[]) {
-    this._subtasks = subtasks;
+    if(subtasks == null){
+      this._subtasks = [];
+    } else {
+      this._subtasks = subtasks;
+    }
   }
 
   public addSubtask(subtask: Subtask) {
