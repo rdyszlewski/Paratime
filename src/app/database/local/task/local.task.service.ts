@@ -46,7 +46,11 @@ export class LocalTaskService extends LocalTaskDataService implements ITaskServi
   }
 
   public getByFilter(filter: TaskFilter): Promise<Task[]> {
+    console.log("GetByFilter");
+    console.log(filter);
     return this.repository.findByFilter(filter).then(tasks=>{
+      console.log("Wynik");
+      console.log(tasks);
       // let mappedTasks = this.mapToTasks(tasks);
       return this.fetchManyTasks(tasks);
     })
@@ -55,6 +59,8 @@ export class LocalTaskService extends LocalTaskDataService implements ITaskServi
   public getByProject(projectId: number): Promise<Task[]>{
     return this.repository.findByProject(projectId).then(tasks=>{
       // let mappedTasks = this.mapToTasks(tasks);
+      console.log("Pobrane elementy");
+      console.log(tasks);
       return this.fetchManyTasks(tasks);
     })
   }

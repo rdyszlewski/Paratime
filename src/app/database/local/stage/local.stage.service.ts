@@ -3,27 +3,38 @@ import { Stage } from 'app/database/shared/stage/stage';
 import { StageFilter } from 'app/database/shared/stage/stage.filter';
 import { IProjectStageService } from 'app/database/shared/stage/stage.service';
 import { LocalOrderController } from '../order/local.orderable.service';
+import { DexieStageDTO } from './local.stage';
 import { LocalProjectStageRepository } from './local.stage.repository';
 
 
 export class LocalProjectStageService implements IProjectStageService{
 
-  private orderController: LocalOrderController<Stage>;
+  private orderController: LocalOrderController<DexieStageDTO>;
 
   constructor(private repository: LocalProjectStageRepository){
     this.orderController = new LocalOrderController(repository);
   }
 
   public getById(id: number): Promise<Stage> {
-    return this.repository.findById(id);
+    return this.repository.findById(id).then(result=>{
+      return Promise.resolve(result.getModel());
+    });
   }
 
   public getByName(name: string): Promise<Stage[]> {
-    return this.repository.findByName(name);
+    let promise =  this.repository.findByName(name);
+    return this.mapToStage(promise);
+  }
+
+  private mapToStage(dtoPromise: Promise<DexieStageDTO[]>): Promise<Stage[]>{
+    return dtoPromise.then(result=>{
+      return Promise.resolve(result.map(x=>x.getModel()));
+    })
   }
 
   public getByFilter(filter: StageFilter): Promise<Stage[]> {
-    return this.repository.findByFilter(filter);
+    let promise = this.repository.findByFilter(filter);
+    return this.mapToStage(promise);
   }
 
   public create(stage: Stage): Promise<InsertResult<Stage>> {
@@ -33,15 +44,20 @@ export class LocalProjectStageService implements IProjectStageService{
   }
 
   private insert(stage: Stage): Promise<Stage>{
-    return this.repository.insert(stage).then(insertedId=>{
-      return this.repository.findById(insertedId);
+    let dto = new DexieStageDTO(stage);
+    return this.repository.insert(dto).then(insertedId=>{
+      return this.repository.findById(insertedId).then(result=>{
+        return Promise.resolve(result.getModel());
+      });
     });
   }
 
   private orderInsertedStage(stage: Stage): Promise<InsertResult<Stage>>{
-    return this.orderController.insert(stage, null, stage.containerId).then(updatedStages=>{
+     let dto = new DexieStageDTO(stage);
+     //TODO: przyjrzeć się temu, czy wszystko jest zrobione poprawnie
+    return this.orderController.insert(dto, null, stage.containerId).then(updatedStages=>{
       let result = new InsertResult(stage);
-      result.updatedElements = updatedStages;
+      result.updatedElements = updatedStages.map(x=>x.getModel());
       return Promise.resolve(result);
     });
   }
@@ -56,17 +72,27 @@ export class LocalProjectStageService implements IProjectStageService{
 
   private orderRemoveStage(stageId: number): Promise<Stage[]>{
     return this.repository.findById(stageId).then(stage=>{
-      return this.orderController.remove(stage);
+      let promise =  this.orderController.remove(stage);
+      return this.mapToStage(promise);
     });
   }
 
   public update(stage: Stage): Promise<Stage> {
-    return this.repository.update(stage).then(_=>{
+    // TODO: tutaj uważać na aktualizacje. Mogą się zastapić informacje o kolejności
+    let dto = new DexieStageDTO(stage);
+    return this.repository.update(dto).then(_=>{
       return Promise.resolve(stage);
     });
   }
 
   public changeOrder(currentStage: Stage, previousStage: Stage, currentIndex: number, previousIndex: number): Promise<Stage[]> {
-    return this.orderController.move(currentStage, previousStage, currentIndex, previousIndex);
+    let promises = [
+      this.repository.findById(currentStage.id),
+      this.repository.findById(previousStage.id)
+    ];
+    return Promise.all(promises).then(results=>{
+      let promise =  this.orderController.move(results[0], results[1], currentIndex, previousIndex);
+      return this.mapToStage(promise);
+    });
   }
 }

@@ -40,7 +40,7 @@ export class LocalProjectService implements IProjectService{
     let stageFiler = StageFilter.getBuilder().setProjectId(projectDTO.id).build();
     let project = projectDTO.getModel();
     return this.stageRepository.findByFilter(stageFiler).then(stages=>{
-      project.stages = stages;
+      project.stages = stages.map(x=>x.getModel());
       return Promise.resolve(project);
     });
   }

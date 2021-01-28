@@ -21,12 +21,15 @@ export class LocalTaskRepository extends OrderRepository<DexieTaskDTO> {
   // TODO: można wstawić wyszukiwanie po nazwie, albo można dodać nazwę do filtrów
 
   public findByFilter(filter: TaskFilter): Promise<DexieTaskDTO[]>{
+    // TODO: przerobić filtry, aby działały na obiektach Dexie
     let taskFilter = new TaskRepositoryFilter(filter);
+
     // TODO: sprawdzić z tym filrem
-    return this.table.filter(task=>taskFilter.apply(task.getModel())).toArray()
+    return this.table.filter(task=>taskFilter.apply(task)).toArray()
   }
 
   public findByProject(projectId: number): Promise<DexieTaskDTO[]>{
+    console.log("Pobierz wszystkie zadania z projektu");
     return this.table.where("projectID").equals(projectId).toArray();
   }
 

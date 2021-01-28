@@ -21,7 +21,7 @@ export class LocalProjectRepository extends OrderRepository<DexieProjectDTO> {
   public findByFilter(filter: ProjectFilter): Promise<DexieProjectDTO[]>{
     let projectFilter = new ProjectRepositoryFilter(filter);
     // TODO: sprawdzić, czy to działa poprawnie
-    return this.table.filter(project=>projectFilter.apply(project.getModel())).toArray();
+    return this.table.filter(project=>projectFilter.apply(project)).toArray();
   }
 
   public findAll(): Promise<DexieProjectDTO[]>{
