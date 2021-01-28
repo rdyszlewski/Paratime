@@ -34,8 +34,8 @@ export class LocalProjectRepository extends OrderRepository<DexieProjectDTO> {
   }
 
   // TODO: zastanowić się, czy tutaj powinien być Project czy DexieProjectDTO
-  public remove(project: Project): Promise<void>{
-    return this.table.delete(project.id);
+  public remove(id: number): Promise<void>{
+    return this.table.delete(id);
   }
 
   public update(project:DexieProjectDTO):Promise<number>{

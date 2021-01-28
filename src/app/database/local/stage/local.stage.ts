@@ -16,14 +16,7 @@ export class DexieStageDTO extends OrderableItem implements LocalDTO<Stage>{
 
   constructor(stage: Stage){
     super();
-
-    this.id = stage.id;
-    this.name = stage.name;
-    this.description = stage.description;
-    this.startDate = DateAdapter.getText(stage.startDate);
-    this.endDate = DateAdapter.getText(stage.endDate);
-    this.status = stage.status;
-    this.projectId = stage.project != null ? stage.project.id : -1;
+    this.update(stage);
   }
 
   public getModel(): Stage{
@@ -38,6 +31,16 @@ export class DexieStageDTO extends OrderableItem implements LocalDTO<Stage>{
     stage.project = new Project();
     stage.project.id = this.projectId;
     return stage;
+  }
+
+  public update(stage: Stage) {
+    this.id = stage.id;
+    this.name = stage.name;
+    this.description = stage.description;
+    this.startDate = DateAdapter.getText(stage.startDate);
+    this.endDate = DateAdapter.getText(stage.endDate);
+    this.status = stage.status;
+    this.projectId = stage.project != null ? stage.project.id : -1;
   }
 
   public get containerId(): number {

@@ -24,19 +24,9 @@ export class DexieTaskDTO extends OrderableItem implements DexieDTO<Task> {
 
   constructor(task: Task) {
     super();
-    this.id = task.id;
-    this.name = task.name;
-    this.description = task.description;
-    this.important = task.important ? 1 : 0;
-    this.date = DateAdapter.getText(task.date);
-    this.endDate = DateAdapter.getText(task.endDate);
-    this.plannedTime = task.plannedTime;
-    this.progress = task.progress;
-    this.status = task.status;
-    this.projectID = task.project ? task.project.id : -1;
-    this.stageID = task.projectStage ? task.projectStage.id : -1;
-    this.priority = task.priority;
+    this.update(task);
   }
+
 
   public getModel(): Task{
     let task = new Task();
@@ -61,6 +51,21 @@ export class DexieTaskDTO extends OrderableItem implements DexieDTO<Task> {
     task.priority = this.priority;
 
     return task;
+  }
+
+  public update(task: Task) {
+    this.id = task.id;
+    this.name = task.name;
+    this.description = task.description;
+    this.important = task.important ? 1 : 0;
+    this.date = DateAdapter.getText(task.date);
+    this.endDate = DateAdapter.getText(task.endDate);
+    this.plannedTime = task.plannedTime;
+    this.progress = task.progress;
+    this.status = task.status;
+    this.projectID = task.project ? task.project.id : -1;
+    this.stageID = task.projectStage ? task.projectStage.id : -1;
+    this.priority = task.priority;
   }
 
   public get containerId(): number {

@@ -117,7 +117,7 @@ export class LocalProjectService implements IProjectService{
     let id = project.id;
     return this.removeElementsOfProject(id).then(()=>{
       return this.orderRemovedProject(id).then(updatedProjects=>{
-        return this.repository.remove(project).then(()=>{
+        return this.repository.remove(project.id).then(()=>{
           return Promise.resolve(updatedProjects.map(x=>x.getModel()));
         });
       });
@@ -140,9 +140,12 @@ export class LocalProjectService implements IProjectService{
   }
 
   public update(project: Project): Promise<Project> {
-    return this.repository.update(new DexieProjectDTO(project)).then(_=>{
-      return Promise.resolve(project);
-    })
+    return this.repository.findById(project.id).then(projectDTO=>{
+      projectDTO.update(project);
+      return this.repository.update(projectDTO).then(_=>{
+        return Promise.resolve(project);
+      });
+    });
   }
 
   public changeOrder(currentTask: Project, previousTask: Project, currentIndex: number, previousIndex: number): Promise<Project[]> {

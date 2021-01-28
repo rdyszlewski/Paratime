@@ -172,7 +172,6 @@ export class LocalTaskDataService{
     console.log(task);
 
     return this.kanbanTaskRepository.findByTask(task.id).then(kanbanTask=>{
-      console.log(kanbanTask);
       return this.kanbanTaskRepository.remove(kanbanTask).then(()=>{
         return this.kanbanTaskOrderController.remove(kanbanTask);
       })
@@ -180,7 +179,7 @@ export class LocalTaskDataService{
   }
 
   private removeTask(task: Task): Promise<Task[]>{
-    return this.taskRepository.remove(task).then(()=>{
+    return this.taskRepository.remove(task.id).then(()=>{
       let promise = this.taskOrderController.remove(new DexieTaskDTO(task));
       return this.mapToTaskPromise(promise);
     });

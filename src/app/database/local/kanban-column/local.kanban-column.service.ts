@@ -39,24 +39,18 @@ export class LocalKanbanColumnService implements IKanbanColumnService{
 
   public getDefaultColumn(projectId: number): Promise<KanbanColumn> {
     // bez fetchowania?
-    return this.repository.findDefaultColumn(projectId).then(column=>{
-      return Promise.resolve(column.getModel());
-    });
+    let action = this.repository.findDefaultColumn(projectId);
+    return this.mapToColumnAction(action);
   }
 
   public create(column: KanbanColumn): Promise<InsertResult<KanbanColumn>> {
     return this.insertColumn(new DexieKanbanColumnDTO(column)).then(insertedColumn=>{
-      console.log("InsertedColumn");
-      console.log(insertedColumn);
-
       return this.orderInsertColumn(insertedColumn);
     });
   }
 
   private insertColumn(column:DexieKanbanColumnDTO): Promise<DexieKanbanColumnDTO> {
     return this.repository.insert(column).then(insertedId=>{
-      console.log("InsertedId");
-      console.log(insertedId);
       return this.repository.findById(insertedId);
     })
   }
@@ -72,24 +66,31 @@ export class LocalKanbanColumnService implements IKanbanColumnService{
       return this.repository.findById(column.id).then(columnDTO=>{
         return this.repository.remove(column.id).then(()=>{
           // TODO: sprawdzić, czy to będzie działać poprawnie
-          return this.mapToColumnPromise(this.orderController.remove(columnDTO));
+          return this.mapToColumnListAction(this.orderController.remove(columnDTO));
         });
       });
     });
   }
 
-  private mapToColumnPromise(dtoPromise: Promise<DexieKanbanColumnDTO[]>): Promise<KanbanColumn[]>{
+  private mapToColumnAction(dtoAction:Promise<DexieKanbanColumnDTO>): Promise<KanbanColumn>{
+    return dtoAction.then(result=>{
+      return Promise.resolve(result.getModel());
+    })
+  }
+
+  private mapToColumnListAction(dtoPromise: Promise<DexieKanbanColumnDTO[]>): Promise<KanbanColumn[]>{
     return dtoPromise.then(result=>{
       return Promise.resolve(result.map(x=>x.getModel()));
     })
   }
 
   public update(column: KanbanColumn): Promise<KanbanColumn> {
-    let columnDTO = new DexieKanbanColumnDTO(column);
-    // TODO: możliwe, że lepiej będzie jeżeli pobierzemy tutaj zawartość. Kolejności mogą się zmienić. Będzie trzeba to sprawdzić
-    return this.repository.update(columnDTO).then(_=>{
-      return Promise.resolve(column);
-    });
+    return this.repository.findById(column.id).then(columnDTO=>{
+      columnDTO.update(column);
+      return this.repository.update(columnDTO).then(_=>{
+        return Promise.resolve(column);
+      });
+    })
   }
 
   public removeByProject(projectId: number): Promise<void> {

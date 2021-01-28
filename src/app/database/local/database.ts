@@ -12,6 +12,7 @@ import { DexieTaskDTO } from './task/local.task';
 import { DexieProjectDTO } from './project/local.project';
 import { DexieKanbanColumnDTO } from './kanban-column/local.kanban-column';
 import { DexieStageDTO } from './stage/local.stage';
+import { DexiePomodoroHistoryDTO } from './pomodoro/local.pomodoro';
 
 export class LocalDatabase extends Dexie {
   private dbVersion = 1;
@@ -22,7 +23,7 @@ export class LocalDatabase extends Dexie {
   private labelsTable: Dexie.Table<Label, number>;
   private taskTagsTable: Dexie.Table<LabelsTask, number>;
   private stagesTable: Dexie.Table<DexieStageDTO, number>;
-  private pomodoroTable: Dexie.Table<PomodoroHistory, number>;
+  private pomodoroTable: Dexie.Table<DexiePomodoroHistoryDTO, number>;
   private kanbanColumnsTable: Dexie.Table<DexieKanbanColumnDTO, number>;
   private kanbanTasksTable: Dexie.Table<KanbanTask, number>;
 
@@ -73,7 +74,7 @@ export class LocalDatabase extends Dexie {
     this.labelsTable.mapToClass(Label);
     this.taskTagsTable.mapToClass(LabelsTask);
     this.stagesTable.mapToClass(DexieStageDTO);
-    this.pomodoroTable.mapToClass(PomodoroHistory);
+    this.pomodoroTable.mapToClass(DexiePomodoroHistoryDTO);
     this.kanbanColumnsTable.mapToClass(DexieKanbanColumnDTO);
     this.kanbanTasksTable.mapToClass(KanbanTask);
   }

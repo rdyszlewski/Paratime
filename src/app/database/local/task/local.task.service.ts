@@ -72,8 +72,10 @@ export class LocalTaskService extends LocalTaskDataService implements ITaskServi
   }
 
   public update(task: Task): Promise<Task> {
-    return this.repository.update(new DexieTaskDTO(task)).then(_=>{
-      return Promise.resolve(task);
+    return this.repository.findById(task.id).then(taskDTO=>{
+      return this.repository.update(taskDTO).then(_=>{
+        return Promise.resolve(task);
+      })
     });
   }
 

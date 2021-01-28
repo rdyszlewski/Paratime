@@ -16,14 +16,9 @@ export class DexieProjectDTO extends OrderableItem implements LocalDTO<Project> 
 
   constructor(project: Project){
     super();
-    this.id = project.id;
-    this.name = project.name;
-    this.description = project.description;
-    this.startDate = DateAdapter.getText(project.startDate);
-    this.endDate = DateAdapter.getText(project.endDate);
-    this.status = project.status;
-    this.type = project.type;
+    this.update(project);
   }
+
 
   public getModel(): Project {
     let model = new Project();
@@ -35,6 +30,16 @@ export class DexieProjectDTO extends OrderableItem implements LocalDTO<Project> 
     model.status = this.status;
     model.type = this.type;
     return model;
+  }
+
+  public update(project: Project) {
+    this.id = project.id;
+    this.name = project.name;
+    this.description = project.description;
+    this.startDate = DateAdapter.getText(project.startDate);
+    this.endDate = DateAdapter.getText(project.endDate);
+    this.status = project.status;
+    this.type = project.type;
   }
 
   public get containerId(): number {

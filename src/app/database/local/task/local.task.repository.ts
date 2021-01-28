@@ -45,8 +45,8 @@ export class LocalTaskRepository extends OrderRepository<DexieTaskDTO> {
   }
 
   // TODO: zastanowić się, czy tutaj powinno być Task czy DexieTaskDTO
-  public remove(task: Task): Promise<void>{
-    return this.table.delete(task.id);
+  public remove(id: number): Promise<void>{
+    return this.table.delete(id);
   }
 
   public update(task:DexieTaskDTO):Promise<number>{
