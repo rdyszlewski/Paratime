@@ -2,7 +2,7 @@ import { ResolveEnd } from '@angular/router';
 import { IKanbanTaskService } from 'app/database/shared/kanban-task/kanban-task.service';
 import { ILabelService } from 'app/database/shared/label/label.service';
 import { ISubtaskService } from 'app/database/shared/subtask/subtask.service';
-import { LocalKanbanTaskRepository } from './local.kanban-task';
+import { LocalKanbanTaskRepository } from './local.kanban-task.repository';
 import { LocalTaskRepository } from '../task/local.task.repository';
 import { LocalTaskDataService } from '../task/local.task-data.service';
 import { KanbanTask } from 'app/database/shared/kanban-task/kanban-task';

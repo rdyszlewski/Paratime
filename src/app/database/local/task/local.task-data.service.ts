@@ -10,7 +10,7 @@ import { TaskInsertData } from 'app/database/shared/task/task.insert-data';
 import { TaskInsertResult } from 'app/database/shared/task/task.insert-result';
 import { TaskRemoveResult } from 'app/database/shared/task/task.remove-result';
 import { LocalKanbanColumnRepository } from '../kanban-column/local.kanban-column.repository';
-import { LocalKanbanTaskRepository } from '../kanban-task/local.kanban-task';
+import { LocalKanbanTaskRepository } from '../kanban-task/local.kanban-task.repository';
 import { LocalOrderController } from '../order/local.orderable.service';
 import { DexieTaskDTO } from './local.task';
 import { LocalTaskRepository } from './local.task.repository';
@@ -30,15 +30,19 @@ export class LocalTaskDataService{
 
   public create(data: TaskInsertData): Promise<TaskInsertResult>{
     let taskDTO = new DexieTaskDTO(data.task);
+    console.log(taskDTO);
     return this.insertTask(taskDTO).then(insertedTask=>{
+      console.log("Wstawione zadanie");
+      console.log(insertedTask);
       return Promise.all([
         this.insertTaskProperties(insertedTask.id, data.task),
         // TODO: sprawdzić, czy to jest poprawne
-        this.taskOrderController.insert(new DexieTaskDTO(data.task), null, insertedTask.containerId),
+        // TODO: prawdopodobnie będzie tutaj pobrać
+        this.taskOrderController.insert(taskDTO, null, insertedTask.containerId),
         this.insertKanbanTask(data.task, data.column, data.projectId)
       ]).then(results=>{
         let filledTask = results[0];
-        let updatedTasks = results[1];
+        let updatedTasks = results[1].map(x=>x.getModel());
         let kanbanInsertResult = results[2];
         let result = new TaskInsertResult(filledTask, updatedTasks);
         result.insertedKanbanTask = kanbanInsertResult.insertedElement;

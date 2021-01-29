@@ -37,6 +37,9 @@ export class Task extends OrderableItem implements IFilterable, ITaskItem {
     this._name = name;
     this._description = description;
     this._status = status;
+
+    this._labels = [];
+    this._subtasks = [];
   }
 
   public get name(): string {
@@ -212,11 +215,19 @@ export class Task extends OrderableItem implements IFilterable, ITaskItem {
   }
 
   public get containerId(): number {
-    return this._projectID;
+    if(this._project != null){
+      return this._project.id;
+    }
+    return -1;
   }
 
   public set containerId(id: number){
     // TODO: sprawdzić, czy tak to powinno być. Czy coś się przypadkiem nie zepsuje, jeśli będziemy zapisywać wyłącznie id
-    this._projectID = id;
+    if(this._project == null){
+      // TODO: to może powodować problemy. Sprawdzić, gdzie to jest uzywane i spróbować to jakoś przerobić
+      this._project = new Project();
+    }
+    this._project.id = id;
+
   }
 }

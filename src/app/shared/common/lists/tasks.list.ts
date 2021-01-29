@@ -59,10 +59,12 @@ export class TasksList<T extends IFilterable & OrderableItem>
     // if(order){
     //   this.order();
     // }
+    // TODO: przywrócić to później
     this.itemFilter.filter(null, this.items);
   }
 
   public updateItems(itemsToUpdate: T[]) {
+    // TODO: dobrze byłoby to zdebagować
     itemsToUpdate.forEach((item) => {
       const index = this.items.findIndex((x) => x.id == item.id);
       if (index >= 0) {

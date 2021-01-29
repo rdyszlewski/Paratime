@@ -11,7 +11,7 @@ export class DexieProjectDTO extends OrderableItem implements LocalDTO<Project> 
   public description: string;
   public startDate: string;
   public endDate: string;
-  public status: Status;
+  public status: Status = Status.STARTED;
   public type: ProjectType;
 
   constructor(project: Project){

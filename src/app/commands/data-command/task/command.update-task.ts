@@ -8,6 +8,7 @@ export class UpdateTaskCommand extends DataCommand{
   }
 
   public execute() {
+    console.log(this.task);
     this._dataService.getTaskService().update(this.task);
   }
 

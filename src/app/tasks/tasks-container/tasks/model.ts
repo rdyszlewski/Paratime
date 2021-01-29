@@ -41,7 +41,7 @@ export class TasksModel {
   public addTask(task: Task) {
     this.project.addTask(task);
     this.tasks.addItem(task);
-  }
+  };
 
   public updateTasks(tasks: Task[]) {
     this.tasks.updateItems(tasks);

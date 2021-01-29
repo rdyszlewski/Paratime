@@ -31,6 +31,7 @@ export class DexieTaskDTO extends OrderableItem implements DexieDTO<Task> {
   public getModel(): Task{
     let task = new Task();
 
+    task.id = this.id;
     task.name = this.name;
     task.description = this.description;
     task.important = this.important == 1 ? true : false;

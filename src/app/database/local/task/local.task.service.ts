@@ -6,7 +6,7 @@ import { Position } from 'app/database/shared/models/orderable.item';
 import { Status } from 'app/database/shared/models/status';
 import { Task } from 'app/database/shared/task/task';
 import { TaskFilter } from 'app/database/shared/task/task.filter';
-import { LocalKanbanTaskRepository } from '../kanban-task/local.kanban-task';
+import { LocalKanbanTaskRepository } from '../kanban-task/local.kanban-task.repository';
 import { LocalTaskRepository } from './local.task.repository';
 import { LocalTaskDataService } from './local.task-data.service';
 import { LocalKanbanColumnRepository } from '../kanban-column/local.kanban-column.repository';
@@ -72,10 +72,14 @@ export class LocalTaskService extends LocalTaskDataService implements ITaskServi
   }
 
   public update(task: Task): Promise<Task> {
+    console.log("Aktualizacja zadania");
+    console.log(task);
     return this.repository.findById(task.id).then(taskDTO=>{
+      taskDTO.update(task);
+      console.log(taskDTO);
       return this.repository.update(taskDTO).then(_=>{
         return Promise.resolve(task);
-      })
+      });
     });
   }
 

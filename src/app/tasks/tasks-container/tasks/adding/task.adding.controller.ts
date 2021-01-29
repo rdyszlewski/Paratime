@@ -39,8 +39,8 @@ export class TaskAddingController {
   }
 
   private updateViewAfterInserting(result: TaskInsertResult) {
+    // this.mainModel.addTask(result.insertedElement);
     this.mainModel.updateTasks(result.updatedElements);
-    this.mainModel.addTask(result.insertedElement);
     this.closeAddingNewTask();
     ScrollBarHelper.moveToBottom(this.TASK_LIST);
   }

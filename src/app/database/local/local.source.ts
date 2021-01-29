@@ -18,7 +18,7 @@ import { LocalProjectStageService } from './stage/local.stage.service';
 import { LocalSubtaskService } from './subtask/local.subtask.service';
 import { LocalTaskService } from './task/local.task.service';
 import { LocalKanbanColumnRepository } from './kanban-column/local.kanban-column.repository';
-import { LocalKanbanTaskRepository } from './kanban-task/local.kanban-task';
+import { LocalKanbanTaskRepository } from './kanban-task/local.kanban-task.repository';
 import { LocalLabelRepository } from './label/local.label.repository';
 import { LocalProjectRepository } from './project/local.project.repository';
 import { LocalProjectStageRepository } from './stage/local.stage.repository';
