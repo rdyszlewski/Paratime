@@ -57,10 +57,22 @@ export class LocalKanbanTaskService extends LocalTaskDataService implements IKan
   }
 
   public changeOrder(currentTask: KanbanTask, previousTask: KanbanTask, currentIndex: number, previousIndex: number) {
-    return this.kanbanTaskOrderController.move(currentTask, previousTask, currentIndex, previousIndex);
+    let promises = [
+      this.kanbanTaskRepository.findById(currentTask.id),
+      this.kanbanTaskRepository.findById(previousTask.id)
+    ];
+    return Promise.all(promises).then(results=>{
+      return this.kanbanTaskOrderController.move(results[0], results[1], currentIndex, previousIndex);
+    });
   }
 
   public changeColumn(task: KanbanTask, currentTask: KanbanTask, columnId: number) {
-    return this.kanbanTaskOrderController.changeContainer(task, currentTask, columnId);
+    let promises = [
+      this.kanbanTaskRepository.findById(task.id),
+      this.kanbanTaskRepository.findById(currentTask.id)
+    ]
+    return Promise.all(promises).then(results=>{
+      return this.kanbanTaskOrderController.changeContainer(task[0], currentTask[1], columnId);
+    });
   }
 }

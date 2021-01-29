@@ -2,7 +2,6 @@ import { DataService } from 'app/data.service';
 import { TaskDetails } from '../model/model';
 import { Label } from 'app/database/shared/label/label';
 import { TaskLabelsModel } from './task.label.model';
-import { LabelsTask } from 'app/database/shared/label/labels-task';
 import { CommandService } from 'app/commands/manager/command.service';
 import { RemoveLabelAssignignCommand } from 'app/commands/data-command/label/command.remove-label-assigning';
 import { AssingLabelCommand } from 'app/commands/data-command/label/command.assign-label';

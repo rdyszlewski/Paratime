@@ -98,8 +98,7 @@ export class LocalTaskDataService{
       return Promise.resolve([]);
     }
     let actions = labels.map(label=>this.labelService.assginLabel(insertedId, label.id));
-    return Promise.all(actions).then(results=>{
-      let labelsIds = results.map(result=>result.labelId);
+    return Promise.all(actions).then(labelsIds=>{
       return Promise.all(labelsIds.map(id => this.labelService.getById(id)));
     });
   }
