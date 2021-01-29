@@ -1,32 +1,35 @@
 import { KanbanTask } from 'app/database/shared/kanban-task/kanban-task';
 import { OrderRepository } from '../task/order.respository';
+import { DexieKanbanTaskDTO } from './local.kanban-task';
 
-export class LocalKanbanTaskRepository extends OrderRepository<KanbanTask>{
+export type KanbanTaskDTO = DexieKanbanTaskDTO
 
-  constructor(table: Dexie.Table<KanbanTask, number>){
+export class LocalKanbanTaskRepository extends OrderRepository<KanbanTaskDTO> {
+
+  constructor(table: Dexie.Table<KanbanTaskDTO, number>){
     super(table, "columnId");
   }
 
-  public findById(id:number): Promise<KanbanTask>{
+  public findById(id:number): Promise<KanbanTaskDTO>{
     return this.table.get(id);
   }
 
-  public findByTask(taskId: number): Promise<KanbanTask>{
+  public findByTask(taskId: number): Promise<KanbanTaskDTO>{
     return this.table.where("taskId").equals(taskId).first();
   }
 
-  public findByColumn(columnId: number): Promise<KanbanTask[]>{
+  public findByColumn(columnId: number): Promise<KanbanTaskDTO[]>{
     return this.table.where("columnId").equals(columnId).toArray();
   }
 
   // TODO: czy szukanie ostatniego i pierwszego jest konieczne
 
-  public insert(task: KanbanTask): Promise<number>{
+  public insert(task: KanbanTaskDTO): Promise<number>{
     return this.table.add(task);
   }
 
-  public remove(task: KanbanTask): Promise<void>{
-    return this.table.delete(task.id);
+  public remove(id: number): Promise<void>{
+    return this.table.delete(id);
   }
 
   public removeAllFromColumn(columnId: number): Promise<number>{
@@ -37,8 +40,7 @@ export class LocalKanbanTaskRepository extends OrderRepository<KanbanTask>{
     return this.table.where("taskId").equals(taskId).delete();
   }
 
-  public update(task: KanbanTask): Promise<number>{
+  public update(task: KanbanTaskDTO): Promise<number>{
     return this.table.update(task.id, task);
   }
-
 }

@@ -10,7 +10,8 @@ import { TaskInsertData } from 'app/database/shared/task/task.insert-data';
 import { TaskInsertResult } from 'app/database/shared/task/task.insert-result';
 import { TaskRemoveResult } from 'app/database/shared/task/task.remove-result';
 import { LocalKanbanColumnRepository } from '../kanban-column/local.kanban-column.repository';
-import { LocalKanbanTaskRepository } from '../kanban-task/local.kanban-task.repository';
+import { DexieKanbanTaskDTO } from '../kanban-task/local.kanban-task';
+import { KanbanTaskDTO, LocalKanbanTaskRepository } from '../kanban-task/local.kanban-task.repository';
 import { LocalOrderController } from '../order/local.orderable.service';
 import { DexieTaskDTO } from './local.task';
 import { LocalTaskRepository } from './local.task.repository';
@@ -18,7 +19,7 @@ import { LocalTaskRepository } from './local.task.repository';
 export class LocalTaskDataService{
 
   protected taskOrderController: LocalOrderController<DexieTaskDTO>;
-  protected kanbanTaskOrderController: LocalOrderController<KanbanTask>;
+  protected kanbanTaskOrderController: LocalOrderController<DexieKanbanTaskDTO>;
 
 
   constructor(protected taskRepository: LocalTaskRepository, protected kanbanTaskRepository: LocalKanbanTaskRepository,
@@ -104,16 +105,12 @@ export class LocalTaskDataService{
   }
 
   private insertKanbanTask(insertedTask: Task, column: KanbanColumn, projectId: number): Promise<InsertResult<KanbanTask>>{
-    console.log("InsertKanbanTask");
-    console.log(insertedTask);
     let data = new TaskInsertData(insertedTask, column, projectId);
     return this.prepareKanbanColumn(data).then(column=>{
-      console.log(column);
-      // TODO: tutaj istnieje problem z column. Z jakiegoś powodu zwraca undefined
-      let kanbanTask = this.getPreparedKanbanTask(data, column.id);
-      return this.createKanbanTask(kanbanTask).then(insertedTask=>{
+      let kanbanTaskDTO = this.getPreparedKanbanTask(data, column.id);
+      return this.createKanbanTask(kanbanTaskDTO).then(insertedTask=>{
         return this.kanbanTaskOrderController.insert(insertedTask, null, column.id).then(updatedTasks=>{
-          let result = new InsertResult(insertedTask, updatedTasks);
+          let result = new InsertResult(insertedTask.getModel(), updatedTasks.map(x=>x.getModel()));
           return Promise.resolve(result);
         })
       });
@@ -141,16 +138,15 @@ export class LocalTaskDataService{
     return columnPromise;
   }
 
-  private getPreparedKanbanTask(data: TaskInsertData, columnId: number): KanbanTask{
-    let kanbanTask = new KanbanTask();
-    // TODO: to trzeba to prześledzić
-    kanbanTask.task = data.task;
-    kanbanTask.columnId = columnId;;
+  private getPreparedKanbanTask(data: TaskInsertData, columnId: number): KanbanTaskDTO{
+    let kanbanTask = new DexieKanbanTaskDTO();
+    kanbanTask.taskId = data.task.id;
+    kanbanTask.columnId = columnId;
 
     return kanbanTask;
   }
 
-  private createKanbanTask(kanbanTask: KanbanTask): Promise<KanbanTask>{
+  private createKanbanTask(kanbanTask: KanbanTaskDTO): Promise<KanbanTaskDTO>{
     return this.kanbanTaskRepository.insert(kanbanTask).then(insertedId=>{
       return this.kanbanTaskRepository.findById(insertedId);
     });
@@ -173,11 +169,11 @@ export class LocalTaskDataService{
   }
 
   private removeKanbanTask(task: Task): Promise<KanbanTask[]>{
-    console.log(task);
-
     return this.kanbanTaskRepository.findByTask(task.id).then(kanbanTask=>{
-      return this.kanbanTaskRepository.remove(kanbanTask).then(()=>{
-        return this.kanbanTaskOrderController.remove(kanbanTask);
+      return this.kanbanTaskRepository.remove(kanbanTask.id).then(()=>{
+        return this.kanbanTaskOrderController.remove(kanbanTask).then(result=>{
+          return Promise.resolve(result.map(x=>x.getModel()));
+        });
       })
     })
   }

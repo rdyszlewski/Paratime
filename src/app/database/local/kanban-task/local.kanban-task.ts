@@ -9,9 +9,12 @@ export class DexieKanbanTaskDTO extends OrderableItem implements LocalDTO<Kanban
 
   // TODO: sprawdzić, jak wygląda sprawa z id. Jest tutaj raczej niepotrzebne
 
-  constructor(kanbanTask: KanbanTask){
+
+  constructor(kanbanTask: KanbanTask=null){
     super();
-    this.update(kanbanTask);
+    if(kanbanTask){
+      this.update(kanbanTask);
+    }
   }
 
   public getModel(): KanbanTask {
