@@ -39,11 +39,12 @@ export class ProjectDetailsComponent implements OnInit {
   public projectType = ProjectType;
   public status = Status;
 
-  constructor(private commandService: CommandService){
+  constructor(private commandService: CommandService, private dataService: DataService){
 ``
   }
 
   ngOnInit(): void {
+    // TODO: poprzerabiać to w taki sposób, aby ułatwić testowanie
     this.model = new ProjectDetails();
     this.state = new ProjectDetailsState(this.model);
     this.changeDetector = new ProjectChangeDetector(this.model);
@@ -75,8 +76,10 @@ export class ProjectDetailsComponent implements OnInit {
 
   public setProject(project: Project) {
     console.log(project);
-    this.model.setProject(project);
-    this.stageController.setProject(project);
+    this.dataService.getProjectService().getById(project.id).then(loadedProject=>{
+      this.model.setProject(loadedProject);
+      this.stageController.setProject(loadedProject);
+    });
   }
 
   public getDateText(date: Date) {

@@ -218,20 +218,20 @@
 
 <ng-template #stage_item let-stage>
   <div class="stage-main">
-    <div class="list-item-value">{{ stage.getName() }}</div>
+    <div class="list-item-value">{{ stage.name }}</div>
     <div class="stage-info-icons">
       <div
-        *ngIf="stage.getDescription() != null"
+        *ngIf="stage.description != null"
         class="task-description-icon info-icon"
-        tooltip="{{ stage.getDescription() }}"
+        tooltip="{{ stage.description }}"
         autoplacement="true"
         placement="bottom"
       ></div>
 
       <div
-        *ngIf="stage.getEndDate() != null"
+        *ngIf="stage.endDate != null"
         class="task-enddate-icon info-icon"
-        tooltip="{{ getDateText(stage.getEndDate()) }}"
+        tooltip="{{ getDateText(stage.endDate) }}"
         autoplacement="true"
         placement="bottom"
       ></div>

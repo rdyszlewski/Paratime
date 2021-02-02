@@ -101,10 +101,14 @@ export class KanbanComponent implements OnInit, ITaskList {
   public addTask(column: KanbanColumn) {
     const name = this.model.getNewTaskName();
     const project = this.model.getProject();
-    let callback = (result:TaskInsertResult) => this.model.updateTasks(result.updatedKanbanTasks, column.id);
+    let callback = (result:TaskInsertResult) => this.createTaskCallback(result);
     let command = new CreateTaskCommand(name, project).setColumn(column).setCallback(callback)
     this.commandService.execute(command);
     this.closeAddingNewTask();
+  }
+
+  private createTaskCallback(result: TaskInsertResult){
+    this.model.addTask(result.insertedKanbanTask);
   }
 
   public  removeTask(kanbanTask: KanbanTask): void {

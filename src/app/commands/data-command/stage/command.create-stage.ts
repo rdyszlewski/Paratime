@@ -10,7 +10,11 @@ export class CreateStageCommand extends DataCommand{
 
   public execute() {
     this._dataService.getStageService().create(this.stage).then(result=>{
-      this.model.updateStages(result.updatedElements);
+      // TODO: możliwe, że po zmianie będzie konieczne zaktualizowanie
+      this.model.addStage(result.insertedElement);
+      // this.model.updateStages(result.updatedElements);
+      // this.model.updateStages(result.updatedElements);
+
       this.closeCallback();
     });
   }

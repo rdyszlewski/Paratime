@@ -40,7 +40,7 @@ export class LocalTaskDataService{
         // TODO: sprawdzić, czy to jest poprawne
         // TODO: prawdopodobnie będzie tutaj pobrać
         this.taskOrderController.insert(taskDTO, null, insertedTask.containerId),
-        this.insertKanbanTask(data.task, data.column, data.projectId)
+        this.insertKanbanTask(insertedTask, data.column, data.projectId)
       ]).then(results=>{
         let filledTask = results[0];
         let updatedTasks = results[1].map(x=>x.getModel());
@@ -48,6 +48,8 @@ export class LocalTaskDataService{
         let result = new TaskInsertResult(filledTask, updatedTasks);
         result.insertedKanbanTask = kanbanInsertResult.insertedElement;
         result.updatedKanbanTasks = kanbanInsertResult.updatedElements;
+        result.insertedKanbanTask.task = result.insertedElement;
+        // TODO: możliwe, że będzie trzeba tutaj pozmieniać kolejności
         return Promise.resolve(result);
       });
     });
@@ -73,6 +75,7 @@ export class LocalTaskDataService{
       task.labels = labels;
       // TODO: sprawdzić, czy zwracać ten sam model, czy inny
       task.id = insertedId;
+      // TODO: prawdopodobnie będzie trzbea pobrać zadania dla zaktualizowanych zadań kanban
 
       return Promise.resolve(task);
     });
@@ -103,13 +106,17 @@ export class LocalTaskDataService{
     });
   }
 
-  private insertKanbanTask(insertedTask: Task, column: KanbanColumn, projectId: number): Promise<InsertResult<KanbanTask>>{
-    let data = new TaskInsertData(insertedTask, column, projectId);
+  private insertKanbanTask(insertedTaskDTO: DexieTaskDTO, column: KanbanColumn, projectId: number): Promise<InsertResult<KanbanTask>>{
+    // TODO: to może być przeniesione wcześniej
+    let taskModel = insertedTaskDTO.getModel();
+    let data = new TaskInsertData(taskModel, column, projectId);
     return this.prepareKanbanColumn(data).then(column=>{
-      let kanbanTaskDTO = this.getPreparedKanbanTask(data, column.id);
-      return this.createKanbanTask(kanbanTaskDTO).then(insertedTask=>{
-        return this.kanbanTaskOrderController.insert(insertedTask, null, column.id).then(updatedTasks=>{
-          let result = new InsertResult(insertedTask.getModel(), updatedTasks.map(x=>x.getModel()));
+      let kanbanTaskDTO = this.getPreparedKanbanTask(taskModel.id, column.id);
+      return this.createKanbanTask(kanbanTaskDTO).then(insertedKanbanTask=>{
+        return this.kanbanTaskOrderController.insert(insertedKanbanTask, null, column.id).then(updatedTasks=>{
+          let kanbanTaskModel = insertedKanbanTask.getModel();
+          kanbanTaskModel.task = taskModel;
+          let result = new InsertResult(kanbanTaskModel, updatedTasks.map(x=>x.getModel()));
           return Promise.resolve(result);
         })
       });
@@ -137,9 +144,9 @@ export class LocalTaskDataService{
     return columnPromise;
   }
 
-  private getPreparedKanbanTask(data: TaskInsertData, columnId: number): KanbanTaskDTO{
+  private getPreparedKanbanTask(insertedTaskId: number, columnId: number): KanbanTaskDTO{
     let kanbanTask = new DexieKanbanTaskDTO();
-    kanbanTask.taskId = data.task.id;
+    kanbanTask.taskId = insertedTaskId;
     kanbanTask.columnId = columnId;
 
     return kanbanTask;

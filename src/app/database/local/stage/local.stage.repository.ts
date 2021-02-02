@@ -20,6 +20,7 @@ export class LocalProjectStageRepository extends OrderRepository<DexieStageDTO>{
   }
 
   public findByFilter(filter: StageFilter): Promise<DexieStageDTO[]>{
+    return this.table.toArray();
     let stageFilter = new StageRepositoryFilter(filter);
     return this.table.filter(stage=>stageFilter.apply(stage)).toArray();
   }

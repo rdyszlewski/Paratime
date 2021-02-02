@@ -60,6 +60,10 @@ export class Stage extends OrderableItem {
     }
   }
 
+  public get project(): Project{
+    return this._project;
+  }
+
   public get projectID(): number {
     return this._projectID;
   }

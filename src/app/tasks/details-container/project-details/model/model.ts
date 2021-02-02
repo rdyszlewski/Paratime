@@ -19,6 +19,10 @@ export class ProjectDetails {
 
   }
 
+  public addStage(stage: Stage){
+    this.stages.addItem(stage);
+  }
+
   public getStageByIndex(index: number){
     return this.stages.getItemByIndex(index);
   }
