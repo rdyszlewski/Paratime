@@ -74,7 +74,6 @@ export class LocalOrderController<T extends OrderableItem> {
   }
 
   private insertItemBefore(item: T, currentItem: T):Promise<T[]>{
-    // TODO: refaktoryzacja
     const toUpdate = [];
     item.successorId = currentItem.id;
     return this.repository.findBySuccessor(currentItem.id).then(prevCurrent=>{
@@ -96,7 +95,6 @@ export class LocalOrderController<T extends OrderableItem> {
 
   public insertItemToEnd(item:T, containerId: number): Promise<T[]>{
     const toUpdate = [];
-    // TODO: tutaj jest błąd, który powoduje
     return this.getLast(item, containerId).then(lastItem=>{
       if(lastItem){
         lastItem.successorId = item.id;

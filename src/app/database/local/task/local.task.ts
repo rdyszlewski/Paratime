@@ -37,6 +37,8 @@ export class DexieTaskDTO extends OrderableItem implements DexieDTO<Task> {
     task.important = this.important == 1 ? true : false;
     task.date = DateAdapter.getDate(this.date);
     task.endDate = DateAdapter.getDate(this.endDate);
+    task.startTime = this.startTime;
+    task.endTime = this.endTime;
     task.plannedTime = this.plannedTime;
     task.progress = this.progress;
     task.status = this.status;;
@@ -61,6 +63,8 @@ export class DexieTaskDTO extends OrderableItem implements DexieDTO<Task> {
     this.important = task.important ? 1 : 0;
     this.date = DateAdapter.getText(task.date);
     this.endDate = DateAdapter.getText(task.endDate);
+    this.startTime = task.startTime;
+    this.endTime = task.endTime;
     this.plannedTime = task.plannedTime;
     this.progress = task.progress;
     this.status = task.status;

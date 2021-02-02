@@ -3,7 +3,6 @@ import { ITaskContainer } from 'app/database/shared/task/task.container';
 import { KanbanTask } from '../kanban-task/kanban-task';
 
 export class KanbanColumn extends OrderableItem implements ITaskContainer{
-  // TODO: przetestować, czy nie będzie to sprawiało problemów
   private _projectId: number;
   private _name: string;
   private _default: boolean;

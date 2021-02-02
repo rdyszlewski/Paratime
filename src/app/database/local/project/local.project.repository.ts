@@ -20,7 +20,6 @@ export class LocalProjectRepository extends OrderRepository<DexieProjectDTO> {
 
   public findByFilter(filter: ProjectFilter): Promise<DexieProjectDTO[]>{
     let projectFilter = new ProjectRepositoryFilter(filter);
-    // TODO: sprawdzić, czy to działa poprawnie
     return this.table.filter(project=>projectFilter.apply(project)).toArray();
   }
 
@@ -29,17 +28,14 @@ export class LocalProjectRepository extends OrderRepository<DexieProjectDTO> {
   }
 
   public insert(project: Project): Promise<number>{
-    // let preparedProject = this.getPreparedProject(project);
     return this.table.add(new DexieProjectDTO(project));
   }
 
-  // TODO: zastanowić się, czy tutaj powinien być Project czy DexieProjectDTO
   public remove(id: number): Promise<void>{
     return this.table.delete(id);
   }
 
   public update(project:DexieProjectDTO):Promise<number>{
-    // let preparedProject = this.getPreparedProject(project);
     return this.table.update(project.id, project);
   }
 }

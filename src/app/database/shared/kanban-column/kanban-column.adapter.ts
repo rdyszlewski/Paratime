@@ -7,7 +7,7 @@ export class KanbanColumnAdapter{
     column.id = json["id"];
     column.name = json["name"];
     column.projectId = json["projectId"];
-    column.default = json["default"]; // TODO: przyjrzeć się temu
+    column.default = json["default"];
 
     return column;
   }

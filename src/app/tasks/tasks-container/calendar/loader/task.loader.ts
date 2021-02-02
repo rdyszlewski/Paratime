@@ -62,7 +62,7 @@ export class TaskLoader{
   }
 
   private findDay(date: Date, cells: TaskDay[]){
-    return cells.find(cell=>cell.day == date.getDay()-1 && cell.month == date.getMonth() && cell.year == date.getFullYear());
+    return cells.find(cell=>cell.day == date.getDay() && cell.month == date.getMonth() && cell.year == date.getFullYear());
   }
 
   protected isCorrectStatus(task: Task){

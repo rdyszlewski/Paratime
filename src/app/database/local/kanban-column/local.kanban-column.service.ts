@@ -65,7 +65,6 @@ export class LocalKanbanColumnService implements IKanbanColumnService{
     return this.kanbanTaskService.removeByColumn(column.id).then(()=>{
       return this.repository.findById(column.id).then(columnDTO=>{
         return this.repository.remove(column.id).then(()=>{
-          // TODO: sprawdzić, czy to będzie działać poprawnie
           return this.mapToColumnListAction(this.orderController.remove(columnDTO));
         });
       });
@@ -95,7 +94,6 @@ export class LocalKanbanColumnService implements IKanbanColumnService{
 
   public removeByProject(projectId: number): Promise<void> {
     return this.repository.findByProjectId(projectId).then(columns=>{
-      // TODO: sprawdzić czy to będzie ok
       let actions = columns.map(column=>this.remove(column.getModel()));
       return Promise.all(actions).then(_=>{
         return Promise.resolve(null);

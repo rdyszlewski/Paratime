@@ -3,7 +3,6 @@ import { PomodoroHistory } from "app/database/shared/pomodoro/pomodoro.history";
 import { State } from "app/pomodoro/pomodoro/shared/state";
 import { LocalDTO } from "../task/local.dto";
 
-// TODO: sprawdzić, cz y
 export class DexiePomodoroHistoryDTO implements LocalDTO<PomodoroHistory> {
 
   public id: number;

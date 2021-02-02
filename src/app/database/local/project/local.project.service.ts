@@ -14,7 +14,6 @@ import { LocalProjectRepository } from './local.project.repository';
 
 export class LocalProjectService implements IProjectService{
 
-  // TODO: sprawdzić, czy ten typ jest opdowiedni
   private orderController: LocalOrderController<DexieProjectDTO>;
 
   constructor(private repository: LocalProjectRepository,
@@ -24,7 +23,6 @@ export class LocalProjectService implements IProjectService{
   }
 
   public getById(id: number): Promise<Project> {
-    // TODO: zastanowić się, kiedy projekty mają być fetchowane, a kiedy nie
     return this.repository.findById(id).then(project=>{
       return this.fetchProject(project);
     });
@@ -35,7 +33,6 @@ export class LocalProjectService implements IProjectService{
     if(!projectDTO){
       return Promise.resolve(null);
     }
-    // TODO: sprawdzić, czy to jest ok
 
     let stageFiler = StageFilter.getBuilder().setProjectId(projectDTO.id).build();
     let project = projectDTO.getModel();
@@ -80,7 +77,6 @@ export class LocalProjectService implements IProjectService{
         this.insertDefaultKanbanColumn(insertedProject.id)
       ]).then(results=>{
         console.log(results);
-        // TODO: coś ze wstawianiem elementów jest nie tak
         return this.createInsertResult(insertedProject, results[0], results[1]);
       })
     });
@@ -159,9 +155,7 @@ export class LocalProjectService implements IProjectService{
     return Promise.all(promises).then(projects=>{
       return this.orderController.move(projects[0], projects[2], currentIndex, previousIndex).then(result=>{
         return Promise.resolve(result.map(x=>x.getModel()));
-        // return this.mapToProjectPromise(result);
       });
     });
-    // return this.orderController.move(currentTask, previousTask, currentIndex, previousIndex);
   }
 }

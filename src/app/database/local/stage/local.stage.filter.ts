@@ -17,7 +17,6 @@ export class StageRepositoryFilter extends RepositoryFilter<DexieStageDTO, Stage
       this.addCondition(stage=>stage["name"].includes(filter.name));
     }
     if(filter.startDate!=null){
-      // TODO: prawdopoodbnie będzie trzeba to zrobić inaczej
       let date = DateAdapter.getText(filter.startDate);
       this.addCondition(stage=>stage["startDate"] == date);
     }

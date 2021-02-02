@@ -50,7 +50,6 @@ export class LocalPomodoroService implements IPomodoroService{
   }
 
   public create(pomodoro: PomodoroHistory): Promise<PomodoroHistory> {
-    // TODO: przerobić to jakoś fajnie
     let dto = new DexiePomodoroHistoryDTO(pomodoro);
     return this.repository.insert(dto).then(insertedId=>{
       return this.getById(insertedId);

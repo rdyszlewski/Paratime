@@ -1,6 +1,5 @@
 
 export class LabelsTask{
-  // TODO: przerobić jakoś to
     public taskId: number;
     public labelId: number;
 

@@ -19,7 +19,6 @@ export class DexieKanbanTaskDTO extends OrderableItem implements LocalDTO<Kanban
 
   public getModel(): KanbanTask {
     let task = new KanbanTask();
-    // TODO: tutaj można wstawić pobieranie zadania. TaskId w modelu jest chyba niepotrzebne
     task.id = this.taskId;
     task.columnId = this.columnId;
 

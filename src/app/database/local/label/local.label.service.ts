@@ -112,7 +112,6 @@ export class LocalLabelService implements ILabelService{
     return this.removeAllAssigningFromTask(taskId).then(_=>{
       let actions = labels.map(label=>this.assginLabel(taskId, label.id));
       return Promise.all(actions).then(results=>{
-        // TODO: sprawdzić, czy nie zrobić tego w jakiś inny sposób
         return Promise.resolve(labels);
       });
     });

@@ -326,8 +326,8 @@
 <ng-template #subtask_item let-subtask>
   <div
     [ngClass]="{
-      'subtask-checkbox-icon': subtask.getStatus() == status.STARTED,
-      'subtask-done-icon': subtask.getStatus() == status.ENDED,
+      'subtask-checkbox-icon': subtask.status == status.STARTED,
+      'subtask-done-icon': subtask.status == status.ENDED,
       'subtask-icon': true,
       checkbox: true
     }"
@@ -338,15 +338,15 @@
     (click)="getSubtask().toggleSubtaskStatus(subtask)"
     *ngIf="!getSubtask().getModel().isEditingSubtask(subtask)"
   >
-    {{ subtask.getName() }}
+    {{ subtask.name }}
   </div>
 </ng-template>
 
 <ng-template #subtask_edit let-subtask>
   <input
     class="subtask-name"
-    value="{{ subtask.getName() }}"
-    [id]="'subtask-name-input_' + subtask.getId()"
+    value="{{ subtask.name }}"
+    [id]="'subtask-name-input_' + subtask.id"
     autocomplete="off"
     *ngIf="getSubtask().getModel().isEditingSubtask(subtask)"
     [ngModel]="getSubtask().getModel().getEditingSubtaskName()"
