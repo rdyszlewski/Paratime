@@ -39,15 +39,15 @@
 <ng-template #label_item let-label>
   <!-- TODO: można sprawdzić, czy ten if powinien być w tym miejscu, czy można go dać gdzieś indziej, żeby nie obliaczało pustego elementu -->
   <div class="label-name" *ngIf="!getEditing().isEditingOpen(label)">
-    {{ label.getName() }}
+    {{ label.name }}
   </div>
 </ng-template>
 
 <ng-template #label_edit let-label>
   <input
     class="label-name"
-    [value]="label.getName()"
-    [id]="'label-name-input-' + label.getId()"
+    [value]="label.name"
+    [id]="'label-name-input-' + label.id"
     autocomplete="off"
     *ngIf="getEditing().isEditingOpen(label)"
     [ngModel]="getEditing().getModel().getEditingLabelName()"

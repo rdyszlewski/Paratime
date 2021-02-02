@@ -34,7 +34,7 @@
             class="column-content"
             id="{{ getModel().getColumnIdText(column) }}"
             cdkDropList
-            #column.getId().toString()="cdkDropList"
+            #column.id.toString()="cdkDropList"
             [cdkDropListData]="getModel().getTasks(column)"
             [cdkDropListConnectedTo]="getModel().getColumnsNames()"
             (cdkDropListDropped)="taskDrop($event)"
@@ -76,7 +76,7 @@
             class="column-content"
             id="{{ getModel().getColumnIdText(getModel().getDefaultColumn()) }}"
             cdkDropList
-            #getModel().getDefaultColumn().getId().toString()="cdkDropList"
+            #getModel().getDefaultColumn().id.toString()="cdkDropList"
             [cdkDropListData]="
               getModel().getTasks(getModel().getDefaultColumn())
             "
@@ -118,7 +118,7 @@
   <input
     type="text"
     class="form-control"
-    id="new_task_input_{{ column.getId() }}"
+    id="new_task_input_{{ column.id }}"
     autocomplete="off"
     (keyup)="handleAddingNewTask($event)"
     [ngModel]="getModel().getNewTaskName()"
@@ -145,15 +145,15 @@
 <ng-template #task_item let-kanban_task>
   <div class="task-main">
     <div class="list-item-top">
-      <div class="list-item-value">{{ kanban_task.getName() }}</div>
+      <div class="list-item-value">{{ kanban_task.name }}</div>
     </div>
     <ng-container
       [ngTemplateOutlet]="task_labels"
-      [ngTemplateOutletContext]="{ $implicit: kanban_task.getTask() }"
+      [ngTemplateOutletContext]="{ $implicit: kanban_task.task }"
     ></ng-container>
     <ng-container
       [ngTemplateOutlet]="task_details"
-      [ngTemplateOutletContext]="{ $implicit: kanban_task.getTask() }"
+      [ngTemplateOutletContext]="{ $implicit: kanban_task.task }"
     ></ng-container>
   </div>
   <ng-container
@@ -181,23 +181,23 @@
 </ng-template>
 
 <ng-template #task_labels let-task>
-  <div *ngFor="let label of task.getLabels()" class="label-item border">
-    {{ label.getName() }}
+  <div *ngFor="let label of task.labels" class="label-item border">
+    {{ label.name }}
   </div>
 </ng-template>
 
 <ng-template #task_details let-task>
   <div class="task-detauls-container">
     <div
-      *ngIf="task.getDescription() != null"
+      *ngIf="task.description != null"
       class="task-description-icon info-icon"
-      tooltip="{{ task.getDescription() }}"
+      tooltip="{{ task.description }}"
       autoplacement="true"
       placement="bottom"
     ></div>
 
     <div
-      *ngIf="task.getEndDate() != null"
+      *ngIf="task.endDate!= null"
       class="task-enddate-icon info-icon"
       tooltip="{{ getInfo().getEndDateText(task) }}"
       autoplacement="true"
@@ -205,21 +205,21 @@
     ></div>
 
     <div
-      *ngIf="task.getPriority() != null"
+      *ngIf="task.priority != null"
       class="task-priority-icon info-icon"
     >
       {{ getInfo().getPriorityText(task) }}
     </div>
 
     <div
-      *ngIf="task.getSubtasks().length != 0"
+      *ngIf="task.subtasks.length != 0"
       class="info-icon task-subtask"
       tooltip="{{ getInfo().getSubtasksList(task) }}"
       autoplacement="true"
       placement="bottom"
     >
       {{ task.getNumberOfSubtaskWithStatus(status.ENDED) }} /
-      {{ task.getSubtasks().length }}
+      {{ task.subtasks.length }}
     </div>
   </div>
 </ng-template>
@@ -272,7 +272,7 @@
       <button
         mat-menu-item
         (click)="finishTask(kanban_task)"
-        *ngIf="kanban_task.getTask().getStatus() != status.ENDED"
+        *ngIf="kanban_task.task.status != status.ENDED"
       >
         Zakończ zadanie
       </button>

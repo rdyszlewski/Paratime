@@ -142,7 +142,7 @@ export class TasksComponent implements OnInit, ITaskList {
 
   public removeTask(task: Task): void {
     TaskRemoveDialog.showSingleRemoveQuestion(task, this.dialogService, ()=>{
-      let callback = new RemoveTaskCallback(this.model);
+      let callback = new RemoveTaskCallback(this.model, task);
       this.commandService.execute(new RemoveTaskCommand(task).setCallback(callback));
     });
   }

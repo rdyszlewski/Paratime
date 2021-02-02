@@ -10,7 +10,8 @@ export class RemoveProjectCommand extends DataCommand{
 
   public execute() {
     this._dataService.getProjectService().remove(this._project).then(updatedProjects=>{
-      this._model.updateProjects(updatedProjects);
+      this._model.updateProjects(updatedProjects); // TODO: po zaimplementowaniu kolejności może być konieczne usunięcie tego
+      this._model.removeProject(this._project);
     });
   }
 

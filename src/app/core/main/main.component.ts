@@ -76,7 +76,7 @@ export class MainComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this.dataService.setSource(new LocalDataSource());
     // PomodoroSettingsStore.removeSettings();
-    this.deleteDatabase();
+    // this.deleteDatabase();
     // this.configureDexie();
   }
 

@@ -57,8 +57,11 @@ export class LocalKanbanTaskService extends LocalTaskDataService implements IKan
   }
 
   public changeOrder(currentTask: KanbanTask, previousTask: KanbanTask, currentIndex: number, previousIndex: number) {
+    console.log(currentTask);
+    console.log(previousTask);
+
     let promises = [
-      this.kanbanTaskRepository.findById(currentTask.id),
+      currentTask != null ? this.kanbanTaskRepository.findById(currentTask.id) : Promise.resolve(null),
       this.kanbanTaskRepository.findById(previousTask.id)
     ];
     return Promise.all(promises).then(results=>{

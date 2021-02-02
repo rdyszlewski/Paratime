@@ -118,6 +118,10 @@ export class LocalOrderController<T extends OrderableItem> {
   public remove(item: T): Promise<T[]> {
     const toUpdate = [];
     return this.repository.findBySuccessor(item.id).then(previousItem=>{
+      if(!previousItem){
+        let empty: T[] = []
+        return Promise.resolve(empty);
+      }
       if(item.isHead()){
         return this.removeHead(item, toUpdate);
       } else {
