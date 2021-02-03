@@ -8,6 +8,7 @@ export class UpdateTaskCommand extends DataCommand{
   }
 
   public execute() {
+    console.log(this.task);
     this._dataService.getTaskService().update(this.task);
   }
 
@@ -16,6 +17,6 @@ export class UpdateTaskCommand extends DataCommand{
   }
 
   public getDescription(): string {
-    return `Aktualizacja zadania ${this.task.getName()}`;
+    return `Aktualizacja zadania ${this.task.name}`;
   }
 }

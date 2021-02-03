@@ -1,10 +1,11 @@
+import { DateAdapter } from 'app/database/shared/models/date.adapter';
 import { Status } from 'app/database/shared/models/status';
-import { Task } from 'app/database/shared/task/task';
 import { TaskFilter } from 'app/database/shared/task/task.filter';
 import { Position } from '../../shared/models/orderable.item';
 import { RepositoryFilter } from '../pomodoro/local.repository-filter';
+import { DexieTaskDTO } from './local.task';
 
-export class TaskRepositoryFilter extends RepositoryFilter<Task, TaskFilter>{
+export class TaskRepositoryFilter extends RepositoryFilter<DexieTaskDTO, TaskFilter>{
 
   constructor(filter: TaskFilter){
     super(filter);
@@ -21,7 +22,7 @@ export class TaskRepositoryFilter extends RepositoryFilter<Task, TaskFilter>{
       this.addCondition(task=>task["status"]==Status.ENDED);
     }
     if(filter.important){
-      // TODO: sprawdzić, czy jest poprawnie
+      // TODO: sprawdzić, czy to będzie w ten sposób
       this.addCondition(task=>task["important"]==1);
     }
     if(filter.startDate != null){
@@ -30,11 +31,14 @@ export class TaskRepositoryFilter extends RepositoryFilter<Task, TaskFilter>{
         console.log("filter date");
         console.log(task["date"]);
         console.log(this.getDateFormat(filter.startDate));
-        return task["date"] == this.getDateFormat(filter.startDate)}
+        // TODO: sprawdzić, czy to będzie działało
+        return task["date"] == DateAdapter.getText(filter.startDate);
+        // return task["date"] == this.getDateFormat(filter.startDate);
+      }
         );
     }
     if(filter.endDate != null){
-      this.addCondition(task=>task["endDate"] == filter.endDate.toString());
+      this.addCondition(task=>task["endDate"] == DateAdapter.getText(filter.endDate));
     }
     if(filter.startTime != null){
       this.addCondition(task=>task["startTime"] == filter.startTime);
@@ -47,8 +51,8 @@ export class TaskRepositoryFilter extends RepositoryFilter<Task, TaskFilter>{
     }
     if(filter.startRangeStartDate != null && filter.endRangeEndDate != null){
       this.addCondition(task=>{
-        let startDate = this.getDateFormat(filter.startRangeStartDate);
-        let endDate = this.getDateFormat(filter.endRangeEndDate);
+        let startDate = DateAdapter.getText(filter.startRangeStartDate);
+        let endDate = DateAdapter.getText(filter.endRangeEndDate);
         return task["date"]>= startDate
         && task["date"]<= endDate
       });
@@ -64,10 +68,10 @@ export class TaskRepositoryFilter extends RepositoryFilter<Task, TaskFilter>{
         );
     }
     if(filter.first){
-      this.addCondition(task=>task["position"] == Position.HEAD)
+      this.addCondition(task=>task["_position"] == Position.HEAD)
     }
     if(filter.last){
-      this.addCondition(task=>task["successor"]==-1);
+      this.addCondition(task=>task["_successor"]==-1);
     }
   }
 

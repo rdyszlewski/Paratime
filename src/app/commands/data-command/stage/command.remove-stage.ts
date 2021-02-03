@@ -1,7 +1,6 @@
 import { DataCommand } from 'app/commands/data-commnad';
 import { Stage } from 'app/database/shared/stage/stage';
 import { ProjectDetails } from 'app/tasks/details-container/project-details/model/model';
-import { ProjectsModel } from 'app/tasks/lists-container/projects/common/model';
 
 export class RemoveStageCommand extends DataCommand{
 
@@ -10,7 +9,7 @@ export class RemoveStageCommand extends DataCommand{
   }
 
   public execute() {
-    this._dataService.getStageService().remove(this.stage.getId()).then(updatedStages=>{
+    this._dataService.getStageService().remove(this.stage.id).then(updatedStages=>{
       this.model.updateStages(updatedStages);
     });
   }
@@ -19,7 +18,7 @@ export class RemoveStageCommand extends DataCommand{
     throw new Error('Method not implemented.');
   }
   getDescription(): string {
-    return `Usunięcie etapu ${this.stage.getName()}`;
+    return `Usunięcie etapu ${this.stage.name}`;
   }
 
 

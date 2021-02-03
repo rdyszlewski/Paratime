@@ -65,7 +65,7 @@ export class KanbanComponent implements OnInit, ITaskList {
   }
 
   public openProject(project: Project) {
-    if(!project || project.getId() < 0){
+    if(!project || project.id < 0){
       return;
     }
     this.model.setProject(project);
@@ -73,7 +73,7 @@ export class KanbanComponent implements OnInit, ITaskList {
   }
 
   private loadTasks(project: Project) {
-    this.dataService.getKanbanColumnService().getByProjectId(project.getId()).then(columns=>{
+    this.dataService.getKanbanColumnService().getByProjectId(project.id).then(columns=>{
       this.model.setColumns(columns);
     })
   }
@@ -105,14 +105,18 @@ export class KanbanComponent implements OnInit, ITaskList {
   public addTask(column: KanbanColumn) {
     const name = this.model.getNewTaskName();
     const project = this.model.getProject();
-    let callback = (result:TaskInsertResult) => this.model.updateTasks(result.updatedKanbanTasks, column.getId());
+    let callback = (result:TaskInsertResult) => this.createTaskCallback(result);
     let command = new CreateTaskCommand(name, project).setColumn(column).setCallback(callback)
     this.commandService.execute(command);
     this.closeAddingNewTask();
   }
 
+  private createTaskCallback(result: TaskInsertResult){
+    this.model.addTask(result.insertedKanbanTask);
+  }
+
   public  removeTask(kanbanTask: KanbanTask): void {
-    let task = kanbanTask.getTask();
+    let task = kanbanTask.task;
     TaskRemoveDialog.showSingleRemoveQuestion(task, this.dialogService, ()=>{
       let callback = new RemoveKanbanTaskCallback(this.model, kanbanTask);
       this.commandService.execute(new RemoveTaskCommand(task).setCallback(callback))
@@ -134,15 +138,15 @@ export class KanbanComponent implements OnInit, ITaskList {
   }
 
   private getNewTaskInputId(column: KanbanColumn) {
-    return '#new_task_input_' + column.getId();
+    return '#new_task_input_' + column.id;
   }
 
   public openDetails(kanbanTask: KanbanTask) {
-    EventBus.getDefault().post(new TaskDetailsEvent(kanbanTask.getTask()));
+    EventBus.getDefault().post(new TaskDetailsEvent(kanbanTask.task));
   }
 
   public setCurrentTask(task: KanbanTask) {
-    this.appService.setCurrentTask(task.getTask());
+    this.appService.setCurrentTask(task.task);
   }
 
   public removeCurrentTask() {
@@ -150,12 +154,12 @@ export class KanbanComponent implements OnInit, ITaskList {
   }
 
   public isCurrentTask(task: KanbanTask): boolean {
-    return this.appService.isCurrentTask(task.getTask());
+    return this.appService.isCurrentTask(task.task);
   }
 
   public finishTask(kanbanTask: KanbanTask): void {
     let callback = updatedTasks => {}
-    this.commandService.execute(new FinishTaskCommand(kanbanTask.getTask(), this.appService, callback));
+    this.commandService.execute(new FinishTaskCommand(kanbanTask.task, this.appService, callback));
   }
 
 
@@ -186,8 +190,8 @@ export class KanbanComponent implements OnInit, ITaskList {
 
   public onColumnEdit(column: KanbanColumn) {
     this.model.setEditedColumn(column);
-    this.model.setColumnName(column.getName());
-    FocusHelper.focus('#column-name-' + column.getId());
+    this.model.setColumnName(column.name);
+    FocusHelper.focus('#column-name-' + column.id);
   }
 
   public onColumnRemove(column: KanbanColumn) {

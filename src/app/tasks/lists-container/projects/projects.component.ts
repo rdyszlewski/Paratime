@@ -114,7 +114,7 @@ export class ProjectsComponent implements OnInit {
   public onEditProject() {
     this.dataService
       .getProjectService()
-      .getById(this.model.getProjectWithOpenMenu().getId())
+      .getById(this.model.getProjectWithOpenMenu().id)
       .then((loadedProject) => {
         EventBus.getDefault().post(new ProjectEditEvent(loadedProject));
         this.model.setSelectedProject(this.model.getProjectWithOpenMenu());
@@ -152,7 +152,7 @@ export class ProjectsComponent implements OnInit {
 
   public addNewProject(name: string){
     const project = new Project();
-    project.setName(name);
+    project.name = name;
     this.commandService.execute(new CreateProjectCommand(project, this.model));
   }
 }

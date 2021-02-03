@@ -31,8 +31,8 @@ export class CreatingDialogComponent implements OnInit {
 
   public createTask(): Task{
     const task = new Task(this._model.name);
-    task.setProject(this._model.project);
-    task.setDate(this._model.date);
+    task.project = this.model.project;
+    task.date = this._model.date;
     return task;
   }
 

@@ -9,8 +9,9 @@ export class TaskItemController {
   constructor(private commandService: CommandService){
   }
 
+  // TODO: to powinno być przeniesione gdzieś do komendy
   public toggleTaskImportance(task: Task, event: MouseEvent) {
-    task.setImportant(!task.isImportant());
+    task.important = !task.important;
     this.updateTask(task);
     event.stopPropagation();
   }
@@ -20,16 +21,12 @@ export class TaskItemController {
   }
 
   public isTaskDone(task: Task): boolean {
-    return task.getStatus() == Status.ENDED;
+    return task.status == Status.ENDED;
   }
 
   public setTaskStatus(task: Task, checked: boolean) {
     // TODO: opracować zmianę na wszystkie stany
-    if (checked) {
-      task.setStatus(Status.ENDED);
-    } else {
-      task.setStatus(Status.STARTED);
-    }
+    task.status = checked ? Status.ENDED : Status.STARTED;
     this.updateTask(task);
   }
 

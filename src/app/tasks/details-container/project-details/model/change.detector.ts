@@ -13,26 +13,26 @@ export class ProjectChangeDetector{
 
     private copyProject(project:Project):Project{
         const newProject = new Project();
-        newProject.setName(project.getName());
-        newProject.setDescription(project.getDescription());
-        newProject.setEndDate(project.getEndDate());
-        newProject.setStatus(project.getStatus());
-        newProject.setType(project.getType());
-        newProject.setStartDate(project.getStartDate());
+        newProject.name = project.name;;
+        newProject.description = project.description;
+        newProject.startDate = project.startDate;
+        newProject.endDate = project.endDate;
+        newProject.status = project.status;
+        newProject.type = project.type;
 
         return newProject;
     }
 
     public isNameChanged():boolean{
         if(this.model.getProject() != null && this.originProject != null){
-            return this.model.getProject().getName() != this.originProject.getName();
+            return this.model.getProject().name != this.originProject.name;
         }
         return false;
     }
 
     public isEndDateChanged():boolean{
         if(this.model.getProject() != null && this.originProject != null){
-            return this.model.getProject().getEndDate() != this.originProject.getEndDate();
+            return this.model.getProject().endDate != this.originProject.endDate;
         }
         return false;
     }

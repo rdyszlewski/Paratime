@@ -21,7 +21,7 @@ export class SubtasksEditingModel{
     }
 
     public isEditingSubtask(subtask:Subtask){
-        return this.editedSubtask && this.editedSubtask.getId() == subtask.getId();
+        return this.editedSubtask && this.editedSubtask.id == subtask.id;
     }
 
     public getEditedSubtask(){

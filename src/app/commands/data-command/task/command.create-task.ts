@@ -33,9 +33,14 @@ export class CreateTaskCommand extends DataCommand{
 
   public execute() {
     // TODO: sprawdzić, co z tą datą
+    console.log("CreateTaskCommand");
     const task = this.prepareTaskToInsert(this.name, this.project);
-    let data = new TaskInsertData(task, this.column, this.project.getId());
+    console.log(task);
+    let data = new TaskInsertData(task, this.column, this.project.id);
+    console.log(data);
     this._dataService.getTaskService().create(data).then(result=>{
+      console.log("Wynik zapisywanka");
+      console.log(result);
       if(this.callback){
         this.callback(result);
       }
@@ -44,10 +49,10 @@ export class CreateTaskCommand extends DataCommand{
 
   private prepareTaskToInsert(name: string, project: Project = null, date:Date=null){
     const task = new Task();
-    task.setName(name);
-    task.setProject(project as Project);
-    task.setDate(date);
-    task.setStatus(Status.STARTED);
+    task.name = name;
+    task.project = project;
+    task.date = date;
+    task.status = Status.STARTED;
     return task;
   }
 

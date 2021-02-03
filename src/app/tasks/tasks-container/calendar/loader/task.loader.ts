@@ -30,7 +30,7 @@ export class TaskLoader{
     return this.setupTasks(tasksModel.cells, project).then(cells=>{
       console.log("cells");
       console.log(cells);
-      let filter = TaskFilter.getBuilder().setProject(project.getId()).setHasDate(false).build();
+      let filter = TaskFilter.getBuilder().setProject(project.id).setHasDate(false).build();
       return this.dataService.getTaskService().getByFilter(filter).then(tasksWithoutDate=>{
         const result = new TasksModel();
         result.cells = cells;
@@ -48,10 +48,10 @@ export class TaskLoader{
     const lastCell = cells[cells.length-1];
     const firstDate = new Date(firstCell.year, firstCell.month, firstCell.day);
     const lastDate = new Date(lastCell.year, lastCell.month, lastCell.month);
-    let filter = TaskFilter.getBuilder().setProject(project.getId()).setStartDateRange(firstDate, lastDate).build();
+    let filter = TaskFilter.getBuilder().setProject(project.id).setStartDateRange(firstDate, lastDate).build();
     return this.dataService.getTaskService().getByFilter(filter).then(tasks=>{
       let actions = tasks.map(task=>{
-        let day = this.findDay(task.getDate(), cells);
+        let day = this.findDay(task.date, cells);
         day.addTask(task);
       });
       return Promise.all(actions).then(_=>{
@@ -62,7 +62,7 @@ export class TaskLoader{
   }
 
   private findDay(date: Date, cells: TaskDay[]){
-    return cells.find(cell=>cell.day == date.getDay()-1 && cell.month == date.getMonth() && cell.year == date.getFullYear());
+    return cells.find(cell=>cell.day == date.getDay() && cell.month == date.getMonth() && cell.year == date.getFullYear());
   }
 
   protected isCorrectStatus(task: Task){

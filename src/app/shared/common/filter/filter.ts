@@ -8,11 +8,15 @@ export class Filter<T extends IFilterable>{
   public filter(filterValue: string, items: T[]):void {
     if(filterValue == null){
       filterValue = this.lastFilter;
+      if(filterValue == null){
+        return;
+      }
     }
 
     const result = [];
     items.forEach(item=>{
-      if(item.getName().includes(filterValue)){
+      // TODO: widocznie tutaj wystepują itemy bez nazwy
+      if(item.name.includes(filterValue)){
         result.push(item);
       }
     });

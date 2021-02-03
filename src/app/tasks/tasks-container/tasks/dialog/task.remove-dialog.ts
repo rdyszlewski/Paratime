@@ -4,7 +4,7 @@ import { DialogService } from 'app/ui/widgets/dialog/dialog.service';
 export class TaskRemoveDialog{
 
   public static showSingleRemoveQuestion(task: Task, dialogService: DialogService, action: ()=>void){
-    let message = `Czy na pewno usunąć zadanie ${task.getName()}?`;
+    let message = `Czy na pewno usunąć zadanie ${task.name}?`;
     dialogService.openQuestion(message, action);
   }
 

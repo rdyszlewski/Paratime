@@ -1,44 +1,39 @@
-import { KanbanTask } from 'app/database/shared/kanban-task/kanban-task';
-import { OrderRepository } from '../task/order.respository';
+import { KanbanTask } from "app/database/shared/kanban-task/kanban-task";
+import { OrderableItem } from "app/database/shared/models/orderable.item";
+import { LocalDTO } from "../task/local.dto";
 
-export class LocalKanbanTaskRepository extends OrderRepository<KanbanTask>{
+export class DexieKanbanTaskDTO extends OrderableItem implements LocalDTO<KanbanTask>{
 
-  constructor(table: Dexie.Table<KanbanTask, number>){
-    super(table, "columnId");
+  public taskId: number;
+  public columnId: number;
+
+  // TODO: sprawdzić, jak wygląda sprawa z id. Jest tutaj raczej niepotrzebne
+
+
+  constructor(kanbanTask: KanbanTask=null){
+    super();
+    if(kanbanTask){
+      this.update(kanbanTask);
+    }
   }
 
-  public findById(id:number): Promise<KanbanTask>{
-    return this.table.get(id);
+  public getModel(): KanbanTask {
+    let task = new KanbanTask();
+    task.id = this.taskId;
+    task.columnId = this.columnId;
+
+    return task;
   }
 
-  public findByTask(taskId: number): Promise<KanbanTask>{
-    return this.table.where("taskId").equals(taskId).first();
+  public update(task: KanbanTask) {
+    this.taskId = task.task.id;
+    this.columnId = task.columnId;
   }
 
-  public findByColumn(columnId: number): Promise<KanbanTask[]>{
-    return this.table.where("columnId").equals(columnId).toArray();
+  public get containerId(): number {
+    return this.columnId;
   }
-
-  // TODO: czy szukanie ostatniego i pierwszego jest konieczne
-
-  public insert(task: KanbanTask): Promise<number>{
-    return this.table.add(task);
+  public set containerId(id: number) {
+    this.columnId = id;
   }
-
-  public remove(task: KanbanTask): Promise<void>{
-    return this.table.delete(task.getId());
-  }
-
-  public removeAllFromColumn(columnId: number): Promise<number>{
-    return this.table.where("columnId").equals(columnId).delete();
-  }
-
-  public removeByTask(taskId: number): Promise<number>{
-    return this.table.where("taskId").equals(taskId).delete();
-  }
-
-  public update(task: KanbanTask): Promise<number>{
-    return this.table.update(task.getId(), task);
-  }
-
 }

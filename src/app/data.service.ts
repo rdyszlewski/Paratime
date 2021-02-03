@@ -1,4 +1,5 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
+import { LocalDataSource } from './database/local/local.source';
 import { IDataSource } from './database/shared/data.source';
 import { IKanbanColumnService } from './database/shared/kanban-column/kanban-column.service';
 import { IKanbanTaskService } from './database/shared/kanban-task/kanban-task.service';
@@ -14,14 +15,14 @@ import { ITaskService } from './database/shared/task/task.service';
 })
 export class DataService implements IDataSource {
 
-  private dataSource: IDataSource;
+  private dataSource;
 
   constructor() {
 
   }
 
-  public setSource(source: IDataSource){
-    this.dataSource = source;
+  public setSource(dataSource: IDataSource){
+    this.dataSource = dataSource;
   }
 
   getProjectService(): IProjectService {

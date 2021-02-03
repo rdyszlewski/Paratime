@@ -5,9 +5,10 @@ export class DateAdapter{
       return null;
     }
     const dateParts = date.split("-");
-    return new Date(Number.parseInt(dateParts[0],
-        Number.parseInt(dateParts[1],
-        Number.parseInt(dateParts[2]))));
+    let year = Number.parseInt(dateParts[0]);
+    let month = Number.parseInt(dateParts[1]);
+    let day = Number.parseInt(dateParts[2]);
+    return new Date(year, month, day);
   }
 
   public static getText(date: Date){

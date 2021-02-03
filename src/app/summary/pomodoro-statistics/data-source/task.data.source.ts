@@ -28,7 +28,7 @@ export class TaskDataSource implements DataSource<TaskEntry> {
     this.loadingSubject.next(true);
     this.dataService.getPomodoroService().getAll().then(results=>{
       TaskEntryCreator.create(results, this.dataService).then(entries=>{
-          let result = entries.filter((x) => x.getTask().getName().includes(filter));
+          let result = entries.filter((x) => x.getTask().name.includes(filter));
           result = TaskDataSorter.sort(sortActive, sortDirection, result);
           this.tasksSubject.next(result);
       })

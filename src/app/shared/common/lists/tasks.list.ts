@@ -55,28 +55,31 @@ export class TasksList<T extends IFilterable & OrderableItem>
   }
 
   private refresh(order: boolean=true) {
-    if(order){
-      this.order();
-    }
+    // TODO: zastanowić się, co z tym zrobić
+    // if(order){
+    //   this.order();
+    // }
+    // TODO: przywrócić to później
     this.itemFilter.filter(null, this.items);
   }
 
   public updateItems(itemsToUpdate: T[]) {
+    // TODO: dobrze byłoby to zdebagować
     itemsToUpdate.forEach((item) => {
-      const index = this.items.findIndex((x) => x.getId() == item.getId());
+      const index = this.items.findIndex((x) => x.id == item.id);
       if (index >= 0) {
         const currentItem = this.items[index];
         // when the item is moved we remove it from container
-        if (item.getContainerId() != this.containerId) {
+        if (item.containerId != this.containerId) {
           this.removeItem(currentItem, false);
         } else {
-          currentItem.setContainerId(item.getContainerId());
-          currentItem.setPosition(item.getPosition());
-          currentItem.setSuccessorId(item.getSuccessorId());
+          currentItem.containerId = item.containerId;
+          currentItem.position = item.position;
+          currentItem.successorId = item.successorId;
         }
       } else {
         // where the item does not exist and have correct containers id we add it to container
-        if (item.getContainerId() == this.containerId) {
+        if (item.containerId == this.containerId) {
           this.addItem(item, false);
         }
       }
@@ -85,7 +88,7 @@ export class TasksList<T extends IFilterable & OrderableItem>
   }
 
   public removeItem(item: T, refresh: boolean = true) {
-    const index = this.items.findIndex((x) => x.getId() == item.getId());
+    const index = this.items.findIndex((x) => x.id == item.id);
     if (index >= 0) {
       this.items.splice(index, 1);
       if (refresh) {

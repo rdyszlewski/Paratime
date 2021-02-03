@@ -89,7 +89,7 @@ export class TaskDetailsComponent implements OnInit {
   public setTask(task: Task) {
     if (task) {
       this.model.setTask(task);
-      this.view.init(task.getProjectID());
+      this.view.init(task.projectID);
       this.subtaskController.setTask(task);
       FocusHelper.focus(this.TASK_NAME_ID);
     }
@@ -112,8 +112,8 @@ export class TaskDetailsComponent implements OnInit {
   // return amount of subtask with status FINISHED
   public getFinishedSubtasks(task: Task) {
     let finishedSubtask = task
-      .getSubtasks()
-      .filter((x) => x.getStatus() == Status.ENDED);
+      .subtasks
+      .filter((x) => x.status == Status.ENDED);
     return finishedSubtask.length;
   }
 
@@ -151,7 +151,7 @@ export class TaskDetailsComponent implements OnInit {
     const values = time.split(':');
     const hours = Number.parseInt(values[0]);
     const minutes = Number.parseInt(values[1]);
-    this.model.getTask().setStartTime(this.getTimeValue(hours, minutes));
+    this.model.getTask().startTime = this.getTimeValue(hours, minutes);
     this.updateTask();
   }
 
@@ -160,7 +160,7 @@ export class TaskDetailsComponent implements OnInit {
   }
 
   public getTime(): string {
-    const value = this.model.getTask().getStartTime();
+    const value = this.model.getTask().startTime;
     let hours;
     let minutes;
     if (value) {

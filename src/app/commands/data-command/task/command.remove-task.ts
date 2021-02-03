@@ -34,7 +34,7 @@ export class RemoveTaskCommand extends DataCommand{
     if(task instanceof Task){
       return this._dataService.getTaskService().remove(task);
     } else if (task instanceof KanbanTask){
-      return this._dataService.getKanbanTaskService().remove(task.getTask());
+      return this._dataService.getKanbanTaskService().remove(task.task);
     }
   }
 
@@ -43,6 +43,6 @@ export class RemoveTaskCommand extends DataCommand{
   }
 
   getDescription(): string {
-    return `Usuwanie zadania ${this.task.getName()}`;
+    return `Usuwanie zadania ${this.task.name}`;
   }
 }

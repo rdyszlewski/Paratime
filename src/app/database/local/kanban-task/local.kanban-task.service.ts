@@ -1,8 +1,7 @@
-import { ResolveEnd } from '@angular/router';
 import { IKanbanTaskService } from 'app/database/shared/kanban-task/kanban-task.service';
 import { ILabelService } from 'app/database/shared/label/label.service';
 import { ISubtaskService } from 'app/database/shared/subtask/subtask.service';
-import { LocalKanbanTaskRepository } from './local.kanban-task';
+import { KanbanTaskDTO, LocalKanbanTaskRepository } from './local.kanban-task.repository';
 import { LocalTaskRepository } from '../task/local.task.repository';
 import { LocalTaskDataService } from '../task/local.task-data.service';
 import { KanbanTask } from 'app/database/shared/kanban-task/kanban-task';
@@ -21,13 +20,14 @@ export class LocalKanbanTaskService extends LocalTaskDataService implements IKan
     });
   }
 
-  private fetchKanbanTask(kanbanTask: KanbanTask): Promise<KanbanTask>{
-    return this.taskRepository.findById(kanbanTask.getTaskId()).then(task=>{
-      return this.fetchTask(task).then(fetchedTask=>{
-        kanbanTask.setTask(fetchedTask);
-        return Promise.resolve(kanbanTask);
-      })
-    })
+  private fetchKanbanTask(kanbanTask: KanbanTaskDTO): Promise<KanbanTask>{
+    return this.taskRepository.findById(kanbanTask.id).then(taskDTO=>{
+      return this.fetchTask(taskDTO).then(fetchedTask=>{
+        let resultKanbanTask = kanbanTask.getModel();
+        resultKanbanTask.task = fetchedTask;
+        return Promise.resolve(resultKanbanTask);
+      });
+    });
   }
 
   public getByColumn(columnId: number): Promise<KanbanTask[]> {
@@ -47,16 +47,34 @@ export class LocalKanbanTaskService extends LocalTaskDataService implements IKan
   }
 
   public update(task: KanbanTask): Promise<KanbanTask> {
-    return this.kanbanTaskRepository.update(task).then(_=>{
-      return Promise.resolve(task);
+    return this.kanbanTaskRepository.findById(task.id).then(kanbanTaskDTO=>{
+      kanbanTaskDTO.update(task);
+      return this.kanbanTaskRepository.update(kanbanTaskDTO).then(_=>{
+        return Promise.resolve(task);
+      });
     });
   }
 
   public changeOrder(currentTask: KanbanTask, previousTask: KanbanTask, currentIndex: number, previousIndex: number) {
-    return this.kanbanTaskOrderController.move(currentTask, previousTask, currentIndex, previousIndex);
+    console.log(currentTask);
+    console.log(previousTask);
+
+    let promises = [
+      currentTask != null ? this.kanbanTaskRepository.findById(currentTask.id) : Promise.resolve(null),
+      this.kanbanTaskRepository.findById(previousTask.id)
+    ];
+    return Promise.all(promises).then(results=>{
+      return this.kanbanTaskOrderController.move(results[0], results[1], currentIndex, previousIndex);
+    });
   }
 
   public changeColumn(task: KanbanTask, currentTask: KanbanTask, columnId: number) {
-    return this.kanbanTaskOrderController.changeContainer(task, currentTask, columnId);
+    let promises = [
+      this.kanbanTaskRepository.findById(task.id),
+      this.kanbanTaskRepository.findById(currentTask.id)
+    ]
+    return Promise.all(promises).then(results=>{
+      return this.kanbanTaskOrderController.changeContainer(task[0], currentTask[1], columnId);
+    });
   }
 }

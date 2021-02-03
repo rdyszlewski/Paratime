@@ -57,7 +57,7 @@ export class SchedulerTaskResizer {
   public acceptResize(event: CdkDragDrop<TaskContainer[]>, top: boolean) {
     let cellSize = this._scaler.cellHeight;
     let plannedTime = (this._resizedTask.size / cellSize) * 10;
-    this._resizedTask.task.setPlannedTime(plannedTime);
+    this._resizedTask.task.plannedTime = plannedTime;
     this._resizedTask.offset = 0;
     this._resizedTask.show();
     // this.resizeCallback(this._resizedTask);
@@ -81,7 +81,7 @@ export class SchedulerTaskResizer {
   private updateStartTime(timeId: string, taskContainer: TaskContainer) {
     let splitted = timeId.split(":");
     let timeValue = Number.parseInt(splitted[0]) * 100 + Number.parseInt(splitted[1]);
-    taskContainer.task.setStartTime(timeValue);
+    taskContainer.task.startTime = timeValue;
     // TODO: przenieść do oddzielnej klasy
   }
 }

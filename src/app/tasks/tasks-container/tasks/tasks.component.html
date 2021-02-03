@@ -48,8 +48,8 @@
     class="create-button"
     (click)="openInserting()"
     *ngIf="
-      getModel().getProject().getId() != null &&
-      !isInsertingOpen() &&
+      getModel().getProject().id != null &&
+      !getModel().isOpen() &&
       getModel().isActiveTaskType()
     "
   >
@@ -104,10 +104,10 @@
     >
       <option [ngValue]="null">Wszystkie</option>
       <option
-        *ngFor="let stage of getModel().getProject().getStages()"
+        *ngFor="let stage of getModel().getProject().stages"
         [ngValue]="stage"
       >
-        {{ stage.getName() }}
+        {{ stage.name}}
       </option>
     </select>
   </div>
@@ -125,7 +125,7 @@
         *ngFor="let label of getFiltering().getModel().getLabels()"
         [ngValue]="label"
       >
-        {{ label.getName() }}
+        {{ label.name}}
       </option>
     </select>
   </div>
@@ -150,11 +150,11 @@
   />
   <div class="task-main">
     <div class="list-item-top">
-      <div class="list-item-value">{{ task.getName() }}</div>
+      <div class="list-item-value">{{ task.name }}</div>
       <mat-icon
         [ngClass]="{
-          'important-star': task.isImportant(),
-          'not-important-star': !task.isImportant(),
+          'important-star': task.important,
+          'not-important-star': !task.important,
           star: true
         }"
         (click)="getItem().toggleTaskImportance(task, $event)"
@@ -163,8 +163,8 @@
     </div>
     <div class="task-info">
       <div class="labels-container">
-        <div *ngFor="let label of task.getLabels()" class="label-element">
-          {{ label.getName() }}
+        <div *ngFor="let label of task.labels" class="label-item border">
+          {{ label.name}}
         </div>
       </div>
 
@@ -184,34 +184,34 @@
 
 <ng-template #task_details let-task>
   <div
-    *ngIf="task.getDescription() != null"
-    class="tasks-info-element"
-    tooltip="{{ task.getDescription() }}"
+    *ngIf="task.description != null"
+    class="task-description-icon info-icon"
+    tooltip="{{ task.description}}"
     autoplacement="true"
     placement="bottom"
   ></div>
 
   <div
-    *ngIf="task.getEndDate() != null"
-    class="tasks-info-element"
+    *ngIf="task.endDate != null"
+    class="task-enddate-icon info-icon"
     tooltip="{{ getInfo().getEndDateText(task) }}"
     autoplacement="true"
     placement="bottom"
   ></div>
 
-  <div *ngIf="task.getPriority() != null" class="tasks-info-element">
+  <div *ngIf="task.priority != null" class="task-priority-icon info-icon">
     {{ getInfo().getPriorityText(task) }}
   </div>
 
   <div
-    *ngIf="task.getSubtasks().length != 0"
-    class="tasks-info-element"
+    *ngIf="task.subtasks != null && task.subtasks.length != 0"
+    class="info-icon task-subtask"
     tooltip="{{ getInfo().getSubtasksList(task) }}"
     autoplacement="true"
     placement="bottom"
   >
     {{ task.getNumberOfSubtaskWithStatus(status.ENDED) }} /
-    {{ task.getSubtasks().length }}
+    {{ task.subtasks.length }}
   </div>
 </ng-template>
 

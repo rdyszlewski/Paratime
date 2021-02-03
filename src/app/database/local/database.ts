@@ -1,30 +1,32 @@
 import Dexie from 'dexie';
-import { Task } from 'app/database/shared/task/task';
 
 import { LabelsTask } from 'app/database/shared/label/labels-task';
-import { KanbanColumn } from '../shared/kanban-column/kanban-column';
-import { KanbanTask } from '../shared/kanban-task/kanban-task';
-import { Label } from '../shared/label/label';
-import { PomodoroHistory } from '../shared/pomodoro/pomodoro.history';
-import { Project } from '../shared/project/project';
-import { Stage } from '../shared/stage/stage';
-import { Subtask } from '../shared/subtask/subtask';
+import { DexieTaskDTO } from './task/local.task';
+import { DexieProjectDTO } from './project/local.project';
+import { DexieKanbanColumnDTO } from './kanban-column/local.kanban-column';
+import { DexieStageDTO } from './stage/local.stage';
+import { DexiePomodoroHistoryDTO } from './pomodoro/local.pomodoro';
+import { DexieKanbanTaskDTO } from './kanban-task/local.kanban-task';
+import { KanbanTaskDTO } from './kanban-task/local.kanban-task.repository';
+import { DexieLabelDTO } from './label/local.label';
+import { DexieSubtaskDTO } from './subtask/local.subtask';
 
 export class LocalDatabase extends Dexie {
   private dbVersion = 1;
 
-  private tasksTable: Dexie.Table<Task, number>;
-  private subtasksTable: Dexie.Table<Subtask, number>;
-  private projectsTable: Dexie.Table<Project, number>;
-  private labelsTable: Dexie.Table<Label, number>;
+  private tasksTable: Dexie.Table<DexieTaskDTO, number>;
+  private subtasksTable: Dexie.Table<DexieSubtaskDTO, number>;
+  private projectsTable: Dexie.Table<DexieProjectDTO, number>;
+  private labelsTable: Dexie.Table<DexieLabelDTO, number>;
   private taskTagsTable: Dexie.Table<LabelsTask, number>;
-  private stagesTable: Dexie.Table<Stage, number>;
-  private pomodoroTable: Dexie.Table<PomodoroHistory, number>;
-  private kanbanColumnsTable: Dexie.Table<KanbanColumn, number>;
-  private kanbanTasksTable: Dexie.Table<KanbanTask, number>;
+  private stagesTable: Dexie.Table<DexieStageDTO, number>;
+  private pomodoroTable: Dexie.Table<DexiePomodoroHistoryDTO, number>;
+  private kanbanColumnsTable: Dexie.Table<DexieKanbanColumnDTO, number>;
+  private kanbanTasksTable: Dexie.Table<KanbanTaskDTO, number>;
 
-  constructor() {
-    super('Database');
+  constructor(dbName: string) {
+    // super('Database');
+    super(dbName);
     this.createTables();
   }
 
@@ -64,15 +66,15 @@ export class LocalDatabase extends Dexie {
   }
 
   private mapToClasses() {
-    this.projectsTable.mapToClass(Project);
-    this.tasksTable.mapToClass(Task);
-    this.subtasksTable.mapToClass(Subtask);
-    this.labelsTable.mapToClass(Label);
+    this.projectsTable.mapToClass(DexieProjectDTO);
+    this.tasksTable.mapToClass(DexieTaskDTO);
+    this.subtasksTable.mapToClass(DexieSubtaskDTO);
+    this.labelsTable.mapToClass(DexieLabelDTO);
     this.taskTagsTable.mapToClass(LabelsTask);
-    this.stagesTable.mapToClass(Stage);
-    this.pomodoroTable.mapToClass(PomodoroHistory);
-    this.kanbanColumnsTable.mapToClass(KanbanColumn);
-    this.kanbanTasksTable.mapToClass(KanbanTask);
+    this.stagesTable.mapToClass(DexieStageDTO);
+    this.pomodoroTable.mapToClass(DexiePomodoroHistoryDTO);
+    this.kanbanColumnsTable.mapToClass(DexieKanbanColumnDTO);
+    this.kanbanTasksTable.mapToClass(DexieKanbanTaskDTO);
   }
 
   public getTasksTable() {

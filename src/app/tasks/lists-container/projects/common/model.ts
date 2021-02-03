@@ -45,11 +45,11 @@ export class ProjectsModel{
         if(this.getSelectedProject()==null){
           return false;
         }
-        return project.getId() == this.getSelectedProject().getId();
+        return project.id == this.getSelectedProject().id;
     }
 
     public isSelectedProjectId(id: number) {
-        return this.getSelectedProject() != null && id == this.getSelectedProject().getId();
+        return this.getSelectedProject() != null && id == this.getSelectedProject().id;
     }
 
 

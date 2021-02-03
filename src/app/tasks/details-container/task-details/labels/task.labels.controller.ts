@@ -2,7 +2,6 @@ import { DataService } from 'app/data.service';
 import { TaskDetails } from '../model/model';
 import { Label } from 'app/database/shared/label/label';
 import { TaskLabelsModel } from './task.label.model';
-import { LabelsTask } from 'app/database/shared/label/labels-task';
 import { CommandService } from 'app/commands/manager/command.service';
 import { RemoveLabelAssignignCommand } from 'app/commands/data-command/label/command.remove-label-assigning';
 import { AssingLabelCommand } from 'app/commands/data-command/label/command.assign-label';
@@ -34,7 +33,7 @@ export class TaskLabelsController{
 
     public openChoosingLabels(){
       this.selectedLabels = [];
-      this.mainModel.getTask().getLabels().forEach(label=>{
+      this.mainModel.getTask().labels.forEach(label=>{
         this.selectedLabels.push(label);
       });
     }
@@ -49,14 +48,14 @@ export class TaskLabelsController{
     }
 
     private removeSelectedLabel(label:Label){
-      const index = this.selectedLabels.findIndex(x=>x.getId()==label.getId());
+      const index = this.selectedLabels.findIndex(x=>x.id==label.id);
       if(index >= 0){
         this.selectedLabels.splice(index, 1);
       }
     }
 
     public isLabelSelected(label:Label){
-      return this.selectedLabels.find(x=>x.getId() == label.getId()) != null;
+      return this.selectedLabels.find(x=>x.id == label.id) != null;
     }
 
     public acceptSelectedLabels(){
@@ -72,7 +71,7 @@ export class TaskLabelsController{
 
     private isChanged(){
       const selected = this.selectedLabels;
-      const current = this.mainModel.getTask().getLabels();
+      const current = this.mainModel.getTask().labels;
       if(selected.length == current.length){
         current.forEach(label=>{
           if(!this.isLabelSelected(label)){

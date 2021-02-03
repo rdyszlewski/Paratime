@@ -16,8 +16,8 @@ export class TaskContainer{
   }
 
   public getTime():number{
-    if(this.task.getPlannedTime()!=null){
-      return this.task.getPlannedTime();
+    if(this.task.plannedTime!=null){
+      return this.task.plannedTime;
     }
 
     return 30;

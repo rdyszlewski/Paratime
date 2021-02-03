@@ -115,19 +115,16 @@
 </ng-template>
 
 <ng-template #project_item let-project>
-  <div
-    [ngClass]="{
-      'selected-list-item': getModel().isSelectedProject(project),
-      'project-list-item': true
-    }"
-    (click)="onProjectClick(project)"
-  >
-    <div class="list-item-value">{{ project.getName() }}</div>
-    <div
-      class="list-item-options"
-      (click)="onProjectMenuClick($event, project)"
-      [matMenuTriggerFor]="menu"
-    >
+  <div [ngClass]="{'selected-list-item': getModel().isSelectedProject(project),
+                    'project': true,
+                    'list-item':true,
+                    'border-radius': true}"
+                    (click)='onProjectClick(project)'
+                    >
+    <div class="list-item-value">{{project.name}}</div>
+    <div class="list-item-options"
+      (click)='onProjectMenuClick($event, project)'
+      [matMenuTriggerFor]="menu">
       ...
     </div>
   </div>

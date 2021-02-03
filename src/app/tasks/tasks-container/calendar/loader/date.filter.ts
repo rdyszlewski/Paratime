@@ -20,7 +20,7 @@ export class FutureDateFilter implements IDateFilter{
   }
 
   public isCorrect(task: Task): boolean {
-    return task.getDate() >= this._currentDate;
+    return task.date >= this._currentDate;
   }
 }
 
@@ -33,6 +33,6 @@ export class PastDateFilter implements IDateFilter{
   }
 
   isCorrect(task: Task): boolean {
-    return task.getDate() < this._currentDate;
+    return task.date < this._currentDate;
   }
 }

@@ -16,13 +16,13 @@ export class TasksModel {
 
   public getProjectName() {
     if (this.project) {
-      return this.project.getName();
+      return this.project.name;
     }
   }
 
   public setTasks(tasks: Task[], order=true) {
     if (tasks.length > 0) {
-      this.tasks.setContainerId(tasks[0].getContainerId());
+      this.tasks.setContainerId(tasks[0].containerId);
     }
     this.tasks.setItems(tasks, order);
   }
@@ -30,7 +30,7 @@ export class TasksModel {
   public setProject(project: Project) {
     this.project = project;
     if (project) {
-      this.tasks.setContainerId(project.getId());
+      this.tasks.setContainerId(project.id);
     }
   }
 
@@ -41,7 +41,7 @@ export class TasksModel {
   public addTask(task: Task) {
     this.project.addTask(task);
     this.tasks.addItem(task);
-  }
+  };
 
   public updateTasks(tasks: Task[]) {
     this.tasks.updateItems(tasks);
@@ -66,7 +66,7 @@ export class TasksModel {
 
   public isOpen(): boolean {
     return this.project != null &&
-    (this.project.getId() >= 0 || this.project.getId() == Values.SPECIAL_LIST_ID);
+    (this.project.id >= 0 || this.project.id == Values.SPECIAL_LIST_ID);
   }
 
   public getTaskByIndex(index: number): Task {

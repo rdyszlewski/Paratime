@@ -16,7 +16,7 @@ export class ManyTaskTransfer{
   public transferItems(currentList: Task[], currentIndex: number, items: Task[]){
     let counter = 0;
     items.forEach(item=>{
-      const previousList = this.findTasksWithDate(item.getDate());
+      const previousList = this.findTasksWithDate(item.date);
       this.removeItem(previousList, item);
       this.insertItem(currentList, currentIndex, counter, item);
       counter++;

@@ -21,10 +21,10 @@ export class TaskLabelsModel{
 
     private repairTaskLabels(labels:Label[]){
         let toRemove = [];
-        this.model.getTask().getLabels().forEach(label=>{
-          const foundLabel = labels.find(x=>x.getId()==label.getId());
+        this.model.getTask().labels.forEach(label=>{
+          const foundLabel = labels.find(x=>x.id==label.id);
           if(foundLabel){
-            label.setName(foundLabel.getName());
+            label.name = foundLabel.name;
           } else {
             toRemove.push(label);
           }

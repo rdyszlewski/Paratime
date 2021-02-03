@@ -3,52 +3,52 @@ import { Status } from '../models/status';
 
 
 export class Subtask extends OrderableItem {
-  private name: string = null;
-  private status: Status = null;
-  private taskId: number = null;
+  private _name: string = null;
+  private _status: Status = null;
+  private _taskId: number = null;
 
   constructor(name = null, status = null) {
     super();
-    this.name = name;
-    this.status = status;
+    this._name = name;
+    this._status = status;
   }
 
-  public getId() {
-    return this.id;
+  public get id() {
+    return this._id;
   }
 
-  public setId(id: number) {
-    this.id = id;
+  public set id(value: number) {
+    this._id = value;
   }
 
-  public getName() {
-    return this.name;
+  public get name() {
+    return this._name;
   }
 
-  public setName(name: string) {
-    this.name = name;
+  public set name(value: string) {
+    this._name = value;
   }
 
-  public getStatus() {
-    return this.status;
+  public get status() {
+    return this._status;
   }
 
-  public setStatus(status: Status) {
-    this.status = status;
+  public set status(value: Status) {
+    this._status = value;
   }
 
-  public getTaksId() {
-    return this.taskId;
+  public get taskId() {
+    return this._taskId;
   }
 
-  public setTaskId(id: number) {
-    this.taskId = id;
+  public set taskId(value: number) {
+    this._taskId = value;
   }
 
-  public getContainerId(): number {
-    return this.getTaksId();
+  public get containerId(): number {
+    return this._taskId;
   }
-  public setContainerId(id: number): void {
-    this.setTaskId(id);
+  public set containerId(value: number){
+    this._taskId = value;
   }
 }

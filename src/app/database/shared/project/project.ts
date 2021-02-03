@@ -8,122 +8,115 @@ import { ProjectType } from './project_type';
 
 export class Project extends OrderableItem implements IFilterable{
 
-  private name: string = null;
-  private description: string = null;
-  private startDate: Date = null;
-  private endDate:Date = null;
-  private status: Status = null;
-  private tasks: Task[] = [];
-  private type: ProjectType = null;
-  private stages: Stage[] = [];
+  private _name: string = null;
+  private _description: string = null;
+  private _startDate: Date = null;
+  private _endDate:Date = null;
+  private _status: Status = null;
+  private _tasks: Task[] = [];
+  private _type: ProjectType = null;
+  private _stages: Stage[] = [];
 
   constructor(name=null, description=null, status=null, type=null){
     super();
-    this.name = name;
-    this.description = description;
-    this.status = status;
-    this.type = type;
+    this._name = name;
+    this._description = description;
+    this._status = status;
+    this._type = type;
   }
 
-  public getName(){
-      return this.name;
+  public get name(): string{
+      return this._name;
   }
 
-  public setName(name: string){
-      this.name = name;
+  public set name(name: string){
+      this._name = name;
   }
 
-  public getDescription(){
-      return this.description;
+  public get description(){
+      return this._description;
   }
 
-  public setDescription(description:string){
-      this.description = description;
+  public set description(description:string){
+      this._description = description;
   }
 
-  public getStartDate():Date{
-      return this.startDate;
+  public get startDate():Date{
+      return this._startDate;
   }
 
-  public setStartDate(date: Date){
-      this.startDate = date;
+  public set startDate(date: Date){
+      this._startDate = date;
   }
 
-  public getEndDate(){
-      return this.endDate;
+  public get endDate(){
+      return this._endDate;
   }
 
-  public setEndDate(date: Date){
-      this.endDate = date;
+  public set endDate(date: Date){
+      this._endDate = date;
   }
 
-  public getStatus(){
-      return this.status;
+  public get status(){
+      return this._status;
   }
 
-  public setStatus(status: Status){
-      this.status = status;
+  public set status(status: Status){
+      this._status = status;
   }
 
   public addTask(task:Task){
-      this.tasks.push(task);
+      this._tasks.push(task);
   }
 
   public removeTask(task: Task){
-      let index = this.tasks.indexOf(task);
+      let index = this._tasks.indexOf(task);
       if(index >= 0){
-          this.tasks.splice(index, 1);
+          this._tasks.splice(index, 1);
       }
   }
 
-  private getTaskIndex(task:Task){
-      for(let i =0; i < this.tasks.length; i++){
-          if(this.tasks[i].getId() === task.getId()){
-              return i;
-          }
-      }
-      return -1;
+  public get tasks():Task[]{
+    return this._tasks;
   }
 
-  public setTasks(tasks: Task[]){
-      this.tasks = tasks;
+  public set tasks(tasks: Task[]){
+      this._tasks = tasks;
   }
 
-  public getType(){
-      return this.type;
+  public get type(){
+      return this._type;
   }
 
-  public setType(type: ProjectType){
-    this.type = type;
+  public set type(type: ProjectType){
+    this._type = type;
   }
 
-  public getTasks():Task[]{
-    return this.tasks;
+  public get stages():Stage[]{
+    return this._stages;
   }
 
-  public getStages():Stage[]{
-    return this.stages;
-  }
-
-  public setStages(stages:Stage[]){
-    this.stages = stages;
+  public set stages(stages:Stage[]){
+    this._stages = stages;
   }
 
   public addStage(stage:Stage){
-    this.stages.push(stage);
+    this._stages.push(stage);
   }
 
   public removeStage(stage:Stage){
-    const index = this.stages.indexOf(stage);
+    const index = this._stages.indexOf(stage);
     if(index >= 0){
-        this.stages.splice(index, 1);
+        this._stages.splice(index, 1);
       }
   }
 
-  public getContainerId(): number {
+  // TODO: może sprawdzić, o co tutaj chodzi
+  public get containerId(): number {
     return null;
   }
-  public setContainerId(id: number): void {
+
+  public set containerId(id: number){
     return;
   }
 }

@@ -9,7 +9,7 @@ export class TaskValidator{
     }
 
     public isNameValid():boolean{
-        return this.model.getTask().getName() != null;
+        return this.model.getTask().name != null;
     }
 
     public isValid():boolean{

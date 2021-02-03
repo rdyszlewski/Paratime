@@ -23,7 +23,7 @@ export class RemoveLabelCommand extends DataCommand{
   }
 
   getDescription(): string {
-    return `Usunięcie etykiery ${this.label.getName()}`;
+    return `Usunięcie etykiery ${this.label.name}`;
   }
 
 }

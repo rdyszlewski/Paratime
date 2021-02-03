@@ -2,47 +2,70 @@ import { InsertResult } from 'app/database/shared/insert-result';
 import { Subtask } from 'app/database/shared/subtask/subtask';
 import { ISubtaskService } from 'app/database/shared/subtask/subtask.service';
 import { LocalOrderController } from '../order/local.orderable.service';
-import { LocalSubtaskRepository } from './local.subtask.repository';
+import { DexieSubtaskDTO } from './local.subtask';
+import { LocalSubtaskRepository, SubtaskDTO } from './local.subtask.repository';
 
 export class LocalSubtaskService implements ISubtaskService{
 
-  private orderController: LocalOrderController<Subtask>;
+  private orderController: LocalOrderController<SubtaskDTO>;
 
   constructor(private repository: LocalSubtaskRepository){
     this.orderController = new LocalOrderController(repository);
   }
 
   public getById(id: number): Promise<Subtask> {
-    return this.repository.findById(id);
+    let action = this.repository.findById(id);
+    return this.mapToSubtaskAction(action);
+  }
+
+  private mapToSubtaskAction(action: Promise<SubtaskDTO>): Promise<Subtask>{
+    return action.then(result=>{
+      return Promise.resolve(result.getModel());
+    });
   }
 
   public getByTask(taskId: number): Promise<Subtask[]> {
-    return this.repository.findByTaskId(taskId);
+    let action =  this.repository.findByTaskId(taskId);
+    return this.mapToSubtasksListAction(action);
+  }
+
+  private mapToSubtasksListAction(action: Promise<SubtaskDTO[]>): Promise<Subtask[]>{
+    return action.then(results=>{
+      return Promise.resolve(results.map(x=>x.getModel()));
+    });
   }
 
   public create(subtask: Subtask): Promise<InsertResult<Subtask>> {
-    return this.insertSubtask(subtask).then(insertedSubtask=>{
-      return this.orderController.insert(insertedSubtask, null, insertedSubtask.getContainerId()).then(updatedSubtasks=>{
-        return Promise.resolve(new InsertResult(insertedSubtask, updatedSubtasks));
-      })
-    })
+    let subtaskDTO = new DexieSubtaskDTO(subtask);
+    return this.insertSubtask(subtaskDTO).then(insertedSubtask=>{
+      return this.orderController.insert(insertedSubtask, null, insertedSubtask.containerId).then(updatedSubtasks=>{
+        return Promise.resolve(new InsertResult(insertedSubtask.getModel(), updatedSubtasks.map(x=>x.getModel())));
+      });
+    });
   }
 
-  private insertSubtask(subtask: Subtask): Promise<Subtask>{
+  private insertSubtask(subtask: SubtaskDTO): Promise<SubtaskDTO> {
     return this.repository.insert(subtask).then(insertedId=>{
       return this.repository.findById(insertedId);
-    })
+    });
   }
 
   public remove(subtask: Subtask): Promise<Subtask[]> {
-    return this.repository.remove(subtask).then(()=>{
-      return this.orderController.remove(subtask);
-    })
+    return this.removeById(subtask.id);
+  }
+
+  private removeById(id: number): Promise<Subtask[]> {
+    return this.repository.findById(id).then(subtaskDTO=>{
+      return this.repository.remove(id).then(()=>{
+        let action = this.orderController.remove(subtaskDTO);
+        return this.mapToSubtasksListAction(action);
+      });
+    });
   }
 
   public removeByTask(taskId: number): Promise<void> {
     return this.repository.findByTaskId(taskId).then(subtasks=>{
-      let actions = subtasks.map(subtask=>this.remove(subtask));
+      let actions = subtasks.map(subtask=>this.removeById(subtask.id));
       return Promise.all(actions).then(()=>{
         return Promise.resolve(null);
       });
@@ -50,12 +73,21 @@ export class LocalSubtaskService implements ISubtaskService{
   }
 
   public update(subtask: Subtask): Promise<Subtask> {
-    return this.repository.update(subtask).then(_=>{
-      return Promise.resolve(subtask);
-    })
+    return this.repository.findById(subtask.id).then(subtaskDTO=>{
+      subtaskDTO.update(subtask);
+      return this.repository.update(subtaskDTO).then(_=>{
+        return Promise.resolve(subtask);
+      });
+    });
   }
 
   public changeOrder(currentSubtask: Subtask, previousSubtask: Subtask, currentIndex: number, previousIndex: number) {
-    return this.orderController.move(currentSubtask, previousSubtask, currentIndex, previousIndex);
+    let actions = [
+      this.repository.findById(currentSubtask.id),
+      this.repository.findById(previousSubtask.id)
+    ]
+    return Promise.all(actions).then(results=>{
+      return this.orderController.move(results[0], results[1], currentIndex, previousIndex);
+    });
   }
 }

@@ -1,34 +1,36 @@
-import { PomodoroHistory } from 'app/database/shared/pomodoro/pomodoro.history';
 import { PomodoroRepositoryFilter } from 'app/database/local/local.pomodoro.filter';
 import { PomodoroFilter } from 'app/database/shared/pomodoro/pomodoro.filter';
+import { DexiePomodoroHistoryDTO } from './local.pomodoro';
+
+type PomodoroType = DexiePomodoroHistoryDTO;
 
 export class LocalPomodoroRepository {
 
-  constructor(private table: Dexie.Table<PomodoroHistory, number>){
+  constructor(private table: Dexie.Table<PomodoroType, number>){
   }
 
-  public findById(id: number): Promise<PomodoroHistory>{
+  public findById(id: number): Promise<PomodoroType>{
     return this.table.get(id);
   }
 
-  public findAll(): Promise<PomodoroHistory[]>{
+  public findAll(): Promise<PomodoroType[]>{
     return this.table.toArray();
   }
 
-  public findByTask(taskId: number): Promise<PomodoroHistory[]>{
+  public findByTask(taskId: number): Promise<PomodoroType[]>{
     return this.table.where("taskId").equals(taskId).toArray();
   }
 
-  public findByProject(projectId: number): Promise<PomodoroHistory[]>{
+  public findByProject(projectId: number): Promise<PomodoroType[]>{
     return this.table.where("projectId").equals(projectId).toArray();
   }
 
-  public findByFilter(filter: PomodoroFilter): Promise<PomodoroHistory[]>{
+  public findByFilter(filter: PomodoroFilter): Promise<PomodoroType[]>{
     let pomodoroFilter = new PomodoroRepositoryFilter(filter);
     return this.table.filter(pomodoro=>pomodoroFilter.apply(pomodoro)).toArray();
   }
 
-  public insert(pomodoro: PomodoroHistory): Promise<number>{
+  public insert(pomodoro: PomodoroType): Promise<number>{
     return this.table.add(pomodoro);
   }
 

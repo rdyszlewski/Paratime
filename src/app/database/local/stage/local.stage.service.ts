@@ -3,45 +3,62 @@ import { Stage } from 'app/database/shared/stage/stage';
 import { StageFilter } from 'app/database/shared/stage/stage.filter';
 import { IProjectStageService } from 'app/database/shared/stage/stage.service';
 import { LocalOrderController } from '../order/local.orderable.service';
+import { DexieStageDTO } from './local.stage';
 import { LocalProjectStageRepository } from './local.stage.repository';
 
 
 export class LocalProjectStageService implements IProjectStageService{
 
-  private orderController: LocalOrderController<Stage>;
+  private orderController: LocalOrderController<DexieStageDTO>;
 
   constructor(private repository: LocalProjectStageRepository){
     this.orderController = new LocalOrderController(repository);
   }
 
   public getById(id: number): Promise<Stage> {
-    return this.repository.findById(id);
+    let action = this.repository.findById(id);
+    return this.mapToStageAction(action);
   }
 
   public getByName(name: string): Promise<Stage[]> {
-    return this.repository.findByName(name);
+    let promise =  this.repository.findByName(name);
+    return this.mapToStageListAction(promise);
+  }
+
+  private mapToStageAction(action: Promise<DexieStageDTO>): Promise<Stage>{
+    return action.then(result=>{
+      return Promise.resolve(result.getModel());
+    })
+  }
+
+  private mapToStageListAction(dtoPromise: Promise<DexieStageDTO[]>): Promise<Stage[]>{
+    return dtoPromise.then(result=>{
+      return Promise.resolve(result.map(x=>x.getModel()));
+    })
   }
 
   public getByFilter(filter: StageFilter): Promise<Stage[]> {
-    return this.repository.findByFilter(filter);
+    let promise = this.repository.findByFilter(filter);
+    return this.mapToStageListAction(promise);
   }
 
   public create(stage: Stage): Promise<InsertResult<Stage>> {
-    return this.insert(stage).then(insertedStage=>{
+    let dto = new DexieStageDTO(stage);
+    return this.insert(dto).then(insertedStage=>{
       return this.orderInsertedStage(insertedStage);
     });
   }
 
-  private insert(stage: Stage): Promise<Stage>{
+  private insert(stage: DexieStageDTO): Promise<DexieStageDTO> {
     return this.repository.insert(stage).then(insertedId=>{
       return this.repository.findById(insertedId);
     });
   }
 
-  private orderInsertedStage(stage: Stage): Promise<InsertResult<Stage>>{
-    return this.orderController.insert(stage, null, stage.getContainerId()).then(updatedStages=>{
-      let result = new InsertResult(stage);
-      result.updatedElements = updatedStages;
+  private orderInsertedStage(stage: DexieStageDTO): Promise<InsertResult<Stage>>{
+    return this.orderController.insert(stage, null, stage.containerId).then(updatedStages=>{
+      let result = new InsertResult(stage.getModel());
+      result.updatedElements = updatedStages.map(x=>x.getModel());
       return Promise.resolve(result);
     });
   }
@@ -56,17 +73,28 @@ export class LocalProjectStageService implements IProjectStageService{
 
   private orderRemoveStage(stageId: number): Promise<Stage[]>{
     return this.repository.findById(stageId).then(stage=>{
-      return this.orderController.remove(stage);
+      let promise =  this.orderController.remove(stage);
+      return this.mapToStageListAction(promise);
     });
   }
 
   public update(stage: Stage): Promise<Stage> {
-    return this.repository.update(stage).then(_=>{
-      return Promise.resolve(stage);
+    return this.repository.findById(stage.id).then(stageDTO=>{
+      stageDTO.update(stage);
+      return this.repository.update(stageDTO).then(_=>{
+        return Promise.resolve(stage);
+      });
     });
   }
 
   public changeOrder(currentStage: Stage, previousStage: Stage, currentIndex: number, previousIndex: number): Promise<Stage[]> {
-    return this.orderController.move(currentStage, previousStage, currentIndex, previousIndex);
+    let promises = [
+      this.repository.findById(currentStage.id),
+      this.repository.findById(previousStage.id)
+    ];
+    return Promise.all(promises).then(results=>{
+      let promise =  this.orderController.move(results[0], results[1], currentIndex, previousIndex);
+      return this.mapToStageListAction(promise);
+    });
   }
 }

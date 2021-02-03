@@ -29,11 +29,12 @@ export class RemoteProjectService implements IProjectService{
   }
 
   getAll(): Promise<Project[]> {
-    return this._httpClient.get<JSON[]>(this._serviceUrl).toPromise().then(result=>{
+    return this._httpClient.get<Project[]>(this._serviceUrl).toPromise().then(result=>{
       console.log("Wynik");
 
       console.log(result);
-      let projects = result.map(x=>ProjectAdapter.getProject(x));
+      // let projects = result.map(x=>ProjectAdapter.getProject(x));
+      let projects = result;
       console.log(projects);
 
       return Promise.resolve(projects);

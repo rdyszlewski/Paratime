@@ -22,7 +22,7 @@ export class CreateLabelCommand extends DataCommand{
   }
 
   public getDescription(): string {
-    return `Utworzono etykietę ${this.label.getName()}`;
+    return `Utworzono etykietę ${this.label.name}`;
   }
 
 }

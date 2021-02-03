@@ -19,6 +19,6 @@ export class RemoveKanbanColumnCommand extends DataCommand{
   }
 
   getDescription(): string {
-    return `Usuwanie kolumny ${this.column.getName()}`;
+    return `Usuwanie kolumny ${this.column.name}`;
   }
 }

@@ -184,11 +184,9 @@
 </ng-template>
 
 <ng-template #task_item let-task>
-  <span class="task-name">{{ task.getName() }}</span>
-  <ng-container
-    [ngTemplateOutlet]="item_options"
-    [ngTemplateOutletContext]="{ $implicit: task }"
-  ></ng-container>
+  <span class="task-name">{{task.name}}</span>
+  <ng-container [ngTemplateOutlet]="item_options"
+  [ngTemplateOutletContext]="{ $implicit: task }"></ng-container>
 </ng-template>
 
 <ng-template #item_options let-task>

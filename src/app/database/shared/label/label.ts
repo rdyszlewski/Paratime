@@ -2,25 +2,26 @@ import { OrderableItem } from '../models/orderable.item';
 import { IFilterable } from 'app/shared/common/filter/filterable';
 
 export class Label extends OrderableItem implements IFilterable {
-  private name: string = null;
+
+  private _name: string = null;
 
   constructor(name = null) {
     super();
-    this.name = name;
+    this._name = name;
   }
 
-  public getName() {
-    return this.name;
+  public get name() {
+    return this._name;
   }
 
-  public setName(name: string) {
-    this.name = name;
+  public set name(value: string) {
+    this._name = value;
   }
 
-  public getContainerId(): number {
+  public get containerId(): number {
     return null;
   }
-  public setContainerId(id: number): void {
+  public set containerId(id: number) {
     return;
   }
 }

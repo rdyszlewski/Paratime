@@ -20,6 +20,6 @@ export class UpdateLabeLCommand extends DataCommand{
   }
 
   getDescription(): string {
-    return `Aktualizacja etykiety ${this.label.getName()}`;
+    return `Aktualizacja etykiety ${this.label.name}`;
   }
 }

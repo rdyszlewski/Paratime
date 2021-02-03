@@ -12,16 +12,16 @@ export class ChangeKanbanTaskOrderCommand extends DataCommand{
     const previousColumn = this.model.getColumnById(Number.parseInt(this.previousColumnId));
     const previousTask = this.model.getTaskByIndex(
       this.previousIndex,
-      previousColumn.getId()
+      previousColumn.id
     );
     const currentTask = this.model.getTaskByIndex(
       this.currentIndex,
-      currentColumn.getId()
+      currentColumn.id
     );
     this._dataService.getKanbanTaskService().changeOrder(currentTask, previousTask, this.currentIndex, this.previousIndex).then(updatedTasks=>{
-      this.model.updateTasks(updatedTasks, currentColumn.getId());
+      this.model.updateTasks(updatedTasks, currentColumn.id);
       if(this.currentColumnId != this.previousColumnId){
-        this.model.updateTasks(updatedTasks, previousColumn.getId());
+        this.model.updateTasks(updatedTasks, previousColumn.id);
       }
     })
   }

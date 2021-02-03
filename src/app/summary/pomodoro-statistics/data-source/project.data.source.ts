@@ -29,7 +29,7 @@ export class ProjectDataSource implements DataSource<ProjectEntry>{
         // TODO: pomyśleć, w jaki sposób można zmienić to getAll. Tak będzie za dużo pobierania
         this.dataService.getPomodoroService().getAll().then(results=>{
               ProjectEntryCreator.create(results, this.dataService).then(entries=>{
-                let resultEntries = entries.filter(x=>x.getProject().getName().includes(filter));
+                let resultEntries = entries.filter(x=>x.getProject().name.includes(filter));
                 resultEntries = ProjectDataSorter.sort(sortActive, sortDirection, resultEntries);
                 this.projectsSubjects.next(resultEntries);
             })

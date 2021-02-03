@@ -5,10 +5,10 @@ export class PomodoroAdapter{
 
   public static createPomodoroTask(task: Task){
     const pomodoroTask = new Pomodorotask();
-    pomodoroTask.setTask(task.getId(), task.getName());
-    pomodoroTask.setProject(task.getProject().getId(), task.getProject().getName());
-    task.getLabels().forEach(label=>{
-      pomodoroTask.addLabel(label.getId(), label.getName());
+    pomodoroTask.setTask(task.id, task.name);
+    pomodoroTask.setProject(task.project.id, task.project.name);
+    task.labels.forEach(label=>{
+      pomodoroTask.addLabel(label.id, label.name);
     });
     return pomodoroTask;
   }

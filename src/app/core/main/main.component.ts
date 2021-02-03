@@ -77,16 +77,16 @@ export class MainComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    // this.dataService.setSource(new LocalDataSource());
+    let database = new LocalDatabase("Database")
+    // this.dataService.setSource(new LocalDataSource(database));
     this.dataService.setSource(new RemoteDataSource(this.httpClient));
-
     // PomodoroSettingsStore.removeSettings();
     // this.deleteDatabase();
     // this.configureDexie();
   }
 
   private deleteDatabase() {
-    var database = new LocalDatabase();
+    var database = new LocalDatabase("Database");
     database.delete().then(() => {
       console.log('Usunięto bazę danych');
     });

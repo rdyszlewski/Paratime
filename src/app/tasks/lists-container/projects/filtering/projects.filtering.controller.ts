@@ -27,13 +27,13 @@ export class ProjectsFilteringController {
       .then((projects) => {
         let resultFilter = projects;
         if (this.model.isWithEndDate()) {
-          resultFilter = resultFilter.filter((x) => x.getEndDate() != null);
+          resultFilter = resultFilter.filter((x) => x.endDate != null);
         }
         if (this.model.getStatus() != null) {
-          resultFilter = resultFilter.filter((x) => x.getStatus() == this.model.getStatus());
+          resultFilter = resultFilter.filter((x) => x.status == this.model.getStatus());
         }
         if (this.model.getProjectType() != null) {
-          resultFilter = resultFilter.filter((x) => x.getType() == this.model.getProjectType());
+          resultFilter = resultFilter.filter((x) => x.type == this.model.getProjectType());
         }
         this.listModel.setProjects(resultFilter);
     });

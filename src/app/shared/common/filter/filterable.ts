@@ -1,3 +1,3 @@
 export interface IFilterable{
-    getName():string;
+    name:string;
 }

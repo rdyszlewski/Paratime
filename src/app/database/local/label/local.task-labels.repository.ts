@@ -24,8 +24,8 @@ export class LocalTaskLabelsRepository{
 
   public remove(entry:LabelsTask): Promise<void>{
     return this.table.where({
-      "taskId": entry.getTaskId(),
-      "labelId":entry.getLabelId()
+      "taskId": entry.taskId,
+      "labelId":entry.labelId
     }).delete().then(()=>{
       return Promise.resolve();
     })

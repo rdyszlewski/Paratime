@@ -11,8 +11,8 @@ export interface ILabelService{
   update(label:Label): Promise<Label>;
   changeOrder(currentLabel: Label, previousLabel: Label, currentIndex: number, previousIndex: number);
 
-  assginLabel(taskId: number, labelId:number): Promise<LabelsTask>;
-  setAssignedLabels(taskId: number, labels: Label[]): Promise<LabelsTask[]>
+  assginLabel(taskId: number, labelId:number): Promise<number>;
+  setAssignedLabels(taskId: number, labels: Label[]): Promise<Label[]>
   getLabelsByTask(taskId: number): Promise<Label[]>;
   removeAllAssigningFromTask(taskId: number): Promise<number>;
   removeAssigning(taskId: number, labelId: number): Promise<void>;

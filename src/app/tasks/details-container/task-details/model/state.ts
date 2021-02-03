@@ -9,42 +9,42 @@ export class TaskViewState{
     }
 
     public isDescriptionExtended(){
-        return this.model.getTask().getDescription() != null;
+        return this.model.getTask().description != null;
     }
- 
+
     public isStatusExtended(){
-        return this.model.getTask().getStatus()!=null;
+        return this.model.getTask().status!=null;
     }
- 
+
     public isDateExtended(){
-        return this.model.getTask().getDate() != null;
+        return this.model.getTask().date != null;
     }
- 
+
     public isEndDateExtended(){
-        return this.model.getTask().getEndDate() != null;
+        return this.model.getTask().endDate != null;
     }
- 
+
     public isPlannedTimeExtended(){
-        return this.model.getTask().getPlannedTime() != null;
+        return this.model.getTask().plannedTime != null;
     }
- 
+
     public isProjectExtended(){
-        return this.model.getTask().getProject() != null;
+        return this.model.getTask().project != null;
     }
- 
+
     public isLabelsExtended(){
-        return this.model.getTask().getLabels().length > 0;
+        return this.model.getTask().labels.length > 0;
     }
- 
+
     public isSubtasksExtended(){
-        return this.model.getTask().getSubtasks().length > 0;
+        return this.model.getTask().subtasks.length > 0;
     }
- 
+
     public isPriorityExtended(){
-        return this.model.getTask().getPriority() != null;
+        return this.model.getTask().priority != null;
     }
 
     public isStageExtended():boolean{
-        return this.model.getTask().getProjectStageID() != null;
+        return this.model.getTask().projectStageID != null;
     }
 }

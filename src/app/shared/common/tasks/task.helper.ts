@@ -3,6 +3,6 @@ import { Task } from 'app/database/shared/task/task';
 
 export class TaskHelper{
   public static isActive(task: Task){
-    return task.getStatus() != Status.ENDED && task.getStatus() != Status.CANCELED;
+    return task.status != Status.ENDED && task.status != Status.CANCELED;
   }
 }

@@ -30,8 +30,8 @@ export class ProjectStagesController {
   public addNewStage(name:string){
     console.log(name);
     const stage = new Stage();
-    stage.setName(name);
-    stage.setProject(this.project);
+    stage.name = this.stageModel.getNewStageName();
+    stage.project = this.project;
     this.saveStage(stage);
   }
 

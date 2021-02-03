@@ -9,7 +9,7 @@ export class RemoveLabelAssignignCommand extends DataCommand{
   }
 
   execute() {
-    this._dataService.getLabelService().removeAssigning(this.task.getId(), this.label.getId()).then(()=>{
+    this._dataService.getLabelService().removeAssigning(this.task.id, this.label.id).then(()=>{
       this.task.removeLabel(this.label);
     });
   }
@@ -19,7 +19,7 @@ export class RemoveLabelAssignignCommand extends DataCommand{
   }
 
   getDescription(): string {
-    return `Usunięcie etykiety ${this.label.getName()} z zadania ${this.task.getName()}`
+    return `Usunięcie etykiety ${this.label.name} z zadania ${this.task.name}`
   }
 
 
