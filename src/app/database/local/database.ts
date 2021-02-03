@@ -24,8 +24,9 @@ export class LocalDatabase extends Dexie {
   private kanbanColumnsTable: Dexie.Table<DexieKanbanColumnDTO, number>;
   private kanbanTasksTable: Dexie.Table<KanbanTaskDTO, number>;
 
-  constructor() {
-    super('Database');
+  constructor(dbName: string) {
+    // super('Database');
+    super(dbName);
     this.createTables();
   }
 

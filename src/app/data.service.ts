@@ -14,14 +14,12 @@ import { ITaskService } from './database/shared/task/task.service';
 })
 export class DataService implements IDataSource {
 
-  private dataSource: IDataSource;
-
-  constructor() {
+  constructor(private dataSource: IDataSource) {
 
   }
 
-  public setSource(source: IDataSource){
-    this.dataSource = source;
+  public setSource(dataSource: IDataSource){
+    this.dataSource = dataSource;
   }
 
   getProjectService(): IProjectService {

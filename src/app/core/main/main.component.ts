@@ -17,7 +17,6 @@ import { TasksMode, AppService } from '../services/app/app.service';
 import { LocalDatabase } from 'app/database/local/database';
 import { TimeService } from '../services/time/time.service';
 import { PomodoroComponent } from 'app/shared/side-container/pomodoro/pomodoro.component';
-import { PomodoroSettingsStore } from 'app/pomodoro/pomodoro/settings/settings.storage';
 import { DataService } from 'app/data.service';
 import { LocalDataSource } from 'app/database/local/local.source';
 import { Project } from 'app/database/shared/project/project';
@@ -74,14 +73,15 @@ export class MainComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    this.dataService.setSource(new LocalDataSource());
+    let database = new LocalDatabase("Database")
+    this.dataService.setSource(new LocalDataSource(database));
     // PomodoroSettingsStore.removeSettings();
     // this.deleteDatabase();
     // this.configureDexie();
   }
 
   private deleteDatabase() {
-    var database = new LocalDatabase();
+    var database = new LocalDatabase("Database");
     database.delete().then(() => {
       console.log('Usunięto bazę danych');
     });

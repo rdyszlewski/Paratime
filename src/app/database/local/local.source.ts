@@ -39,10 +39,8 @@ export class LocalDataSource implements IDataSource{
   private pomodoroService: IPomodoroService;
 
 
-  constructor(){
+  constructor(database: LocalDatabase){
     // TODO: zrobić tak, żeby przekazywać bazę danych, aby mozna było wstawiać testową bazę
-    let database = new LocalDatabase();
-
     let projectRepository = new LocalProjectRepository(database.getProjectsTable());
     let stageRepository = new LocalProjectStageRepository(database.getStagesTable());
     let taskRepository = new LocalTaskRepository(database.getTasksTable());

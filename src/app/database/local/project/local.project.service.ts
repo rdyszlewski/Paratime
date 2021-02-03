@@ -76,7 +76,7 @@ export class LocalProjectService implements IProjectService{
         this.orderController.insert(insertedProject, null, null),
         this.insertDefaultKanbanColumn(insertedProject.id)
       ]).then(results=>{
-        console.log(results);
+        insertedProject.containerId = results[1].insertedElement.id;
         return this.createInsertResult(insertedProject, results[0], results[1]);
       })
     });
