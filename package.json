@@ -46,7 +46,7 @@
     "codelyzer": "^5.1.2",
     "dexie": "^3.0.1",
     "dexie-export-import": "^1.0.0-rc.2",
-    "electron": "^9.0.4",
+    "electron": "^22.3.25",
     "electron-packager": "^15.0.0",
     "eventbus-ts": "^1.1.2",
     "jasmine-core": "~3.5.0",
